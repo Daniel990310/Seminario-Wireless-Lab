@@ -18,7 +18,7 @@ const initials = speaker.name
 ---
 
 <article
-  class="reveal surface group relative flex flex-col gap-5 rounded-xl p-6 transition-colors duration-300 hover:border-signal-400/40"
+  class="reveal surface relative flex flex-col gap-5 rounded-lg p-6"
   style={`transition-delay:${index * 70}ms`}
 >
   <div class="flex items-start gap-4">
@@ -44,9 +44,5 @@ const initials = speaker.name
     </div>
   </div>
 
-  <!-- Acento inferior que responde al hover -->
-  <span
-    class="mt-auto h-px w-full bg-gradient-to-r from-signal-400/50 to-transparent opacity-40 transition-opacity duration-300 group-hover:opacity-100"
-    aria-hidden="true"
-  ></span>
+  <span class="mt-auto h-px w-full bg-abyss-600/60" aria-hidden="true"></span>
 </article>

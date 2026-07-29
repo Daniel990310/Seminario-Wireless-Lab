@@ -12,12 +12,45 @@ la Pontificia Universidad Católica de Valparaíso.
 | ------------ | -------------------------------------- | ------------------------------------------------------------------------------------------- |
 | Framework    | [Astro](https://astro.build) 7         | Sitio de contenido: genera HTML estático y envía casi nada de JavaScript.                    |
 | Estilos      | Tailwind CSS 4                         | Sistema de diseño en un solo lugar (`src/styles/global.css`), sin CSS muerto en producción.   |
+| Componentes  | [Magic UI](https://magicui.design) (MIT) | Solo dos componentes, copiados al repo en `src/components/ui`. Ver más abajo.               |
 | Tipografía   | Space Grotesk · Inter · JetBrains Mono | Auto-hospedadas: sin peticiones a Google Fonts.                                              |
 | Verificación | `astro check` (TypeScript strict)      | Errores de tipo detectados antes del despliegue.                                             |
 
-El resultado es una única página estática, sin JavaScript de framework en el
-cliente: solo tres scripts propios de pocas líneas (barra de navegación,
-aparición al hacer scroll y carga del mapa).
+### Sobre Magic UI
+
+Se evaluaron **shadcn/ui + Radix**, **Aceternity UI** y **Magic UI**. Se eligió
+Magic UI porque parte de su vocabulario de componentes coincide con el tema del
+seminario: haces que recorren un trayecto, frentes de onda concéntricos, nodos
+enlazados. shadcn/ui + Radix resuelve accesibilidad e interacción, pero este
+sitio casi no tiene widgets interactivos; sería la elección correcta si hubiera
+formularios de inscripción. Aceternity aporta efectos de mucho impacto
+(auroras, meteoritos, tarjetas 3D) que leen como landing de producto, un
+registro equivocado para un evento académico.
+
+De Magic UI se conservan **dos** componentes, los que tienen correlato con la
+materia del seminario:
+
+- `AnimatedBeam` — los enlaces de la red de colaboración internacional.
+- `Ripple` — frentes de onda concéntricos.
+
+Se descartaron a propósito `MagicCard` (halo que sigue al cursor), `BorderBeam`,
+`AuroraText`, `AnimatedShinyText`, `Marquee` y `Particles`: son efectos de
+interfaz, no del tema, y su tono no corresponde a una conferencia científica.
+
+Los componentes están **copiados al repositorio**, no instalados como
+dependencia. Se pueden editar libremente y no hay riesgo de que una
+actualización cambie el diseño. Se documentan en el código las adaptaciones
+respecto del original (por ejemplo, `magic-card` importaba `next-themes`, que es
+de Next.js).
+
+React entra solo como capa de renderizado. La mayoría de los componentes se
+renderiza en el servidor **sin** directiva `client:*`, así que no envían
+JavaScript; sus animaciones son CSS. La única isla hidratada es la red de
+colaboración, porque `AnimatedBeam` mide la posición real de cada nodo en el DOM
+para trazar las curvas. Ese es el costo: unos 110 kB comprimidos de React +
+Motion para esa sección. Si se prefiere un sitio de cero JavaScript, el mismo
+efecto se puede reescribir con SVG y `stroke-dashoffset`, quitando React del
+proyecto.
 
 ## Comandos
 
@@ -97,15 +130,34 @@ src/
 ├── pages/index.astro        # composición de las secciones
 ├── components/
 │   ├── PropagationFigure.astro  # gráfica de propagación y detección (SVG propio)
+│   ├── CollaborationNetwork.tsx # red internacional (isla React con AnimatedBeam)
+│   ├── ProgramPending.astro     # estado provisional del programa
 │   ├── Hero.astro, SiteHeader.astro, SiteFooter.astro
 │   ├── Section.astro, SpeakerCard.astro, LogoWall.astro
-│   └── VenueLocator.astro       # panel de la sede con mapa bajo demanda
-├── styles/global.css        # sistema de diseño (colores, tipografía, utilidades)
+│   ├── VenueLocator.astro       # panel de la sede con mapa bajo demanda
+│   └── ui/                      # componentes de Magic UI copiados (MIT)
+├── lib/utils.ts             # helper `cn`, convención de shadcn/ui
+├── styles/global.css        # sistema de diseño (colores, tipografía, keyframes)
 └── assets/fonts/            # fuentes auto-hospedadas
 ```
 
 ## Notas de diseño
 
+- **Tono.** Registro institucional: tipografía sólida sin degradados, paleta
+  monocroma cian sobre azul profundo, esquinas poco redondeadas y acentos
+  apagados. Sin degradados de arcoíris, brillos ni carruseles.
+- **El movimiento representa el tema, no la interfaz.** Toda la animación tiene
+  correlato físico con la materia del seminario:
+  - Los frentes de onda se atenúan con la distancia, como la caída de potencia
+    con el rango.
+  - La nube de ecos se ilumina **por orden de distancia al emisor**: el retardo
+    de cada punto se calcula con su distancia real (`echoDelay` en
+    `PropagationFigure.astro`), imitando el barrido de rango de un receptor.
+  - El barrido de radar recorre el sector en 17 s, con el ritmo de un
+    instrumento y no de una interfaz.
+  - Los haces de la red de colaboración representan transmisiones entre
+    instituciones.
+  No hay animaciones activadas por el cursor ni efectos decorativos de hover.
 - **Gráfica principal.** `PropagationFigure.astro` es un SVG propio: un emisor
   sobre una retícula polar de radar, frentes de onda que se atenúan con la
   distancia, un objeto dispersor y la nube de puntos reconstruida a partir de
@@ -114,7 +166,10 @@ src/
   pérdida en cualquier pantalla.
 - **Accesibilidad.** Contraste alto sobre fondo oscuro, enlace de salto al
   contenido, foco visible, la figura descrita con `<title>`/`<desc>`, y todas
-  las animaciones anuladas si el sistema declara `prefers-reduced-motion`.
+  las animaciones anuladas si el sistema declara `prefers-reduced-motion`. Ojo:
+  los componentes de Magic UI **no** respetan esa preferencia por sí solos
+  cuando animan desde JavaScript, así que la red de colaboración consulta
+  `useReducedMotion` y detiene el haz explícitamente.
 - **Privacidad.** Sin analítica, sin fuentes remotas y sin cookies. El mapa de
   la sede solo se solicita a OpenStreetMap si la persona pulsa el botón.
 - **Idioma.** Interfaz en español y título oficial en inglés, según lo pedido.

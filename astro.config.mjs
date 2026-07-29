@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 
 // Ajustar `site` al dominio definitivo antes de publicar: define las URLs
@@ -8,9 +9,19 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://seminario-wireless.pucv.cl',
   output: 'static',
-  integrations: [sitemap()],
+  // React se usa solo como capa de renderizado para los componentes de Magic UI
+  // (src/components/ui). La mayoría se renderiza en el servidor sin directiva
+  // `client:*`, por lo que no envían JavaScript: sus animaciones son CSS. Solo
+  // se hidratan los que necesitan medir el DOM o seguir el cursor.
+  integrations: [sitemap(), react()],
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        // Los componentes de Magic UI importan desde `@/lib/utils`.
+        '@': new URL('./src', import.meta.url).pathname,
+      },
+    },
   },
   // Fuentes variables auto-hospedadas desde `src/assets/fonts`.
   //

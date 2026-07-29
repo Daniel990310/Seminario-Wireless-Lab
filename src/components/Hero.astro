@@ -1,9 +1,6 @@
 ---
 import PropagationFigure from './PropagationFigure.astro';
 import { seminar } from '~/data/seminar';
-
-// El título se parte para destacar "Beyond Connectivity" sobre el resto.
-const [titleLead, titleRest] = ['Beyond Connectivity', 'Wireless Sensing in mmWave and Sub-THz Bands'];
 ---
 
 <section id="top" class="relative isolate overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-24">
@@ -31,21 +28,22 @@ const [titleLead, titleRest] = ['Beyond Connectivity', 'Wireless Sensing in mmWa
         <span class="text-mist-400">PUCV · Chile · 2026</span>
       </p>
 
-      <h1 class="mt-7 text-hero leading-[1.04] font-bold">
-        <span class="block text-mist-100">{titleLead}:</span>
-        <span
-          class="mt-1 block bg-gradient-to-r from-signal-300 via-signal-400 to-violet-signal-400 bg-clip-text text-transparent"
-        >
-          {titleRest}
-        </span>
+      <!--
+        Título sin degradados ni animación de texto: el registro es
+        institucional, y la jerarquía se resuelve con peso y color sólido.
+      -->
+      <h1 class="mt-7 text-hero leading-[1.04] font-semibold text-mist-100">
+        Beyond Connectivity: Wireless Sensing in mmWave and Sub-THz Bands
       </h1>
+
+      <span class="mt-7 block h-px w-24 bg-signal-400/50" aria-hidden="true"></span>
 
       <p class="mt-7 max-w-2xl font-display text-base leading-snug text-mist-300 sm:text-xl">
         {seminar.subtitle}
       </p>
 
       <!-- Datos clave: fecha y lugar, la información que más se busca -->
-      <dl class="mt-10 grid gap-px overflow-hidden rounded-xl border border-abyss-600/50 sm:grid-cols-2">
+      <dl class="mt-10 grid gap-px overflow-hidden rounded-lg border border-abyss-600/50 sm:grid-cols-2">
         <div class="bg-abyss-900/70 p-5 backdrop-blur-sm">
           <dt class="eyebrow text-mist-400">Fechas</dt>
           <dd class="mt-2 font-display text-lg font-semibold text-mist-100">
@@ -62,15 +60,19 @@ const [titleLead, titleRest] = ['Beyond Connectivity', 'Wireless Sensing in mmWa
       </dl>
 
       <div class="mt-9 flex flex-wrap items-center gap-4">
+        <!--
+          Botones rectos y de acento apagado. El cian saturado del relleno
+          resultaba estridente para el registro institucional del seminario.
+        -->
         <a
           href="#programa"
-          class="rounded-full bg-signal-400 px-6 py-3 text-sm font-semibold text-abyss-950 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-signal-300"
+          class="rounded-md bg-signal-600 px-6 py-3 text-sm font-semibold text-mist-100 transition-colors duration-200 hover:bg-signal-500"
         >
           Ver programa
         </a>
         <a
           href="#expositores"
-          class="rounded-full border border-abyss-600 px-6 py-3 text-sm font-medium text-mist-200 transition-colors hover:border-signal-400/60 hover:text-signal-300"
+          class="rounded-md border border-abyss-600 px-6 py-3 text-sm font-medium text-mist-200 transition-colors hover:border-signal-400/50 hover:text-signal-300"
         >
           Expositores
         </a>

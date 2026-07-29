@@ -37,7 +37,7 @@ const rangeRings = [110, 250, 390, 530];
 
 // Dispersores: puntos detectados por el radar. La nube reconstruye el
 // contorno del objeto a partir de los ecos.
-const scatterers = [
+const rawScatterers = [
   { x: 556, y: 196, r: 3.4, o: 0.95 },
   { x: 592, y: 222, r: 2.6, o: 0.8 },
   { x: 618, y: 254, r: 3.1, o: 0.9 },
@@ -53,6 +53,29 @@ const scatterers = [
   { x: 660, y: 232, r: 1.9, o: 0.5 },
   { x: 668, y: 388, r: 2.2, o: 0.6 },
 ];
+
+/*
+ * Orden de iluminación de los ecos.
+ *
+ * En un radar el eco de cada dispersor llega con un retardo proporcional a su
+ * distancia de ida y vuelta (t = 2d/c). Aquí se calcula la distancia real de
+ * cada punto al emisor y se convierte en `animation-delay`, de modo que la nube
+ * se ilumina del dispersor más cercano al más lejano en vez de parpadear al
+ * azar. Es la razón por la que el movimiento se lee como una medición y no
+ * como un efecto decorativo.
+ */
+const ECHO_CYCLE = 4.8; // segundos que tarda el barrido completo de rango
+
+const distances = rawScatterers.map((s) => Math.hypot(s.x - SOURCE.x, s.y - SOURCE.y));
+const minDistance = Math.min(...distances);
+const maxDistance = Math.max(...distances);
+const span = maxDistance - minDistance || 1;
+
+const scatterers = rawScatterers.map((s, i) => ({
+  ...s,
+  // Retardo normalizado al rango observado, en segundos.
+  echoDelay: +(((distances[i]! - minDistance) / span) * ECHO_CYCLE * 0.72).toFixed(2),
+}));
 
 // Trayectos directos emisor → dispersor principal (líneas de visión).
 const rays = [
@@ -91,14 +114,13 @@ const rays = [
 
     <linearGradient id="fig-wave" x1="0" y1="0" x2="1" y2="0.4">
       <stop offset="0%" stop-color="#7ce8f5" />
-      <stop offset="55%" stop-color="#35d0e6" />
-      <stop offset="100%" stop-color="#7a63f0" />
+      <stop offset="100%" stop-color="#0b87a3" />
     </linearGradient>
 
     <linearGradient id="fig-ray" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#35d0e6" stop-opacity="0" />
-      <stop offset="35%" stop-color="#35d0e6" stop-opacity="0.5" />
-      <stop offset="100%" stop-color="#9d8cff" stop-opacity="0.85" />
+      <stop offset="45%" stop-color="#35d0e6" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#7ce8f5" stop-opacity="0.6" />
     </linearGradient>
 
     <linearGradient id="fig-sweep" x1="0" y1="0" x2="1" y2="0">
@@ -107,8 +129,8 @@ const rays = [
     </linearGradient>
 
     <linearGradient id="fig-object" x1="0" y1="0" x2="0.6" y2="1">
-      <stop offset="0%" stop-color="#9d8cff" stop-opacity="0.22" />
-      <stop offset="100%" stop-color="#35d0e6" stop-opacity="0.04" />
+      <stop offset="0%" stop-color="#35d0e6" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#35d0e6" stop-opacity="0.02" />
     </linearGradient>
 
     <filter id="fig-soft" x="-60%" y="-60%" width="220%" height="220%">
@@ -148,8 +170,8 @@ const rays = [
     <path
       d="M540 186 L664 224 L682 330 L648 424 L560 462 L528 356 Z"
       fill="url(#fig-object)"
-      stroke="#7a63f0"
-      stroke-opacity="0.35"
+      stroke="#2b3a58"
+      stroke-opacity="0.9"
       stroke-width="1.2"
       stroke-dasharray="6 6"
     />
@@ -190,11 +212,11 @@ const rays = [
       />
     </g>
 
-    <!-- Nube de puntos detectados -->
+    <!-- Nube de ecos: se ilumina por orden de distancia al emisor -->
     <g class="fig-points" fill="#7ce8f5">
       {
-        scatterers.map((s, i) => (
-          <g class="fig-point" style={`--i:${i}`}>
+        scatterers.map((s) => (
+          <g class="fig-point" style={`--echo-delay:${s.echoDelay}s`}>
             <circle cx={s.x} cy={s.y} r={s.r * 3.2} fill="#35d0e6" fill-opacity={s.o * 0.1} />
             <circle cx={s.x} cy={s.y} r={s.r} fill-opacity={s.o} />
           </g>
@@ -222,8 +244,8 @@ const rays = [
     .fig-wave {
       transform-box: fill-box;
       transform-origin: 0% 50%;
-      animation: fig-breathe 7s var(--ease-out-soft, ease-out) infinite;
-      animation-delay: calc(var(--i) * -0.78s);
+      animation: fig-breathe 11s var(--ease-out-soft, ease-out) infinite;
+      animation-delay: calc(var(--i) * -1.2s);
     }
 
     @keyframes fig-breathe {
@@ -236,9 +258,10 @@ const rays = [
       }
     }
 
+    /* Barrido lento, con el ritmo de un instrumento y no de una interfaz. */
     .fig-sweep-group {
       transform-origin: 148px 322px;
-      animation: fig-sweep 11s linear infinite;
+      animation: fig-sweep 17s ease-in-out infinite;
     }
 
     @keyframes fig-sweep {
@@ -253,18 +276,26 @@ const rays = [
       }
     }
 
+    /*
+     * Retorno del eco. El retardo de cada punto lo fija la distancia real al
+     * emisor (ver `echoDelay` en el frontmatter), así que la nube se ilumina de
+     * cerca a lejos, como el barrido de rango de un receptor.
+     */
     .fig-point {
-      animation: fig-blink 5.5s ease-in-out infinite;
-      animation-delay: calc(var(--i) * -0.37s);
+      animation: fig-echo 4.8s ease-out infinite;
+      animation-delay: var(--echo-delay);
     }
 
-    @keyframes fig-blink {
-      0%,
-      100% {
-        opacity: 0.5;
+    @keyframes fig-echo {
+      0% {
+        opacity: 0.28;
       }
-      45% {
+      6% {
         opacity: 1;
+      }
+      38%,
+      100% {
+        opacity: 0.28;
       }
     }
   }

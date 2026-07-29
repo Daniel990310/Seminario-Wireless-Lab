@@ -4,6 +4,8 @@ import SiteHeader from '~/components/SiteHeader.astro';
 import Hero from '~/components/Hero.astro';
 import Section from '~/components/Section.astro';
 import SpeakerCard from '~/components/SpeakerCard.astro';
+import CollaborationNetwork from '~/components/CollaborationNetwork';
+import ProgramPending from '~/components/ProgramPending.astro';
 import LogoWall from '~/components/LogoWall.astro';
 import VenueLocator from '~/components/VenueLocator.astro';
 import SiteFooter from '~/components/SiteFooter.astro';
@@ -23,7 +25,7 @@ const hasProgram = program.days.length > 0;
     <Section
       id="seminario"
       eyebrow="El seminario"
-      title="Cuando la red no solo comunica, también percibe"
+      title="Comunicación y detección sobre la misma infraestructura"
       lead={about.lead}
     >
       <div class="mt-14 grid gap-14 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
@@ -32,7 +34,7 @@ const hasProgram = program.days.length > 0;
         </div>
 
         <!-- Temas del seminario -->
-        <ul class="grid gap-px overflow-hidden rounded-xl border border-abyss-600/50 sm:grid-cols-2">
+        <ul class="grid gap-px overflow-hidden rounded-lg border border-abyss-600/50 sm:grid-cols-2">
           {
             topics.map((topic, index) => (
               <li
@@ -52,7 +54,7 @@ const hasProgram = program.days.length > 0;
     <Section
       id="programa"
       eyebrow="Programa"
-      title="Dos jornadas de sesiones"
+      title="Jornadas del 21 y 22 de octubre"
       lead={`${seminar.dates.label} · ${venue.name}`}
       tinted
     >
@@ -84,31 +86,8 @@ const hasProgram = program.days.length > 0;
             </div>
           ) : (
             /* Estado provisional: se reemplaza solo al poblar program.days */
-            <div class="reveal surface relative overflow-hidden rounded-xl px-6 py-14 text-center sm:px-12 sm:py-20">
-              <div class="absolute inset-0 grid-backdrop opacity-40" aria-hidden="true" />
-              <div class="relative mx-auto max-w-xl">
-                <span
-                  class="inline-flex items-center gap-2.5 rounded-full border border-signal-400/30 bg-signal-400/8 px-4 py-1.5"
-                >
-                  <span class="relative flex size-1.5">
-                    <span class="absolute inline-flex size-full animate-ping rounded-full bg-signal-400 opacity-75" />
-                    <span class="relative inline-flex size-1.5 rounded-full bg-signal-300" />
-                  </span>
-                  <span class="eyebrow">En preparación</span>
-                </span>
-
-                <p class="mt-7 font-display text-xl font-semibold text-mist-100 sm:text-2xl">
-                  {program.pendingNotice}
-                </p>
-                <p class="mt-4 text-base leading-relaxed text-mist-400">{program.pendingDetail}</p>
-
-                <a
-                  href={`mailto:${seminar.contact.email}?subject=${encodeURIComponent('Aviso de publicación del programa — Beyond Connectivity 2026')}`}
-                  class="mt-8 inline-block text-sm font-medium text-signal-300 underline decoration-signal-400/40 underline-offset-4 transition-colors hover:decoration-signal-300"
-                >
-                  Avísenme cuando esté disponible
-                </a>
-              </div>
+            <div class="reveal">
+              <ProgramPending />
             </div>
           )
         }
@@ -119,7 +98,7 @@ const hasProgram = program.days.length > 0;
     <Section
       id="expositores"
       eyebrow="Expositores"
-      title="Investigadores de Estados Unidos y Chile"
+      title="Investigadores participantes"
       lead="Especialistas en propagación, detección inalámbrica y arquitecturas de redes de próxima generación."
     >
       <div class="mt-14 space-y-14">
@@ -153,8 +132,21 @@ const hasProgram = program.days.length > 0;
       </div>
     </Section>
 
+    <!-- Red de colaboración: topología del seminario -->
+    <Section
+      id="red"
+      eyebrow="Red de colaboración"
+      title="Instituciones vinculadas"
+      lead="El seminario articula grupos de investigación de Estados Unidos y Chile en torno a la Escuela de Ingeniería Eléctrica de la PUCV."
+      tinted
+    >
+      <div class="reveal mt-14">
+        <CollaborationNetwork client:visible />
+      </div>
+    </Section>
+
     <!-- Sede -->
-    <Section id="sede" eyebrow="Sede" title="Auditorio de la Sede PUCV Santiago" tinted>
+    <Section id="sede" eyebrow="Sede" title="Auditorio de la Sede PUCV Santiago">
       <div class="mt-12 grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
         <div class="reveal">
           <address class="space-y-1 text-base not-italic sm:text-lg">
@@ -194,7 +186,7 @@ const hasProgram = program.days.length > 0;
     <Section
       id="organizacion"
       eyebrow="Organización"
-      title="Instituciones que hacen posible el seminario"
+      title="Organización y financiamiento"
     >
       <div class="mt-14 space-y-16">
         <div>
@@ -224,7 +216,7 @@ const hasProgram = program.days.length > 0;
         </div>
 
         <!-- Financiamiento: obligatorio dar crédito a ANID y al proyecto FOVI -->
-        <div class="reveal surface rounded-xl p-7 sm:p-10">
+        <div class="reveal surface rounded-lg p-7 sm:p-10">
           <h3 class="eyebrow text-mist-400">Financia</h3>
           <div class="mt-7 grid gap-8 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-10">
             <a

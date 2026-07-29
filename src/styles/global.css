@@ -1,6 +1,35 @@
 @import 'tailwindcss';
 
 /*
+ * Variante `dark` basada en clase, según la convención de shadcn/ui en
+ * Tailwind 4. Por defecto Tailwind resuelve `dark:` con `prefers-color-scheme`,
+ * pero este sitio es oscuro siempre: `<html class="dark">` activa las variantes
+ * `dark:` que traen los componentes de Magic UI sin tener que reescribirlas.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Tokens con los nombres que usa shadcn/ui, mapeados a la paleta del seminario.
+ *
+ * Los componentes de Magic UI vendorizados en src/components/ui referencian
+ * clases como `bg-foreground/25` o `text-muted-foreground`. Definirlos aquí
+ * permite copiar componentes nuevos del registro sin reescribir sus clases.
+ */
+:root {
+  --background: #05070f;
+  --foreground: #eef2f9;
+  --card: #0e1526;
+  --card-foreground: #eef2f9;
+  --muted: #131c31;
+  --muted-foreground: #7d8aa6;
+  --border: #1d2942;
+  --primary: #35d0e6;
+  --primary-foreground: #05070f;
+  --accent: #9d8cff;
+  --ring: #35d0e6;
+}
+
+/*
  * Sistema de diseño del seminario.
  *
  * Paleta: base azul profunda (instrumentación científica) con acentos en el
@@ -29,6 +58,19 @@
   --color-violet-signal-400: #9d8cff;
   --color-violet-signal-500: #7a63f0;
 
+  /* Expone los tokens de shadcn como utilidades de Tailwind. */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-ring: var(--ring);
+
   --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
@@ -37,6 +79,88 @@
   --text-section: clamp(1.6rem, 3vw, 2.4rem);
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /*
+   * Animaciones que requieren los componentes de Magic UI vendorizados en
+   * src/components/ui. El registro las declara como `cssVars.theme`; en
+   * Tailwind 4 se definen aquí y los `@keyframes` van más abajo.
+   */
+  --animate-ripple: ripple var(--duration, 2s) ease calc(var(--i, 0) * 0.2s) infinite;
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  --animate-aurora: aurora 8s ease-in-out infinite alternate;
+  --animate-shiny-text: shiny-text 8s infinite;
+  --animate-orbit: orbit calc(var(--duration) * 1s) linear infinite;
+}
+
+@keyframes ripple {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+  }
+}
+
+/*
+ * Variante sobria de `aurora`.
+ *
+ * El keyframe original de Magic UI acompaña el desplazamiento del gradiente con
+ * `rotate(±5deg) scale(0.9–1.1)`, lo que hace tambalear el texto. En un título
+ * institucional resulta inapropiado, así que aquí solo se recorre el gradiente.
+ */
+@keyframes aurora {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes shiny-text {
+  0%,
+  90%,
+  100% {
+    background-position: calc(-100% - var(--shiny-width)) 0;
+  }
+  30%,
+  60% {
+    background-position: calc(100% + var(--shiny-width)) 0;
+  }
+}
+
+@keyframes orbit {
+  0% {
+    transform: rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * 1px))
+      rotate(calc(var(--angle) * -1deg));
+  }
+  100% {
+    transform: rotate(calc(var(--angle) * 1deg + 360deg)) translateY(calc(var(--radius) * 1px))
+      rotate(calc((var(--angle) * -1deg) - 360deg));
+  }
 }
 
 @layer base {
@@ -112,14 +236,19 @@
   }
 }
 
-/* Aparición al hacer scroll. Sin JS el contenido queda visible por defecto. */
+/*
+ * Aparición al hacer scroll. Sin JS el contenido queda visible por defecto.
+ *
+ * Desplazamiento corto y transición lenta: la intención es que el contenido se
+ * asiente, no que llame la atención sobre la propia animación.
+ */
 @media (prefers-reduced-motion: no-preference) {
   .reveal {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(10px);
     transition:
-      opacity 0.7s var(--ease-out-soft),
-      transform 0.7s var(--ease-out-soft);
+      opacity 0.9s var(--ease-out-soft),
+      transform 0.9s var(--ease-out-soft);
   }
 
   .reveal.is-visible {
