@@ -2,6 +2,7 @@
 
 **Estado:** requisitos acordados. Diseño escrito. Sin decisiones bloqueantes.
 **Línea base:** [`../baseline/auditoria-2026-07-29.md`](../baseline/auditoria-2026-07-29.md)
+**Procedencia de las cifras:** [`../fuentes.md`](../fuentes.md)
 
 ## Objetivo
 
@@ -123,8 +124,17 @@ por parte de la persona.
 5. El sitio es funcional y legible con JavaScript deshabilitado; lo que se pierde
    son refinamientos, no contenido ni navegación.
 
-El presupuesto de 40 kB es deliberadamente exigente: obliga a decidir si la
-sección que hoy cuesta 109 kB justifica ese peso o se resuelve de otra forma.
+6. Las tipografías no superan **125 kB** en total (subconjunto latino).
+   *Línea base: 108,3 kB con tres familias.*
+
+El presupuesto de 40 kB de JavaScript es deliberadamente exigente: obliga a
+decidir si la sección que hoy cuesta 109 kB justifica ese peso o se resuelve de
+otra forma.
+
+**Nota sobre dónde está la restricción real.** Al eliminar React, el JavaScript
+baja a unos 3 kB y las tipografías pasan a ser el **83 %** de la primera carga
+(proyección: 145 kB de 180 kB permitidos, `[medido]`). El presupuesto que hay que
+vigilar de verdad es el tipográfico, no el de JavaScript. Ver `design.md` §4.
 
 ### RNF-3 · SEO y metadatos
 

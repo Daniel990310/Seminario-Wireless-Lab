@@ -1,22 +1,40 @@
 # Especificaciones
 
 Este proyecto se desarrolla con **spec-driven development**: antes de escribir
-código se acuerda qué debe cumplirse y cómo se va a verificar. El objetivo no es
-burocracia, es que «mejorar la calidad» deje de ser una opinión y pase a ser una
+código se acuerda qué debe cumplirse y cómo se verificará. El objetivo no es
+burocracia: es que «mejorar la calidad» deje de ser una opinión y pase a ser una
 condición medible.
 
-## El flujo
+## Índice
 
-Cada cambio significativo pasa por cuatro documentos, en orden:
+| Documento | Contenido |
+| --------- | --------- |
+| [`001-mejora-calidad/requirements.md`](001-mejora-calidad/requirements.md) | Qué debe cumplirse, con criterios verificables |
+| [`001-mejora-calidad/design.md`](001-mejora-calidad/design.md) | Cómo se construye y por qué, frente a alternativas |
+| [`001-mejora-calidad/tasks.md`](001-mejora-calidad/tasks.md) | Orden de ejecución y comprobación de cada tarea |
+| [`baseline/auditoria-2026-07-29.md`](baseline/auditoria-2026-07-29.md) | Medición previa: la referencia contra la que se compara |
+| [`fuentes.md`](fuentes.md) | **Registro de procedencia**: de dónde sale cada cifra |
 
-| Documento         | Responde                                  | Regla                                                                 |
-| ----------------- | ----------------------------------------- | --------------------------------------------------------------------- |
-| `requirements.md` | Qué debe cumplirse y por qué              | Todo requisito lleva un criterio de aceptación **verificable**         |
-| `design.md`       | Cómo se va a construir                    | Cada decisión técnica se justifica frente a al menos una alternativa   |
-| `tasks.md`        | En qué orden y con qué se comprueba       | Cada tarea apunta a los requisitos que satisface                       |
-| `verification.md` | Qué se midió y con qué resultado          | Números medidos, no estimaciones                                       |
+## Regla de procedencia
 
-Reglas de trabajo:
+En un flujo asistido por IA el riesgo principal no es equivocarse: es que **una
+cifra sin fuente se propague por los documentos y termine tratada como hecho**.
+Para evitarlo, toda afirmación con dato lleva una marca de procedencia:
+
+| Marca | Significa | Cómo se trata |
+| ----- | --------- | ------------- |
+| `[medido]` | Se obtuvo ejecutando algo en este proyecto | Reproducible: el comando está en [`fuentes.md`](fuentes.md) |
+| `[dataset]` | Lo afirma el skill `ui-ux-pro-max` | **Es la opinión del dataset, no un hecho.** Se verifica antes de adoptarse |
+| `[verificado]` | Hecho externo confirmado con fuente citada | Fuente y fecha en [`fuentes.md`](fuentes.md) |
+| `[supuesto]` | Todavía no comprobado | **No puede sustentar una decisión cerrada.** Lleva tarea que lo resuelva |
+
+Ejemplo de por qué importa: el dataset propone una paleta académica cuyo
+`Muted Foreground` da **4,08:1 `[medido]`** y por lo tanto no cumple WCAG AA,
+aunque el dataset la presente como válida. Si se hubiera copiado por venir de una
+fuente con autoridad aparente, se habría introducido el mismo defecto que la
+auditoría encontró en el tema oscuro.
+
+## Reglas de trabajo
 
 1. **No se implementa lo que no está en los requisitos.** Si aparece algo nuevo
    a mitad de camino, primero se agrega al documento.
@@ -25,17 +43,37 @@ Reglas de trabajo:
    axe-core» sí.
 3. **La línea base se mide antes de tocar código.** Sin medición previa no se
    puede afirmar que algo mejoró.
-4. **Las decisiones abiertas se declaran.** Se distingue entre las que bloquean
-   el avance y las que no.
+4. **Las decisiones abiertas se declaran**, distinguiendo las que bloquean el
+   avance de las que no.
+5. **Los errores se corrigen dejando registro**, no reescribiendo el veredicto.
+   El criterio con que se falló importa tanto como la conclusión corregida.
+
+## Nomenclatura
+
+| Prefijo | Significa | Ejemplo |
+| ------- | --------- | ------- |
+| `D` | Decisión cerrada | D5: dos temas con selector |
+| `RF` | Requisito funcional | RF-1: sitio bilingüe |
+| `RNF` | Requisito no funcional | RNF-2: rendimiento |
+| `A` | Decisión abierta | A3: afiliación por confirmar |
+| `T` | Tarea | T1: comando de verificación |
+
+Las referencias usan punto para el criterio: **RNF-2.1** es el primer criterio de
+aceptación de RNF-2.
+
+## Cómo verificar el estado
+
+```bash
+npm run build     # el sitio debe compilar
+npm run check     # tipos, sin errores ni advertencias
+npm run verify    # accesibilidad y presupuestos de peso (tarea T1, aún no existe)
+```
+
+`npm run verify` es la autoridad sobre el cumplimiento. Mientras no exista
+(tarea T1), ninguna afirmación de mejora está respaldada.
 
 ## Estado
 
-| Especificación                                       | Estado                                    |
-| ---------------------------------------------------- | ----------------------------------------- |
-| [001 — Mejora de calidad](001-mejora-calidad/) | Requisitos, diseño y tareas escritos. Implementación pendiente, sin bloqueos |
-
-## Línea base
-
-La medición del sitio antes de esta etapa está en
-[`baseline/auditoria-2026-07-29.md`](baseline/auditoria-2026-07-29.md). Es la
-referencia contra la que se comparan las mejoras.
+| Especificación | Estado |
+| -------------- | ------ |
+| [001 — Mejora de calidad](001-mejora-calidad/) | Requisitos, diseño y tareas escritos. Sin decisiones bloqueantes. Implementación no iniciada. |

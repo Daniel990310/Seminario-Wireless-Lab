@@ -82,16 +82,31 @@ La animación se detiene con `prefers-reduced-motion` usando solo la regla CSS.
 
 ## T4 · Tipografía
 
-**Satisface:** D4, RNF-1, RNF-2.4 · **Depende de:** T2
+**Satisface:** D4, RNF-1, RNF-2.2, RNF-2.4 · **Depende de:** T2
 
-- Sustituir Space Grotesk e Inter por **Crimson Pro** (títulos) y **Atkinson
-  Hyperlegible** (texto). Mantener JetBrains Mono para metadatos técnicos.
-- Auto-hospedadas con el proveedor `local`, subconjunto latino.
-- Si el par no funciona en la práctica, evaluar la alternativa «Academic/
-  Archival» (EB Garamond y Crimson Text) antes de volver atrás.
+Paquetes exactos, ya verificados en npm:
 
-**Comprobación:** sin peticiones a dominios externos. Sin desplazamiento de
-diseño al cargar. Revisión visual del par en el sitio real, no en una muestra.
+| Rol | Paquete | Peso latino |
+| --- | ------- | ----------- |
+| Títulos | `@fontsource-variable/crimson-pro` | 48.200 B |
+| Texto | `@fontsource-variable/atkinson-hyperlegible-next` | 33.996 B |
+| Metadatos | `@fontsource-variable/jetbrains-mono` (ya instalado) | 40.404 B |
+
+- Usar **Atkinson Hyperlegible Next**, no la original: esta última no tiene
+  versión variable y pesa más en dos archivos.
+- Auto-hospedadas con el proveedor `local` de Astro, subconjunto latino
+  únicamente. `latin-ext` no aporta a español ni inglés.
+- Retirar Space Grotesk e Inter, y sus archivos de `src/assets/fonts`.
+- Si el par no funciona en la práctica, evaluar «Academic/Archival» (EB Garamond
+  y Crimson Text) antes de volver atrás.
+
+**Comprobación:** primera carga ≤ 180 kB comprimidos; la proyección es 145 kB.
+Sin peticiones a dominios externos. Sin desplazamiento de diseño al cargar.
+Revisión visual del par en el sitio real, no en una muestra.
+
+**Si el presupuesto no alcanza**, la primera concesión es quitar JetBrains Mono
+(−40,4 kB, deja la carga en 105,6 kB). Está identificada de antemano para que no
+se decida a la carrera.
 
 ---
 

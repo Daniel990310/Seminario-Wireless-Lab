@@ -32,27 +32,49 @@ un requisito**. Varios son excelentes en abstracto y no aplican a este proyecto.
 No es una colección de estilos para elegir a gusto: es una base consultable con
 datos que se cruzan con nuestros requisitos.
 
-- **192 paletas** con el mismo vocabulario de tokens que ya usa
-  `src/styles/global.css` (`Background`/`Foreground`, `Muted`/`Muted Foreground`,
-  `Primary`/`On Primary`, `Border`, `Ring`), y una columna de notas que registra
-  ajustes hechos por WCAG.
+Contenido real del paquete instalado, contado sobre los CSV `[medido]`:
+
+| Dato | Cantidad |
+| ---- | -------- |
+| Paletas, con el mismo vocabulario de tokens que ya usa `global.css` | **192** |
+| Estilos visuales | **84** |
+| Pares tipográficos | **74** |
+| Tipos de producto con reglas de razonamiento | **192** |
+| Guías de UX (11 de accesibilidad) | **99** |
+| Reglas específicas de Astro, con severidad | **53** |
+
+**Las cifras con que llegó el repositorio no coinciden** con la versión
+instalada: se mencionaban 67 estilos y 161 paletas, que corresponden a una
+versión anterior —161 es además el número de reglas de razonamiento de su
+insignia, no de paletas—. El propio skill declara 98 guías de UX y su CSV tiene
+99. Las especificaciones usan lo que hay en los datos. Detalle en
+[`../fuentes.md`](../fuentes.md).
+
+Lo que lo hace útil aquí, y no genéricamente:
+
 - **Tres tipos de producto exactamente sobre el caso**: «Conference / Symposium
   Landing Page», «Research Lab / University Department» y «Academic Journal /
   Scholarly Publishing».
-- **53 reglas específicas de Astro** con severidad. Una valida directamente
-  RNF-2: *«Minimize client directives»*, severidad alta.
-- **99 reglas de UX**, 11 de accesibilidad, con ejemplos de código correcto e
-  incorrecto.
+- Una regla de Astro valida directamente RNF-2: *«Minimize client directives»*,
+  severidad alta.
+- Su regla de UX «Contrast Readability», severidad alta, coincide con RNF-1 y
+  dice explícitamente «nada de texto gris sobre fondo gris», que es el defecto
+  exacto de la línea base con `mist-500`.
 
-Instalado en `.claude/skills/ui-ux-pro-max/` (1,8 MB: datos, scripts y
-referencias; se omiten el CLI, las capturas y las plantillas de otras
-plataformas). Licencia MIT.
+Instalado en `.claude/skills/` junto con su skill `design-system` (2,2 MB en
+total: datos, scripts y referencias; se omiten el CLI, las capturas y las
+plantillas de otras plataformas). Licencia MIT.
 
-**Advertencia sobre el dataset.** La paleta académica declara
-`Muted Foreground #64748B` sobre `Muted #E9EEF5`, que da **4,08:1** y por lo
-tanto **no cumple** WCAG AA para texto normal. El dataset es un punto de partida
-informado, no una autoridad: **la verificación con axe sigue siendo el árbitro**
-(RNF-6). Toda pareja de color se mide antes de adoptarse.
+**Advertencia sobre el dataset.** Su paleta académica declara
+`Muted Foreground #64748B` sobre `Muted #E9EEF5`, que da **4,08:1 `[medido]`** y
+por lo tanto **no cumple** WCAG AA para texto normal, aunque el dataset la
+presente como válida. El dataset es un punto de partida informado, no una
+autoridad: **la verificación con axe es el árbitro** (RNF-6). Toda pareja de
+color se mide antes de adoptarse.
+
+Por el mismo criterio, su calificación «WCAG AAA» para Swiss Modernism queda
+como `[dataset]` sin verificar: es una etiqueta suya, y el cumplimiento lo
+determina `npm run verify`.
 
 ### daisyUI: se descarta la librería y se adopta su patrón de temas
 
@@ -159,17 +181,30 @@ acento y ausencia de ornamento.
 Encaja con lo pedido —sobrio, académico, profesional— y evita el problema de la
 propuesta anterior: la distinción venía de efectos, no de composición.
 
-**Tipografía: Crimson Pro (títulos, serif) + Atkinson Hyperlegible (texto).**
+**Tipografía: Crimson Pro (títulos) + Atkinson Hyperlegible Next (texto).**
 Dos motivos, y el segundo pesa más:
 
-1. La actual, Space Grotesk + Inter, es el pairing por defecto del diseño
-   generado por IA. No comunica nada sobre el seminario.
-2. **Atkinson Hyperlegible fue diseñada por el Braille Institute para baja
-   visión**, diferenciando formas de caracteres que suelen confundirse. Elegirla
-   hace que la tipografía trabaje a favor de RNF-1 en lugar de ser neutral.
+1. La actual, Space Grotesk + Inter, es el par por defecto del diseño generado
+   por IA y no comunica nada sobre el seminario. Es una observación de estilo
+   citada, no un dato medido (ver [`../fuentes.md`](../fuentes.md)).
+2. **Atkinson Hyperlegible la creó el Braille Institute para lectores con baja
+   visión `[verificado]`**, diferenciando formas que suelen confundirse: la `l`
+   lleva cola y el `1` lleva gancho. Elegirla hace que la tipografía trabaje a
+   favor de RNF-1 en lugar de ser neutral. Licencia SIL Open Font.
 
-Se mantiene JetBrains Mono para metadatos técnicos (frecuencias, horarios,
-código de proyecto), coherente con la materia.
+**Se usa la variante *Next*, no la original.** Medido sobre los paquetes de npm:
+
+| Paquete | Archivos latinos | Peso |
+| ------- | ---------------- | ---- |
+| `@fontsource/atkinson-hyperlegible` | 2 estáticos (400 y 700) | 34.732 B |
+| `@fontsource-variable/atkinson-hyperlegible-next` | 1 variable | **33.996 B** |
+
+La original **no tiene versión variable**. *Next* gana por las tres vías: menos
+peso, un archivo en lugar de dos y rango completo de pesos en lugar de dos
+fijos.
+
+Se mantiene JetBrains Mono para metadatos técnicos (frecuencias, horarios, código
+de proyecto), coherente con la materia. Su costo está cuantificado abajo.
 
 **Patrón de página: «Hero + Agenda + CFP».** Confirma D1 (una sola página) y
 sugiere elevar el programa a segundo bloque, por sobre la presentación.
@@ -268,7 +303,31 @@ problema.
 porque haría que el presupuesto se acomode al código en lugar de disciplinarlo.
 
 Queda entonces sin dependencias de framework: solo los scripts propios de
-navegación, aparición al hacer scroll, carga del mapa y selector de idioma.
+navegación, aparición al hacer scroll, carga del mapa, selector de idioma y
+selector de tema.
+
+### El cuello de botella se traslada a las tipografías
+
+Consecuencia que conviene explicitar, porque cambia dónde hay que poner
+atención. Proyección de la primera carga tras eliminar React `[medido]`:
+
+| Recurso | Peso | Del total |
+| ------- | ---- | --------- |
+| Tipografías (3 familias) | 119,7 kB | **83 %** |
+| HTML | 13,3 kB | 9 % |
+| CSS | ~9 kB | 6 % |
+| JavaScript | ~3 kB | 2 % |
+| **Total** | **145 kB** | frente a 180 kB de presupuesto |
+
+Es decir: **el presupuesto de 40 kB de JavaScript pasa a cumplirse con enorme
+holgura (~3 kB), y la restricción real son las tipografías.** La tipografía nueva
+suma 11,4 kB respecto de la actual, lo que sigue cabiendo.
+
+Si en algún momento hace falta margen, la palanca es **JetBrains Mono: 40,4 kB
+por etiquetas y horarios.** Quitarla deja la primera carga en 105,6 kB. No se
+quita ahora porque los metadatos técnicos son parte del lenguaje del seminario,
+pero queda identificada como la primera concesión disponible y no como un
+descubrimiento futuro.
 
 ### RNF-1 · Accesibilidad
 
