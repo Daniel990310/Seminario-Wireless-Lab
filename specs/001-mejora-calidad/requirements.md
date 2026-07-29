@@ -1,6 +1,6 @@
 # 001 — Mejora de calidad del sitio
 
-**Estado:** requisitos acordados. Diseño escrito. Tareas bloqueadas por A2.
+**Estado:** requisitos acordados. Diseño escrito. Sin decisiones bloqueantes.
 **Línea base:** [`../baseline/auditoria-2026-07-29.md`](../baseline/auditoria-2026-07-29.md)
 
 ## Objetivo
@@ -18,7 +18,8 @@ Acordadas el 29 de julio de 2026:
 | D1 | **Una sola página** | Se mantiene el scroll con anclas. No se fragmenta en páginas por sección. |
 | D2 | **Bilingüe español e inglés, con selector** | El título oficial permanece **siempre en inglés**, en ambos idiomas del sitio. |
 | D3 | **Registro de asistentes sin definir** | Se deja previsto en la especificación, no se implementa. |
-| D4 | **Revisión visual general** | El tratamiento visual se rehace, no se ajusta. Alcance a definir con las referencias. |
+| D4 | **Revisión visual general** | Swiss Modernism 2.0 más minimalismo, con tipografía Crimson Pro y Atkinson Hyperlegible. |
+| D5 | **Dos temas con selector** | Claro por omisión, oscuro como alternativa, más la opción «según el sistema». |
 
 ## Requisitos funcionales
 
@@ -50,6 +51,25 @@ por parte de la persona.
 2. La navegación funciona sin JavaScript.
 3. La sección de programa muestra la agenda cuando hay datos y un aviso
    provisional cuando no, sin cambios en el marcado.
+
+### RF-4 · Selector de tema claro y oscuro
+
+**Criterios de aceptación**
+
+1. Tres estados seleccionables: claro, oscuro y «según el sistema». El claro es
+   el valor por omisión cuando no hay preferencia guardada.
+2. El tema se aplica **antes del primer pintado**: no hay destello del tema
+   equivocado al cargar.
+3. La preferencia persiste entre visitas mediante `localStorage`, sin cookies.
+4. Sin JavaScript el sitio queda en tema claro y sigue siendo funcional.
+5. El selector es operable por teclado y su estado actual se comunica de forma
+   programática, no solo por color.
+6. **Ambos temas cumplen RNF-1 por separado**: cero hallazgos de axe en cada uno.
+7. Ningún componente referencia un token primitivo: todos leen la capa
+   semántica, de modo que cambiar de tema sea sustituir un bloque de valores.
+8. `color-scheme` se declara en cada tema, para que los controles nativos del
+   navegador acompañen al tema elegido.
+9. La figura de propagación funciona en ambos temas sin duplicar el SVG.
 
 ### RF-3 · Registro de asistentes (previsto, no implementado)
 
@@ -164,7 +184,7 @@ estilos.
 | # | Decisión | Bloquea | Estado |
 | - | -------- | ------- | ------ |
 | A1 | Referencias de repositorios a revisar e incorporar | `design.md` | **Resuelta** — ver `design.md` §1 |
-| A2 | **Fondo claro institucional u oscuro instrumento** | `tasks.md` | Abierta — recomendación en `design.md` §3 |
+| A2 | Fondo claro institucional u oscuro instrumento | `tasks.md` | **Resuelta** — D5: ambos, claro por omisión |
 
 ### No bloqueantes
 

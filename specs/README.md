@@ -32,7 +32,7 @@ Reglas de trabajo:
 
 | Especificación                                       | Estado                                    |
 | ---------------------------------------------------- | ----------------------------------------- |
-| [001 — Mejora de calidad](001-mejora-calidad/)       | Requisitos en curso; diseño pendiente      |
+| [001 — Mejora de calidad](001-mejora-calidad/) | Requisitos, diseño y tareas escritos. Implementación pendiente, sin bloqueos |
 
 ## Línea base
 
