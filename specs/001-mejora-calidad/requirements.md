@@ -1,7 +1,6 @@
 # 001 — Mejora de calidad del sitio
 
-**Estado:** requisitos en curso. Diseño bloqueado a la espera de las referencias
-de repositorios.
+**Estado:** requisitos acordados. Diseño escrito. Tareas bloqueadas por A2.
 **Línea base:** [`../baseline/auditoria-2026-07-29.md`](../baseline/auditoria-2026-07-29.md)
 
 ## Objetivo
@@ -162,10 +161,10 @@ estilos.
 
 ### Bloqueantes
 
-| # | Decisión | Bloquea |
-| - | -------- | ------- |
-| A1 | **Referencias de repositorios**: la lista de repositorios y su función, para revisarlos e incorporarlos | `design.md` completo y el alcance real de D4 |
-| A2 | **Alcance de la revisión visual**: qué se conserva de la identidad actual y qué se rehace | Requisitos de diseño visual |
+| # | Decisión | Bloquea | Estado |
+| - | -------- | ------- | ------ |
+| A1 | Referencias de repositorios a revisar e incorporar | `design.md` | **Resuelta** — ver `design.md` §1 |
+| A2 | **Fondo claro institucional u oscuro instrumento** | `tasks.md` | Abierta — recomendación en `design.md` §3 |
 
 ### No bloqueantes
 
