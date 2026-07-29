@@ -1,0 +1,129 @@
+---
+import { Font } from 'astro:assets';
+import { seminar, type Speaker } from '~/data/seminar';
+import '~/styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = `${seminar.title} — ${seminar.dates.shortLabel}`,
+  description = seminar.seo.description,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://example.com');
+
+// Datos estructurados: permiten que buscadores y calendarios reconozcan
+// el seminario como un evento con fecha y lugar.
+const eventSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: seminar.title,
+  alternateName: seminar.subtitle,
+  description: seminar.seo.description,
+  startDate: seminar.dates.startISO,
+  endDate: seminar.dates.endISO,
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  location: {
+    '@type': 'Place',
+    name: seminar.venue.name,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: seminar.venue.street,
+      addressLocality: seminar.venue.district,
+      addressRegion: seminar.venue.city,
+      addressCountry: 'CL',
+    },
+  },
+  organizer: seminar.organizers.map((o) => ({
+    '@type': 'Organization',
+    name: o.name,
+    url: o.url,
+  })),
+  funder: {
+    '@type': 'Organization',
+    name: seminar.funding.agency.name,
+    alternateName: seminar.funding.agency.shortName,
+  },
+  // Las afiliaciones aún sin confirmar se omiten del schema en vez de
+  // declararse como organización.
+  performer: ([...seminar.speakers.international, ...seminar.speakers.national] as Speaker[]).map(
+    (speaker) => ({
+      '@type': 'Person',
+      name: speaker.name,
+      affiliation: speaker.affiliationPending
+        ? undefined
+        : { '@type': 'Organization', name: speaker.affiliation },
+    }),
+  ),
+};
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content={seminar.seo.keywords.join(', ')} />
+    <link rel="canonical" href={canonical.href} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#05070f" />
+    <meta name="generator" content={Astro.generator} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Beyond Connectivity — PUCV" />
+    <meta property="og:title" content={seminar.title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:locale" content="es_CL" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={seminar.title} />
+    <meta name="twitter:description" content={description} />
+
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-body" preload />
+    <Font cssVariable="--font-mono" />
+
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <script type="application/ld+json" set:html={JSON.stringify(eventSchema)} is:inline />
+  </head>
+
+  <body>
+    <a
+      href="#contenido"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded focus:bg-signal-400 focus:px-4 focus:py-2 focus:font-medium focus:text-abyss-950"
+    >
+      Saltar al contenido
+    </a>
+
+    <slot />
+
+    <script>
+      // Aparición progresiva de secciones al entrar en pantalla.
+      const targets = document.querySelectorAll<HTMLElement>('.reveal');
+
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && targets.length) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -12% 0px', threshold: 0.05 },
+        );
+
+        for (const target of targets) observer.observe(target);
+      } else {
+        for (const target of targets) target.classList.add('is-visible');
+      }
+    </script>
+  </body>
+</html>

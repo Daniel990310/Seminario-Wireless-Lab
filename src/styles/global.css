@@ -1,0 +1,150 @@
+@import 'tailwindcss';
+
+/*
+ * Sistema de diseño del seminario.
+ *
+ * Paleta: base azul profunda (instrumentación científica) con acentos en el
+ * espectro cian → violeta, que evocan barrido de frecuencia sin recurrir al
+ * cliché del degradado saturado.
+ */
+@theme {
+  --color-abyss-950: #05070f;
+  --color-abyss-900: #0a0f1e;
+  --color-abyss-850: #0e1526;
+  --color-abyss-800: #131c31;
+  --color-abyss-700: #1d2942;
+  --color-abyss-600: #2b3a58;
+
+  --color-mist-100: #eef2f9;
+  --color-mist-200: #d6dded;
+  --color-mist-300: #aab5cd;
+  --color-mist-400: #7d8aa6;
+  --color-mist-500: #5c6883;
+
+  --color-signal-300: #7ce8f5;
+  --color-signal-400: #35d0e6;
+  --color-signal-500: #12b0cc;
+  --color-signal-600: #0b87a3;
+
+  --color-violet-signal-400: #9d8cff;
+  --color-violet-signal-500: #7a63f0;
+
+  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+
+  --text-hero: clamp(2.1rem, 5.2vw, 4.4rem);
+  --text-section: clamp(1.6rem, 3vw, 2.4rem);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--color-abyss-950);
+    color: var(--color-mist-200);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv02', 'cv03', 'cv04';
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--color-mist-100);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal-400);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-signal-500);
+    color: var(--color-abyss-950);
+  }
+}
+
+@layer components {
+  /* Etiqueta monoespaciada para metadatos técnicos (kicker de sección). */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-signal-300);
+  }
+
+  /* Retícula técnica de fondo, muy tenue. */
+  .grid-backdrop {
+    background-image:
+      linear-gradient(to right, color-mix(in oklab, var(--color-abyss-600) 45%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklab, var(--color-abyss-600) 45%, transparent) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse 85% 70% at 50% 30%, #000 20%, transparent 78%);
+  }
+
+  .hairline {
+    border-color: color-mix(in oklab, var(--color-abyss-600) 70%, transparent);
+  }
+
+  /* Tarjeta base: superficie translúcida sobre el fondo profundo. */
+  .surface {
+    background-color: color-mix(in oklab, var(--color-abyss-850) 75%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-abyss-600) 55%, transparent);
+    backdrop-filter: blur(8px);
+  }
+}
+
+/* Aparición al hacer scroll. Sin JS el contenido queda visible por defecto. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.7s var(--ease-out-soft),
+      transform 0.7s var(--ease-out-soft);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+}

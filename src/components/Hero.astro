@@ -1,0 +1,80 @@
+---
+import PropagationFigure from './PropagationFigure.astro';
+import { seminar } from '~/data/seminar';
+
+// El título se parte para destacar "Beyond Connectivity" sobre el resto.
+const [titleLead, titleRest] = ['Beyond Connectivity', 'Wireless Sensing in mmWave and Sub-THz Bands'];
+---
+
+<section id="top" class="relative isolate overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-24">
+  <!-- Figura de fondo: dominante en escritorio, atenuada en móvil -->
+  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <div class="absolute inset-0 grid-backdrop opacity-60"></div>
+    <div
+      class="absolute top-0 right-0 h-full w-full opacity-45 sm:w-[72%] sm:opacity-100 lg:w-[62%]"
+    >
+      <PropagationFigure />
+    </div>
+    <!-- Degradados que garantizan contraste del texto sobre la figura -->
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-abyss-950 via-abyss-950/90 to-abyss-950/25 sm:via-abyss-950/55 sm:to-transparent"
+    >
+    </div>
+    <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-abyss-950 to-transparent"></div>
+  </div>
+
+  <div id="contenido" class="mx-auto max-w-7xl px-5 sm:px-8">
+    <div class="max-w-3xl">
+      <p class="eyebrow flex flex-wrap items-center gap-x-3 gap-y-2">
+        <span>Seminario internacional</span>
+        <span class="h-px w-8 bg-signal-400/40" aria-hidden="true"></span>
+        <span class="text-mist-400">PUCV · Chile · 2026</span>
+      </p>
+
+      <h1 class="mt-7 text-hero leading-[1.04] font-bold">
+        <span class="block text-mist-100">{titleLead}:</span>
+        <span
+          class="mt-1 block bg-gradient-to-r from-signal-300 via-signal-400 to-violet-signal-400 bg-clip-text text-transparent"
+        >
+          {titleRest}
+        </span>
+      </h1>
+
+      <p class="mt-7 max-w-2xl font-display text-base leading-snug text-mist-300 sm:text-xl">
+        {seminar.subtitle}
+      </p>
+
+      <!-- Datos clave: fecha y lugar, la información que más se busca -->
+      <dl class="mt-10 grid gap-px overflow-hidden rounded-xl border border-abyss-600/50 sm:grid-cols-2">
+        <div class="bg-abyss-900/70 p-5 backdrop-blur-sm">
+          <dt class="eyebrow text-mist-400">Fechas</dt>
+          <dd class="mt-2 font-display text-lg font-semibold text-mist-100">
+            {seminar.dates.label}
+          </dd>
+        </div>
+        <div class="bg-abyss-900/70 p-5 backdrop-blur-sm">
+          <dt class="eyebrow text-mist-400">Lugar</dt>
+          <dd class="mt-2 font-display text-lg font-semibold text-mist-100">
+            {seminar.venue.name}
+          </dd>
+          <dd class="mt-1 text-sm text-mist-400">{seminar.venue.fullAddress}</dd>
+        </div>
+      </dl>
+
+      <div class="mt-9 flex flex-wrap items-center gap-4">
+        <a
+          href="#programa"
+          class="rounded-full bg-signal-400 px-6 py-3 text-sm font-semibold text-abyss-950 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-signal-300"
+        >
+          Ver programa
+        </a>
+        <a
+          href="#expositores"
+          class="rounded-full border border-abyss-600 px-6 py-3 text-sm font-medium text-mist-200 transition-colors hover:border-signal-400/60 hover:text-signal-300"
+        >
+          Expositores
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

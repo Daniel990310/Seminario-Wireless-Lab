@@ -1,0 +1,45 @@
+---
+import type { Institution } from '~/data/seminar';
+
+interface Props {
+  institutions: readonly Institution[];
+  /** Altura del logo. Los patrocinadores principales se muestran mayores. */
+  size?: 'md' | 'lg';
+}
+
+const { institutions, size = 'md' } = Astro.props;
+
+const heights = {
+  md: 'h-10 sm:h-11',
+  lg: 'h-12 sm:h-14',
+} as const;
+---
+
+<ul class="flex flex-wrap items-center gap-x-10 gap-y-8">
+  {
+    institutions.map((institution, index) => {
+      const Tag = institution.url ? 'a' : 'div';
+      const linkProps = institution.url
+        ? { href: institution.url, target: '_blank', rel: 'noopener noreferrer' }
+        : {};
+
+      return (
+        <li class="reveal" style={`transition-delay:${index * 60}ms`}>
+          <Tag
+            {...linkProps}
+            class="block opacity-70 transition-all duration-300 hover:opacity-100 focus-visible:opacity-100"
+            title={institution.name}
+          >
+            <img
+              src={institution.logo}
+              alt={institution.name}
+              class:list={[heights[size], 'w-auto object-contain']}
+              loading="lazy"
+              decoding="async"
+            />
+          </Tag>
+        </li>
+      );
+    })
+  }
+</ul>
