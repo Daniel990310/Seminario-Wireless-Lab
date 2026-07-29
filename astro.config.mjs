@@ -4,10 +4,28 @@ import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 
-// Ajustar `site` al dominio definitivo antes de publicar: define las URLs
-// absolutas del sitemap y de las etiquetas Open Graph.
+/*
+ * Dominio del sitio.
+ *
+ * `site` define las URLs absolutas del sitemap, del enlace canónico y de las
+ * etiquetas Open Graph. Se resuelve desde el entorno para que un despliegue de
+ * previsualización se anuncie con su propia URL en lugar de apuntar a un
+ * dominio que todavía no existe.
+ *
+ * Cuando el dominio institucional esté listo, basta con definir SITE_URL en el
+ * panel del hosting (o cambiar PRODUCTION_SITE aquí abajo).
+ */
+export const PRODUCTION_SITE = 'https://seminario-wireless.pucv.cl';
+
+const site =
+  process.env.SITE_URL || // Anulación manual
+  process.env.CF_PAGES_URL || // Cloudflare Pages
+  process.env.DEPLOY_PRIME_URL || // Netlify: previsualización por rama
+  process.env.URL || // Netlify: producción
+  PRODUCTION_SITE;
+
 export default defineConfig({
-  site: 'https://seminario-wireless.pucv.cl',
+  site,
   output: 'static',
   // React se usa solo como capa de renderizado para los componentes de Magic UI
   // (src/components/ui). La mayoría se renderiza en el servidor sin directiva

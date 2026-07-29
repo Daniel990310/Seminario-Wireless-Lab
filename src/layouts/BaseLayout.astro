@@ -15,6 +15,13 @@ const {
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://example.com');
 
+/*
+ * Mientras el sitio viva en una URL de previsualización (*.pages.dev, *.netlify.app)
+ * se pide a los buscadores que no lo indexen: evita que la copia provisional
+ * compita con el dominio institucional definitivo por el mismo contenido.
+ */
+const isPreview = canonical.host !== 'seminario-wireless.pucv.cl';
+
 // Datos estructurados: permiten que buscadores y calendarios reconozcan
 // el seminario como un evento con fecha y lugar.
 const eventSchema = {
@@ -71,6 +78,7 @@ const eventSchema = {
     <meta name="description" content={description} />
     <meta name="keywords" content={seminar.seo.keywords.join(', ')} />
     <link rel="canonical" href={canonical.href} />
+    {isPreview && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#05070f" />
     <meta name="generator" content={Astro.generator} />

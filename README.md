@@ -115,11 +115,59 @@ program: {
 ## Despliegue
 
 `npm run build` produce `dist/`, una carpeta de archivos estáticos que sirve
-cualquier hosting: Netlify, Cloudflare Pages, Vercel, GitHub Pages o un
-servidor Apache/nginx de la universidad. No requiere Node.js en el servidor.
+cualquier hosting. No requiere Node.js en el servidor.
 
-Si se publica en un subdirectorio (por ejemplo `pucv.cl/seminario/`), agregar
+### Configuración del hosting
+
+| Campo               | Valor           |
+| ------------------- | --------------- |
+| Comando de build    | `npm run build` |
+| Carpeta de salida   | `dist`          |
+| Versión de Node     | 20 o superior   |
+
+No hacen falta variables de entorno para empezar.
+
+### Dominio y URLs absolutas
+
+`site` en `astro.config.mjs` se resuelve desde el entorno, en este orden:
+
+1. `SITE_URL` — anulación manual.
+2. `CF_PAGES_URL` — la define Cloudflare Pages.
+3. `DEPLOY_PRIME_URL` / `URL` — las define Netlify.
+4. `PRODUCTION_SITE` como respaldo (`https://seminario-wireless.pucv.cl`).
+
+De ahí salen el enlace canónico, el sitemap y las URLs de Open Graph. Gracias a
+esto un despliegue de previsualización se anuncia con su propia URL en lugar de
+apuntar a un dominio que todavía no existe.
+
+Mientras el sitio no esté en el dominio institucional, emite
+`<meta name="robots" content="noindex, nofollow">` para que la copia de revisión
+no compita con el dominio definitivo por el mismo contenido. Al publicar en el
+dominio real, ese `noindex` desaparece solo.
+
+**Cuando el dominio esté listo:** apuntar el DNS al hosting y actualizar
+`PRODUCTION_SITE` en `astro.config.mjs` (o definir `SITE_URL` en el panel).
+
+### Sobre el plan gratuito
+
+Cloudflare Pages y Netlify permiten uso comercial en sus planes gratuitos. El
+plan Hobby de Vercel **no**: prohíbe los despliegues destinados al beneficio
+económico de cualquier persona involucrada en la producción del proyecto,
+incluido un consultor pagado que escriba el código, y permite dar de baja esos
+despliegues sin aviso previo. Para trabajo facturado en Vercel hace falta el
+plan Pro.
+
+### Subdirectorio
+
+Si se publica bajo una ruta (por ejemplo `pucv.cl/seminario/`), agregar
 `base: '/seminario'` en `astro.config.mjs`.
+
+### Cabeceras HTTP
+
+`public/_headers` define caché y cabeceras de seguridad en el formato que leen
+tanto Cloudflare Pages como Netlify. Los archivos de `/_astro` llevan hash en el
+nombre y se cachean de forma indefinida; el HTML se revalida siempre, para que
+una corrección de contenido se vea al instante.
 
 ## Estructura
 
