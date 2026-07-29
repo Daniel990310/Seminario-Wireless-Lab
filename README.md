@@ -117,15 +117,71 @@ program: {
 `npm run build` produce `dist/`, una carpeta de archivos estáticos que sirve
 cualquier hosting. No requiere Node.js en el servidor.
 
-### Configuración del hosting
+El sitio se publica en **Cloudflare Pages**.
 
-| Campo               | Valor           |
-| ------------------- | --------------- |
-| Comando de build    | `npm run build` |
-| Carpeta de salida   | `dist`          |
-| Versión de Node     | 20 o superior   |
+### Conectar el repositorio
 
-No hacen falta variables de entorno para empezar.
+En el panel de Cloudflare: **Workers & Pages → Create → Pages → Connect to Git**,
+autorizar el repositorio y completar:
+
+| Campo             | Valor           |
+| ----------------- | --------------- |
+| Comando de build  | `npm run build` |
+| Carpeta de salida | `dist`          |
+| Versión de Node   | 20 o superior   |
+
+No hacen falta variables de entorno para empezar: Cloudflare define
+`CF_PAGES_URL` automáticamente y el sitio se configura con su propia URL.
+
+Cada rama genera su propia URL de previsualización, así que se pueden mostrar
+avances sin alterar la versión que ya se envió a revisión.
+
+### Dominio propio
+
+Cloudflare Pages no cobra por dominios propios ni por el certificado TLS, y
+admite varios por proyecto. Lo que hay que tener es control del dominio.
+
+**Opción recomendada: un subdominio de `pucv.cl`** (por ejemplo
+`seminario-wireless.pucv.cl`). No tiene costo, aporta la credibilidad del
+dominio institucional y **no exige mover el DNS de `pucv.cl` a Cloudflare**: la
+DTI solo agrega un registro CNAME.
+
+El orden importa, y equivocarlo es la causa habitual de un error 522:
+
+1. Primero, en el proyecto de Pages: **Custom domains → Set up a custom
+   domain**, e ingresar el subdominio.
+2. Después, pedir a la DTI de la PUCV que cree el CNAME.
+
+Texto listo para enviar a la DTI:
+
+```
+Solicito crear un registro DNS para el sitio del seminario internacional
+"Beyond Connectivity" (proyecto ANID FOVI250222), organizado por la Escuela
+de Ingeniería Eléctrica.
+
+Tipo:   CNAME
+Nombre: seminario-wireless
+Valor:  <nombre-del-proyecto>.pages.dev
+TTL:    automático o 3600
+
+El sitio está alojado en Cloudflare Pages. El certificado TLS lo emite
+Cloudflare automáticamente; no se requiere ninguna acción adicional.
+```
+
+**Alternativa: dominio propio.** Un `.cl` en NIC Chile cuesta del orden de
+$9.990 CLP + IVA al año, con descuentos por períodos de varios años. Detalle a
+considerar: para usar el dominio raíz (`beyondconnectivity.cl`) hay que apuntar
+los nameservers del dominio a Cloudflare, porque un CNAME no puede vivir en la
+raíz de la zona. Con un subdominio (`www.` o cualquier otro) basta el CNAME
+desde cualquier proveedor de DNS.
+
+**Mientras tanto:** la URL `<nombre-del-proyecto>.pages.dev` funciona desde el
+primer despliegue y sirve perfectamente para la revisión con la contraparte.
+
+Al pasar al dominio definitivo, actualizar `PRODUCTION_SITE` en
+`astro.config.mjs` (o definir `SITE_URL` en el panel). El `noindex` de las URLs
+provisionales desaparece solo. Ojo: `seminario-wireless.pucv.cl` es un nombre
+supuesto; hay que confirmarlo con la DTI antes de darlo por definitivo.
 
 ### Dominio y URLs absolutas
 
@@ -148,19 +204,22 @@ dominio real, ese `noindex` desaparece solo.
 **Cuando el dominio esté listo:** apuntar el DNS al hosting y actualizar
 `PRODUCTION_SITE` en `astro.config.mjs` (o definir `SITE_URL` en el panel).
 
-### Sobre el plan gratuito
+### Por qué Cloudflare Pages
 
-Cloudflare Pages y Netlify permiten uso comercial en sus planes gratuitos. El
-plan Hobby de Vercel **no**: prohíbe los despliegues destinados al beneficio
-económico de cualquier persona involucrada en la producción del proyecto,
-incluido un consultor pagado que escriba el código, y permite dar de baja esos
-despliegues sin aviso previo. Para trabajo facturado en Vercel hace falta el
-plan Pro.
+Ancho de banda y peticiones ilimitados en el plan gratuito, 500 compilaciones al
+mes, dominios propios y certificado TLS sin costo, y **uso comercial permitido**
+en el plan gratuito.
+
+Se descartó el plan Hobby de Vercel porque prohíbe los despliegues destinados al
+beneficio económico de cualquier persona involucrada en la producción del
+proyecto —incluido un consultor pagado que escriba el código— y permite darlos
+de baja sin aviso previo. Netlify sí permite uso comercial y era una alternativa
+válida, con un límite de 100 GB de ancho de banda al mes.
 
 ### Subdirectorio
 
-Si se publica bajo una ruta (por ejemplo `pucv.cl/seminario/`), agregar
-`base: '/seminario'` en `astro.config.mjs`.
+Si en lugar de un subdominio se publica bajo una ruta (por ejemplo
+`pucv.cl/seminario/`), agregar `base: '/seminario'` en `astro.config.mjs`.
 
 ### Cabeceras HTTP
 
