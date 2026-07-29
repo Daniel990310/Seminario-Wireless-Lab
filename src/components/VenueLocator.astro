@@ -1,0 +1,101 @@
+---
+/**
+ * Localizador de la sede.
+ *
+ * Por defecto muestra un panel propio con la dirección, sin ninguna petición a
+ * terceros. El mapa de OpenStreetMap se inserta solo si la persona lo pide.
+ *
+ * Se optó por carga bajo demanda en lugar de un iframe permanente por dos
+ * razones: no se envía la visita a un tercero sin consentimiento, y si una red
+ * institucional bloquea el embed el bloque no queda como un recuadro roto.
+ */
+import { seminar } from '~/data/seminar';
+
+const { venue } = seminar;
+
+// Coordenadas aproximadas de Antonio Bellet 314, Providencia.
+const LAT = -33.421;
+const LON = -70.61;
+const BBOX = [LON - 0.0055, LAT - 0.0035, LON + 0.0055, LAT + 0.0035].join('%2C');
+const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&layer=mapnik&marker=${LAT}%2C${LON}`;
+---
+
+<div
+  class="surface relative overflow-hidden rounded-xl"
+  data-venue-locator
+  data-embed={EMBED}
+  data-embed-title={`Mapa de ${venue.name}`}
+>
+  <div class="absolute inset-0 grid-backdrop opacity-45" aria-hidden="true"></div>
+
+  <div
+    class="relative flex h-[320px] flex-col items-center justify-center px-6 text-center sm:h-[420px]"
+    data-locator-panel
+  >
+    <!-- Marcador sobre anillos de rango: mismo lenguaje visual que el hero -->
+    <svg class="size-28 sm:size-32" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+      <g stroke="#2b3a58" stroke-dasharray="2 6">
+        <circle cx="60" cy="60" r="54" />
+        <circle cx="60" cy="60" r="38" />
+        <circle cx="60" cy="60" r="22" />
+      </g>
+      <circle cx="60" cy="60" r="22" fill="#35d0e6" fill-opacity="0.06" />
+      <g stroke="#35d0e6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M60 76c0 0 9-8.4 9-15a9 9 0 1 0-18 0c0 6.6 9 15 9 15Z" />
+      </g>
+      <circle cx="60" cy="61" r="3" fill="#7ce8f5" />
+    </svg>
+
+    <p class="mt-5 font-display text-lg font-semibold text-mist-100">
+      {venue.street}, {venue.district}
+    </p>
+    <p class="mt-1 text-sm text-mist-400">{venue.city}, {venue.country}</p>
+
+    <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+      <button
+        type="button"
+        data-locator-load
+        class="rounded-full border border-signal-400/40 bg-signal-400/10 px-5 py-2.5 text-sm font-medium text-signal-300 transition-colors hover:bg-signal-400/20"
+      >
+        Cargar mapa interactivo
+      </button>
+      <a
+        href={venue.mapsUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="rounded-full border border-abyss-600 px-5 py-2.5 text-sm font-medium text-mist-300 transition-colors hover:border-signal-400/50 hover:text-signal-300"
+      >
+        Abrir en Google Maps
+      </a>
+    </div>
+
+    <p class="mt-5 max-w-xs text-xs leading-relaxed text-mist-500">
+      Al cargar el mapa se solicita contenido a OpenStreetMap.
+    </p>
+  </div>
+</div>
+
+<script>
+  // Inserta el iframe solo al pulsar el botón, y solo una vez.
+  for (const locator of document.querySelectorAll<HTMLElement>('[data-venue-locator]')) {
+    const button = locator.querySelector<HTMLButtonElement>('[data-locator-load]');
+    const panel = locator.querySelector<HTMLElement>('[data-locator-panel]');
+    const { embed, embedTitle } = locator.dataset;
+
+    if (!button || !panel || !embed) continue;
+
+    button.addEventListener(
+      'click',
+      () => {
+        const iframe = document.createElement('iframe');
+        iframe.src = embed;
+        iframe.title = embedTitle ?? 'Mapa de la sede';
+        iframe.loading = 'lazy';
+        iframe.referrerPolicy = 'no-referrer-when-downgrade';
+        iframe.className = 'relative block h-[320px] w-full border-0 sm:h-[420px]';
+        panel.replaceWith(iframe);
+      },
+      { once: true },
+    );
+  }
+</script>

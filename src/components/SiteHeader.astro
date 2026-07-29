@@ -1,0 +1,136 @@
+---
+import { seminar } from '~/data/seminar';
+
+const links = [
+  { href: '#seminario', label: 'El seminario' },
+  { href: '#programa', label: 'Programa' },
+  { href: '#expositores', label: 'Expositores' },
+  { href: '#sede', label: 'Sede' },
+  { href: '#organizacion', label: 'Organización' },
+];
+
+const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
+  'Consulta — Beyond Connectivity 2026',
+)}`;
+---
+
+<header
+  id="site-header"
+  class="fixed inset-x-0 top-0 z-40 border-b border-transparent transition-colors duration-300"
+>
+  <nav class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
+    <a href="#top" class="flex items-center gap-3">
+      <span
+        class="grid size-8 shrink-0 place-items-center rounded-full border border-signal-400/40 bg-signal-400/5"
+        aria-hidden="true"
+      >
+        <span class="block size-1.5 rounded-full bg-signal-300"></span>
+      </span>
+      <span class="leading-tight">
+        <span class="block font-display text-sm font-semibold text-mist-100">Beyond Connectivity</span>
+        <span class="eyebrow block text-[0.6rem] text-mist-400">
+          {seminar.dates.shortLabel} · PUCV
+        </span>
+      </span>
+    </a>
+
+    <ul class="hidden items-center gap-7 lg:flex">
+      {
+        links.map((link) => (
+          <li>
+            <a href={link.href} class="text-sm text-mist-300 transition-colors hover:text-signal-300">
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="flex items-center gap-2">
+      <a
+        href={mailto}
+        class="hidden rounded-full border border-signal-400/40 bg-signal-400/10 px-4 py-2 text-sm font-medium text-signal-300 transition-colors hover:bg-signal-400/20 sm:block"
+      >
+        Contacto
+      </a>
+
+      <!--
+        Menú móvil con <details>: nativo, accesible por teclado y sin JavaScript.
+        Se oculta a partir de lg, donde los enlaces ya caben en la barra.
+      -->
+      <details class="relative lg:hidden" data-mobile-menu>
+        <summary
+          class="flex size-10 cursor-pointer list-none items-center justify-center rounded-full border border-abyss-600 text-mist-200 transition-colors hover:border-signal-400/50 hover:text-signal-300 [&::-webkit-details-marker]:hidden"
+          aria-label="Abrir menú de navegación"
+        >
+          <svg class="size-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M2 4.5h12M2 8h12M2 11.5h12" stroke-linecap="round" />
+          </svg>
+        </summary>
+
+        <div
+          class="absolute right-0 mt-3 w-60 overflow-hidden rounded-xl border border-abyss-600/60 bg-abyss-900/95 shadow-2xl backdrop-blur-lg"
+        >
+          <ul class="divide-y divide-abyss-700/50">
+            {
+              links.map((link) => (
+                <li>
+                  <a
+                    href={link.href}
+                    class="block px-5 py-3.5 text-sm text-mist-200 transition-colors hover:bg-signal-400/10 hover:text-signal-300"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))
+            }
+            <li>
+              <a
+                href={mailto}
+                class="block px-5 py-3.5 text-sm font-medium text-signal-300 transition-colors hover:bg-signal-400/10"
+              >
+                Contacto
+              </a>
+            </li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </nav>
+</header>
+
+<script>
+  // La barra gana fondo sólido al alejarse del hero.
+  const header = document.getElementById('site-header');
+
+  if (header) {
+    const solid = ['bg-abyss-950/85', 'backdrop-blur-md', 'border-abyss-600/40'];
+
+    const sync = () => {
+      header.classList.toggle('border-transparent', window.scrollY <= 24);
+      for (const cls of solid) header.classList.toggle(cls, window.scrollY > 24);
+    };
+
+    sync();
+    window.addEventListener('scroll', sync, { passive: true });
+  }
+
+  // El menú se cierra al elegir un destino o al pulsar fuera.
+  const menu = document.querySelector<HTMLDetailsElement>('[data-mobile-menu]');
+
+  if (menu) {
+    for (const link of menu.querySelectorAll('a')) {
+      link.addEventListener('click', () => {
+        menu.open = false;
+      });
+    }
+
+    document.addEventListener('click', (event) => {
+      if (menu.open && !menu.contains(event.target as Node)) menu.open = false;
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') menu.open = false;
+    });
+  }
+</script>

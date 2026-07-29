@@ -1,0 +1,36 @@
+---
+/** Envoltura de sección: ancho, ritmo vertical y encabezado consistentes. */
+interface Props {
+  id: string;
+  eyebrow?: string;
+  title?: string;
+  lead?: string;
+  class?: string;
+  /** Alterna un fondo levemente más claro para separar secciones vecinas. */
+  tinted?: boolean;
+}
+
+const { id, eyebrow, title, lead, class: className = '', tinted = false } = Astro.props;
+---
+
+<section
+  id={id}
+  class:list={[
+    'relative border-t hairline px-5 py-20 sm:px-8 sm:py-28',
+    tinted && 'bg-abyss-900/40',
+    className,
+  ]}
+>
+  <div class="mx-auto max-w-7xl">
+    {
+      (eyebrow || title || lead) && (
+        <header class="reveal max-w-3xl">
+          {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+          {title && <h2 class="mt-4 text-section font-semibold">{title}</h2>}
+          {lead && <p class="mt-5 text-base leading-relaxed text-mist-300 sm:text-lg">{lead}</p>}
+        </header>
+      )
+    }
+    <slot />
+  </div>
+</section>

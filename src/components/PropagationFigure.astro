@@ -1,0 +1,271 @@
+---
+/**
+ * Gráfica principal del seminario.
+ *
+ * Figura vectorial propia que representa detección inalámbrica en mmWave y
+ * sub-THz: un emisor sobre una retícula polar de radar, frentes de onda que
+ * se propagan, un objeto dispersor y la nube de puntos reconstruida a partir
+ * de las reflexiones. Es SVG puro, por lo que escala sin pérdida, pesa unos
+ * pocos kB y no depende de imágenes de stock.
+ */
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+
+// El SVG usa `preserveAspectRatio="xMidYMid meet"` en lugar de `slice`: el hero
+// es mucho más alto que la proporción del lienzo, y recortar dejaba el
+// resplandor del emisor cortado en el borde del contenedor, lo que producía una
+// costura vertical visible.
+const SOURCE = { x: 148, y: 322 };
+
+// Frentes de onda: arcos concéntricos que se atenúan con la distancia,
+// siguiendo la caída de potencia con el rango.
+const wavefronts = Array.from({ length: 9 }, (_, i) => {
+  const radius = 78 + i * 62;
+  return {
+    radius,
+    opacity: +(0.66 - i * 0.055).toFixed(3),
+    width: +(1.8 - i * 0.13).toFixed(2),
+  };
+});
+
+// Retícula polar de referencia (anillos de rango).
+const rangeRings = [110, 250, 390, 530];
+
+// Dispersores: puntos detectados por el radar. La nube reconstruye el
+// contorno del objeto a partir de los ecos.
+const scatterers = [
+  { x: 556, y: 196, r: 3.4, o: 0.95 },
+  { x: 592, y: 222, r: 2.6, o: 0.8 },
+  { x: 618, y: 254, r: 3.1, o: 0.9 },
+  { x: 574, y: 262, r: 2.1, o: 0.62 },
+  { x: 634, y: 296, r: 2.8, o: 0.85 },
+  { x: 600, y: 318, r: 2.0, o: 0.58 },
+  { x: 640, y: 344, r: 3.3, o: 0.92 },
+  { x: 596, y: 372, r: 2.3, o: 0.7 },
+  { x: 622, y: 400, r: 2.7, o: 0.8 },
+  { x: 566, y: 418, r: 2.0, o: 0.55 },
+  { x: 588, y: 448, r: 3.0, o: 0.88 },
+  { x: 544, y: 350, r: 1.8, o: 0.45 },
+  { x: 660, y: 232, r: 1.9, o: 0.5 },
+  { x: 668, y: 388, r: 2.2, o: 0.6 },
+];
+
+// Trayectos directos emisor → dispersor principal (líneas de visión).
+const rays = [
+  { x: 556, y: 196 },
+  { x: 618, y: 254 },
+  { x: 640, y: 344 },
+  { x: 622, y: 400 },
+  { x: 588, y: 448 },
+];
+
+---
+
+<svg
+  class={`propagation-figure ${className}`}
+  viewBox="0 0 820 640"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-labelledby="fig-title fig-desc"
+  preserveAspectRatio="xMidYMid meet"
+>
+  <title id="fig-title">Detección inalámbrica en bandas mmWave y sub-THz</title>
+  <desc id="fig-desc">
+    Representación esquemática de un emisor de radio cuyos frentes de onda se
+    propagan sobre una retícula polar de rango, alcanzan un objeto y regresan
+    como ecos, formando una nube de puntos que reconstruye el contorno del
+    objeto detectado.
+  </desc>
+
+  <defs>
+    <radialGradient id="fig-source-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#7ce8f5" stop-opacity="0.55" />
+      <stop offset="45%" stop-color="#35d0e6" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#35d0e6" stop-opacity="0" />
+    </radialGradient>
+
+    <linearGradient id="fig-wave" x1="0" y1="0" x2="1" y2="0.4">
+      <stop offset="0%" stop-color="#7ce8f5" />
+      <stop offset="55%" stop-color="#35d0e6" />
+      <stop offset="100%" stop-color="#7a63f0" />
+    </linearGradient>
+
+    <linearGradient id="fig-ray" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#35d0e6" stop-opacity="0" />
+      <stop offset="35%" stop-color="#35d0e6" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#9d8cff" stop-opacity="0.85" />
+    </linearGradient>
+
+    <linearGradient id="fig-sweep" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7ce8f5" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#7ce8f5" stop-opacity="0" />
+    </linearGradient>
+
+    <linearGradient id="fig-object" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0%" stop-color="#9d8cff" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#35d0e6" stop-opacity="0.04" />
+    </linearGradient>
+
+    <filter id="fig-soft" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="7" />
+    </filter>
+
+    <!-- Recorta la figura al lienzo para que los arcos no desborden. -->
+    <clipPath id="fig-clip">
+      <rect width="820" height="640" />
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#fig-clip)">
+    <!-- Anillos de rango -->
+    <g stroke="#2b3a58" stroke-opacity="0.55" stroke-dasharray="2 7">
+      {rangeRings.map((r) => <circle cx={SOURCE.x} cy={SOURCE.y} r={r} />)}
+    </g>
+
+    <!-- Radiales del diagrama polar -->
+    <g stroke="#2b3a58" stroke-opacity="0.4">
+      {
+        Array.from({ length: 13 }, (_, i) => {
+          const angle = (-75 + i * 12.5) * (Math.PI / 180);
+          return (
+            <line
+              x1={SOURCE.x}
+              y1={SOURCE.y}
+              x2={SOURCE.x + Math.cos(angle) * 560}
+              y2={SOURCE.y + Math.sin(angle) * 560}
+            />
+          );
+        })
+      }
+    </g>
+
+    <!-- Objeto dispersor: contorno abstracto reconstruido -->
+    <path
+      d="M540 186 L664 224 L682 330 L648 424 L560 462 L528 356 Z"
+      fill="url(#fig-object)"
+      stroke="#7a63f0"
+      stroke-opacity="0.35"
+      stroke-width="1.2"
+      stroke-dasharray="6 6"
+    />
+
+    <!-- Trayectos emisor → dispersores -->
+    <g stroke="url(#fig-ray)" stroke-width="1.1">
+      {rays.map((p) => <line x1={SOURCE.x} y1={SOURCE.y} x2={p.x} y2={p.y} />)}
+    </g>
+
+    <!-- Frentes de onda -->
+    <g class="fig-waves" stroke="url(#fig-wave)" fill="none" stroke-linecap="round">
+      {
+        wavefronts.map((w, i) => (
+          <path
+            class="fig-wave"
+            style={`--i:${i}`}
+            stroke-opacity={w.opacity}
+            stroke-width={w.width}
+            d={`M ${SOURCE.x + Math.cos((-78 * Math.PI) / 180) * w.radius} ${
+              SOURCE.y + Math.sin((-78 * Math.PI) / 180) * w.radius
+            } A ${w.radius} ${w.radius} 0 0 1 ${
+              SOURCE.x + Math.cos((78 * Math.PI) / 180) * w.radius
+            } ${SOURCE.y + Math.sin((78 * Math.PI) / 180) * w.radius}`}
+          />
+        ))
+      }
+    </g>
+
+    <!-- Barrido de radar -->
+    <g class="fig-sweep-group">
+      <rect
+        class="fig-sweep"
+        x={SOURCE.x}
+        y={SOURCE.y - 1.5}
+        width="560"
+        height="3"
+        fill="url(#fig-sweep)"
+      />
+    </g>
+
+    <!-- Nube de puntos detectados -->
+    <g class="fig-points" fill="#7ce8f5">
+      {
+        scatterers.map((s, i) => (
+          <g class="fig-point" style={`--i:${i}`}>
+            <circle cx={s.x} cy={s.y} r={s.r * 3.2} fill="#35d0e6" fill-opacity={s.o * 0.1} />
+            <circle cx={s.x} cy={s.y} r={s.r} fill-opacity={s.o} />
+          </g>
+        ))
+      }
+    </g>
+
+    <!-- Emisor -->
+    <circle cx={SOURCE.x} cy={SOURCE.y} r="96" fill="url(#fig-source-glow)" filter="url(#fig-soft)" />
+    <circle cx={SOURCE.x} cy={SOURCE.y} r="26" stroke="#35d0e6" stroke-opacity="0.35" stroke-width="1" />
+    <circle cx={SOURCE.x} cy={SOURCE.y} r="13" stroke="#7ce8f5" stroke-opacity="0.7" stroke-width="1.3" />
+    <circle cx={SOURCE.x} cy={SOURCE.y} r="4.5" fill="#c8f6fb" />
+  </g>
+</svg>
+
+<style>
+  .propagation-figure {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* Los frentes de onda laten hacia afuera de forma escalonada. */
+    .fig-wave {
+      transform-box: fill-box;
+      transform-origin: 0% 50%;
+      animation: fig-breathe 7s var(--ease-out-soft, ease-out) infinite;
+      animation-delay: calc(var(--i) * -0.78s);
+    }
+
+    @keyframes fig-breathe {
+      0%,
+      100% {
+        opacity: 0.35;
+      }
+      40% {
+        opacity: 1;
+      }
+    }
+
+    .fig-sweep-group {
+      transform-origin: 148px 322px;
+      animation: fig-sweep 11s linear infinite;
+    }
+
+    @keyframes fig-sweep {
+      0% {
+        transform: rotate(-74deg);
+      }
+      50% {
+        transform: rotate(74deg);
+      }
+      100% {
+        transform: rotate(-74deg);
+      }
+    }
+
+    .fig-point {
+      animation: fig-blink 5.5s ease-in-out infinite;
+      animation-delay: calc(var(--i) * -0.37s);
+    }
+
+    @keyframes fig-blink {
+      0%,
+      100% {
+        opacity: 0.5;
+      }
+      45% {
+        opacity: 1;
+      }
+    }
+  }
+</style>

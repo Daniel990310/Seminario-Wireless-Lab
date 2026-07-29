@@ -1,0 +1,52 @@
+---
+import type { Speaker } from '~/data/seminar';
+
+interface Props {
+  speaker: Speaker;
+  index: number;
+}
+
+const { speaker, index } = Astro.props;
+
+// Iniciales como marca visual mientras no haya retratos disponibles.
+const initials = speaker.name
+  .split(' ')
+  .filter((part) => part.length > 1)
+  .slice(0, 2)
+  .map((part) => part[0])
+  .join('');
+---
+
+<article
+  class="reveal surface group relative flex flex-col gap-5 rounded-xl p-6 transition-colors duration-300 hover:border-signal-400/40"
+  style={`transition-delay:${index * 70}ms`}
+>
+  <div class="flex items-start gap-4">
+    <span
+      class="grid size-12 shrink-0 place-items-center rounded-lg border border-signal-400/25 bg-signal-400/8 font-display text-sm font-semibold text-signal-300"
+      aria-hidden="true"
+    >
+      {initials}
+    </span>
+    <div class="min-w-0">
+      <h3 class="font-display text-lg leading-tight font-semibold text-mist-100">
+        {speaker.name}
+      </h3>
+      <p
+        class:list={[
+          'mt-1.5 text-sm leading-snug',
+          speaker.affiliationPending ? 'text-mist-500 italic' : 'text-mist-300',
+        ]}
+      >
+        {speaker.affiliation}
+      </p>
+      {speaker.country && <p class="eyebrow mt-2 text-mist-500">{speaker.country}</p>}
+    </div>
+  </div>
+
+  <!-- Acento inferior que responde al hover -->
+  <span
+    class="mt-auto h-px w-full bg-gradient-to-r from-signal-400/50 to-transparent opacity-40 transition-opacity duration-300 group-hover:opacity-100"
+    aria-hidden="true"
+  ></span>
+</article>
