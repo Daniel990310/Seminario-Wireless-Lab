@@ -2,7 +2,7 @@
 
 Generado por `npm run verify`. **No editar a mano**: se sobrescribe en cada corrida.
 
-**Fecha:** 2026-07-30 · **Commit:** `250200a`
+**Fecha:** 2026-07-30 · **Commit:** `1535962`
 **Resultado:** **presupuestos incumplidos**
 
 Método: axe-core sobre el build servido localmente, en 1440×900 y 390×844,
@@ -25,7 +25,7 @@ de ese orden respecto de la línea base no indica un cambio real.
 | RNF-1.4 | Secciones sin nombre accesible | 7 | 7 | 0 | **incumple** |
 | RNF-1.5 | Saltos de nivel en encabezados | 0 | 0 | 0 | cumple |
 | RNF-2.1 | JavaScript comprimido | 109.3 kB | 109.6 kB | 40.0 kB | **incumple** |
-| RNF-2.2 | Primera carga comprimida | 241.2 kB | 243.4 kB | 180.0 kB | **incumple** |
+| RNF-2.2 | Primera carga comprimida | 241.2 kB | 246.2 kB | 180.0 kB | **incumple** |
 | RNF-2.6 | Tipografías | 110.9 kB | 110.9 kB | 125.0 kB | cumple |
 
 En RNF-1.1 y RNF-1.3 la columna «Actual» **suma todas las corridas**, mientras que
@@ -39,9 +39,9 @@ el desglose por corrida más abajo.
 | JavaScript | 109.6 kB |
 | Tipografías | 110.9 kB |
 | HTML | 13.3 kB |
-| CSS | 9.4 kB |
+| CSS | 12.3 kB |
 | Imágenes SVG | 3.3 kB |
-| **Primera carga** | **243.4 kB** |
+| **Primera carga** | **246.2 kB** |
 
 ## Por corrida
 

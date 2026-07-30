@@ -94,6 +94,12 @@ No volver a proponer esto sin un argumento nuevo. El detalle está en
 | **Componentes decorativos de Magic UI** | `MagicCard`, `BorderBeam`, `AuroraText`, `Marquee`, `Particles`: efectos de interfaz, no del tema del seminario |
 | **Subir un presupuesto para que quepa el código** | El presupuesto disciplina al código, no al revés. Si no alcanza, se replantea la solución |
 
+**Sobre los logos institucionales:** los de PUCV, ANID, Columbia University, Nokia
+Bell Labs, PUC y USACH son marcas de terceros. **No se generan ni se aproximan con
+ninguna herramienta**, aunque los skills instalados sean capaces de hacerlo. Los
+archivos de `public/logos/` son marcadores de posición deliberados hasta que las
+instituciones entreguen los oficiales.
+
 ## Convenciones de código
 
 - **Contenido en archivos de datos.** Nada de texto escrito en componentes: todo

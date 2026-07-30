@@ -9,8 +9,43 @@ Ver también [`fuentes.md`](fuentes.md) para la procedencia de las cifras y
 
 ## 1. Skills instalados en el repositorio
 
-Viven en `.claude/skills/`. Licencia MIT, de
-[`nextlevelbuilder/ui-ux-pro-max-skill`](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill).
+El paquete completo de
+[`nextlevelbuilder/ui-ux-pro-max-skill`](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)
+está instalado en `.claude/skills/` (8,4 MB, licencia MIT). El commit de origen y
+la fecha quedan en `.claude/skills/PROCEDENCIA.txt`.
+
+Son **siete** skills, y no todos aplican a este proyecto. La tabla dice cuáles sí:
+
+| Skill | ¿Aplica aquí? | Por qué |
+| ----- | ------------- | ------- |
+| `ui-ux-pro-max` | **Sí, es el central** | Decisiones de color, tipografía, composición y UX |
+| `design-system` | **Sí** | Tokens en tres capas: base de RF-4 (T2) |
+| `banner-design` | **Sí, para T8** | El `og:image` de 1200×630 es exactamente esto |
+| `ui-styling` | **Solo en parte** | Ver la advertencia abajo |
+| `brand` | No | La identidad visual ya está decidida (D4) y la institucional pertenece a la PUCV y ANID |
+| `design` | No | Ver la advertencia sobre generación de logos |
+| `slides` | No | Es para presentaciones, no para el sitio |
+
+### Advertencia: dos skills empujan hacia lo ya descartado
+
+**`ui-styling` recomienda shadcn/ui sobre Radix.** Su descripción lo dice
+explícitamente. En este proyecto **eso está descartado** por aritmética: React
+cuesta 109 kB y el presupuesto es 40 kB (ver `design.md` §1). De este skill sirve
+su parte de Tailwind, modo oscuro y patrones accesibles; **no** su recomendación
+de componentes.
+
+Lo que sí aporta de forma concreta: `ui-styling/canvas-fonts/` trae 54
+tipografías `.ttf` bajo licencia SIL Open Font, con sus archivos de licencia
+incluidos, **entre ellas Crimson Pro**. Sirven para generar el `og:image` de T8,
+donde hacen falta archivos de tipografía reales para renderizar en canvas. Es la
+razón por la que se conservan esos 5,5 MB en lugar de recortarlos.
+
+**`design` y `banner-design` pueden generar logos.** Aquí eso sería un error: los
+logos de PUCV, ANID, Columbia University, Nokia Bell Labs, PUC y USACH son marcas
+institucionales de terceros. **No se generan ni se aproximan: se solicitan a las
+respectivas direcciones de comunicaciones.** Los archivos de `public/logos/` son
+marcadores de posición deliberados, no algo a completar con una imagen inventada.
+Ver `public/logos/README.md`.
 
 ### `ui-ux-pro-max`
 
