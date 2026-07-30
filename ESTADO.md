@@ -142,12 +142,13 @@ cualquier herramienta y no solo a Claude Code.
 | T2 · Tokens en tres capas y selector de tema (RF-4) | **Completada y verificada.** 0 hallazgos de contraste en las 4 corridas |
 | T3 · Quitar Motion y montar la base de shadcn/ui | **Completada y verificada.** JavaScript a 0,0 kB. Ver §5 |
 | T4 · Tipografía | Pendiente |
+| T4b · Refinamiento visual con 21st.dev | **Aceptada por Daniel (2026-07-30).** Componentes estáticos (sin JS) |
 | T5 · Retícula de 12 columnas (RNF-1.3) | Pendiente. Cierra los nodos indeterminados |
 | T6 · Nombres accesibles y teclado (RNF-1.4) | Pendiente |
 | T7 · Sitio bilingüe (RF-1) | Pendiente |
 | T8 · `og:image` por idioma | Pendiente |
 | T9 · Verificación final | Pendiente |
-| T10 · Componentes interactivos (RF-6) | **Bloqueada: RF-6 es una propuesta del agente, no un requisito del cliente.** No implementar sin que Daniel lo confirme |
+| T10 · Componentes interactivos (RF-6) | **Desbloqueada: RF-6 confirmada por Daniel el 2026-07-30.** |
 
 ### Lo que mide el verificador ahora mismo
 

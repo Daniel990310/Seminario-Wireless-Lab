@@ -279,6 +279,19 @@ Revisión visual del par en el sitio real, no en una muestra.
 
 ---
 
+## T4b · Refinamiento visual con componentes estáticos de 21st.dev
+
+**Satisface:** D4, 21st.dev MCP Integration · **Depende de:** T4
+**Acordado con el cliente el 30 de julio de 2026.**
+
+- Exploración de componentes estáticos (sin JS) en el catálogo de 21st.dev (`search`, `get_inspiration`).
+- Prototipado con `generate` (modo `sketch`) y reimplementación nativa en Astro puro para no agregar JavaScript.
+- Aplicar a secciones clave manteniendo el registro visual de conferencia académica.
+
+**Comprobación:** cero JavaScript agregado (mantiene 0,0 kB), 0 hallazgos de axe.
+
+---
+
 ## T5 · Retícula de 12 columnas y composición
 
 **Satisface:** D4, RNF-1.3 · **Depende de:** T2, T4

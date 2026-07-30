@@ -75,8 +75,8 @@ por parte de la persona.
 
 ### RF-6 · Componentes interactivos
 
-Deriva de D6. **Qué se implementa está pendiente de confirmar con el cliente**;
-lo de abajo es la propuesta, no un acuerdo.
+Deriva de D6. **Confirmado por el cliente (Daniel) el 30 de julio de 2026.**
+Se acuerdan las interacciones propuestas a continuación para mejorar la usabilidad del sitio.
 
 Criterio para incluir una interacción: **debe resolver un problema real de
 lectura del contenido**, no agregar movimiento. Una conferencia se consulta para
