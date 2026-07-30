@@ -10,6 +10,13 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 Actualizado: **2026-07-30** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
 · Último commit: `9089258` (T3)
 
+**Confirmado desde el PC de Daniel (Windows), en la misma tarde:** los tres
+verificadores corren igual en Windows que en el entorno original. Se encontró y
+corrigió un bug de portabilidad real: `scripts/verify.mjs` resolvía su propia
+carpeta con `new URL('..', import.meta.url).pathname`, que en Windows da
+`/C:/Users/...` y rompe el acceso a `dist/`. Corregido con `fileURLToPath`. Ver la
+trampa nueva en `AGENTS.md`.
+
 ---
 
 ## 1. Antes de tocar nada, en cualquier entorno
@@ -153,6 +160,39 @@ pesa menos (33.996 B en 1 archivo, contra 34.732 B en 2). Está en `specs/fuente
 - Como el PR #1 está cerrado, el trabajo posterior necesita un **PR nuevo**. No
   reabrir ni reutilizar el #1.
 - **No crear PR sin que Daniel lo pida.**
+
+## 6b. Servidor MCP de 21st.dev
+
+**Sigue sin funcionar, y ya se descartaron dos causas distintas.** Cronología:
+
+1. En el entorno original (sandbox remoto), la política de red denegaba
+   `21st.dev:443` (403 en el túnel CONNECT). Confirmado con
+   `curl "$HTTPS_PROXY/__agentproxy/status"` y contrastado contra hosts permitidos.
+   Registrado en `specs/habilidades.md`.
+2. Desde el PC de Daniel (Windows, sin ese proxy), `claude mcp list` muestra:
+   - `21st: ⏸ Pending approval (run \`claude\` to approve)` — falta aprobar el
+     servidor en una sesión **interactiva**, con `/mcp`. Una sesión no interactiva
+     (como esta) no puede completar esa aprobación.
+   - `[Warning] mcpServers.21st: Missing environment variables: API_KEY_21ST` — la
+     variable no está definida en el proceso que arrancó esta sesión. Se lee al
+     iniciar; exportarla después no la inyecta en una sesión ya en marcha.
+
+Para dejarlo funcionando, en una terminal interactiva del PC:
+
+```powershell
+$env:API_KEY_21ST = "la-clave-rotada"
+claude
+```
+
+y aprobar `21st` cuando `/mcp` lo pida. Si se quiere persistente entre sesiones,
+definir `API_KEY_21ST` como variable de entorno de usuario en Windows en vez de
+exportarla cada vez.
+
+**La clave que se compartió en el chat el 2026-07-30 está comprometida** (quedó en
+la transcripción) y debe rotarse en 21st.dev antes de usarse. No se guardó en
+ningún archivo del repositorio.
+
+Sigue sin ser bloqueante: nada antes de T10 lo necesita.
 
 ## 7. Pendientes que no dependen del código
 

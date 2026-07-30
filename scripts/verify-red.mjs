@@ -10,6 +10,7 @@
 import { chromium } from 'playwright';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const DIST=fileURLToPath(new URL('../dist', import.meta.url));
@@ -18,7 +19,11 @@ const s=createServer(async(q,r)=>{let p=new URL(q.url,'http://x').pathname;if(p.
  try{const b=await readFile(join(DIST,p));r.writeHead(200,{'content-type':T[extname(p)]??'text/plain'});r.end(b);}catch{r.writeHead(404).end();}});
 await new Promise(ok=>s.listen(0,'127.0.0.1',ok));
 const U=`http://127.0.0.1:${s.address().port}/`;
-const br=await chromium.launch({executablePath:'/opt/pw-browsers/chromium',args:['--no-sandbox']});
+// Chromium: en el sandbox de origen vive en una ruta fija; fuera de él lo resuelve Playwright.
+const chromiumFijo='/opt/pw-browsers/chromium';
+const opcionesNavegador={args:['--no-sandbox']};
+if(existsSync(chromiumFijo)) opcionesNavegador.executablePath=chromiumFijo;
+const br=await chromium.launch(opcionesNavegador);
 const res=[];
 const chk=(n,ok,d='')=>res.push({n,ok,d});
 

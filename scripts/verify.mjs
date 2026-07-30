@@ -16,9 +16,17 @@ import { existsSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 import { join, extname, relative } from 'node:path';
 import { execSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
-const ROOT = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
+/*
+ * `new URL('..', import.meta.url).pathname` se rompe en Windows: da
+ * `/C:/Users/...`, con una barra inicial que `readdir`/`readFile` no resuelven.
+ * `fileURLToPath` sí normaliza por plataforma. Medido en este mismo proyecto: sin
+ * esto, `npm run verify` fallaba con «No existe dist/» en Windows aunque `dist/`
+ * existiera.
+ */
+const ROOT = fileURLToPath(new URL('..', import.meta.url)).replace(/[\\/]$/, '');
 const DIST = join(ROOT, 'dist');
 const REPORT = join(ROOT, 'specs/001-mejora-calidad/verification.md');
 const AXE = join(ROOT, 'node_modules/axe-core/axe.min.js');

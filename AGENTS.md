@@ -123,6 +123,16 @@ que filtrar por elementos representados (`getClientRects().length`). Sin filtrar
 una vista alternativa oculta por punto de quiebre cuenta como animación que falta:
 daba «4/5 animando» y parecía un fallo donde no lo había.
 
+**`new URL('..', import.meta.url).pathname` se rompe en Windows.** Da
+`/C:/Users/...`, con una barra inicial que `readdir`/`readFile` no resuelven:
+`npm run verify` fallaba con «No existe dist/» aunque `dist/` existiera. Usar
+`fileURLToPath(new URL(...))` de `node:url`, que normaliza por plataforma. Este
+proyecto se desarrolla desde varios sistemas operativos (ver [`ESTADO.md`](ESTADO.md)),
+así que toda ruta derivada de `import.meta.url` tiene que pasar por `fileURLToPath`,
+no por `.pathname`. También aplica a la ruta fija de Chromium del sandbox de origen
+(`/opt/pw-browsers/chromium`): se usa solo si `existsSync` la encuentra, y fuera de
+ese entorno Playwright resuelve el suyo.
+
 ## Decisiones cerradas: no reabrir sin acuerdo
 
 | # | Decisión |
