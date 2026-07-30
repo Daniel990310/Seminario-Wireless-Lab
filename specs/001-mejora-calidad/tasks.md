@@ -67,9 +67,11 @@ no sirve; este responde al cambio.
 
 ---
 
-## T2 · Tokens en tres capas y selector de tema
+## T2 · Tokens en tres capas y selector de tema — COMPLETADA
 
 **Satisface:** RF-4, RNF-1.1, RNF-1.6 · **Depende de:** T1
+**Resultado:** `src/styles/global.css` reescrito, `src/components/ThemeSelector.astro`
+nuevo, los 9 componentes migrados a tokens semánticos.
 
 - Reescribir `global.css` con las tres capas: primitivo → semántico →
   componente. Ningún componente referencia un primitivo.
@@ -86,6 +88,60 @@ no sirve; este responde al cambio.
 **Comprobación:** `npm run verify` da cero hallazgos de contraste en ambos temas.
 Sin JavaScript queda el tema claro. Al recargar con tema oscuro elegido no hay
 destello claro. El selector se opera solo con teclado.
+
+**Comprobación — verificada.** `npm run verify` da **0 hallazgos en las cuatro
+corridas** (escritorio y móvil × claro y oscuro), frente a 16 en escritorio en la
+línea base. `npx astro check`: 0 errores. Presupuestos: JavaScript 109,6 / 115 kB,
+primera carga 247,0 / 260 kB, tipografías 110,9 / 125 kB.
+
+Los criterios de RF-4 que axe no puede evaluar se comprobaron con un guion propio
+de Playwright, 16 comprobaciones, todas en verde:
+
+| Criterio | Medición |
+| -------- | -------- |
+| RF-4.1 claro por omisión | `data-theme=light`, fondo `rgb(248,250,252)` |
+| RF-4.1 tres estados por instancia | `tema-barra:3`, `tema-menu:3` |
+| RF-4.1 «sistema» resuelve | SO oscuro → `dark`; SO claro → `light` |
+| RF-4.2 sin destello | con `waitUntil:'commit'` ya se lee `dark`, y sigue en `dark` tras cargar |
+| RF-4.3 persistencia | `localStorage=dark`, **0 cookies**, sobrevive a la recarga |
+| RF-4.4 sin JavaScript | queda claro, 7 secciones y 22 anclas presentes |
+| RF-4.5 teclado | foco en `light`, `ArrowRight` → `dark`, tema cambia |
+| RF-4.6 instancias sincronizadas | cambiar en la barra marca también el menú móvil |
+| RF-4.7 el selector cabe | ninguna opción recortada en 390 px |
+| RF-4.8 `color-scheme` | declarado por tema |
+| RF-4.9 figura única | 1 SVG; `--primary` `#1e3a5f` → `#8fb6df` |
+
+**Ratios medidos** (los que fijaron los tokens, no estimaciones):
+
+| Pareja | Claro | Oscuro |
+| ------ | ----- | ------ |
+| Texto sobre fondo | 17,06:1 | 16,12:1 |
+| Metadatos sobre fondo | 7,24:1 | 7,96:1 |
+| Primario sobre fondo | 10,99:1 | 8,96:1 |
+| Acento sobre fondo | 6,10:1 | 8,98:1 |
+| Borde de control | 4,08:1 | 4,01:1 |
+
+**Tres defectos propios que la comprobación destapó**, corregidos:
+
+1. **Un criterio mal especificado.** Mi prueba de contraste aplicaba el 3:1 de
+   WCAG 1.4.11 a las líneas decorativas de las tarjetas. Ese umbral rige para los
+   **límites de controles**, no para el ornamento. Se separó `--border`
+   (decorativo, sin umbral) de `--border-control` (≥ 3:1).
+2. **Botón principal ilegible.** Al migrar, el botón del hero quedó
+   `text-foreground` sobre `bg-primary`: 1,55:1 en claro y 1,79:1 en oscuro. Con
+   `text-primary-foreground` los hallazgos pasaron de 4 a 0.
+3. **Un solo grupo de radios para dos selectores.** Las dos instancias
+   compartían `name="tema"`. El ámbito de un grupo de radios es el documento, no
+   el `fieldset`, así que formaban un grupo: al inicializar la del menú móvil se
+   desmarcaba la de la barra, que quedaba **sin ninguna opción resaltada**. Se dio
+   un `name` distinto por instancia y se sincronizan al cambiar. Lo destapó la
+   revisión visual, no axe: para axe un radio desmarcado es válido.
+
+Un cuarto defecto, de maquetación: en el panel de 15rem del menú móvil el rótulo
+y el control en la misma fila no caben, y «Sistema» se recortaba 8 px contra el
+`overflow-hidden`. Se apiló el rótulo sobre el control. La comprobación RF-4.7 se
+sometió a prueba de sensibilidad: al restaurar la fila falla con
+`Sistema (378 > 370)`.
 
 ---
 

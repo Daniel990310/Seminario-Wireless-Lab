@@ -1,0 +1,116 @@
+---
+/**
+ * Selector de tema de tres estados (RF-4).
+ *
+ * Se implementa con radios nativos dentro de un `fieldset` en lugar de tres
+ * botones con `aria-pressed`. Motivos:
+ *
+ * - Elegir uno entre tres es exactamente lo que un grupo de radios modela, así
+ *   que el estado queda expuesto de forma programática sin ARIA añadido (RF-4.5).
+ * - El recorrido con flechas y la agrupación los da el navegador; no hay que
+ *   escribir manejo de teclado que después haya que verificar.
+ * - Cuesta 0 kB. Radix `ToggleGroup` haría lo mismo pagando JavaScript por
+ *   comportamiento que aquí es nativo.
+ */
+import { seminar } from '~/data/seminar';
+
+interface Props {
+  /*
+   * Nombre del grupo de radios. Es obligatorio y distinto por instancia: el
+   * ámbito de un grupo de radios es el documento, no el `fieldset`, así que dos
+   * selectores con el mismo `name` formarían UN grupo y marcar el de la barra
+   * desmarcaría el del menú móvil. Se verificó: con un solo nombre compartido el
+   * control de escritorio quedaba sin ninguna opción resaltada.
+   */
+  group: string;
+}
+
+const { group } = Astro.props;
+const { theme } = seminar.ui;
+
+const OPCIONES = [
+  { valor: 'light', etiqueta: theme.light },
+  { valor: 'dark', etiqueta: theme.dark },
+  { valor: 'system', etiqueta: theme.system },
+] as const;
+---
+
+<fieldset
+  class="flex items-center gap-0 rounded-control border border-border-control p-0.5"
+  data-theme-selector
+>
+  <legend class="sr-only">{theme.legend}</legend>
+
+  {
+    OPCIONES.map(({ valor, etiqueta }) => (
+      <label
+        class="cursor-pointer rounded-[2px] px-2.5 py-1 text-[0.6875rem] font-medium text-muted-foreground transition-colors has-checked:bg-primary has-checked:text-primary-foreground hover:text-foreground has-checked:hover:text-primary-foreground has-focus-visible:outline has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-ring"
+      >
+        <input type="radio" name={group} value={valor} class="sr-only" />
+        {etiqueta}
+      </label>
+    ))
+  }
+</fieldset>
+
+<script>
+  /*
+   * Aplicar y persistir el tema.
+   *
+   * El tema ya se aplicó antes del primer pintado desde un script en línea del
+   * layout (RF-4.2). Este script solo sincroniza los controles y reacciona a los
+   * cambios, así que si falla el sitio queda en el tema correcto de todos modos.
+   */
+  const CLAVE = 'tema-seminario';
+  type Preferencia = 'light' | 'dark' | 'system';
+
+  const consulta = window.matchMedia('(prefers-color-scheme: dark)');
+  const grupos = [...document.querySelectorAll<HTMLElement>('[data-theme-selector]')];
+
+  const leer = (): Preferencia => {
+    const guardado = localStorage.getItem(CLAVE);
+    return guardado === 'dark' || guardado === 'light' || guardado === 'system'
+      ? guardado
+      : 'light';
+  };
+
+  const resolver = (p: Preferencia) =>
+    p === 'system' ? (consulta.matches ? 'dark' : 'light') : p;
+
+  const aplicar = (p: Preferencia) => {
+    document.documentElement.dataset.theme = resolver(p);
+  };
+
+  // Cada instancia es su propio grupo de radios, así que hay que reflejar la
+  // preferencia en todas: marcar la de la barra no toca la del menú móvil.
+  const reflejar = (p: Preferencia) => {
+    for (const grupo of grupos) {
+      for (const radio of grupo.querySelectorAll<HTMLInputElement>('input[type="radio"]')) {
+        radio.checked = radio.value === p;
+      }
+    }
+  };
+
+  reflejar(leer());
+
+  for (const grupo of grupos) {
+    for (const radio of grupo.querySelectorAll<HTMLInputElement>('input[type="radio"]')) {
+      radio.addEventListener('change', () => {
+        if (!radio.checked) return;
+        const elegida = radio.value as Preferencia;
+        localStorage.setItem(CLAVE, elegida);
+        aplicar(elegida);
+        reflejar(elegida);
+      });
+    }
+  }
+
+  /*
+   * Si la preferencia es «según el sistema», seguir los cambios del sistema
+   * operativo en vivo. Sin esto habría que recargar para que el cambio surta
+   * efecto.
+   */
+  consulta.addEventListener('change', () => {
+    if (leer() === 'system') aplicar('system');
+  });
+</script>

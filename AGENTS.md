@@ -71,6 +71,26 @@ nunca descarga.
 **`gzip -9` de GNU y `zlib` de Node difieren ~0,3 %.** Una variación de ese orden
 no indica un cambio real.
 
+**Un verificador en verde no es una página revisada.** En T2 axe daba 0 hallazgos
+mientras el selector de la barra no mostraba ninguna opción resaltada: las dos
+instancias compartían `name`, y para axe un radio desmarcado es perfectamente
+válido. Lo destapó mirar la captura. **Revisar visualmente en ambos temas antes de
+declarar una tarea completada**, y convertir en comprobación lo que se encuentre.
+
+**El ámbito de un grupo de radios es el documento, no el `fieldset`.** Dos
+instancias del mismo control con el mismo `name` forman un grupo: inicializar la
+segunda desmarca la primera. Cada instancia necesita su propio `name` y hay que
+sincronizarlas al cambiar.
+
+**`overflow-hidden` recorta en silencio.** No hay barra de desplazamiento ni
+desborde visible que avise; el contenido simplemente desaparece. En el menú móvil
+de 15rem «Sistema» se perdía 8 px. Se mide comparando la caja del elemento contra
+la del ancestro que recorta, no a ojo.
+
+**Toda comprobación nueva se somete a prueba de sensibilidad.** Antes de confiar en
+que una comprobación protege algo, hay que romper deliberadamente lo que vigila y
+verla fallar. Una comprobación que nunca ha fallado no se ha probado.
+
 ## Decisiones cerradas: no reabrir sin acuerdo
 
 | # | Decisión |

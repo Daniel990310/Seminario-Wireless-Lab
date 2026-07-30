@@ -70,17 +70,49 @@ const eventSchema = {
 ---
 
 <!doctype html>
-<html lang="es" class="dark">
+<html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!--
+      Tema antes del primer pintado (RF-4.2).
+
+      Va en línea y lo más arriba posible del <head> a propósito: si se cargara
+      como módulo diferido, el navegador pintaría el tema claro y lo cambiaría
+      después, produciendo el destello que RF-4.2 prohíbe. `is:inline` evita que
+      Astro lo procese y lo mueva.
+
+      Sin JavaScript no se ejecuta y el sitio queda en claro, que es el valor por
+      omisión de `:root` (RF-4.1 y RF-4.4).
+    -->
+    <script is:inline>
+      try {
+        const guardado = localStorage.getItem('tema-seminario');
+        const preferencia =
+          guardado === 'dark' || guardado === 'light' || guardado === 'system'
+            ? guardado
+            : 'light';
+        const oscuro =
+          preferencia === 'dark' ||
+          (preferencia === 'system' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = oscuro ? 'dark' : 'light';
+      } catch {
+        // localStorage puede fallar en modo privado: el tema claro por omisión sirve.
+        document.documentElement.dataset.theme = 'light';
+      }
+    </script>
+
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="keywords" content={seminar.seo.keywords.join(', ')} />
     <link rel="canonical" href={canonical.href} />
     {isPreview && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content="#05070f" />
+    <!-- Se declara por tema para que la barra del navegador móvil acompañe. -->
+    <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a1020" media="(prefers-color-scheme: dark)" />
     <meta name="generator" content={Astro.generator} />
 
     <meta property="og:type" content="website" />
@@ -104,7 +136,7 @@ const eventSchema = {
   <body>
     <a
       href="#contenido"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded focus:bg-signal-400 focus:px-4 focus:py-2 focus:font-medium focus:text-abyss-950"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-control focus:bg-primary focus:px-4 focus:py-2 focus:font-medium focus:text-primary-foreground"
     >
       Saltar al contenido
     </a>

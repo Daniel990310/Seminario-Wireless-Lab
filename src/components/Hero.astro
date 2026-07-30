@@ -14,48 +14,48 @@ import { seminar } from '~/data/seminar';
     </div>
     <!-- Degradados que garantizan contraste del texto sobre la figura -->
     <div
-      class="absolute inset-0 bg-gradient-to-r from-abyss-950 via-abyss-950/90 to-abyss-950/25 sm:via-abyss-950/55 sm:to-transparent"
+      class="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/25 sm:via-background/55 sm:to-transparent"
     >
     </div>
-    <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-abyss-950 to-transparent"></div>
+    <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent"></div>
   </div>
 
   <div id="contenido" class="mx-auto max-w-7xl px-5 sm:px-8">
     <div class="max-w-3xl">
       <p class="eyebrow flex flex-wrap items-center gap-x-3 gap-y-2">
         <span>Seminario internacional</span>
-        <span class="h-px w-8 bg-signal-400/40" aria-hidden="true"></span>
-        <span class="text-mist-400">PUCV · Chile · 2026</span>
+        <span class="h-px w-8 bg-primary/40" aria-hidden="true"></span>
+        <span class="text-muted-foreground">PUCV · Chile · 2026</span>
       </p>
 
       <!--
         Título sin degradados ni animación de texto: el registro es
         institucional, y la jerarquía se resuelve con peso y color sólido.
       -->
-      <h1 class="mt-7 text-hero leading-[1.04] font-semibold text-mist-100">
+      <h1 class="mt-7 text-hero leading-[1.04] font-semibold text-foreground">
         Beyond Connectivity: Wireless Sensing in mmWave and Sub-THz Bands
       </h1>
 
-      <span class="mt-7 block h-px w-24 bg-signal-400/50" aria-hidden="true"></span>
+      <span class="mt-7 block h-px w-24 bg-primary/80" aria-hidden="true"></span>
 
-      <p class="mt-7 max-w-2xl font-display text-base leading-snug text-mist-300 sm:text-xl">
+      <p class="mt-7 max-w-2xl font-display text-base leading-snug text-muted-foreground sm:text-xl">
         {seminar.subtitle}
       </p>
 
       <!-- Datos clave: fecha y lugar, la información que más se busca -->
-      <dl class="mt-10 grid gap-px overflow-hidden rounded-lg border border-abyss-600/50 sm:grid-cols-2">
-        <div class="bg-abyss-900/70 p-5 backdrop-blur-sm">
-          <dt class="eyebrow text-mist-400">Fechas</dt>
-          <dd class="mt-2 font-display text-lg font-semibold text-mist-100">
+      <dl class="mt-10 grid gap-px overflow-hidden rounded-surface border border-border sm:grid-cols-2">
+        <div class="bg-surface/70 p-5 backdrop-blur-sm">
+          <dt class="eyebrow text-muted-foreground">Fechas</dt>
+          <dd class="mt-2 font-display text-lg font-semibold text-foreground">
             {seminar.dates.label}
           </dd>
         </div>
-        <div class="bg-abyss-900/70 p-5 backdrop-blur-sm">
-          <dt class="eyebrow text-mist-400">Lugar</dt>
-          <dd class="mt-2 font-display text-lg font-semibold text-mist-100">
+        <div class="bg-surface/70 p-5 backdrop-blur-sm">
+          <dt class="eyebrow text-muted-foreground">Lugar</dt>
+          <dd class="mt-2 font-display text-lg font-semibold text-foreground">
             {seminar.venue.name}
           </dd>
-          <dd class="mt-1 text-sm text-mist-400">{seminar.venue.fullAddress}</dd>
+          <dd class="mt-1 text-sm text-muted-foreground">{seminar.venue.fullAddress}</dd>
         </div>
       </dl>
 
@@ -66,13 +66,13 @@ import { seminar } from '~/data/seminar';
         -->
         <a
           href="#programa"
-          class="rounded-md bg-signal-600 px-6 py-3 text-sm font-semibold text-mist-100 transition-colors duration-200 hover:bg-signal-500"
+          class="rounded-control bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity duration-200 hover:opacity-90"
         >
           Ver programa
         </a>
         <a
           href="#expositores"
-          class="rounded-md border border-abyss-600 px-6 py-3 text-sm font-medium text-mist-200 transition-colors hover:border-signal-400/50 hover:text-signal-300"
+          class="rounded-control border border-border-control px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary"
         >
           Expositores
         </a>

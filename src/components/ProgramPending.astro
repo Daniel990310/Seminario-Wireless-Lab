@@ -12,28 +12,28 @@ import { seminar } from '~/data/seminar';
 const { program, contact } = seminar;
 ---
 
-<div class="surface relative overflow-hidden rounded-lg px-6 py-16 text-center sm:px-12 sm:py-24">
+<div class="surface relative overflow-hidden rounded-surface px-6 py-16 text-center sm:px-12 sm:py-24">
   <Ripple
     mainCircleSize={190}
     mainCircleOpacity={0.08}
     numCircles={6}
-    className="text-signal-400/15"
+    className="text-primary/15"
   />
 
   <div class="relative mx-auto max-w-xl">
-    <p class="eyebrow inline-flex items-center gap-2.5 text-mist-400">
-      <span class="block size-1.5 rounded-full bg-signal-400/70" aria-hidden="true"></span>
+    <p class="eyebrow inline-flex items-center gap-2.5 text-muted-foreground">
+      <span class="block size-1.5 rounded-full bg-primary" aria-hidden="true"></span>
       En preparación
     </p>
 
-    <p class="mt-7 font-display text-xl font-semibold text-mist-100 sm:text-2xl">
+    <p class="mt-7 font-display text-xl font-semibold text-foreground sm:text-2xl">
       {program.pendingNotice}
     </p>
-    <p class="mt-4 text-base leading-relaxed text-mist-400">{program.pendingDetail}</p>
+    <p class="mt-4 text-base leading-relaxed text-muted-foreground">{program.pendingDetail}</p>
 
     <a
       href={`mailto:${contact.email}?subject=${encodeURIComponent('Consulta por el programa — Beyond Connectivity 2026')}`}
-      class="mt-8 inline-block text-sm font-medium text-signal-300 underline decoration-signal-400/40 underline-offset-4 transition-colors hover:decoration-signal-300"
+      class="mt-8 inline-block text-sm font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
     >
       Solicitar aviso de publicación
     </a>

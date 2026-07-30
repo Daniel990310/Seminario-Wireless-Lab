@@ -22,7 +22,7 @@ const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&laye
 ---
 
 <div
-  class="surface relative overflow-hidden rounded-lg"
+  class="surface relative overflow-hidden rounded-surface"
   data-venue-locator
   data-embed={EMBED}
   data-embed-title={`Mapa de ${venue.name}`}
@@ -41,26 +41,32 @@ const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&laye
       mainCircleSize={120}
       mainCircleOpacity={0.16}
       numCircles={6}
-      className="text-signal-400/30"
+      className="text-primary/30"
     />
 
-    <svg class="relative size-12 sm:size-14" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-      <g stroke="#35d0e6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- `currentColor` para que el marcador siga al tema sin duplicar el SVG. -->
+    <svg
+      class="relative size-12 text-primary sm:size-14"
+      viewBox="0 0 48 48"
+      fill="none"
+      aria-hidden="true"
+    >
+      <g stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M24 42c0 0 13-12.2 13-21.7A13 13 0 1 0 11 20.3C11 29.8 24 42 24 42Z" />
       </g>
-      <circle cx="24" cy="20" r="4.5" fill="#7ce8f5" />
+      <circle cx="24" cy="20" r="4.5" fill="currentColor" />
     </svg>
 
-    <p class="relative mt-5 font-display text-lg font-semibold text-mist-100">
+    <p class="relative mt-5 font-display text-lg font-semibold text-foreground">
       {venue.street}, {venue.district}
     </p>
-    <p class="relative mt-1 text-sm text-mist-400">{venue.city}, {venue.country}</p>
+    <p class="relative mt-1 text-sm text-muted-foreground">{venue.city}, {venue.country}</p>
 
     <div class="relative mt-7 flex flex-wrap items-center justify-center gap-3">
       <button
         type="button"
         data-locator-load
-        class="rounded-md border border-signal-400/35 bg-signal-400/8 px-5 py-2.5 text-sm font-medium text-signal-300 transition-colors hover:bg-signal-400/20"
+        class="rounded-control border border-primary/40 bg-primary/8 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/15"
       >
         Cargar mapa interactivo
       </button>
@@ -68,13 +74,13 @@ const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&laye
         href={venue.mapsUrl}
         target="_blank"
         rel="noopener noreferrer"
-        class="rounded-md border border-abyss-600 px-5 py-2.5 text-sm font-medium text-mist-300 transition-colors hover:border-signal-400/50 hover:text-signal-300"
+        class="rounded-control border border-border-control px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
       >
         Abrir en Google Maps
       </a>
     </div>
 
-    <p class="relative mt-5 max-w-xs text-xs leading-relaxed text-mist-500">
+    <p class="relative mt-5 max-w-xs text-xs leading-relaxed text-muted-foreground">
       Al cargar el mapa se solicita contenido a OpenStreetMap.
     </p>
   </div>

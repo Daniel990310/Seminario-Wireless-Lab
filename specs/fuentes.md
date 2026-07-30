@@ -27,6 +27,42 @@ durante la transición de opacidad de las secciones. Con las transiciones anulad
 la cifra real es 16. **Toda medición de contraste debe anular las transiciones
 antes de evaluar.**
 
+### Después de T2
+
+Las cifras de arriba son la línea base, del commit `75e844b`. Estas son las del
+cierre de T2. Se obtienen con `npm run build && npm run verify` y
+`npm run verify:tema`.
+
+| Cifra | Valor | Cómo se obtuvo |
+| ----- | ----- | -------------- |
+| Contraste insuficiente | **0 nodos** en las 4 corridas | `npm run verify`; escritorio y móvil × claro y oscuro |
+| Contraste indeterminado | 104 nodos (30/30/22/22) | Misma corrida, categoría `incomplete`. Sigue abierto: RNF-1.3 → T5 |
+| Secciones sin nombre accesible | 0 de 7 | Sin cambio. Sigue abierto: RNF-1.4 → T6 |
+| JavaScript comprimido | 109,6 kB | `zlib` de Node sobre los `.js` de `dist/_astro`. La diferencia con los 109,3 kB de la línea base es la implementación de gzip, no un cambio real |
+| Primera carga comprimida | 247,0 kB | JS + CSS + HTML + tipografías. Excluye los logos, que llevan `loading="lazy"` |
+| Tipografías | 110,9 kB | Suma de los woff2 en `dist/_astro/fonts` |
+| Criterios de RF-4 | 16 de 16 | `npm run verify:tema` |
+
+**Ratios de contraste que fijaron los tokens.** Medidos pareja por pareja antes de
+escribir el valor en `global.css`, no estimados. El umbral es 4,5:1 para texto
+normal y 3:1 para texto grande y para límites de controles (WCAG 1.4.11).
+
+| Pareja | Claro | Oscuro |
+| ------ | ----- | ------ |
+| `--foreground` sobre `--background` | 17,06:1 | 16,12:1 |
+| `--muted-foreground` sobre `--background` | 7,24:1 | 7,96:1 |
+| `--primary` sobre `--background` | 10,99:1 | 8,96:1 |
+| `--accent` sobre `--background` | 6,10:1 | 8,98:1 |
+| `--border-control` sobre `--background` | 4,08:1 | 4,01:1 |
+
+`--border` no aparece en la tabla a propósito: es decorativo y WCAG no le fija
+umbral. Aplicarle el 3:1 de 1.4.11 fue un error mío de especificación; ese umbral
+rige para los límites de **controles**, y por eso existe `--border-control` aparte.
+
+**Corrección de una estimación anterior.** En una revisión previa afirmé que el
+botón principal daba «~4,9:1 y cumple». Medido da **3,73:1 y no cumple**. La cifra
+de la tabla de línea base es la medida.
+
 ### Repositorios evaluados
 
 | Cifra | Valor | Cómo se obtuvo |

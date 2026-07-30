@@ -184,6 +184,20 @@ export const seminar = {
     school: 'Escuela de Ingeniería Eléctrica, Pontificia Universidad Católica de Valparaíso',
   },
 
+  /*
+   * Textos de interfaz. Viven aquí y no en los componentes por RNF-5.1, y
+   * porque con T7 este archivo se separa por idioma: si una cadena quedara
+   * escrita en el marcado, no se traduciría.
+   */
+  ui: {
+    theme: {
+      legend: 'Tema de la página',
+      light: 'Claro',
+      dark: 'Oscuro',
+      system: 'Sistema',
+    },
+  },
+
   seo: {
     description:
       'Seminario internacional sobre detección inalámbrica en bandas mmWave y sub-THz. 21 y 22 de octubre de 2026, Sede PUCV Santiago, Chile. Expositores de Columbia University, Nokia Bell Labs, PUC, USACH y PUCV.',

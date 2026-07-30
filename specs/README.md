@@ -67,16 +67,26 @@ aceptación de RNF-2.
 ## Cómo verificar el estado
 
 ```bash
-npm run build     # el sitio debe compilar
-npm run check     # tipos, sin errores ni advertencias
-npm run verify    # accesibilidad y presupuestos de peso
+npm run build        # el sitio debe compilar
+npm run check        # tipos, sin errores ni advertencias
+npm run verify       # accesibilidad y presupuestos de peso
+npm run verify:tema  # los criterios de RF-4 que axe no puede evaluar
 ```
 
 `npm run verify` es la autoridad sobre el cumplimiento (implementado en T1).
 Requiere un `build` previo y termina con código distinto de cero si algo incumple.
 
+`npm run verify:tema` lo complementa en lo que axe no alcanza: destello al cargar,
+comportamiento sin JavaScript, teclado, persistencia sin cookies y sincronía entre
+las dos instancias del selector. También requiere un `build` previo.
+
 ## Estado
 
 | Especificación | Estado |
 | -------------- | ------ |
-| [001 — Mejora de calidad](001-mejora-calidad/) | Requisitos, diseño y tareas escritos. Sin decisiones bloqueantes. Implementación no iniciada. |
+| [001 — Mejora de calidad](001-mejora-calidad/) | En implementación. T1 y T2 completadas y verificadas. Sin decisiones bloqueantes. |
+
+Al cerrar T2, `npm run verify` da **0 hallazgos de contraste** en las cuatro
+corridas (línea base: 16 en escritorio). Quedan abiertos dos incumplimientos, y
+ambos tienen tarea asignada: los nodos con contraste indeterminado (RNF-1.3 → T5)
+y las secciones sin nombre accesible (RNF-1.4 → T6).

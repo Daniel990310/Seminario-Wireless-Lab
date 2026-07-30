@@ -17,7 +17,7 @@ const { id, eyebrow, title, lead, class: className = '', tinted = false } = Astr
   id={id}
   class:list={[
     'relative border-t hairline px-5 py-20 sm:px-8 sm:py-28',
-    tinted && 'bg-abyss-900/40',
+    tinted && 'bg-surface/40',
     className,
   ]}
 >
@@ -27,7 +27,7 @@ const { id, eyebrow, title, lead, class: className = '', tinted = false } = Astr
         <header class="reveal max-w-3xl">
           {eyebrow && <p class="eyebrow">{eyebrow}</p>}
           {title && <h2 class="mt-4 text-section font-semibold">{title}</h2>}
-          {lead && <p class="mt-5 text-base leading-relaxed text-mist-300 sm:text-lg">{lead}</p>}
+          {lead && <p class="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">{lead}</p>}
         </header>
       )
     }

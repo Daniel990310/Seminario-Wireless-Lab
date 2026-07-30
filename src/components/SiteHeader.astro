@@ -1,4 +1,5 @@
 ---
+import ThemeSelector from './ThemeSelector.astro';
 import { seminar } from '~/data/seminar';
 
 const links = [
@@ -22,14 +23,14 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
   <nav class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
     <a href="#top" class="flex items-center gap-3">
       <span
-        class="grid size-8 shrink-0 place-items-center rounded-full border border-signal-400/40 bg-signal-400/5"
+        class="grid size-8 shrink-0 place-items-center rounded-full border border-primary/40 bg-primary/8"
         aria-hidden="true"
       >
-        <span class="block size-1.5 rounded-full bg-signal-300"></span>
+        <span class="block size-1.5 rounded-full bg-primary"></span>
       </span>
       <span class="leading-tight">
-        <span class="block font-display text-sm font-semibold text-mist-100">Beyond Connectivity</span>
-        <span class="eyebrow block text-[0.6rem] text-mist-400">
+        <span class="block font-display text-sm font-semibold text-foreground">Beyond Connectivity</span>
+        <span class="eyebrow block text-[0.6rem] text-muted-foreground">
           {seminar.dates.shortLabel} · PUCV
         </span>
       </span>
@@ -39,7 +40,7 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
       {
         links.map((link) => (
           <li>
-            <a href={link.href} class="text-sm text-mist-300 transition-colors hover:text-signal-300">
+            <a href={link.href} class="text-sm text-muted-foreground transition-colors hover:text-primary">
               {link.label}
             </a>
           </li>
@@ -48,9 +49,13 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
     </ul>
 
     <div class="flex items-center gap-2">
+      <div class="hidden sm:block">
+        <ThemeSelector group="tema-barra" />
+      </div>
+
       <a
         href={mailto}
-        class="hidden rounded-md border border-signal-400/35 bg-signal-400/8 px-4 py-2 text-sm font-medium text-signal-300 transition-colors hover:bg-signal-400/20 sm:block"
+        class="hidden rounded-control border border-primary/40 bg-primary/8 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/15 sm:block"
       >
         Contacto
       </a>
@@ -61,7 +66,7 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
       -->
       <details class="relative lg:hidden" data-mobile-menu>
         <summary
-          class="flex size-10 cursor-pointer list-none items-center justify-center rounded-full border border-abyss-600 text-mist-200 transition-colors hover:border-signal-400/50 hover:text-signal-300 [&::-webkit-details-marker]:hidden"
+          class="flex size-10 cursor-pointer list-none items-center justify-center rounded-full border border-border-control text-foreground transition-colors hover:border-primary/50 hover:text-primary [&::-webkit-details-marker]:hidden"
           aria-label="Abrir menú de navegación"
         >
           <svg class="size-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
@@ -70,15 +75,15 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
         </summary>
 
         <div
-          class="absolute right-0 mt-3 w-60 overflow-hidden rounded-xl border border-abyss-600/60 bg-abyss-900/95 shadow-2xl backdrop-blur-lg"
+          class="absolute right-0 mt-3 w-60 overflow-hidden rounded-surface border border-border bg-surface/95 shadow-2xl backdrop-blur-lg"
         >
-          <ul class="divide-y divide-abyss-700/50">
+          <ul class="divide-y divide-border">
             {
               links.map((link) => (
                 <li>
                   <a
                     href={link.href}
-                    class="block px-5 py-3.5 text-sm text-mist-200 transition-colors hover:bg-signal-400/10 hover:text-signal-300"
+                    class="block px-5 py-3.5 text-sm text-foreground transition-colors hover:bg-primary/10 hover:text-primary"
                   >
                     {link.label}
                   </a>
@@ -88,10 +93,19 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
             <li>
               <a
                 href={mailto}
-                class="block px-5 py-3.5 text-sm font-medium text-signal-300 transition-colors hover:bg-signal-400/10"
+                class="block px-5 py-3.5 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
               >
                 Contacto
               </a>
+            </li>
+            <!--
+              El rótulo va encima y no al lado: en el panel de 15rem el selector
+              y un rótulo en la misma fila no caben, y «Sistema» quedaba cortado
+              contra el `overflow-hidden` del panel.
+            -->
+            <li class="flex flex-col items-start gap-2 px-5 py-3.5 sm:hidden">
+              <span class="eyebrow text-muted-foreground">{seminar.ui.theme.legend}</span>
+              <ThemeSelector group="tema-menu" />
             </li>
           </ul>
         </div>
@@ -105,7 +119,7 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
   const header = document.getElementById('site-header');
 
   if (header) {
-    const solid = ['bg-abyss-950/85', 'backdrop-blur-md', 'border-abyss-600/40'];
+    const solid = ['bg-background/85', 'backdrop-blur-md', 'border-border'];
 
     const sync = () => {
       header.classList.toggle('border-transparent', window.scrollY <= 24);

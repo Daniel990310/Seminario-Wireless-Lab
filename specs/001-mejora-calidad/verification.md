@@ -2,7 +2,7 @@
 
 Generado por `npm run verify`. **No editar a mano**: se sobrescribe en cada corrida.
 
-**Fecha:** 2026-07-30 · **Commit:** `9dc72d0`
+**Fecha:** 2026-07-30 · **Commit:** `39261cf`
 **Resultado:** **presupuestos incumplidos**
 
 Método: axe-core sobre el build servido localmente, en 1440×900 y 390×844,
@@ -20,12 +20,12 @@ de ese orden respecto de la línea base no indica un cambio real.
 
 | Requisito | Comprobación | Línea base | Actual | Límite | Estado |
 | --------- | ------------ | ---------- | ------ | ------ | ------ |
-| RNF-1.1 | Hallazgos axe WCAG 2.1 AA | 16 | 32 | 0 | **incumple** |
-| RNF-1.3 | Nodos con contraste indeterminado | 28 | 50 | 0 | **incumple** |
+| RNF-1.1 | Hallazgos axe WCAG 2.1 AA | 16 | 0 | 0 | cumple |
+| RNF-1.3 | Nodos con contraste indeterminado | 28 | 104 | 0 | **incumple** |
 | RNF-1.4 | Secciones sin nombre accesible | 7 | 7 | 0 | **incumple** |
 | RNF-1.5 | Saltos de nivel en encabezados | 0 | 0 | 0 | cumple |
 | RNF-2.1 | JavaScript comprimido | 109.3 kB | 109.6 kB | 115.0 kB | cumple |
-| RNF-2.2 | Primera carga comprimida | 241.2 kB | 246.2 kB | 260.0 kB | cumple |
+| RNF-2.2 | Primera carga comprimida | 241.2 kB | 247.0 kB | 260.0 kB | cumple |
 | RNF-2.6 | Tipografías | 110.9 kB | 110.9 kB | 125.0 kB | cumple |
 
 En RNF-1.1 y RNF-1.3 la columna «Actual» **suma todas las corridas**, mientras que
@@ -38,10 +38,10 @@ el desglose por corrida más abajo.
 | ------- | ---------- |
 | JavaScript | 109.6 kB |
 | Tipografías | 110.9 kB |
-| HTML | 13.3 kB |
-| CSS | 12.3 kB |
+| HTML | 14.6 kB |
+| CSS | 11.9 kB |
 | Imágenes SVG | 3.3 kB |
-| **Primera carga** | **246.2 kB** |
+| **Primera carga** | **247.0 kB** |
 
 ## Por corrida
 
@@ -50,23 +50,25 @@ leer un total como si fuera un valor por pantalla.
 
 | Pantalla / tema | Hallazgos | Indeterminados |
 | --------------- | --------- | -------------- |
-| escritorio / light | 16 | 28 |
-| movil / light | 16 | 22 |
+| escritorio / light | 0 | 30 |
+| escritorio / dark | 0 | 30 |
+| movil / light | 0 | 22 |
+| movil / dark | 0 | 22 |
 
 ## Cobertura
 
 | Dato | Valor |
 | ---- | ----- |
 | Páginas auditadas | `/` |
-| Corridas | 2 |
-| Temas distinguibles | no — RF-4 pendiente |
+| Corridas | 4 |
+| Temas distinguibles | sí |
 | Secciones | 7 |
 | Encabezados | 24 |
 | Idioma declarado | `es` |
 
 ## Nodos indeterminados
 
-axe no pudo calcular el contraste en **50** nodos. Ocurre
+axe no pudo calcular el contraste en **104** nodos. Ocurre
 cuando el texto se superpone a un fondo no uniforme. **No son aprobaciones**:
 RNF-1.3 exige resolverlos, midiendo un ratio que cumpla o eliminando la
 superposición.

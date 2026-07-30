@@ -49,13 +49,13 @@ const Node = ({
   <div
     ref={ref}
     className={cn(
-      'z-10 flex w-full max-w-[15rem] flex-col rounded-lg border border-abyss-600/60 bg-abyss-850/90 px-4 py-3',
+      'z-10 flex w-full max-w-[15rem] flex-col rounded-surface border border-border bg-surface/90 px-4 py-3',
       align === 'end' && 'items-end text-right',
     )}
   >
-    <p className="font-display text-sm leading-tight font-semibold text-mist-100">{spec.label}</p>
-    <p className="mt-1 text-xs leading-snug text-mist-400">{spec.detail}</p>
-    <p className="eyebrow mt-1.5 text-[0.6rem] text-mist-500">{spec.country}</p>
+    <p className="font-display text-sm leading-tight font-semibold text-foreground">{spec.label}</p>
+    <p className="mt-1 text-xs leading-snug text-muted-foreground">{spec.detail}</p>
+    <p className="eyebrow mt-1.5 text-[0.6rem] text-muted-foreground">{spec.country}</p>
   </div>
 );
 
@@ -72,14 +72,19 @@ export default function CollaborationNetwork() {
   // sigue siendo legible sin animación.
   const reduced = useReducedMotion();
 
-  // Un solo tono y recorrido lento: el haz representa una transmisión, no un
-  // efecto de interfaz. Sin degradado bicolor, que resultaba llamativo.
+  /*
+   * Un solo tono y recorrido lento: el haz representa una transmisión, no un
+   * efecto de interfaz.
+   *
+   * Los colores se pasan como referencias a variables CSS en lugar de hex fijos,
+   * de modo que el haz siga al tema sin duplicar el componente (RF-4.9).
+   */
   const beam = {
-    pathColor: '#1d2942',
+    pathColor: 'var(--border)',
     pathWidth: 1.25,
     pathOpacity: 0.9,
-    gradientStartColor: '#35d0e6',
-    gradientStopColor: '#35d0e6',
+    gradientStartColor: 'var(--primary)',
+    gradientStopColor: 'var(--primary)',
     duration: 7,
     repeatDelay: 1.5,
     repeat: reduced ? 0 : Infinity,
@@ -99,21 +104,21 @@ export default function CollaborationNetwork() {
       <div className="flex flex-col justify-center">
         <div
           ref={hub}
-          className="z-10 flex flex-col items-center rounded-lg border border-signal-400/35 bg-abyss-900 px-4 py-5 text-center sm:px-6"
+          className="z-10 flex flex-col items-center rounded-surface border border-primary/40 bg-surface px-4 py-5 text-center sm:px-6"
         >
           <span
-            className="grid size-9 place-items-center rounded-full border border-signal-400/40"
+            className="grid size-9 place-items-center rounded-full border border-primary/40"
             aria-hidden="true"
           >
-            <span className="block size-1.5 rounded-full bg-signal-300" />
+            <span className="block size-1.5 rounded-full bg-primary" />
           </span>
-          <p className="mt-3 font-display text-sm leading-tight font-semibold text-mist-100 sm:text-base">
+          <p className="mt-3 font-display text-sm leading-tight font-semibold text-foreground sm:text-base">
             PUCV
           </p>
-          <p className="mt-1 text-xs leading-snug text-mist-400">
+          <p className="mt-1 text-xs leading-snug text-muted-foreground">
             Escuela de Ingeniería Eléctrica
           </p>
-          <p className="eyebrow mt-2 text-[0.6rem] text-signal-300">Organiza</p>
+          <p className="eyebrow mt-2 text-[0.6rem] text-primary">Organiza</p>
         </div>
       </div>
 

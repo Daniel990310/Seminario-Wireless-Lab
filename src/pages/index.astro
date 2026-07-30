@@ -29,20 +29,20 @@ const hasProgram = program.days.length > 0;
       lead={about.lead}
     >
       <div class="mt-14 grid gap-14 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
-        <div class="reveal space-y-6 text-base leading-relaxed text-mist-300 sm:text-lg">
+        <div class="reveal space-y-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
           {about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
         </div>
 
         <!-- Temas del seminario -->
-        <ul class="grid gap-px overflow-hidden rounded-lg border border-abyss-600/50 sm:grid-cols-2">
+        <ul class="grid gap-px overflow-hidden rounded-surface border border-border sm:grid-cols-2">
           {
             topics.map((topic, index) => (
               <li
-                class="reveal bg-abyss-900/60 p-5"
+                class="reveal bg-surface/60 p-5"
                 style={`transition-delay:${index * 80}ms`}
               >
-                <h3 class="font-display text-base font-semibold text-mist-100">{topic.title}</h3>
-                <p class="mt-2 text-sm leading-relaxed text-mist-400">{topic.description}</p>
+                <h3 class="font-display text-base font-semibold text-foreground">{topic.title}</h3>
+                <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{topic.description}</p>
               </li>
             ))
           }
@@ -65,17 +65,17 @@ const hasProgram = program.days.length > 0;
               {program.days.map((day) => (
                 <article class="reveal">
                   <header class="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b hairline pb-4">
-                    <h3 class="font-display text-xl font-semibold text-mist-100">{day.label}</h3>
-                    <p class="eyebrow text-mist-400">{day.date}</p>
+                    <h3 class="font-display text-xl font-semibold text-foreground">{day.label}</h3>
+                    <p class="eyebrow text-muted-foreground">{day.date}</p>
                   </header>
-                  <ul class="divide-y divide-abyss-700/50">
+                  <ul class="divide-y divide-border">
                     {day.sessions.map((session) => (
                       <li class="grid gap-1 py-4 sm:grid-cols-[7rem_1fr] sm:gap-6">
-                        <p class="font-mono text-sm text-signal-300">{session.time}</p>
+                        <p class="font-mono text-sm text-primary">{session.time}</p>
                         <div>
-                          <p class="text-base text-mist-100">{session.title}</p>
+                          <p class="text-base text-foreground">{session.title}</p>
                           {session.speaker && (
-                            <p class="mt-1 text-sm text-mist-400">{session.speaker}</p>
+                            <p class="mt-1 text-sm text-muted-foreground">{session.speaker}</p>
                           )}
                         </div>
                       </li>
@@ -103,9 +103,9 @@ const hasProgram = program.days.length > 0;
     >
       <div class="mt-14 space-y-14">
         <div>
-          <h3 class="reveal eyebrow flex items-center gap-4 text-mist-400">
+          <h3 class="reveal eyebrow flex items-center gap-4 text-muted-foreground">
             <span>Expositores internacionales</span>
-            <span class="h-px flex-1 bg-abyss-600/50" aria-hidden="true"></span>
+            <span class="h-px flex-1 bg-border" aria-hidden="true"></span>
           </h3>
           <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {
@@ -117,9 +117,9 @@ const hasProgram = program.days.length > 0;
         </div>
 
         <div>
-          <h3 class="reveal eyebrow flex items-center gap-4 text-mist-400">
+          <h3 class="reveal eyebrow flex items-center gap-4 text-muted-foreground">
             <span>Expositores nacionales</span>
-            <span class="h-px flex-1 bg-abyss-600/50" aria-hidden="true"></span>
+            <span class="h-px flex-1 bg-border" aria-hidden="true"></span>
           </h3>
           <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {
@@ -150,24 +150,24 @@ const hasProgram = program.days.length > 0;
       <div class="mt-12 grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
         <div class="reveal">
           <address class="space-y-1 text-base not-italic sm:text-lg">
-            <p class="font-display text-lg font-semibold text-mist-100">{venue.name}</p>
-            <p class="text-mist-300">{venue.street}</p>
-            <p class="text-mist-300">{venue.district}, {venue.city}</p>
-            <p class="text-mist-400">{venue.country}</p>
+            <p class="font-display text-lg font-semibold text-foreground">{venue.name}</p>
+            <p class="text-muted-foreground">{venue.street}</p>
+            <p class="text-muted-foreground">{venue.district}, {venue.city}</p>
+            <p class="text-muted-foreground">{venue.country}</p>
           </address>
 
           <!-- Los enlaces a mapas viven en el panel localizador, a la derecha. -->
           <dl class="mt-10 grid gap-6 border-t hairline pt-8 sm:grid-cols-2">
             <div>
-              <dt class="eyebrow text-mist-500">Fechas</dt>
-              <dd class="mt-2 text-base text-mist-200">{seminar.dates.label}</dd>
+              <dt class="eyebrow text-muted-foreground">Fechas</dt>
+              <dd class="mt-2 text-base text-foreground">{seminar.dates.label}</dd>
             </div>
             <div>
-              <dt class="eyebrow text-mist-500">Consultas</dt>
+              <dt class="eyebrow text-muted-foreground">Consultas</dt>
               <dd class="mt-2 text-base">
                 <a
                   href={`mailto:${seminar.contact.email}`}
-                  class="text-signal-300 underline decoration-signal-400/40 underline-offset-4 transition-colors hover:decoration-signal-300"
+                  class="text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
                 >
                   {seminar.contact.email}
                 </a>
@@ -190,34 +190,34 @@ const hasProgram = program.days.length > 0;
     >
       <div class="mt-14 space-y-16">
         <div>
-          <h3 class="reveal eyebrow flex items-center gap-4 text-mist-400">
+          <h3 class="reveal eyebrow flex items-center gap-4 text-muted-foreground">
             <span>Organizan</span>
-            <span class="h-px flex-1 bg-abyss-600/50" aria-hidden="true"></span>
+            <span class="h-px flex-1 bg-border" aria-hidden="true"></span>
           </h3>
           <div class="mt-8">
             <LogoWall institutions={organizers} size="lg" />
           </div>
-          <ul class="mt-6 space-y-1 text-sm text-mist-400">
+          <ul class="mt-6 space-y-1 text-sm text-muted-foreground">
             {organizers.map((organizer) => <li>{organizer.name}</li>)}
           </ul>
         </div>
 
         <div>
-          <h3 class="reveal eyebrow flex items-center gap-4 text-mist-400">
+          <h3 class="reveal eyebrow flex items-center gap-4 text-muted-foreground">
             <span>Instituciones participantes y colaboradoras</span>
-            <span class="h-px flex-1 bg-abyss-600/50" aria-hidden="true"></span>
+            <span class="h-px flex-1 bg-border" aria-hidden="true"></span>
           </h3>
           <div class="mt-8">
             <LogoWall institutions={participants} />
           </div>
-          <ul class="mt-6 grid gap-1 text-sm text-mist-400 sm:grid-cols-2">
+          <ul class="mt-6 grid gap-1 text-sm text-muted-foreground sm:grid-cols-2">
             {participants.map((participant) => <li>{participant.name}</li>)}
           </ul>
         </div>
 
         <!-- Financiamiento: obligatorio dar crédito a ANID y al proyecto FOVI -->
-        <div class="reveal surface rounded-lg p-7 sm:p-10">
-          <h3 class="eyebrow text-mist-400">Financia</h3>
+        <div class="reveal surface rounded-surface p-7 sm:p-10">
+          <h3 class="eyebrow text-muted-foreground">Financia</h3>
           <div class="mt-7 grid gap-8 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-10">
             <a
               href={funding.agency.url}
@@ -235,11 +235,11 @@ const hasProgram = program.days.length > 0;
               />
             </a>
             <div>
-              <p class="font-display text-base font-semibold text-mist-100">
+              <p class="font-display text-base font-semibold text-foreground">
                 {funding.agency.name} ({funding.agency.shortName})
               </p>
-              <p class="mt-2 text-sm leading-relaxed text-mist-300">
-                Proyecto <span class="font-mono text-signal-300">{funding.project.code}</span>,
+              <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Proyecto <span class="font-mono text-primary">{funding.project.code}</span>,
                 <span class="italic"> {funding.project.name}</span>.
               </p>
             </div>

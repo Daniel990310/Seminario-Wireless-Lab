@@ -1,96 +1,154 @@
 @import 'tailwindcss';
 
 /*
- * Variante `dark` basada en clase, según la convención de shadcn/ui en
- * Tailwind 4. Por defecto Tailwind resuelve `dark:` con `prefers-color-scheme`,
- * pero este sitio es oscuro siempre: `<html class="dark">` activa las variantes
- * `dark:` que traen los componentes de Magic UI sin tener que reescribirlas.
+ * Sistema de diseño del seminario.
+ *
+ * Estilo: Swiss Modernism 2.0 más minimalismo (D4). Retícula estricta, jerarquía
+ * tipográfica marcada, un único acento y ausencia de ornamento.
+ *
+ * Arquitectura de tokens en tres capas (RF-4.7):
+ *
+ *   primitivo  → valores crudos, iguales en los dos temas
+ *   semántico  → ÚNICA capa que cambia por tema
+ *   componente → derivados de la semántica
+ *
+ * Los primitivos NO se exponen como utilidades de Tailwind. Esa es la garantía
+ * estructural de RF-4.7: un componente no puede escribir `bg-navy-900` porque esa
+ * clase no existe. Solo puede leer la capa semántica.
  */
-@custom-variant dark (&:where(.dark, .dark *));
 
 /*
- * Tokens con los nombres que usa shadcn/ui, mapeados a la paleta del seminario.
+ * Tema oscuro por atributo `data-theme`, no por clase.
  *
- * Los componentes de Magic UI vendorizados en src/components/ui referencian
- * clases como `bg-foreground/25` o `text-muted-foreground`. Definirlos aquí
- * permite copiar componentes nuevos del registro sin reescribir sus clases.
+ * Se prefiere el atributo porque admite tres estados sin ambigüedad —claro,
+ * oscuro y sin declarar— mientras que una clase solo distingue presente o
+ * ausente.
  */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CAPA 1 · PRIMITIVOS
+   Valores crudos. No cambian con el tema y no generan utilidades.
+   ═══════════════════════════════════════════════════════════════════════ */
 :root {
-  --background: #05070f;
-  --foreground: #eef2f9;
-  --card: #0e1526;
-  --card-foreground: #eef2f9;
-  --muted: #131c31;
-  --muted-foreground: #7d8aa6;
-  --border: #1d2942;
-  --primary: #35d0e6;
-  --primary-foreground: #05070f;
-  --accent: #9d8cff;
-  --ring: #35d0e6;
+  /* Navy institucional */
+  --navy-900: #0f172a;
+  --navy-700: #1e3a5f;
+  --navy-300: #8fb6df;
+
+  /* Dorado: el único acento del sistema */
+  --gold-700: #8a5206;
+  --gold-400: #e0a94a;
+
+  /* Neutros fríos para el tema claro */
+  --slate-50: #f8fafc;
+  --slate-100: #eff3f8;
+  --slate-300: #cbd5e1;
+  --slate-500: #6b7c91;
+  --slate-600: #475569;
+
+  /* Neutros para el tema oscuro */
+  --ink-900: #0a1020;
+  --ink-800: #131b2e;
+  --ink-700: #263349;
+  --steel-400: #9ba9bf;
+  --steel-500: #647490;
+  --steel-100: #e8edf5;
+
+  --pure-white: #ffffff;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CAPA 2 · SEMÁNTICA
+   Cambiar de tema es sustituir este bloque completo, no recorrer los
+   componentes con condicionales. Patrón tomado de daisyUI.
+
+   Todas las parejas se midieron antes de fijarse; los ratios van al lado.
+   ═══════════════════════════════════════════════════════════════════════ */
+:root,
+:root[data-theme='light'] {
+  /* Alinea barras de desplazamiento y controles nativos con el tema (RF-4.8). */
+  color-scheme: light;
+
+  --background: var(--slate-50);
+  --surface: var(--slate-100);
+  --foreground: var(--navy-900); /* 17,06:1 sobre fondo */
+  --muted-foreground: var(--slate-600); /* 7,24:1 sobre fondo */
+  --primary: var(--navy-700); /* 10,99:1 sobre fondo */
+  --primary-foreground: var(--pure-white); /* 11,50:1 sobre primario */
+  --accent: var(--gold-700); /* 6,10:1 sobre fondo */
+  --accent-foreground: var(--pure-white); /* 6,38:1 sobre acento */
+  --border: var(--slate-300); /* filete decorativo, sin umbral */
+  --border-control: var(--slate-500); /* 4,08:1 — límite de control */
+  --ring: var(--navy-700); /* 10,99:1 — foco */
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --background: var(--ink-900);
+  --surface: var(--ink-800);
+  --foreground: var(--steel-100); /* 16,12:1 sobre fondo */
+  --muted-foreground: var(--steel-400); /* 7,96:1 sobre fondo */
+  --primary: var(--navy-300); /* 8,96:1 sobre fondo */
+  --primary-foreground: var(--ink-900); /* 8,96:1 sobre primario */
+  --accent: var(--gold-400); /* 8,98:1 sobre fondo */
+  --accent-foreground: var(--ink-900); /* 8,98:1 sobre acento */
+  --border: var(--ink-700); /* filete decorativo, sin umbral */
+  --border-control: var(--steel-500); /* 4,01:1 — límite de control */
+  --ring: var(--navy-300); /* 8,96:1 — foco */
 }
 
 /*
- * Sistema de diseño del seminario.
+ * Distinción deliberada entre `--border` y `--border-control`.
  *
- * Paleta: base azul profunda (instrumentación científica) con acentos en el
- * espectro cian → violeta, que evocan barrido de frecuencia sin recurrir al
- * cliché del degradado saturado.
+ * WCAG 1.4.11 exige 3:1 solo a los límites que identifican un **control**. Un
+ * filete decorativo de tarjeta no es un control, así que puede ser tenue sin
+ * incumplir. Tener un solo token obligaba a elegir entre filetes demasiado
+ * marcados o controles que no cumplen.
  */
-@theme {
-  --color-abyss-950: #05070f;
-  --color-abyss-900: #0a0f1e;
-  --color-abyss-850: #0e1526;
-  --color-abyss-800: #131c31;
-  --color-abyss-700: #1d2942;
-  --color-abyss-600: #2b3a58;
 
-  --color-mist-100: #eef2f9;
-  --color-mist-200: #d6dded;
-  --color-mist-300: #aab5cd;
-  --color-mist-400: #7d8aa6;
-  --color-mist-500: #5c6883;
+/* ═══════════════════════════════════════════════════════════════════════
+   CAPA 3 · TOKENS DE COMPONENTE Y TEMA DE TAILWIND
 
-  --color-signal-300: #7ce8f5;
-  --color-signal-400: #35d0e6;
-  --color-signal-500: #12b0cc;
-  --color-signal-600: #0b87a3;
-
-  --color-violet-signal-400: #9d8cff;
-  --color-violet-signal-500: #7a63f0;
-
-  /* Expone los tokens de shadcn como utilidades de Tailwind. */
+   `@theme inline` es obligatorio aquí: un `@theme` normal escribiría los
+   valores en `:root` y pisaría los bloques de tema de arriba. `inline`
+   resuelve la variable en el punto de uso, que es lo que permite que
+   cambiar `--background` cambie `bg-background`.
+   ═══════════════════════════════════════════════════════════════════════ */
+@theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-border: var(--border);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-border-control: var(--border-control);
   --color-ring: var(--ring);
+}
 
-  --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+/*
+ * Forma y ritmo. Parametrizados igual que el color, para que Swiss Modernism
+ * fije el radio en un solo lugar en vez de repetirlo por componente.
+ */
+@theme {
+  --radius-surface: 2px;
+  --radius-control: 4px;
+
+  --font-display: var(--font-display), ui-serif, Georgia, serif;
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
 
-  --text-hero: clamp(2.1rem, 5.2vw, 4.4rem);
-  --text-section: clamp(1.6rem, 3vw, 2.4rem);
+  --text-hero: clamp(2rem, 4.6vw, 3.9rem);
+  --text-section: clamp(1.5rem, 2.8vw, 2.15rem);
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /*
-   * Animaciones que requieren los componentes de Magic UI vendorizados en
-   * src/components/ui. El registro las declara como `cssVars.theme`; en
-   * Tailwind 4 se definen aquí y los `@keyframes` van más abajo.
-   */
+  /* Animaciones que requieren los componentes vendorizados en components/ui. */
   --animate-ripple: ripple var(--duration, 2s) ease calc(var(--i, 0) * 0.2s) infinite;
-  --animate-marquee: marquee var(--duration) infinite linear;
-  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
-  --animate-aurora: aurora 8s ease-in-out infinite alternate;
-  --animate-shiny-text: shiny-text 8s infinite;
-  --animate-orbit: orbit calc(var(--duration) * 1s) linear infinite;
 }
 
 @keyframes ripple {
@@ -103,66 +161,6 @@
   }
 }
 
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(calc(-100% - var(--gap)));
-  }
-}
-
-@keyframes marquee-vertical {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(calc(-100% - var(--gap)));
-  }
-}
-
-/*
- * Variante sobria de `aurora`.
- *
- * El keyframe original de Magic UI acompaña el desplazamiento del gradiente con
- * `rotate(±5deg) scale(0.9–1.1)`, lo que hace tambalear el texto. En un título
- * institucional resulta inapropiado, así que aquí solo se recorre el gradiente.
- */
-@keyframes aurora {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-@keyframes shiny-text {
-  0%,
-  90%,
-  100% {
-    background-position: calc(-100% - var(--shiny-width)) 0;
-  }
-  30%,
-  60% {
-    background-position: calc(100% + var(--shiny-width)) 0;
-  }
-}
-
-@keyframes orbit {
-  0% {
-    transform: rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * 1px))
-      rotate(calc(var(--angle) * -1deg));
-  }
-  100% {
-    transform: rotate(calc(var(--angle) * 1deg + 360deg)) translateY(calc(var(--radius) * 1px))
-      rotate(calc((var(--angle) * -1deg) - 360deg));
-  }
-}
-
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -171,10 +169,9 @@
   }
 
   body {
-    background-color: var(--color-abyss-950);
-    color: var(--color-mist-200);
+    background-color: var(--background);
+    color: var(--foreground);
     font-family: var(--font-sans);
-    font-feature-settings: 'cv02', 'cv03', 'cv04';
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
@@ -184,8 +181,8 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    color: var(--color-mist-100);
-    letter-spacing: -0.02em;
+    color: var(--foreground);
+    letter-spacing: -0.015em;
     text-wrap: balance;
   }
 
@@ -194,14 +191,14 @@
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-signal-400);
-    outline-offset: 3px;
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
     border-radius: 2px;
   }
 
   ::selection {
-    background-color: var(--color-signal-500);
-    color: var(--color-abyss-950);
+    background-color: var(--primary);
+    color: var(--primary-foreground);
   }
 }
 
@@ -210,37 +207,38 @@
   .eyebrow {
     font-family: var(--font-mono);
     font-size: 0.6875rem;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--color-signal-300);
+    color: var(--muted-foreground);
+  }
+
+  /* Superficie de tarjeta. Sin sombras: Swiss Modernism separa con retícula. */
+  .surface {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-surface);
+  }
+
+  /* Filete decorativo: divide sin dibujar una caja. */
+  .hairline {
+    border-color: var(--border);
   }
 
   /* Retícula técnica de fondo, muy tenue. */
   .grid-backdrop {
     background-image:
-      linear-gradient(to right, color-mix(in oklab, var(--color-abyss-600) 45%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in oklab, var(--color-abyss-600) 45%, transparent) 1px, transparent 1px);
+      linear-gradient(to right, var(--border) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--border) 1px, transparent 1px);
     background-size: 72px 72px;
+    opacity: 0.45;
     mask-image: radial-gradient(ellipse 85% 70% at 50% 30%, #000 20%, transparent 78%);
-  }
-
-  .hairline {
-    border-color: color-mix(in oklab, var(--color-abyss-600) 70%, transparent);
-  }
-
-  /* Tarjeta base: superficie translúcida sobre el fondo profundo. */
-  .surface {
-    background-color: color-mix(in oklab, var(--color-abyss-850) 75%, transparent);
-    border: 1px solid color-mix(in oklab, var(--color-abyss-600) 55%, transparent);
-    backdrop-filter: blur(8px);
   }
 }
 
 /*
  * Aparición al hacer scroll. Sin JS el contenido queda visible por defecto.
- *
- * Desplazamiento corto y transición lenta: la intención es que el contenido se
- * asiente, no que llame la atención sobre la propia animación.
+ * Desplazamiento corto y transición lenta: el contenido se asienta, no llama la
+ * atención sobre la animación.
  */
 @media (prefers-reduced-motion: no-preference) {
   .reveal {
