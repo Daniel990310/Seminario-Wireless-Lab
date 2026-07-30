@@ -141,7 +141,7 @@ cualquier herramienta y no solo a Claude Code.
 | T1 · Comando de verificación (RNF-6) | **Completada y verificada.** `npm run verify` |
 | T2 · Tokens en tres capas y selector de tema (RF-4) | **Completada y verificada.** 0 hallazgos de contraste en las 4 corridas |
 | T3 · Quitar Motion y montar la base de shadcn/ui | **Completada y verificada.** JavaScript a 0,0 kB. Ver §5 |
-| T4 · Tipografía | Pendiente |
+| T4 · Tipografía | **Completada y verificada.** Crimson Pro + Atkinson Hyperlegible Next (122,6 kB) |
 | T4b · Refinamiento visual con 21st.dev | **Aceptada por Daniel (2026-07-30).** Componentes estáticos (sin JS) |
 | T5 · Retícula de 12 columnas (RNF-1.3) | Pendiente. Cierra los nodos indeterminados |
 | T6 · Nombres accesibles y teclado (RNF-1.4) | Pendiente |
@@ -152,7 +152,7 @@ cualquier herramienta y no solo a Claude Code.
 
 ### Lo que mide el verificador ahora mismo
 
-Con `npm run build && npm run verify` al cerrar T3:
+Con `npm run build && npm run verify` al cerrar T4:
 
 | Comprobación | Valor | Límite | |
 | ------------ | ----- | ------ | - |
@@ -161,8 +161,8 @@ Con `npm run build && npm run verify` al cerrar T3:
 | RNF-1.4 Secciones sin nombre accesible | 7 | 0 | **abierto → T6** |
 | RNF-1.5 Saltos de nivel en encabezados | 0 | 0 | cumple |
 | RNF-2.1 JavaScript comprimido | **0,0 kB** | 115 kB → informativo | cumple |
-| RNF-2.2 Primera carga comprimida | **136,4 kB** | 260 kB → informativo | cumple |
-| RNF-2.6 Tipografías | 110,9 kB | 125 kB → informativo | cumple |
+| RNF-2.2 Primera carga comprimida | **136,1 kB** | 260 kB → informativo | cumple |
+| RNF-2.6 Tipografías | **122,6 kB** | 125 kB → informativo | cumple |
 
 Los tres techos de peso siguen impresos porque siguen siendo la referencia con la que
 se compara, pero desde la enmienda del 2026-07-30 no bloquean (§0). El código de

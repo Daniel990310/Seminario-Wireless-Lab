@@ -49,7 +49,7 @@ export default defineConfig({
   // igualmente calcula métricas de fallback (menos CLS) y emite el preload.
   fonts: [
     {
-      name: 'Space Grotesk',
+      name: 'Crimson Pro',
       cssVariable: '--font-display',
       provider: fontProviders.local(),
       // Solo el subconjunto `latin`: cubre todos los caracteres acentuados del
@@ -57,21 +57,25 @@ export default defineConfig({
       options: {
         variants: [
           {
-            src: ['./src/assets/fonts/space-grotesk-latin.woff2'],
-            weight: '300 700',
+            src: ['./src/assets/fonts/crimson-pro-latin.woff2'],
+            weight: '200 900',
             style: 'normal',
           },
         ],
       },
-      fallbacks: ['ui-sans-serif', 'system-ui', 'sans-serif'],
+      fallbacks: ['ui-serif', 'Georgia', 'serif'],
     },
     {
-      name: 'Inter',
+      name: 'Atkinson Hyperlegible Next',
       cssVariable: '--font-body',
       provider: fontProviders.local(),
       options: {
         variants: [
-          { src: ['./src/assets/fonts/inter-latin.woff2'], weight: '100 900', style: 'normal' },
+          {
+            src: ['./src/assets/fonts/atkinson-hyperlegible-next-latin.woff2'],
+            weight: '200 800',
+            style: 'normal',
+          },
         ],
       },
       fallbacks: ['ui-sans-serif', 'system-ui', 'sans-serif'],
