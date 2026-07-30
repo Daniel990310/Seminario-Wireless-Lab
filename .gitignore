@@ -3,3 +3,10 @@ node_modules/
 .astro/
 .DS_Store
 *.log
+
+# Secretos. `.mcp.json` está versionado a propósito, pero solo contiene la
+# REFERENCIA `${API_KEY_21ST}`, nunca el valor. La clave vive en el entorno o en un
+# `.env` local, y ninguno de los dos entra al repositorio.
+.env
+.env.*
+!.env.example
