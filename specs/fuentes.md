@@ -38,6 +38,19 @@ antes de evaluar.**
 | tailkits-ui: `sr-only` | 0 apariciones | `grep -o sr-only components/*.html` |
 | shadcn: vocabulario de tokens | Idéntico al del proyecto | Lectura del bloque `:root` en su CSS de referencia |
 
+### React y Radix (para D6)
+
+Medido con esbuild en modo producción, minificado y con `gzip -9`:
+
+| Bundle | sin comprimir | gzip |
+| ------ | ------------- | ---- |
+| `react` + `react-dom` | 193.294 B | **60.044 B** |
+| Lo anterior + 5 primitivas de Radix | 304.725 B | **96.209 B** |
+
+Las cinco primitivas medidas: `react-tabs`, `react-accordion`, `react-dialog`,
+`react-dropdown-menu` y `react-toggle-group`. Radix aporta **36,2 kB** sobre la
+base de React.
+
 ### Tipografías candidatas
 
 Instaladas desde npm y medidos los archivos del subconjunto latino:
@@ -51,8 +64,9 @@ Instaladas desde npm y medidos los archivos del subconjunto latino:
 Conclusión: **Atkinson Hyperlegible Next variable** gana por las tres vías —menos
 peso, un archivo en lugar de dos y rango completo de pesos.
 
-Proyección de primera carga con la tipografía nueva: **145 kB**, contra un
-presupuesto de 180 kB (RNF-2.2). Las tipografías serían el **83 %** de ese peso.
+Proyección de primera carga con la tipografía nueva y D6: **~247 kB**, contra un
+presupuesto de 260 kB (RNF-2.2). Reparto: ~103 kB de JavaScript y 119,7 kB de
+tipografías.
 
 ## Afirmaciones del dataset `[dataset]`
 
@@ -117,4 +131,4 @@ No pueden sustentar una decisión cerrada. Cada uno tiene tarea asociada.
 | El efecto de `AnimatedBeam` se puede replicar con SVG y `stroke-dashoffset` con calidad equivalente | No se alcanza el presupuesto de JavaScript sin perder calidad visual | T3, que exige comparar contra el actual **antes** de desinstalar React |
 | Crimson Pro y Atkinson Hyperlegible Next combinan bien en la práctica | Hay que volver atrás tras rehacer la tipografía | T4, con la alternativa «Academic/Archival» ya identificada |
 | Mover la figura a columnas propias resuelve los 28 nodos indeterminados | El contraste sobre fondo no uniforme sigue sin poder determinarse | T5, cuya comprobación es que `verify` reporte cero indeterminados |
-| El presupuesto de 180 kB es alcanzable con tres familias tipográficas | Habría que renunciar a JetBrains Mono | T4: proyección de 145 kB `[medido]`, con 105,6 kB si se quita la monoespaciada |
+| El presupuesto de 260 kB alcanza con tres familias tipográficas más React y Radix | Habría que renunciar a JetBrains Mono o a alguna primitiva de Radix | T4 y T10: proyección de ~247 kB `[medido]`, con solo 13 kB de margen |

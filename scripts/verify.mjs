@@ -33,10 +33,17 @@ const AXE = join(ROOT, 'node_modules/axe-core/axe.min.js');
  */
 const kB = (n) => `${(n / 1000).toFixed(1)} kB`;
 
-/** Presupuestos de RNF-2. Cambiarlos exige cambiar primero requirements.md. */
+/*
+ * Presupuestos de RNF-2. Cambiarlos exige cambiar primero requirements.md.
+ *
+ * Actualizados con D6, que adopta shadcn/ui sobre Radix. Los valores anteriores
+ * —40 kB y 180 kB— los había propuesto quien implementaba, no el cliente. Los
+ * actuales se derivan de una medición: React con react-dom cuesta 60,0 kB y cinco
+ * primitivas de Radix suman 36,2 kB.
+ */
 const PRESUPUESTOS = {
-  javascript: 40_000,
-  primeraCarga: 180_000,
+  javascript: 115_000,
+  primeraCarga: 260_000,
   tipografias: 125_000,
 };
 

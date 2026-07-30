@@ -20,7 +20,7 @@ un requisito**. Varios son excelentes en abstracto y no aplican a este proyecto.
 | Repositorio | Veredicto | Razón |
 | ----------- | --------- | ----- |
 | `nextlevelbuilder/ui-ux-pro-max-skill` | **Adoptar** | Datos verificables para requisitos concretos. Instalado, junto con su skill `design-system`. |
-| `shadcn-ui/ui` | **Referencia, no dependencia** | Su vocabulario de tokens ya está adoptado, verificado línea a línea. Los componentes exigen React + Radix. |
+| `shadcn-ui/ui` | **Adoptado** (D6) | Su vocabulario de tokens ya estaba adoptado. Con D6 se incorporan también los componentes. |
 | `saadeghi/daisyui` | **Descartar la librería, adoptar su patrón de temas** | Corregido: el aporte real es la arquitectura de temas, no los componentes. |
 | `travisvn/awesome-claude-skills` | **Usar como directorio** | Corregido: contiene dos ítems que sirven a requisitos abiertos. |
 | `Prat011/awesome-llm-skills` | **Usar como directorio** | Corregido: contiene dos ítems relevantes. |
@@ -91,8 +91,9 @@ Incluye tokens de forma —`--radius-selector`, `--radius-field`, `--radius-box`
    parecen a los de shadcn que el proyecto ya usa. Adoptarla obliga a renombrar
    toda la capa de tokens o a mantener dos en paralelo. Es un problema de
    mantenibilidad (RNF-5), no estético.
-2. **Peso.** 388 kB de CSS de componentes, cuando RNF-2 exige bajar de 241 kB a
-   180 kB en total.
+2. **Peso.** 388 kB de CSS de componentes. El presupuesto de RNF-2 subió con D6,
+   pero lo hizo para pagar interacción accesible, no un kit de componentes
+   uniformes.
 3. **Registro visual.** Su valor es entregar componentes uniformes y
    reconocibles, lo contrario de una identidad propia.
 
@@ -157,15 +158,29 @@ Su regla de UX «Contrast Readability» tiene severidad alta y coincide con RNF-
 mínimo 4,5:1 para texto normal, y explícitamente «nada de texto gris sobre fondo
 gris» — que es exactamente el defecto de la línea base con `mist-500`.
 
-### Por qué shadcn/ui queda como referencia
+### shadcn/ui: rechazado primero, adoptado después (D6)
 
-Su convención de tokens y el helper `cn` ya están adoptados. Incorporar los
-componentes implica React y Radix, y la línea base muestra que React + Motion
-cuestan **109,3 kB comprimidos, el 45 % del peso que viaja**. RNF-2 fija el techo
-en 40 kB. Es incompatible por aritmética, no por criterio.
+**Se rechazó por un presupuesto que no venía del cliente.** El argumento era que
+React cuesta 109 kB frente a un techo de 40 kB, y por lo tanto la decisión era
+«aritmética, no de criterio». El error estaba antes: **ese techo de 40 kB lo
+propuse yo**, no salió de ningún requisito del cliente. Presentar como aritmética
+una consecuencia de mi propio supuesto fue una inversión indebida del argumento.
 
-Si en el futuro se aprueba el registro de asistentes (RF-3) y aparece un
-formulario complejo, la decisión se reevalúa: ahí Radix sí justificaría su costo.
+Con D6 el cliente pide un sitio interactivo. Medido `[medido]`:
+
+| Capa | gzip |
+| ---- | ---- |
+| `react` + `react-dom` | 60,0 kB |
+| 5 primitivas de Radix | +36,2 kB |
+
+Radix cuesta 36 kB y entrega comportamiento accesible ya resuelto: foco atrapado
+en diálogos, navegación con flechas en pestañas, `aria-expanded` correcto en
+acordeones, cierre con Escape. Escribir eso a mano y que además pase RNF-1 cuesta
+más que 36 kB de esfuerzo, y con más riesgo de error.
+
+**Motion sí queda fuera**, y por un criterio consistente: cuesta 35 kB y compra un
+único efecto que CSS resuelve gratis. La pregunta no es cuánto pesa algo, sino qué
+se obtiene por ese peso.
 
 ## 2. Dirección de diseño
 
@@ -287,47 +302,54 @@ un módulo compartido, para que no pueda traducirse por accidente (RF-1.2).
 
 ### RNF-2 · Presupuesto de JavaScript
 
-**Se elimina React, Motion y `@astrojs/react` del proyecto.** El único
-componente que los requería es `AnimatedBeam`, y su efecto —un pulso recorriendo
-un trayecto— se reimplementa en SVG con `stroke-dasharray` y `stroke-dashoffset`
-animados por CSS.
+**Revisado con D6.** La versión anterior de esta sección proponía eliminar React,
+Motion y `@astrojs/react`. D6 revierte esa decisión: React se queda porque el
+cliente pide un sitio interactivo.
 
-Justificación: 109,3 kB comprimidos por una sección son insostenibles frente a un
-techo de 40 kB, y la regla de Astro «Minimize client directives» (severidad alta)
-apunta en la misma dirección. Los trayectos se pueden calcular en tiempo de
-compilación porque las posiciones de los nodos las define nuestra propia
-retícula; medir el DOM era una necesidad de la implementación de Magic UI, no del
-problema.
+**Lo que sí sale es Motion.** El único componente que lo requiere es
+`AnimatedBeam`, y su efecto —un pulso recorriendo un trayecto— se reimplementa en
+SVG con `stroke-dasharray` y `stroke-dashoffset` animados por CSS. Los trayectos
+se calculan en tiempo de compilación porque las posiciones de los nodos las define
+nuestra propia retícula; medir el DOM era una necesidad de la implementación de
+Magic UI, no del problema.
 
-*Alternativa descartada:* conservar la isla y subir el presupuesto. Se rechaza
-porque haría que el presupuesto se acomode al código en lugar de disciplinarlo.
+El criterio que distingue los dos casos: **qué se obtiene por cada kilobyte.**
+Radix cuesta 36,2 kB y entrega comportamiento accesible resuelto —foco atrapado,
+navegación con flechas, `aria-expanded`, cierre con Escape—. Motion cuesta 35 kB y
+entrega un solo efecto decorativo que CSS hace gratis.
+
+Se mantiene la regla de Astro «Minimize client directives» (severidad alta): cada
+isla se hidrata con `client:visible` salvo motivo escrito, de modo que el peso se
+reparta en lugar de cargarse todo al inicio.
 
 Queda entonces sin dependencias de framework: solo los scripts propios de
 navegación, aparición al hacer scroll, carga del mapa, selector de idioma y
 selector de tema.
 
-### El cuello de botella se traslada a las tipografías
+### Dónde queda el peso con D6
 
-Consecuencia que conviene explicitar, porque cambia dónde hay que poner
-atención. Proyección de la primera carga tras eliminar React `[medido]`:
+Proyección de la primera carga `[medido]`:
 
 | Recurso | Peso | Del total |
 | ------- | ---- | --------- |
-| Tipografías (3 familias) | 119,7 kB | **83 %** |
-| HTML | 13,3 kB | 9 % |
-| CSS | ~9 kB | 6 % |
-| JavaScript | ~3 kB | 2 % |
-| **Total** | **145 kB** | frente a 180 kB de presupuesto |
+| JavaScript (React + Radix + islas) | ~103 kB | 42 % |
+| Tipografías (3 familias) | 119,7 kB | 48 % |
+| HTML | ~14 kB | 6 % |
+| CSS | ~10 kB | 4 % |
+| **Total** | **~247 kB** | frente a 260 kB de presupuesto |
 
-Es decir: **el presupuesto de 40 kB de JavaScript pasa a cumplirse con enorme
-holgura (~3 kB), y la restricción real son las tipografías.** La tipografía nueva
-suma 11,4 kB respecto de la actual, lo que sigue cabiendo.
+Las dos partidas grandes quedan equilibradas, y **ninguna tiene holgura
+cómoda**: el margen total es de 13 kB. Dos palancas identificadas de antemano,
+para no improvisar si hace falta espacio:
 
-Si en algún momento hace falta margen, la palanca es **JetBrains Mono: 40,4 kB
-por etiquetas y horarios.** Quitarla deja la primera carga en 105,6 kB. No se
-quita ahora porque los metadatos técnicos son parte del lenguaje del seminario,
-pero queda identificada como la primera concesión disponible y no como un
-descubrimiento futuro.
+1. **JetBrains Mono: −40,4 kB.** Las etiquetas y horarios pasarían a la
+   tipografía de texto. Es la concesión más barata.
+2. **Reducir primitivas de Radix.** Las cinco medidas cuestan 36,2 kB juntas; usar
+   tres en lugar de cinco recorta en proporción.
+
+Con `client:visible` el primer pintado paga menos que el total, porque cada isla
+se carga al entrar en pantalla. El presupuesto cubre el total, que es el caso
+pesimista.
 
 ### RNF-1 · Accesibilidad
 

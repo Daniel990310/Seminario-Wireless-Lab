@@ -80,6 +80,7 @@ no indica un cambio real.
 | D3 | Registro de asistentes: previsto en la especificación, no implementado |
 | D4 | Swiss Modernism 2.0 más minimalismo; Crimson Pro y Atkinson Hyperlegible Next |
 | D5 | Dos temas con selector: claro por omisión, oscuro y «según el sistema» |
+| D6 | **Se adopta shadcn/ui sobre Radix.** El cliente busca un sitio interactivo |
 
 ## Ya evaluado y descartado
 
@@ -89,10 +90,10 @@ No volver a proponer esto sin un argumento nuevo. El detalle está en
 | Propuesta | Por qué no |
 | --------- | ---------- |
 | **daisyUI** | 388 kB de CSS y vocabulario de tokens incompatible con el que ya se usa. Su patrón de temas sí se adoptó |
-| **Componentes de shadcn/ui, Radix, Headless UI** | Exigen React. El presupuesto es 40 kB de JavaScript y hoy React cuesta 109 kB. Incompatible por aritmética |
 | **tailkits-ui** | Cero soporte de modo oscuro en 30 archivos, sin `sr-only`, `alt="Logo"` genérico, y categorías de landing de producto |
 | **Componentes decorativos de Magic UI** | `MagicCard`, `BorderBeam`, `AuroraText`, `Marquee`, `Particles`: efectos de interfaz, no del tema del seminario |
-| **Subir un presupuesto para que quepa el código** | El presupuesto disciplina al código, no al revés. Si no alcanza, se replantea la solución |
+| **Motion (`motion/react`)** | 35 kB por un único efecto que CSS resuelve con `stroke-dashoffset` |
+| **Subir un presupuesto sin acuerdo del cliente** | El presupuesto disciplina al código. Cambiarlo es una decisión del cliente, registrada como decisión cerrada (así se hizo con D6) |
 
 **Sobre los logos institucionales:** los de PUCV, ANID, Columbia University, Nokia
 Bell Labs, PUC y USACH son marcas de terceros. **No se generan ni se aproximan con
@@ -110,8 +111,15 @@ instituciones entreguen los oficiales.
   debe decir qué alternativa se descartó y por qué.
 - **Ningún componente referencia un token primitivo**, solo la capa semántica.
   Así cambiar de tema es sustituir un bloque de valores (RF-4.7).
-- **Antes de agregar una dependencia**, medir su costo contra RNF-2. El cuello de
-  botella actual son las tipografías, no el JavaScript.
+- **Antes de agregar una dependencia**, medir su costo contra RNF-2 y preguntarse
+  **qué se obtiene por ese peso**. Radix cuesta 36 kB y entrega comportamiento
+  accesible resuelto: se adopta. Motion cuesta 35 kB y compra un solo efecto que
+  CSS hace gratis: se descarta. El criterio no es el tamaño en abstracto.
+- **Un presupuesto propuesto por quien implementa no es un requisito del cliente.**
+  Si una decisión se apoya en un número que uno mismo fijó, hay que decirlo en esos
+  términos y no presentarla como aritmética inevitable. Ya pasó con el techo de
+  40 kB de JavaScript, que llevó a rechazar shadcn/ui por un motivo que no era del
+  cliente.
 - **Sin peticiones a terceros en la carga inicial** (RNF-4). El mapa se carga solo
   si la persona lo pide.
 - `astro check` sin errores ni advertencias.

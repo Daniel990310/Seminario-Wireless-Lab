@@ -21,6 +21,7 @@ Acordadas el 29 de julio de 2026:
 | D3 | **Registro de asistentes sin definir** | Se deja previsto en la especificación, no se implementa. |
 | D4 | **Revisión visual general** | Swiss Modernism 2.0 más minimalismo, con tipografía Crimson Pro y Atkinson Hyperlegible. |
 | D5 | **Dos temas con selector** | Claro por omisión, oscuro como alternativa, más la opción «según el sistema». |
+| D6 | **Se adopta shadcn/ui sobre Radix** | Decisión del cliente, 30 de julio. Busca un sitio interactivo y no solo informativo. Revierte el rechazo anterior, que se apoyaba en un presupuesto de JavaScript que no venía del cliente. |
 
 ## Requisitos funcionales
 
@@ -72,6 +73,40 @@ por parte de la persona.
    navegador acompañen al tema elegido.
 9. La figura de propagación funciona en ambos temas sin duplicar el SVG.
 
+### RF-6 · Componentes interactivos
+
+Deriva de D6. **Qué se implementa está pendiente de confirmar con el cliente**;
+lo de abajo es la propuesta, no un acuerdo.
+
+Criterio para incluir una interacción: **debe resolver un problema real de
+lectura del contenido**, no agregar movimiento. Una conferencia se consulta para
+responder «cuándo», «quién» y «dónde»; la interacción tiene que hacer eso más
+rápido.
+
+| Interacción | Problema que resuelve | Primitiva |
+| ----------- | --------------------- | --------- |
+| Programa por jornada en pestañas | Dos días completos en una lista obligan a buscar; separados se consulta el día que interesa | `Tabs` |
+| Resumen de cada sesión desplegable | Los títulos de charla no dicen de qué trata; el resumen completo alargaría la página | `Accordion` |
+| Ficha de expositor en diálogo | Reseña y línea de investigación sin abandonar la página ni alargar la tarjeta | `Dialog` |
+| Selector de tema de tres estados | RF-4 | `ToggleGroup` |
+| Sección activa resaltada en la navegación | En scroll largo se pierde la ubicación | Ninguna: `IntersectionObserver` propio |
+
+**Criterios de aceptación**
+
+1. Cada interacción es operable **solo con teclado**, y el foco es visible en
+   ambos temas.
+2. El contenido sigue siendo accesible sin JavaScript: las pestañas degradan a
+   secciones consecutivas y los resúmenes a texto visible. Nada de contenido que
+   solo exista al hidratar.
+3. Cero hallazgos de axe con los componentes montados y desplegados, no solo en
+   su estado inicial.
+4. Ninguna primitiva se instala sin un componente que la use.
+5. El texto sale de los archivos de datos por idioma, nunca del componente.
+
+**Fuera de esta propuesta:** el selector de idioma. Con dos idiomas, dos enlaces
+son mejores que un menú desplegable: menos peso, menos código y una interacción
+menos que verificar.
+
 ### RF-3 · Registro de asistentes (previsto, no implementado)
 
 **Criterios de aceptación**
@@ -113,9 +148,9 @@ por parte de la persona.
 
 **Criterios de aceptación**
 
-1. JavaScript transferido ≤ **40 kB comprimidos** por idioma.
+1. JavaScript transferido ≤ **115 kB comprimidos** por idioma.
    *Línea base: 109,3 kB.*
-2. Peso total de la primera carga ≤ **180 kB comprimidos**, sin contar el mapa
+2. Peso total de la primera carga ≤ **260 kB comprimidos**, sin contar el mapa
    que se carga a petición.
    *Línea base: 241 kB.*
 3. Ninguna petición a dominios de terceros en la carga inicial.
@@ -127,14 +162,30 @@ por parte de la persona.
 6. Las tipografías no superan **125 kB** en total (subconjunto latino).
    *Línea base: 108,3 kB con tres familias.*
 
-El presupuesto de 40 kB de JavaScript es deliberadamente exigente: obliga a
-decidir si la sección que hoy cuesta 109 kB justifica ese peso o se resuelve de
-otra forma.
+### Cómo se fijaron estos presupuestos
 
-**Nota sobre dónde está la restricción real.** Al eliminar React, el JavaScript
-baja a unos 3 kB y las tipografías pasan a ser el **83 %** de la primera carga
-(proyección: 145 kB de 180 kB permitidos, `[medido]`). El presupuesto que hay que
-vigilar de verdad es el tipográfico, no el de JavaScript. Ver `design.md` §4.
+Los valores anteriores —40 kB de JavaScript y 180 kB de primera carga— **no
+venían del cliente: los propuse yo**, y la revisión de D6 los dejó sin sustento.
+Los nuevos se derivan de una medición, no de una preferencia `[medido]`:
+
+| Capa | gzip | Qué compra |
+| ---- | ---- | ---------- |
+| `react` + `react-dom` | 60,0 kB | Base necesaria para Radix |
+| 5 primitivas de Radix | +36,2 kB | Pestañas, acordeón, diálogo, menú y grupo de alternancia |
+| Componentes propios | ~7 kB | Las islas del sitio |
+| **Total previsto** | **~103 kB** | Con 115 kB de techo queda margen |
+
+Proyección de la primera carga: 119,7 kB de tipografías + ~103 kB de JavaScript +
+~14 kB de HTML + ~10 kB de CSS ≈ **247 kB**, contra un techo de 260 kB.
+
+**Motion queda fuera.** Cuesta 35 kB y solo compra el haz animado de la red de
+colaboración, que se resuelve con SVG y `stroke-dashoffset` sin coste. Radix
+cuesta prácticamente lo mismo y compra interacción real. El criterio no es el
+tamaño en abstracto, sino qué se obtiene por cada kilobyte.
+
+Con `client:visible` cada isla se carga por separado, así que el peso del primer
+pintado es menor que el total. El presupuesto cubre el total, que es el caso
+pesimista.
 
 ### RNF-3 · SEO y metadatos
 

@@ -21,20 +21,21 @@ Son **siete** skills, y no todos aplican a este proyecto. La tabla dice cuáles 
 | `ui-ux-pro-max` | **Sí, es el central** | Decisiones de color, tipografía, composición y UX |
 | `design-system` | **Sí** | Tokens en tres capas: base de RF-4 (T2) |
 | `banner-design` | **Sí, para T8** | El `og:image` de 1200×630 es exactamente esto |
-| `ui-styling` | **Solo en parte** | Ver la advertencia abajo |
+| `ui-styling` | **Sí, completo** (D6) | shadcn/ui sobre Radix, Tailwind, modo oscuro y patrones accesibles |
 | `brand` | No | La identidad visual ya está decidida (D4) y la institucional pertenece a la PUCV y ANID |
 | `design` | No | Ver la advertencia sobre generación de logos |
 | `slides` | No | Es para presentaciones, no para el sitio |
 
-### Advertencia: dos skills empujan hacia lo ya descartado
+### Advertencias
 
-**`ui-styling` recomienda shadcn/ui sobre Radix.** Su descripción lo dice
-explícitamente. En este proyecto **eso está descartado** por aritmética: React
-cuesta 109 kB y el presupuesto es 40 kB (ver `design.md` §1). De este skill sirve
-su parte de Tailwind, modo oscuro y patrones accesibles; **no** su recomendación
-de componentes.
+**Corregido el 30 de julio.** Este skill recomienda shadcn/ui sobre Radix, y
+durante un tiempo esta sección decía que estaba descartado «por aritmética». Era
+un argumento defectuoso: el presupuesto de 40 kB que lo hacía imposible **lo
+propuse yo, no el cliente**. Con D6 el cliente pide un sitio interactivo y el
+skill **aplica completo**. Trae además `scripts/shadcn_add.py`, útil para agregar
+componentes.
 
-Lo que sí aporta de forma concreta: `ui-styling/canvas-fonts/` trae 54
+Lo que aporta aparte de eso: `ui-styling/canvas-fonts/` trae 54
 tipografías `.ttf` bajo licencia SIL Open Font, con sus archivos de licencia
 incluidos, **entre ellas Crimson Pro**. Sirven para generar el `og:image` de T8,
 donde hacen falta archivos de tipografía reales para renderizar en canvas. Es la
@@ -112,13 +113,13 @@ No se instalan: vienen con el entorno.
 | `skill-creator` | Si se decide empaquetar el verificador como skill reutilizable | No es necesario: `npm run verify` ya es un comando del proyecto (RNF-6.1) |
 | `update-config` | Se configure un hook o permisos en `settings.json` | — |
 
-## 3. Repositorios usados como fuente, no como dependencia
+## 3. Repositorios de referencia
 
-Ninguno se instala. Se consultan.
+Salvo shadcn/ui, que con D6 pasó a ser dependencia, los demás solo se consultan.
 
 | Repositorio | Para qué sirve aquí | Qué **no** tomar |
 | ----------- | ------------------- | ---------------- |
-| [`shadcn-ui/ui`](https://github.com/shadcn-ui/ui) | Referencia del vocabulario de tokens (`--background`, `--foreground`, `--muted-foreground`, `--border`, `--ring`), `.dark` por clase, `oklch()`. Verificado línea a línea: coincide con el de este proyecto | Sus componentes. Exigen React y Radix, incompatibles con el presupuesto de 40 kB |
+| [`shadcn-ui/ui`](https://github.com/shadcn-ui/ui) | **Adoptado con D6.** Tokens, helper `cn` y componentes sobre Radix. Verificado línea a línea: su vocabulario coincide con el del proyecto | Instalar primitivas «por si acaso»: cada una se justifica por el componente que habilita |
 | [`aniftyco/awesome-tailwindcss`](https://github.com/aniftyco/awesome-tailwindcss) | Dos ítems: [Inclusive Colors](https://www.inclusivecolors.com/) para generar paletas verificadas WCAG, y [`@tailwindcss/typography`](https://github.com/tailwindlabs/tailwindcss-typography) si crece el texto largo | Headless UI y Catalyst: React |
 | [`saadeghi/daisyui`](https://github.com/saadeghi/daisyui) | Su **patrón de temas**: bloque plano de propiedades semánticas, `color-scheme` declarado por tema, y tokens de forma además de color | La librería. 388 kB de CSS y tokens incompatibles |
 | [`travisvn/awesome-claude-skills`](https://github.com/travisvn/awesome-claude-skills) | Directorio. Dio [`web-asset-generator`](https://github.com/alonw0/web-asset-generator) para el `og:image` de T8 | No es integrable como tal |

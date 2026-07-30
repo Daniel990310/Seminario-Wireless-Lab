@@ -13,8 +13,8 @@ Las tareas están ordenadas por dependencia, no por importancia:
    afirmar que lo demás mejoró. Construirlo al final invita a acomodar el
    presupuesto al resultado.
 2. **Los tokens antes que los componentes**, porque los componentes leen tokens.
-3. **Eliminar React antes de rediseñar**, para no rehacer dos veces la sección de
-   la red de colaboración.
+3. **Quitar Motion y montar la base de shadcn antes de rediseñar**, para no
+   rehacer dos veces los componentes.
 4. **El bilingüe antes del contenido final**, porque reestructura las rutas.
 
 ---
@@ -31,8 +31,9 @@ Crear `npm run verify`, que sobre el build:
 - **Anula las transiciones antes de medir contraste** — sin esto la medición da
   falsos positivos, como quedó documentado en la línea base.
 - Reporta los nodos `incomplete` por separado: no son aprobaciones.
-- Comprueba los presupuestos de peso comprimido: JavaScript ≤ 40 kB, primera
-  carga ≤ 180 kB.
+- Comprueba los presupuestos de peso comprimido. Los valores viven en
+  `PRESUPUESTOS` dentro del script y se actualizaron con D6 a 115 kB de
+  JavaScript y 260 kB de primera carga.
 - Termina con código distinto de cero al incumplirse cualquiera.
 - Escribe `verification.md` con fecha, commit y números.
 
@@ -88,20 +89,27 @@ destello claro. El selector se opera solo con teclado.
 
 ---
 
-## T3 · Eliminar React y reimplementar el haz en SVG
+## T3 · Quitar Motion y montar la base de shadcn/ui
 
-**Satisface:** RNF-2.1, RNF-2.5 · **Depende de:** T1
+**Satisface:** RNF-2.1, RNF-2.5, D6 · **Depende de:** T1
 
-- Reimplementar el efecto de `AnimatedBeam` con SVG y `stroke-dashoffset`
-  animado por CSS, calculando los trayectos al compilar.
-- **Comparar contra el actual antes de desinstalar nada.** Si la calidad no
-  alcanza, se replantea con el presupuesto sobre la mesa en lugar de aceptarlo
-  callado.
-- Desinstalar `react`, `react-dom`, `motion`, `@astrojs/react` y sus tipos.
-- Retirar `src/components/ui/` y el alias `@` si queda sin uso.
+**React se queda** (D6). Lo que sale es Motion.
 
-**Comprobación:** JavaScript transferido ≤ 40 kB. Sin `astro-island` en el HTML.
-La animación se detiene con `prefers-reduced-motion` usando solo la regla CSS.
+- Reimplementar el efecto de `AnimatedBeam` con SVG y `stroke-dashoffset` animado
+  por CSS, calculando los trayectos al compilar. **Comparar contra el actual antes
+  de desinstalar Motion.**
+- Desinstalar `motion` y retirar `src/components/ui/motion-safe.tsx`.
+- Configurar la base de shadcn/ui: `components.json`, el helper `cn` ya existe en
+  `src/lib/utils.ts`, y los tokens semánticos que llegan con T2.
+- Instalar solo las primitivas de Radix que se usen. Cada una se justifica por el
+  componente que habilita, no «por si acaso».
+- Toda isla se hidrata con `client:visible`, salvo que haya un motivo escrito para
+  otra directiva. Es la regla «Minimize client directives» del skill de Astro,
+  severidad alta.
+
+**Comprobación:** JavaScript ≤ 115 kB comprimidos y primera carga ≤ 260 kB. Sin
+`motion` en `package.json`. La animación del haz se detiene con
+`prefers-reduced-motion` usando solo la regla CSS.
 
 ---
 
@@ -125,13 +133,12 @@ Paquetes exactos, ya verificados en npm:
 - Si el par no funciona en la práctica, evaluar «Academic/Archival» (EB Garamond
   y Crimson Text) antes de volver atrás.
 
-**Comprobación:** primera carga ≤ 180 kB comprimidos; la proyección es 145 kB.
+**Comprobación:** primera carga ≤ 260 kB comprimidos; la proyección es 247 kB.
 Sin peticiones a dominios externos. Sin desplazamiento de diseño al cargar.
 Revisión visual del par en el sitio real, no en una muestra.
 
 **Si el presupuesto no alcanza**, la primera concesión es quitar JetBrains Mono
-(−40,4 kB, deja la carga en 105,6 kB). Está identificada de antemano para que no
-se decida a la carrera.
+(−40,4 kB). Está identificada de antemano para que no se decida a la carrera.
 
 ---
 
@@ -197,6 +204,25 @@ revisada de verdad, no supuesta.
 
 ---
 
+## T10 · Componentes interactivos con shadcn/ui
+
+**Satisface:** D6, RNF-1.7 · **Depende de:** T3, T5, T7
+
+La interacción que se implementa está en RF-6 y se acordó con el cliente. Cada
+primitiva de Radix se justifica por el componente que habilita.
+
+- Instalar solo las primitivas acordadas. Ninguna «por si acaso».
+- Cada componente hereda los tokens semánticos de T2, de modo que funcione en
+  ambos temas sin código adicional.
+- Los textos salen de los archivos de datos por idioma (RNF-5.1), no del
+  componente.
+- Hidratación con `client:visible`, salvo motivo escrito.
+
+**Comprobación:** `npm run verify` sigue en cero hallazgos con los componentes
+montados. Recorrido por teclado completo en cada uno. JavaScript ≤ 115 kB.
+
+---
+
 ## T9 · Verificación final y registro
 
 **Satisface:** RNF-6.3, RNF-5.4 · **Depende de:** todas
@@ -221,10 +247,12 @@ revisada de verdad, no supuesta.
 | RF-4 Selector de tema | T2 |
 | RNF-1 Accesibilidad | T2, T5, T6 |
 | RNF-2 Rendimiento | T3, T4 |
+| D6 shadcn/ui sobre Radix | T3, T10 |
 | RNF-3 SEO | T7, T8 |
 | RNF-4 Privacidad | T2 (`localStorage`, sin cookies) |
 | RNF-5 Mantenibilidad | T7, T9 |
 | RNF-6 Verificación | T1, T9 |
+| RF-6 Interacción | T10 |
 
 ## Fuera de estas tareas
 
