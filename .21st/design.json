@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "name": "Seminario Wireless Lab",
+  "tokens": {
+    "colors": {
+      "primary": "#1E3A5F",
+      "secondary": "#475569",
+      "background": "#F8FAFC",
+      "surface": "#EFF3F8",
+      "accent": "#A16207"
+    },
+    "typography": {
+      "fontFamily": "Atkinson Hyperlegible Next, sans-serif",
+      "headingFont": "Crimson Pro, serif"
+    },
+    "border": {
+      "radius": "2px"
+    }
+  },
+  "rules": {
+    "iconLibrary": "lucide-react",
+    "allowInlineStyles": false
+  }
+}

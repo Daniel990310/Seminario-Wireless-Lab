@@ -249,51 +249,154 @@ pasar por `get_component`. `[supuesto]` que el registro no consume la cuota de
 recuperaciones: no se ha ejecutado todavía. Verificar con `get_usage` antes y después
 la primera vez.
 
-### El riesgo real: el catálogo es React y el presupuesto es de RNF-2
+### Qué cambió con la enmienda del 2026-07-30
 
 Todo el catálogo es React + Tailwind. Este repo ya tiene `@astrojs/react`,
-`react` y `react-dom`, así que un componente **entra** sin cambios de stack. El
-problema es el peso:
+`react` y `react-dom`, así que un componente **entra** sin cambios de stack.
 
-- Presupuestos vigentes en `scripts/verify.mjs`: JavaScript ≤ **115 kB** gz, primera
-  carga ≤ **260 kB**, tipografías ≤ **125 kB**. `[verificado]`
-- `react` + `react-dom` ya cuestan **60,0 kB** gz. `[medido]`, es la base de D6.
-- Los componentes más atractivos del catálogo son interactivos (tablas TanStack,
-  menús, diálogos). Interactivo significa directiva `client:*`, y eso arrastra el
-  runtime al bundle. Cinco primitivas de Radix midieron **36,2 kB**. `[medido]`
+Antes de la enmienda, el peso era la objeción principal: `react` + `react-dom` cuestan
+**60,0 kB** gz `[medido]`, y cinco primitivas de Radix **36,2 kB** `[medido]`. Con los
+techos de RNF-2.1/2.2/2.6 relajados a tripwire informativo, **el peso ya no es motivo
+para descartar un componente**. Se mide y se reporta, pero no bloquea.
 
-O sea: el margen es de unas decenas de kB, no ilimitado. **Regla: ningún componente de
-21st.dev se considera incorporado hasta que `npm run build && npm run verify` termine
-en verde.** Si el presupuesto se pasa, el componente sale; el presupuesto no se sube
-(cambiarlo exige cambiar `requirements.md` primero).
+**El filtro que sigue vigente es el de registro visual (§5):** es una conferencia
+académica de propagación inalámbrica, no una landing de producto. Un componente con
+gradientes neón, partículas o glassmorphism no encaja, por más que quepa en el
+presupuesto. Esto ya se aprendió por la vía costosa: se implementaron seis componentes
+decorativos y hubo que retirarlos. `search` devuelve mucho de eso; la evaluación del
+punto 2 del flujo es la que filtra.
+
+**Regla:** ningún componente de 21st.dev se considera incorporado hasta que
+`npm run build && npm run verify` termine con **0 hallazgos de axe**. Accesibilidad
+(RNF-1) sigue siendo bloqueante sin cambio alguno.
 
 Lo que es de riesgo bajo o nulo:
 
 - **`get_theme`** — devuelve CSS `:root` / `.dark` para Tailwind/shadcn. Cero JS.
 - **`search_logo`** — SVG inline desde svgl.app. Cero JS, y sin límite de uso.
+  **Solo para logos de tecnologías** (WiFi, 5G, mmWave, etc.), **nunca para logos
+  institucionales** (PUCV, ANID, Columbia, etc.), que siguen siendo marcadores de
+  posición hasta que las instituciones entreguen los oficiales.
 - Componentes **sin estado**, renderizados en el servidor sin directiva `client:*`.
-  Es exactamente el patrón que ya usa `src/components/ui` con Magic UI.
+  Es exactamente el patrón que ya usa `src/components/ui`.
 
-### Flujo recomendado
+### Flujo de integración de 21st.dev en el SDD (5 fases)
 
-1. `search` o `search_picker` (este último dibuja una galería para que Daniel elija;
-   usarlo cuando la decisión es suya y no del agente).
-2. Si nada encaja, `generate`. Devuelve una **URL para abrir en el navegador**, no
-   código: hay que compartir el enlace. `mode: 'code'` da un componente React con
-   sandbox; `mode: 'sketch'` da borradores HTML/Tailwind autocontenidos, más baratos de
-   evaluar. `variantCount` y `directions` (nombre + rationale por variante) sirven para
-   pedir alternativas de verdad distintas en una sola generación.
-3. De una take de sketch, `get_take` devuelve el HTML **y** un `copyPrompt`: una
-   especificación para que un agente lo reimplemente en el stack del proyecto. Para un
-   sitio Astro con presupuesto de peso, ese camino es preferible a pegar React.
-4. Instalar por `installCommand`, y recién entonces `npm run build && npm run verify`.
+Cada componente del catálogo pasa por el mismo flujo que cualquier otra dependencia.
+El orden importa: explorar es gratis, gastar cuota es caro.
 
-`get_inspiration` y `generate` aceptan un objeto `context` (`.21st/design.json`) que
-reordena los resultados según el stack y las restricciones del proyecto. `[medido]` que
-su formato **no está documentado públicamente**: la búsqueda web del 2026-07-30 no
-encontró especificación, solo la mención en el esquema de las herramientas. No inventar
-el archivo; si se quiere, generarlo con la CLI y verificar qué escribe.
+#### 1. EXPLORAR (gratis, ilimitado)
 
-**Nada de esto desbloquea el plan.** Sigue valiendo lo de §6: los componentes de
-interfaz solo aparecen en T10, y T10 está detenida porque RF-6 es propuesta del agente,
-no requisito del cliente.
+Usar `search`, `search_picker` y `get_inspiration` para descubrir candidatos. Usar
+`search_logo` para SVGs de tecnologías. Usar `get_theme` para explorar paletas.
+**No gastar cuota aquí.**
+
+`search_picker` dibuja una galería visual: usarlo cuando la decisión es de Daniel y
+no del agente.
+
+#### 2. EVALUAR (el filtro SDD)
+
+Para cada candidato, responder estas cuatro preguntas en orden:
+
+1. **¿A qué requisito de `requirements.md` sirve?** Si no sirve a ninguno, no se usa.
+2. **¿Encaja en el registro visual?** Conferencia académica, sobria, institucional.
+   Si el componente quedaría mejor en una landing de SaaS, descartarlo con motivo.
+3. **¿Es interactivo o estático?** Si es estático (sin `client:*`), no agrega JS.
+   Si es interactivo, anotar qué primitiva de Radix arrastra.
+4. **¿Pasa accesibilidad?** Solo sabremos al verificar, pero componentes sin
+   `aria-*` adecuados o sin soporte de teclado son candidatos a fallar.
+
+#### 3. PROTOTIPAR
+
+Dos caminos según el caso:
+
+- **Componente estático (sin JS):** Usar `generate` con `mode: 'sketch'` →
+  `get_take` para obtener HTML/Tailwind + `copyPrompt`. El `copyPrompt` es una
+  especificación para reimplementar en el stack del proyecto: para un sitio Astro,
+  ese camino es preferible a pegar React. `variantCount` (1–3) y `directions`
+  (nombre + rationale por variante) permiten pedir alternativas distintas en una
+  sola generación.
+- **Componente interactivo:** Usar el `installCommand` que trae `search` para
+  instalar vía shadcn CLI, o `get_component` si se necesita inspeccionar el código
+  antes (gasta cuota: 2/día).
+
+`generate` con `mode: 'code'` da un componente React con sandbox — compartir el
+enlace cuando la decisión sea de Daniel.
+
+#### 4. IMPLEMENTAR
+
+- Si el componente es React interactivo: hidratarlo con `client:visible`
+  (regla «Minimize client directives», severidad alta del skill de Astro).
+- Todo texto sale de `src/data/`, nunca del componente (RNF-5).
+- Tokens semánticos solamente, nunca primitivos (RF-4.7).
+- Comentario en español explicando por qué se eligió este componente y no otro.
+
+#### 5. VERIFICAR
+
+- `npm run build && npm run verify`
+- Reportar las mediciones de peso en el commit (son informativas desde la enmienda).
+- **Accesibilidad: 0 hallazgos de axe, bloqueante.** Si falla, corregir o retirar.
+- Revisión visual en ambos temas antes de declarar completado.
+
+### Contexto para generaciones: `.21st/design.json`
+
+`get_inspiration` y `generate` aceptan un objeto `context` que reordena los
+resultados según el stack y las restricciones del proyecto. `[verificado]` el formato
+en la investigación del 2026-07-30 — se documenta a continuación para que cualquier
+entorno lo use sin inventarlo:
+
+```json
+{
+  "version": "1.0",
+  "name": "Seminario Wireless Lab",
+  "tokens": {
+    "colors": {
+      "primary": "#1E3A5F",
+      "secondary": "#475569",
+      "background": "#F8FAFC",
+      "surface": "#EFF3F8",
+      "accent": "#A16207"
+    },
+    "typography": {
+      "fontFamily": "Atkinson Hyperlegible Next, sans-serif",
+      "headingFont": "Crimson Pro, serif"
+    },
+    "border": {
+      "radius": "2px"
+    }
+  },
+  "rules": {
+    "iconLibrary": "lucide-react",
+    "allowInlineStyles": false
+  }
+}
+```
+
+Este archivo vive en `.21st/design.json` en la raíz del repositorio y **está
+versionado**: no lleva secretos y es útil que viaje al clon de cada entorno para que
+las generaciones respeten la identidad visual del proyecto sin recrearlo.
+Crearlo solo si se va a usar `generate`; para `search` no hace falta.
+
+### Uso desde Antigravity u otro agente sin MCP nativo
+
+Si el entorno no soporta MCP directamente, el `installCommand` de shadcn funciona
+como comando de terminal sin MCP:
+
+```powershell
+$env:API_KEY_21ST = "la-clave-rotada"
+npx shadcn@latest add "https://21st.dev/r/<autor>/<slug>?api_key=$env:API_KEY_21ST"
+```
+
+Y `search` se puede sustituir por navegar directamente el catálogo en
+<https://21st.dev> desde el navegador.
+
+### Qué desbloquea y qué no
+
+Con la enmienda de peso, la objeción principal contra los componentes React del
+catálogo desaparece. **Lo que sigue bloqueado es T10** (componentes interactivos):
+RF-6 es propuesta del agente, no requisito del cliente, y el peso relajado no la
+desbloquea — lo que falta es que Daniel confirme que quiere esas interacciones.
+
+Lo que sí está desbloqueado: usar 21st.dev para **componentes estáticos** (sin JS)
+en cualquier tarea que toque la composición visual del sitio (T5, T7, T8), siempre
+que pasen el filtro de §5 y sirvan a un requisito escrito.

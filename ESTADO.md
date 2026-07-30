@@ -7,8 +7,45 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-07-30** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
-· Último commit de tarea: `9089258` (T3); después hay commits de documentación
+Actualizado: **2026-07-30 noche** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
+· Último commit de tarea: `9089258` (T3); después hay commits de documentación y de flujo SDD
+
+## 0b. Primera sesión de Antigravity — 2026-07-30, noche
+
+Traspaso recibido de Claude (§0). Se leyeron `AGENTS.md`, `ESTADO.md`, `requirements.md`,
+`design.md`, `tasks.md`, `habilidades.md` y `fuentes.md`. Verificación completa ejecutada
+y confirmada:
+
+```
+npm run verify:todo (Windows, commit 9fbbf8c)
+  Accesibilidad:  0 hallazgos, 104 indeterminados (→T5), 7 sin nombre (→T6)
+  RF-4:           17/17 criterios ✓
+  T3:             7/7 criterios ✓
+  Peso:           JS 0,0 kB | primera carga 124,4 kB | tipografías 110,9 kB
+```
+
+Lo que se hizo:
+
+1. **Investigación profunda del MCP de 21st.dev.** Se documentaron las 13 herramientas
+   del servidor, sus parámetros y costos. Se verificó el formato de `.21st/design.json`
+   (antes marcado como `[medido]` sin especificación pública; ahora `[verificado]`).
+2. **Flujo SDD modificado.** `specs/habilidades.md` §6bis reescrito con un flujo de
+   5 fases (Explorar → Evaluar → Prototipar → Implementar → Verificar) que integra
+   21st.dev como catálogo de referencia sin romper las reglas del proyecto. El filtro de
+   registro visual (§5) reemplaza al de peso como barrera principal.
+3. **`.21st/design.json` creado.** Tokens del tema claro del proyecto para que `generate`
+   y `get_inspiration` respeten la identidad visual. Versionado a propósito: útil que
+   viaje a todos los clones.
+
+**Pendiente para Daniel** (3 preguntas):
+
+- ¿Agregar T4b (refinamiento visual con componentes estáticos de 21st.dev)?
+- ¿Confirmar RF-6 / T10 (componentes interactivos: Tabs, Accordion, Dialog)?
+- ¿Rotar la API key de 21st.dev? La que se compartió en el chat está comprometida.
+
+**Siguiente tarea sin bloqueo: sigue siendo T4 (tipografía).** Nada de lo hecho en esta
+sesión cambia el orden de las tareas; solo enriquece el flujo para cuando se llegue a
+componentes.
 
 ## 0. Traspaso a Antigravity — 2026-07-30, tarde
 
