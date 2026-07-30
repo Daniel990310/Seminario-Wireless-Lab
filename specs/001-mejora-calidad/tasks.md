@@ -145,9 +145,12 @@ sometió a prueba de sensibilidad: al restaurar la fila falla con
 
 ---
 
-## T3 · Quitar Motion y montar la base de shadcn/ui
+## T3 · Quitar Motion y montar la base de shadcn/ui — COMPLETADA
 
 **Satisface:** RNF-2.1, RNF-2.5, D6 · **Depende de:** T1
+**Resultado:** `src/components/CollaborationNetwork.astro` sustituye a la isla de
+React; `motion`, `CollaborationNetwork.tsx` y `ui/animated-beam.tsx` fuera;
+`components.json` creado; `npm run verify:red` añadido.
 
 **React se queda** (D6). Lo que sale es Motion.
 
@@ -166,6 +169,84 @@ sometió a prueba de sensibilidad: al restaurar la fila falla con
 **Comprobación:** JavaScript ≤ 115 kB comprimidos y primera carga ≤ 260 kB. Sin
 `motion` en `package.json`. La animación del haz se detiene con
 `prefers-reduced-motion` usando solo la regla CSS.
+
+**Comprobación — verificada.**
+
+| Medición | Antes (T2) | Después (T3) | Presupuesto |
+| -------- | ---------- | ------------ | ----------- |
+| JavaScript comprimido | 109,6 kB | **0,0 kB** | 115 kB |
+| Primera carga comprimida | 247,0 kB | **136,4 kB** | 260 kB |
+| Hallazgos axe (4 corridas) | 0 | 0 | 0 |
+| `motion` en `package.json` | sí | no | — |
+| Peticiones de script del navegador | 1 isla | **0** | — |
+
+La primera carga baja **110,6 kB, un 45 %**, y el JavaScript desaparece por
+completo. `npx astro check`: 0 errores, 0 advertencias, 0 hints.
+
+**Por qué el JavaScript llega a cero.** `CollaborationNetwork` era la única isla
+hidratada del sitio. `Ripple` se importa en `ProgramPending.astro` y
+`VenueLocator.astro` **sin** directiva `client:`, así que Astro lo renderiza en el
+build y no envía nada. Al pasar la red a Astro no queda ninguna isla, y la página
+no referencia ningún `.js`: solo scripts en línea, que van dentro del HTML.
+
+**Comparación con el comportamiento anterior**, como exigía la tarea. Motion movía
+`x1`/`x2` de un `linearGradient` de −10 % a 110 % en 7 s: el brillo era una banda
+vertical barriendo el **recuadro** del trayecto. Medido muestreando los atributos.
+La versión nueva desplaza un guion **sobre la curva misma**, así que el pulso sigue
+el trayecto en vez de aproximarlo.
+
+`npm run verify:red` comprueba los 7 criterios que `npm run verify` no cubre:
+
+| Criterio | Medición |
+| -------- | -------- |
+| El pulso se detiene con movimiento reducido | 4 pulsos, 0 animando, 0 visibles |
+| La topología sigue visible sin animación | 4/4 líneas base visibles |
+| El pulso recorre con movimiento permitido | 4/4 animando |
+| En móvil el eje vertical recorre | 1/1 animando |
+| El pulso avanza de verdad | `stroke-dashoffset` 225,6 → 196,4 px |
+| El navegador no pide ningún `.js` | 0 peticiones de script |
+| Ninguna isla que hidratar | 0 `astro-island` |
+
+**Cómo se sustituyó la medición del DOM.** `AnimatedBeam` medía la posición real de
+cada nodo para trazar la curva. Aquí la geometría se fija por construcción: las
+columnas laterales son retículas de dos filas iguales **sin separación**, y la
+tarjeta se centra dentro de su fila, así que los extremos caen siempre al 25 % y al
+75 % del alto sea cual sea el largo del texto. La separación visual se hace con
+relleno dentro de la fila, que no mueve el centro. Los trayectos son entonces
+constantes y se calculan al compilar.
+
+**Tres defectos propios que la comprobación destapó**, corregidos:
+
+1. **El medidor contaba bytes que nadie descarga.** `@astrojs/react` emite su
+   runtime de cliente aunque no quede ninguna isla. `client.*.js` se genera pero
+   ningún archivo de `dist` lo menciona. Sumarlo habría castigado justamente el
+   cambio que eliminó el JavaScript, igual que contar los logos diferidos.
+   `scripts/verify.mjs` ahora mide solo lo referenciado por el HTML y **lista los
+   huérfanos aparte** en vez de ignorarlos.
+2. **`pathLength` no normalizaba nada.** El pulso usaba `pathLength="100"` para
+   expresar el guion en porcentaje del recorrido. Con
+   `vector-effect="non-scaling-stroke"` el guion se mide en **píxeles de pantalla**:
+   el valor computado sale «16px, 84px» y el patrón se repite. En el eje de móvil,
+   de 470 px, salían ~4,7 guiones en vez de uno. Se rediseñó en espacio de pantalla
+   desplazando un período exacto por ciclo, que empalma el bucle a cualquier escala.
+   Se confirmó midiendo el `stroke-dasharray` computado y el largo del trayecto en
+   pantalla, no leyendo la especificación.
+3. **Un comentario afirmaba un atributo que no estaba.** Decía que la retícula de
+   escritorio llevaba `aria-hidden` para evitar duplicar contenido. No lo llevaba, y
+   además no hace falta: `display: none` ya saca del árbol de accesibilidad la vista
+   que el punto de quiebre oculta, y ponerlo habría ocultado la retícula en
+   escritorio, donde es la única versión visible.
+
+Un cuarto defecto, en la comprobación y no en el código: contaba los cinco pulsos
+del marcado, incluido el del eje móvil, que a 1440 px está en `display: none` y por
+eso no anima. Daba «4/5 animando» y parecía un fallo. Ahora filtra por elementos
+representados y se comprueba cada ancho por separado.
+
+**shadcn/ui: base montada, sin primitivas.** `components.json` queda configurado
+(`tailwind.config` vacío, que es lo que corresponde en Tailwind 4 sin archivo de
+configuración; `cssVariables: true` para enganchar con los tokens semánticos de T2).
+**No se instaló ninguna primitiva de Radix**: ningún componente la justifica
+todavía. Las que hagan falta llegan con T10, cada una con su motivo escrito.
 
 ---
 

@@ -4,7 +4,7 @@ import SiteHeader from '~/components/SiteHeader.astro';
 import Hero from '~/components/Hero.astro';
 import Section from '~/components/Section.astro';
 import SpeakerCard from '~/components/SpeakerCard.astro';
-import CollaborationNetwork from '~/components/CollaborationNetwork';
+import CollaborationNetwork from '~/components/CollaborationNetwork.astro';
 import ProgramPending from '~/components/ProgramPending.astro';
 import LogoWall from '~/components/LogoWall.astro';
 import VenueLocator from '~/components/VenueLocator.astro';
@@ -140,8 +140,13 @@ const hasProgram = program.days.length > 0;
       lead="El seminario articula grupos de investigación de Estados Unidos y Chile en torno a la Escuela de Ingeniería Eléctrica de la PUCV."
       tinted
     >
+      <!--
+        Sin `client:visible`: desde T3 la red es Astro puro y no se hidrata. Antes
+        era una isla de React porque `AnimatedBeam` medía la posición de cada nodo
+        en el DOM; ahora la geometría está fijada por construcción.
+      -->
       <div class="reveal mt-14">
-        <CollaborationNetwork client:visible />
+        <CollaborationNetwork />
       </div>
     </Section>
 

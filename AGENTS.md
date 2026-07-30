@@ -103,6 +103,26 @@ la del ancestro que recorta, no a ojo.
 que una comprobación protege algo, hay que romper deliberadamente lo que vigila y
 verla fallar. Una comprobación que nunca ha fallado no se ha probado.
 
+**Solo cuenta como peso lo que la página referencia.** `@astrojs/react` emite su
+runtime de cliente aunque no quede ninguna isla que hidratar. Tras T3 no queda
+ninguna, así que `client.*.js` se genera pero **ningún archivo de `dist` lo
+menciona**: son ~55 kB comprimidos que ningún navegador pide. Contarlos habría
+castigado justamente el cambio que eliminó el JavaScript. `scripts/verify.mjs` lee
+las referencias del HTML y mide los huérfanos aparte, sin ocultarlos.
+
+**`pathLength` no normaliza el guion si hay `vector-effect="non-scaling-stroke"`.**
+Con ese `vector-effect` el `stroke-dasharray` se mide en **píxeles de pantalla**: el
+valor computado sale como «16px, 84px» y el patrón se repite a lo largo del trazo.
+En un eje de 470 px aparecían ~4,7 guiones donde se esperaba uno. Si se anima un
+pulso con guiones sobre un SVG estirado, diseñar en espacio de pantalla y desplazar
+**un período exacto** por ciclo, que es lo único que empalma el bucle a cualquier
+escala. Comprobado midiendo, no leyendo la especificación.
+
+**Un elemento en `display: none` no ejecuta animaciones.** Al contar animaciones hay
+que filtrar por elementos representados (`getClientRects().length`). Sin filtrar,
+una vista alternativa oculta por punto de quiebre cuenta como animación que falta:
+daba «4/5 animando» y parecía un fallo donde no lo había.
+
 ## Decisiones cerradas: no reabrir sin acuerdo
 
 | # | Decisión |

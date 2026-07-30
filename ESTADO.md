@@ -8,7 +8,7 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 > **Si no está escrito en el repositorio, no ocurrió.**
 
 Actualizado: **2026-07-30** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
-· Último commit: `c29d21b` (T2)
+· Último commit: **T3**
 
 ---
 
@@ -19,7 +19,7 @@ git fetch origin
 git status -sb                       # ¿hay divergencia con el remoto?
 git log --oneline -5                 # ¿coincide con el «último commit» de arriba?
 npm ci                               # dependencias exactas del lockfile
-npm run build && npm run verify      # ¿de qué estado real parto?
+npm run build && npm run verify:todo # ¿de qué estado real parto?
 ```
 
 Si `git status -sb` muestra que la rama va **detrás** o **divergida**, resolver eso
@@ -67,7 +67,7 @@ cualquier herramienta y no solo a Claude Code.
 | ----- | ------ |
 | T1 · Comando de verificación (RNF-6) | **Completada y verificada.** `npm run verify` |
 | T2 · Tokens en tres capas y selector de tema (RF-4) | **Completada y verificada.** 0 hallazgos de contraste en las 4 corridas |
-| T3 · Quitar Motion y montar la base de shadcn/ui | **En curso.** Ver §5 |
+| T3 · Quitar Motion y montar la base de shadcn/ui | **Completada y verificada.** JavaScript a 0,0 kB. Ver §5 |
 | T4 · Tipografía | Pendiente |
 | T5 · Retícula de 12 columnas (RNF-1.3) | Pendiente. Cierra los nodos indeterminados |
 | T6 · Nombres accesibles y teclado (RNF-1.4) | Pendiente |
@@ -78,7 +78,7 @@ cualquier herramienta y no solo a Claude Code.
 
 ### Lo que mide el verificador ahora mismo
 
-Con `npm run build && npm run verify` sobre `c29d21b`:
+Con `npm run build && npm run verify` al cerrar T3:
 
 | Comprobación | Valor | Límite | |
 | ------------ | ----- | ------ | - |
@@ -86,53 +86,61 @@ Con `npm run build && npm run verify` sobre `c29d21b`:
 | RNF-1.3 Nodos con contraste indeterminado | 104 | 0 | **abierto → T5** |
 | RNF-1.4 Secciones sin nombre accesible | 7 | 0 | **abierto → T6** |
 | RNF-1.5 Saltos de nivel en encabezados | 0 | 0 | cumple |
-| RNF-2.1 JavaScript comprimido | 109,6 kB | 115 kB | cumple |
-| RNF-2.2 Primera carga comprimida | 247,0 kB | 260 kB | cumple |
+| RNF-2.1 JavaScript comprimido | **0,0 kB** | 115 kB | cumple |
+| RNF-2.2 Primera carga comprimida | **136,4 kB** | 260 kB | cumple |
 | RNF-2.6 Tipografías | 110,9 kB | 125 kB | cumple |
 
 Los dos incumplimientos abiertos **no son regresiones**: están en la línea base y
 su corrección pertenece a T5 y T6. `npm run verify` termina con código 1 por ellos,
 y eso es correcto.
 
-Además hay `npm run verify:tema`, que cubre los criterios de RF-4 que axe no puede
-evaluar: destello al cargar, comportamiento sin JavaScript, teclado, persistencia
-sin cookies y sincronía entre las dos instancias del selector. 16 comprobaciones.
+Hay tres verificadores, y `npm run verify:todo` los corre en cadena:
 
-## 5. T3, exactamente dónde quedó
+| Comando | Qué cubre |
+| ------- | --------- |
+| `npm run verify` | **La autoridad.** axe-core en 2 anchos × 2 temas, y los presupuestos de peso |
+| `npm run verify:tema` | Los 16 criterios de RF-4 que axe no puede evaluar: destello al cargar, sin JavaScript, teclado, persistencia sin cookies, sincronía entre las dos instancias del selector |
+| `npm run verify:red` | Los 7 criterios de T3: que el pulso recorra, que se detenga con movimiento reducido, y que el navegador no pida ningún `.js` |
 
-**Objetivo:** quitar Motion, reimplementar el haz con SVG y `stroke-dashoffset`
-animado por CSS, y montar la base de shadcn/ui. React se queda (D6).
+Todos requieren un `npm run build` previo.
 
-**Hecho:**
+## 5. T3, cómo quedó
 
-- Medido el comportamiento de partida, como exige la tarea. El haz de Motion mueve
-  una ventana de gradiente del 10 % sobre el **recuadro** del trayecto, de −10 % a
-  110 %, en 7 s. Comprobado muestreando `x1`/`x2` del `linearGradient`.
-- Añadido el bloque `network` a `src/data/seminar.ts` (RNF-5.1: el contenido no
-  vive en el componente).
-- Escrito `src/components/CollaborationNetwork.astro`: Astro puro, sin React ni
-  JavaScript de cliente. La geometría se fija por construcción en vez de medir el
-  DOM —columnas de dos filas iguales sin separación, así los extremos caen al 25 %
-  y 75 %— y el pulso usa `pathLength="100"` para poder expresar el guion en
-  porcentaje del recorrido.
+Motion fuera, haz reimplementado con SVG y `stroke-dashoffset`, base de shadcn/ui
+montada. El resultado más relevante: **el sitio ya no envía JavaScript**.
 
-**Falta:**
+`CollaborationNetwork` era la única isla hidratada. `Ripple` se importa en
+`ProgramPending.astro` y `VenueLocator.astro` **sin** directiva `client:`, así que
+Astro lo renderiza en el build. Al pasar la red a Astro puro no queda ninguna isla:
+la página no referencia ningún `.js` y el navegador no pide scripts.
 
-1. Conectar el componente nuevo: `src/pages/index.astro` todavía importa
-   `~/components/CollaborationNetwork` con `client:visible` y resuelve al `.tsx`.
-2. Borrar `src/components/CollaborationNetwork.tsx` y
-   `src/components/ui/animated-beam.tsx`.
-3. `npm uninstall motion`.
-4. Crear `components.json` para shadcn/ui. **Ninguna primitiva de Radix todavía:**
-   cada una se justifica por el componente que habilita, no «por si acaso».
-5. Comparar el resultado contra la medición de partida y verificar.
+| | Antes (T2) | Después (T3) |
+| - | ---------- | ------------ |
+| JavaScript comprimido | 109,6 kB | **0,0 kB** |
+| Primera carga | 247,0 kB | **136,4 kB** (−45 %) |
 
-**Hallazgo importante para el presupuesto.** `CollaborationNetwork` es la **única
-isla hidratada** del sitio. `Ripple` se importa en `ProgramPending.astro` y
-`VenueLocator.astro` pero **sin** directiva `client:`, así que se renderiza en el
-build y no envía JavaScript. Al convertir la red a Astro no debería quedar ninguna
-isla React, y el JavaScript de cliente debería caer muy por debajo de los 109,6 kB
-actuales. **Hay que medirlo, no darlo por hecho.**
+**Dos cosas que conviene saber antes de tocar este componente:**
+
+1. **La geometría está fijada por construcción, no medida.** Las columnas laterales
+   son retículas de dos filas iguales **sin separación**, con la tarjeta centrada en
+   su fila: así los extremos del trayecto caen siempre al 25 % y al 75 % del alto,
+   sea cual sea el largo del texto. La separación visual se hace con relleno dentro
+   de la fila, que no mueve el centro. Si se añade una tercera institución por lado,
+   **hay que recalcular los trayectos**, no solo agregar el dato. Está advertido en
+   el bloque `network` de `src/data/seminar.ts`.
+2. **El guion del pulso se mide en píxeles de pantalla, no en porcentaje.** Con
+   `vector-effect="non-scaling-stroke"`, `pathLength` no normaliza el
+   `stroke-dasharray`. Por eso el ciclo desplaza **un período exacto**: es lo único
+   que empalma el bucle a cualquier escala. Está explicado en la cabecera del
+   componente y registrado como trampa en `AGENTS.md`.
+
+**shadcn/ui:** `components.json` configurado, **ninguna primitiva de Radix
+instalada**. Cada una se justifica por el componente que habilita; las que hagan
+falta llegan con T10.
+
+**Siguiente tarea: T4** (tipografía). Ojo con el hallazgo ya verificado: Atkinson
+Hyperlegible **no tiene versión variable**; la que sí la tiene es «Next», y además
+pesa menos (33.996 B en 1 archivo, contra 34.732 B en 2). Está en `specs/fuentes.md`.
 
 ## 6. Git: cómo está el remoto
 

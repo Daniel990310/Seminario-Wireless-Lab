@@ -144,6 +144,35 @@ export const seminar = {
     },
   },
 
+  /*
+   * Topología de la red de colaboración.
+   *
+   * Vive aquí y no en el componente por RNF-5.1. El orden importa: `foreign` y
+   * `local` se dibujan a izquierda y derecha del nodo organizador, y cada lista
+   * tiene exactamente dos entradas porque la geometría del trayecto está
+   * calculada para dos por lado (ver `CollaborationNetwork.astro`). Añadir una
+   * tercera exige recalcular los trayectos, no solo agregar el dato.
+   */
+  network: {
+    hub: {
+      label: 'PUCV',
+      detail: 'Escuela de Ingeniería Eléctrica',
+      role: 'Organiza',
+    },
+    foreign: [
+      { label: 'Columbia University', detail: 'Gil Zussman', country: 'EE. UU.' },
+      {
+        label: 'Nokia Bell Labs',
+        detail: 'Jinfeng Du · Reinaldo A. Valenzuela',
+        country: 'EE. UU.',
+      },
+    ],
+    local: [
+      { label: 'PUC de Chile', detail: 'Miguel Gutiérrez Gaitán', country: 'Chile' },
+      { label: 'U. de Santiago', detail: 'Karel Toledo de la Garza', country: 'Chile' },
+    ],
+  },
+
   /** Texto de presentación del seminario. */
   about: {
     lead:

@@ -133,18 +133,52 @@ async function listarArchivos(dir) {
  */
 async function medirPeso(rutaPagina) {
   const archivos = await listarArchivos(DIST);
-  const grupos = { javascript: 0, css: 0, html: 0, tipografias: 0, imagenes: 0 };
+  const grupos = {
+    javascript: 0,
+    css: 0,
+    html: 0,
+    tipografias: 0,
+    imagenes: 0,
+    javascriptHuerfano: 0,
+    cssHuerfano: 0,
+    huerfanos: [],
+  };
+
+  /*
+   * Solo cuenta como peso lo que la página REFERENCIA.
+   *
+   * `@astrojs/react` emite su runtime de cliente aunque no quede ninguna isla
+   * que hidratar. Tras T3 no queda ninguna, así que `client.*.js` se genera pero
+   * ningún archivo de `dist` lo menciona: son ~55 kB comprimidos que ningún
+   * navegador pide jamás. Sumarlos al presupuesto es el mismo error que contar
+   * los logos diferidos, y castigaría precisamente el cambio que eliminó el
+   * JavaScript. Los huérfanos se miden y se informan aparte, no se ignoran: si
+   * algún día uno debería estar referenciado y no lo está, hay que verlo.
+   */
+  const html = await readFile(join(DIST, rutaPagina), 'utf8');
+  const referenciados = new Set(
+    [...html.matchAll(/(?:src|href)="([^"]+\.(?:js|css))"/g)].map((m) =>
+      m[1].replace(/^\//, ''),
+    ),
+  );
 
   for (const archivo of archivos) {
     const ext = extname(archivo);
     const rel = relative(DIST, archivo);
     const tam = (await stat(archivo)).size;
+    const comprimido = async () => gzipSync(await readFile(archivo), { level: 9 }).length;
 
     if (ext === '.woff2') grupos.tipografias += tam;
-    else if (ext === '.js') grupos.javascript += gzipSync(await readFile(archivo), { level: 9 }).length;
-    else if (ext === '.css') grupos.css += gzipSync(await readFile(archivo), { level: 9 }).length;
-    else if (ext === '.svg') grupos.imagenes += gzipSync(await readFile(archivo), { level: 9 }).length;
-    else if (rel === rutaPagina) grupos.html += gzipSync(await readFile(archivo), { level: 9 }).length;
+    else if (ext === '.js' || ext === '.css') {
+      const bytes = await comprimido();
+      const usado = referenciados.has(rel);
+      if (usado) grupos[ext === '.js' ? 'javascript' : 'css'] += bytes;
+      else {
+        grupos[ext === '.js' ? 'javascriptHuerfano' : 'cssHuerfano'] += bytes;
+        grupos.huerfanos.push(`${rel} (${bytes} B)`);
+      }
+    } else if (ext === '.svg') grupos.imagenes += await comprimido();
+    else if (rel === rutaPagina) grupos.html += await comprimido();
   }
 
   /*
@@ -152,6 +186,8 @@ async function medirPeso(rutaPagina) {
    * Se excluyen los logos, que llevan `loading="lazy"` y están bajo el pliegue,
    * y el mapa, que solo se solicita si la persona lo pide. Incluirlos infla la
    * cifra con bytes que la mayoría de las visitas nunca descarga.
+   *
+   * El HTML incluye los scripts en línea, que son el JavaScript que sí corre.
    */
   grupos.primeraCarga = grupos.javascript + grupos.css + grupos.html + grupos.tipografias;
   return grupos;
@@ -433,10 +469,21 @@ el desglose por corrida más abajo.
 | ------- | ---------- |
 | JavaScript | ${kB(peso.javascript)} |
 | Tipografías | ${kB(peso.tipografias)} |
-| HTML | ${kB(peso.html)} |
+| HTML (incluye los scripts en línea) | ${kB(peso.html)} |
 | CSS | ${kB(peso.css)} |
 | Imágenes SVG | ${kB(peso.imagenes)} |
 | **Primera carga** | **${kB(peso.primeraCarga)}** |
+
+Solo se cuenta lo que la página referencia. Archivos generados que **ningún archivo
+de \`dist\` menciona**, y que por tanto ningún navegador descarga:
+
+${
+  peso.huerfanos.length
+    ? `| Archivo huérfano | Comprimido |\n| ---------------- | ---------- |\n${peso.huerfanos
+        .map((h) => `| \`${h.split(' (')[0]}\` | ${h.match(/\((\d+) B\)/)?.[1] ?? '?'} B |`)
+        .join('\n')}\n\nTotal huérfano: ${kB(peso.javascriptHuerfano + peso.cssHuerfano)}.`
+    : 'Ninguno.'
+}
 
 ## Por corrida
 

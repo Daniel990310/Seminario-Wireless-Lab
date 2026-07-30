@@ -63,6 +63,25 @@ rige para los límites de **controles**, y por eso existe `--border-control` apa
 botón principal daba «~4,9:1 y cumple». Medido da **3,73:1 y no cumple**. La cifra
 de la tabla de línea base es la medida.
 
+### Después de T3
+
+| Cifra | Valor | Cómo se obtuvo |
+| ----- | ----- | -------------- |
+| JavaScript comprimido | **0,0 kB** | `npm run verify`. La página no referencia ningún `.js`; solo scripts en línea, que van dentro del HTML |
+| Primera carga comprimida | **136,4 kB** | Baja 110,6 kB (−45 %) respecto de T2 |
+| Peticiones de script del navegador | 0 | `npm run verify:red`, escuchando `resourceType === 'script'` |
+| Islas hidratadas | 0 | Recuento de `astro-island` en el DOM |
+| JavaScript huérfano generado | ~55 kB | `client.*.js` de `@astrojs/react`. Se emite aunque no haya islas y **ningún archivo de `dist` lo referencia**. Se informa aparte, no se suma |
+| Haz de Motion, comportamiento | ventana del 10 % de −10 % a 110 % en 7 s | Muestreo de `x1`/`x2` del `linearGradient` cada 500 ms, antes de retirar Motion |
+| `stroke-dasharray` con `non-scaling-stroke` | «16px, 84px» | `getComputedStyle`. Sale en **píxeles**: `pathLength="100"` no lo normaliza |
+| Largo del trayecto en pantalla | 173 px escritorio, 470 px móvil | Recorrido del trayecto transformado con `getScreenCTM`, 200 muestras |
+
+**Cómo se confirmó que `pathLength` no normaliza.** Se plantearon dos hipótesis y se
+midió cuál predecía lo observado. Hipótesis A, guion en unidades de usuario
+normalizadas: 1 guion visible. Hipótesis B, guion en píxeles de pantalla:
+`largoPantalla / 100` guiones, o ~4,7 en el eje móvil. Lo observado fueron ~5. Gana
+B. Es la razón por la que el pulso se diseñó en espacio de pantalla.
+
 ### Repositorios evaluados
 
 | Cifra | Valor | Cómo se obtuvo |
