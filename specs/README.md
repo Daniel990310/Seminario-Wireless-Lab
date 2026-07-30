@@ -14,6 +14,9 @@ condición medible.
 | [`001-mejora-calidad/tasks.md`](001-mejora-calidad/tasks.md) | Orden de ejecución y comprobación de cada tarea |
 | [`baseline/auditoria-2026-07-29.md`](baseline/auditoria-2026-07-29.md) | Medición previa: la referencia contra la que se compara |
 | [`fuentes.md`](fuentes.md) | **Registro de procedencia**: de dónde sale cada cifra |
+| [`habilidades.md`](habilidades.md) | Qué skills usar, cuándo y con qué precauciones |
+| [`001-mejora-calidad/verification.md`](001-mejora-calidad/verification.md) | Última medición. **Generado por `npm run verify`, no editar** |
+| [`../AGENTS.md`](../AGENTS.md) | Reglas de trabajo para agentes y personas |
 
 ## Regla de procedencia
 
@@ -66,11 +69,11 @@ aceptación de RNF-2.
 ```bash
 npm run build     # el sitio debe compilar
 npm run check     # tipos, sin errores ni advertencias
-npm run verify    # accesibilidad y presupuestos de peso (tarea T1, aún no existe)
+npm run verify    # accesibilidad y presupuestos de peso
 ```
 
-`npm run verify` es la autoridad sobre el cumplimiento. Mientras no exista
-(tarea T1), ninguna afirmación de mejora está respaldada.
+`npm run verify` es la autoridad sobre el cumplimiento (implementado en T1).
+Requiere un `build` previo y termina con código distinto de cero si algo incumple.
 
 ## Estado
 
