@@ -19,9 +19,10 @@ Las tareas están ordenadas por dependencia, no por importancia:
 
 ---
 
-## T1 · Comando de verificación
+## T1 · Comando de verificación — COMPLETADA
 
 **Satisface:** RNF-6 · **Depende de:** nada
+**Resultado:** `scripts/verify.mjs`, ejecutable con `npm run verify`. Informe en [`verification.md`](verification.md).
 
 Crear `npm run verify`, que sobre el build:
 
@@ -35,9 +36,33 @@ Crear `npm run verify`, que sobre el build:
 - Termina con código distinto de cero al incumplirse cualquiera.
 - Escribe `verification.md` con fecha, commit y números.
 
-**Comprobación:** ejecutado sobre el commit actual, reproduce la línea base
-—16 nodos de contraste, 28 indeterminados, 109,3 kB de JavaScript— y falla con
-código distinto de cero. Si no reproduce la línea base, el instrumento está mal.
+**Comprobación — verificada:**
+
+| Medición | Línea base | Verificador | |
+| -------- | ---------- | ----------- | - |
+| Hallazgos (escritorio) | 16 | 16 | exacto |
+| Indeterminados (escritorio) | 28 | 28 | exacto |
+| Causas raíz y ratios | 7 grupos, 3,29–3,73:1 | idénticos | exacto |
+| Secciones sin nombre | 7 | 7 | exacto |
+| Tipografías | 110,9 kB | 110,9 kB | exacto |
+| JavaScript | 109,3 kB | 109,6 kB | +0,3 % por la implementación de gzip |
+| Código de salida | — | 1 | falla como se espera |
+
+**Prueba de sensibilidad.** Además de reproducir la línea base, se comprobó que el
+instrumento detecta una mejora real: al subir solo el token `mist-500` a un valor
+que cumple, los hallazgos bajaron de 16 a 1 por pantalla, y el único restante fue
+exactamente el botón principal. Un verificador que solo reporta fallos constantes
+no sirve; este responde al cambio.
+
+**Tres defectos propios que la prueba destapó**, corregidos:
+
+1. **Unidades mezcladas.** Las especificaciones usaban kB decimal (1000 B) y el
+   script binario (1024 B): el mismo archivo aparecía como 109,3 kB y 106,8 kB.
+   Se fijó el decimal de forma explícita.
+2. **Primera carga inflada.** Contaba los logos, que llevan `loading="lazy"` y
+   están bajo el pliegue. Se excluyen: no son parte de la primera carga.
+3. **Totales ambiguos.** Sumaba las corridas y mostraba «32» frente a una línea
+   base de 16 medida solo en escritorio. Se agregó el desglose por corrida.
 
 ---
 
