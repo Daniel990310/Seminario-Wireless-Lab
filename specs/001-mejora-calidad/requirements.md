@@ -187,6 +187,34 @@ Con `client:visible` cada isla se carga por separado, así que el peso del prime
 pintado es menor que el total. El presupuesto cubre el total, que es el caso
 pesimista.
 
+### Enmienda del 2026-07-30: el cliente relaja los techos de peso
+
+**Daniel, en sesión: «el presupuesto de carga de datos no es una limitación para el
+proyecto».** Como los números de RNF-2.1, 2.2 y 2.6 nunca vinieron del cliente —los
+propuso el agente, como dice el párrafo de arriba—, esta instrucción los desautoriza y
+manda.
+
+Alcance exacto, para que nadie lo estire:
+
+- **Se relajan** los tres techos numéricos: 2.1 (115 kB de JavaScript), 2.2 (260 kB de
+  primera carga) y 2.6 (125 kB de tipografías).
+- **Siguen en pie, y no son presupuestos de peso:** 2.3 (ninguna petición a terceros en
+  la carga inicial), 2.4 (sin desplazamiento de diseño por tipografías) y 2.5 (el sitio
+  funciona y se lee con JavaScript deshabilitado). Ninguno de los tres depende de
+  cuántos kB se transfieren, así que la enmienda no los toca.
+
+**No se ha fijado un techo nuevo, y el agente no lo va a inventar**: inventar cifras de
+presupuesto es exactamente el error que este apartado documenta. Hasta que Daniel dé
+una cifra —o diga que no quiere ninguna—, los valores siguen en `scripts/verify.mjs`
+como **tripwire informativo**: se miden y se reportan, y superarlos es un dato que hay
+que declarar en el commit, no un motivo para descartar trabajo. Las comprobaciones de
+accesibilidad (RNF-1) siguen siendo bloqueantes sin cambio alguno.
+
+En la práctica, hoy no cambia nada: al cerrar T3 el sitio va en **0,0 kB de JavaScript
+y 136,4 kB de primera carga** `[medido]`, muy por debajo de los techos. Lo que la
+enmienda desbloquea es poder volver a meter React —componentes de 21st.dev, islas
+interactivas de T10— sin que el peso sea por sí solo el argumento para rechazarlo.
+
 ### RNF-3 · SEO y metadatos
 
 **Criterios de aceptación**

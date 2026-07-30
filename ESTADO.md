@@ -8,7 +8,35 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 > **Si no está escrito en el repositorio, no ocurrió.**
 
 Actualizado: **2026-07-30** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
-· Último commit: `9089258` (T3)
+· Último commit de tarea: `9089258` (T3); después hay commits de documentación
+
+## 0. Traspaso a Antigravity — 2026-07-30, tarde
+
+Lo que cambió en esta sesión y hay que saber antes de escribir una línea de código:
+
+1. **El presupuesto de peso ya no bloquea.** Daniel lo relajó explícitamente. Los
+   techos de RNF-2.1/2.2/2.6 pasan a ser **tripwire informativo**: se miden, se
+   reportan en el commit, no se usan para descartar trabajo. Enmienda completa y su
+   alcance exacto en `requirements.md`, apartado «Enmienda del 2026-07-30». **No
+   inventar un techo nuevo:** no hay cifra, y ese es justamente el error que ya se
+   cometió una vez.
+2. **Accesibilidad sigue bloqueante.** RNF-1 no se tocó. `npm run verify` sigue
+   siendo la autoridad ahí, y los dos incumplimientos abiertos (§4) son el trabajo
+   de T5 y T6, no regresiones.
+3. **El MCP de 21st.dev funciona** desde el PC de Daniel (§6b). Cómo aprovecharlo,
+   qué gasta cuota y qué no: `specs/habilidades.md` §6bis. Con el peso relajado, la
+   objeción principal contra sus componentes React desaparece; queda la de registro
+   visual (§6bis y `habilidades.md` §5): es una conferencia académica, no una
+   landing de producto.
+4. **La clave `API_KEY_21ST` no va en un `.env`.** Claude Code no lee `.env`. En
+   Antigravity el mecanismo puede ser otro: verificarlo antes de suponerlo, y no
+   copiar el patrón `.env` porque «funcionó en el otro lado».
+5. **Siguiente tarea sin bloqueo: T4 (tipografía).** T5 y T6 son las que cierran los
+   incumplimientos abiertos. T10 sigue bloqueada por RF-6, y el peso relajado **no**
+   la desbloquea: lo que falta es que Daniel confirme que quiere esos componentes.
+
+Primer comando, siempre: `git fetch origin && npm ci && npm run build && npm run
+verify:todo`. Si eso no corre, nada de lo de arriba es accionable todavía.
 
 **Confirmado desde el PC de Daniel (Windows), en la misma tarde:** los tres
 verificadores corren igual en Windows que en el entorno original. Se encontró y
@@ -51,8 +79,9 @@ trabajo.
 4. **Actualizar este archivo en el mismo commit que cierra una tarea.** Si se
    actualiza aparte, se olvida.
 5. **`npm run verify` en verde antes de declarar cualquier cosa terminada.** Es la
-   autoridad del proyecto sobre accesibilidad y peso (RNF-6). Sin él, «mejoré la
-   accesibilidad» es una opinión.
+   autoridad del proyecto sobre accesibilidad (RNF-6). Sin él, «mejoré la
+   accesibilidad» es una opinión. Desde la enmienda del 2026-07-30 los tres techos
+   de peso son informativos: se miden y se declaran, pero no invalidan el trabajo.
 
 ## 3. Qué leer, y en qué orden
 
@@ -93,9 +122,16 @@ Con `npm run build && npm run verify` al cerrar T3:
 | RNF-1.3 Nodos con contraste indeterminado | 104 | 0 | **abierto → T5** |
 | RNF-1.4 Secciones sin nombre accesible | 7 | 0 | **abierto → T6** |
 | RNF-1.5 Saltos de nivel en encabezados | 0 | 0 | cumple |
-| RNF-2.1 JavaScript comprimido | **0,0 kB** | 115 kB | cumple |
-| RNF-2.2 Primera carga comprimida | **136,4 kB** | 260 kB | cumple |
-| RNF-2.6 Tipografías | 110,9 kB | 125 kB | cumple |
+| RNF-2.1 JavaScript comprimido | **0,0 kB** | 115 kB → informativo | cumple |
+| RNF-2.2 Primera carga comprimida | **136,4 kB** | 260 kB → informativo | cumple |
+| RNF-2.6 Tipografías | 110,9 kB | 125 kB → informativo | cumple |
+
+Los tres techos de peso siguen impresos porque siguen siendo la referencia con la que
+se compara, pero desde la enmienda del 2026-07-30 no bloquean (§0). El código de
+`scripts/verify.mjs` **no se cambió**: si algún día un peso supera su techo, `verify`
+va a terminar en 1 por eso. En ese momento hay dos salidas honestas —declarar el
+exceso en el commit y seguir, o pedirle a Daniel una cifra nueva— y ninguna es
+inventarle un techo.
 
 Los dos incumplimientos abiertos **no son regresiones**: están en la línea base y
 su corrección pertenece a T5 y T6. `npm run verify` termina con código 1 por ellos,
