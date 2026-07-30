@@ -153,10 +153,14 @@ En orden:
 Este último punto ya se aprendió por la vía costosa: se implementaron seis
 componentes decorativos y hubo que retirarlos.
 
-## 6. Servidor MCP de 21st.dev: bloqueado por la política de red
+## 6. Servidor MCP de 21st.dev: funciona en el PC, bloqueado en el entorno remoto
 
-**Estado: no utilizable desde el entorno remoto de Claude Code.** `[medido]`
-2026-07-30.
+**Estado: utilizable desde el PC de Windows, no desde el entorno remoto de Claude
+Code.** `[medido]` 2026-07-30, las dos mitades.
+
+Desde el PC, `get_usage` responde autenticado —`tier: free`, 2 recuperaciones de
+código por día— y una búsqueda del catálogo devuelve resultados. Cómo aprovecharlo
+está en §6bis. Lo que sigue es el bloqueo del entorno remoto, que continúa vigente.
 
 `.mcp.json` está versionado y correcto: declara el servidor y referencia la clave
 como `${API_KEY_21ST}`, sin guardar el valor. El obstáculo no es la configuración ni
@@ -206,3 +210,90 @@ afirmaban lo contrario —`.gitignore`, `.env.example` y este párrafo— y cost
 averiguarlo. `.gitignore` sigue cubriendo `.env` y `.env.*` como red de seguridad, no
 como mecanismo, y también cubre `.claude/settings.local.json` porque ese sí puede
 llevar la clave.
+
+## 6bis. Cómo sacarle provecho a 21st.dev en ESTE proyecto
+
+**La configuración ya es la correcta: no migrarla.** `.mcp.json` apunta a
+`https://21st.dev/api/mcp` con cabecera `x-api-key`, que es el **21st MCP unificado**.
+El paquete viejo `@21st-dev/magic` quedó como proxy de compatibilidad y ya no es el
+camino recomendado. `[verificado]` en el README oficial
+(<https://github.com/21st-dev/magic-mcp>). `npx @21st-dev/cli@latest init --client
+claude` haría un patch del config, pero no hace falta: sobra y desversiona.
+
+### Qué cuesta y qué no
+
+`[verificado]` en la descripción de las propias herramientas, y `[medido]` con
+`get_usage` el 2026-07-30 (`tier: free`).
+
+| Gratis e ilimitado | Medido en el plan gratuito |
+| ------------------ | -------------------------- |
+| `search`, `search_picker`, `get_inspiration`, todos los `list_*` | `get_component` — **2 por día** |
+| `search_logo` (SVGs de svgl.app) | `generate` — generaciones diarias |
+| `get_theme` (CSS completo), `get_take` (HTML de una take) | |
+
+Comprobar la cuota con `get_usage` **antes** de gastar. Un `get_component` agotado no
+devuelve un error claro: devuelve `locked: true` o `found: false`, que es fácil
+confundir con "no existe".
+
+### La vía que no gasta cuota
+
+Cada resultado de `search` —que es gratis— ya trae el `installCommand`:
+
+```
+npx shadcn@latest add "https://21st.dev/r/<autor>/<slug>?api_key=$API_KEY_21ST"
+```
+
+`components.json` de este repo está configurado (`new-york`, `tsx`, alias
+`@/components/ui`), así que ese comando escribe el componente directo en el árbol sin
+pasar por `get_component`. `[supuesto]` que el registro no consume la cuota de
+recuperaciones: no se ha ejecutado todavía. Verificar con `get_usage` antes y después
+la primera vez.
+
+### El riesgo real: el catálogo es React y el presupuesto es de RNF-2
+
+Todo el catálogo es React + Tailwind. Este repo ya tiene `@astrojs/react`,
+`react` y `react-dom`, así que un componente **entra** sin cambios de stack. El
+problema es el peso:
+
+- Presupuestos vigentes en `scripts/verify.mjs`: JavaScript ≤ **115 kB** gz, primera
+  carga ≤ **260 kB**, tipografías ≤ **125 kB**. `[verificado]`
+- `react` + `react-dom` ya cuestan **60,0 kB** gz. `[medido]`, es la base de D6.
+- Los componentes más atractivos del catálogo son interactivos (tablas TanStack,
+  menús, diálogos). Interactivo significa directiva `client:*`, y eso arrastra el
+  runtime al bundle. Cinco primitivas de Radix midieron **36,2 kB**. `[medido]`
+
+O sea: el margen es de unas decenas de kB, no ilimitado. **Regla: ningún componente de
+21st.dev se considera incorporado hasta que `npm run build && npm run verify` termine
+en verde.** Si el presupuesto se pasa, el componente sale; el presupuesto no se sube
+(cambiarlo exige cambiar `requirements.md` primero).
+
+Lo que es de riesgo bajo o nulo:
+
+- **`get_theme`** — devuelve CSS `:root` / `.dark` para Tailwind/shadcn. Cero JS.
+- **`search_logo`** — SVG inline desde svgl.app. Cero JS, y sin límite de uso.
+- Componentes **sin estado**, renderizados en el servidor sin directiva `client:*`.
+  Es exactamente el patrón que ya usa `src/components/ui` con Magic UI.
+
+### Flujo recomendado
+
+1. `search` o `search_picker` (este último dibuja una galería para que Daniel elija;
+   usarlo cuando la decisión es suya y no del agente).
+2. Si nada encaja, `generate`. Devuelve una **URL para abrir en el navegador**, no
+   código: hay que compartir el enlace. `mode: 'code'` da un componente React con
+   sandbox; `mode: 'sketch'` da borradores HTML/Tailwind autocontenidos, más baratos de
+   evaluar. `variantCount` y `directions` (nombre + rationale por variante) sirven para
+   pedir alternativas de verdad distintas en una sola generación.
+3. De una take de sketch, `get_take` devuelve el HTML **y** un `copyPrompt`: una
+   especificación para que un agente lo reimplemente en el stack del proyecto. Para un
+   sitio Astro con presupuesto de peso, ese camino es preferible a pegar React.
+4. Instalar por `installCommand`, y recién entonces `npm run build && npm run verify`.
+
+`get_inspiration` y `generate` aceptan un objeto `context` (`.21st/design.json`) que
+reordena los resultados según el stack y las restricciones del proyecto. `[medido]` que
+su formato **no está documentado públicamente**: la búsqueda web del 2026-07-30 no
+encontró especificación, solo la mención en el esquema de las herramientas. No inventar
+el archivo; si se quiere, generarlo con la CLI y verificar qué escribe.
+
+**Nada de esto desbloquea el plan.** Sigue valiendo lo de §6: los componentes de
+interfaz solo aparecen en T10, y T10 está detenida porque RF-6 es propuesta del agente,
+no requisito del cliente.

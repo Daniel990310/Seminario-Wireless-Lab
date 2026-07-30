@@ -163,7 +163,15 @@ pesa menos (33.996 B en 1 archivo, contra 34.732 B en 2). Está en `specs/fuente
 
 ## 6b. Servidor MCP de 21st.dev
 
-**Sigue sin funcionar, y ya se descartaron dos causas distintas.** Cronología:
+**FUNCIONA desde el PC de Daniel (verificado el 2026-07-30).** `mcp__21st__get_usage`
+respondió autenticado: `tier: free`, 2 recuperaciones de código por día, y una búsqueda
+real devolvió resultados del catálogo. La clave está definida como variable de entorno
+de **usuario** en Windows, que es una de las dos vías válidas. Las shells que abre esta
+sesión no la ven (`$env:API_KEY_21ST` sale vacía), pero el proceso de Claude Code sí la
+tenía al arrancar, que es el único momento en que importa.
+
+Lo que sigue es la cronología de cuando no funcionaba, que se conserva porque explica
+qué mirar si vuelve a fallar:
 
 1. En el entorno original (sandbox remoto), la política de red denegaba
    `21st.dev:443` (403 en el túnel CONNECT). Confirmado con
