@@ -152,3 +152,48 @@ En orden:
 
 Este último punto ya se aprendió por la vía costosa: se implementaron seis
 componentes decorativos y hubo que retirarlos.
+
+## 6. Servidor MCP de 21st.dev: bloqueado por la política de red
+
+**Estado: no utilizable desde el entorno remoto de Claude Code.** `[medido]`
+2026-07-30.
+
+`.mcp.json` está versionado y correcto: declara el servidor y referencia la clave
+como `${API_KEY_21ST}`, sin guardar el valor. El obstáculo no es la configuración ni
+la clave, es la **política de egreso del entorno**, que deniega el host:
+
+```
+$ curl -sS "$HTTPS_PROXY/__agentproxy/status"
+"recentRelayFailures": [
+  { "kind": "connect_rejected",
+    "detail": "gateway answered 403 to CONNECT (policy denial or upstream failure)",
+    "host": "21st.dev:443" }
+]
+```
+
+Contraste, en la misma corrida: `registry.npmjs.org` responde 200 y
+`api.github.com` responde 200. La denegación es específica de ese host, no una
+avería general del proxy.
+
+El manual del propio proxy (`/root/.ccr/README.md`) es explícito sobre qué hacer:
+
+> The destination host is not allowed by your organization's egress policy for this
+> session. **Do not retry or route around it** — report the blocked host.
+
+Así que **no se busca una vía alternativa**. Para habilitarlo hay que permitir
+`21st.dev` en la política de red del entorno —se elige al crearlo, y se documenta en
+<https://code.claude.com/docs/en/claude-code-on-the-web>— y después reiniciar la
+sesión con `API_KEY_21ST` exportada, porque la expansión de `${...}` en `.mcp.json`
+lee el entorno del proceso al arrancar.
+
+Aparte de la red, el servidor pide autorización interactiva, que no se puede
+completar en una sesión no interactiva: eso se resuelve con `/mcp` en una sesión
+interactiva o desde los ajustes de conectores de claude.ai.
+
+**Ninguna tarea del plan depende de esto.** 21st.dev genera componentes de interfaz,
+y eso solo aparece en T10, que además está bloqueada porque RF-6 es una propuesta del
+agente y no un requisito del cliente. T4, T5 y T6 no lo necesitan.
+
+**Nunca pegar la clave en el chat ni en un archivo del repositorio.** Va en el
+entorno. `.gitignore` cubre `.env` y `.env.*`, y `.env.example` documenta la variable
+sin exponer el valor.
