@@ -195,5 +195,14 @@ y eso solo aparece en T10, que además está bloqueada porque RF-6 es una propue
 agente y no un requisito del cliente. T4, T5 y T6 no lo necesitan.
 
 **Nunca pegar la clave en el chat ni en un archivo del repositorio.** Va en el
-entorno. `.gitignore` cubre `.env` y `.env.*`, y `.env.example` documenta la variable
-sin exponer el valor.
+entorno del proceso de Claude Code, y hay exactamente dos vías que funcionan:
+variable de entorno de usuario de Windows, o el bloque `env` de
+`.claude/settings.local.json` (que Claude Code inyecta antes de expandir
+`.mcp.json`). Las dos están documentadas en `.env.example`.
+
+**Un `.env` no sirve para esto.** Claude Code no carga archivos `.env`, así que la
+clave puesta ahí nunca llega a `${API_KEY_21ST}`. Hasta el 2026-07-30 estos archivos
+afirmaban lo contrario —`.gitignore`, `.env.example` y este párrafo— y costó tiempo
+averiguarlo. `.gitignore` sigue cubriendo `.env` y `.env.*` como red de seguridad, no
+como mecanismo, y también cubre `.claude/settings.local.json` porque ese sí puede
+llevar la clave.

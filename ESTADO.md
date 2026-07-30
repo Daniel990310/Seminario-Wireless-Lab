@@ -186,11 +186,22 @@ claude
 
 y aprobar `21st` cuando `/mcp` lo pida. Si se quiere persistente entre sesiones,
 definir `API_KEY_21ST` como variable de entorno de usuario en Windows en vez de
-exportarla cada vez.
+exportarla cada vez, o usar el bloque `env` de `.claude/settings.local.json` (que
+Claude Code inyecta antes de expandir `.mcp.json`, y que está en `.gitignore`).
+
+**Un `.env` NO alimenta esto.** Claude Code no carga archivos `.env`. Hasta el
+2026-07-30, `.gitignore`, `.env.example` y `specs/habilidades.md` afirmaban que la
+clave podía "vivir en el entorno o en un `.env` local"; la segunda mitad era falsa y
+hacía perder tiempo. Los tres archivos quedaron corregidos.
 
 **La clave que se compartió en el chat el 2026-07-30 está comprometida** (quedó en
 la transcripción) y debe rotarse en 21st.dev antes de usarse. No se guardó en
-ningún archivo del repositorio.
+ningún archivo versionado del repositorio.
+
+**Pendiente para Daniel:** el 2026-07-30 había un `.env` sin versionar en el PC con un
+valor de `API_KEY_21ST` dentro, inerte por lo anterior y posiblemente la clave
+comprometida. Daniel se encarga de borrarlo; queda anotado por si el archivo reaparece
+en otro clon.
 
 Sigue sin ser bloqueante: nada antes de T10 lo necesita.
 
