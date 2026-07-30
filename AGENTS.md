@@ -9,12 +9,24 @@ regla existe porque su ausencia ya causó un problema concreto.
 
 ## Lo primero
 
+**Leer [`ESTADO.md`](ESTADO.md).** Dice en qué punto quedó el trabajo, qué tarea
+está en curso y con qué reglas conviven los distintos entornos desde los que se
+desarrolla este proyecto (Claude Code en navegador, móvil y PC, y Antigravity).
+Ninguno de ellos ve la conversación de los otros: lo único compartido es el
+repositorio, así que **si no está escrito aquí, no ocurrió**.
+
 ```bash
+git fetch origin && git status -sb   # ¿parto del estado que creo?
 npm install
-npm run build     # genera dist/
-npm run verify    # accesibilidad y presupuestos de peso
-npm run check     # tipos
+npm run build        # genera dist/
+npm run verify       # accesibilidad y presupuestos de peso
+npm run verify:tema  # los criterios de RF-4 que axe no puede evaluar
+npm run check        # tipos
 ```
+
+**Nunca reescribir historia ya publicada en la rama de trabajo** (`push --force`,
+rebase de commits empujados). Hay clones en varios entornos y se rompen todos.
+Para deshacer algo, un commit que revierte.
 
 **`npm run verify` es la autoridad.** Ninguna afirmación de mejora vale sin él.
 Requiere un `build` previo y termina con código 1 si algo incumple.
