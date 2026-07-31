@@ -146,19 +146,6 @@
   --text-section: clamp(1.5rem, 2.8vw, 2.15rem);
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
-
-  /* Animaciones que requieren los componentes vendorizados en components/ui. */
-  --animate-ripple: ripple var(--duration, 2s) ease calc(var(--i, 0) * 0.2s) infinite;
-}
-
-@keyframes ripple {
-  0%,
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(0.9);
-  }
 }
 
 @layer base {
