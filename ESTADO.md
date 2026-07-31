@@ -10,6 +10,25 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 Actualizado: **2026-07-31** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
 · Último commit de tarea: `00e00f4` (T10)
 
+> **001 queda CERRADA el 2026-07-31, T1 a T13.** La revisión del flujo SDD encontró el
+> código en verde y el rastro documental atrasado. Se corrigió en dos tandas:
+>
+> 1. **Sincronización** (`f9f2e79`): `tasks.md` daba T10 por parcial y T4 sin nota de
+>    cierre, `specs/README.md` seguía describiendo el proyecto en T3 con tres
+>    verificadores de siete, y cuatro conteos de criterios se citaban desfasados.
+> 2. **Regularización**: RF-6 enmendado —ninguna primitiva de Radix se usó, y por tanto
+>    **D6 no se materializó en ningún componente**—; **RF-7, RF-8 y RNF-7** creados para
+>    las tres piezas que se habían implementado sin requisito (reseñas, programa de
+>    ejemplo, despliegue), con **T11, T12 y T13**; `design.md` §6 y §7 con el «cómo y
+>    por qué» de T5 a T13, que vivía solo en este archivo.
+>
+> **Las dos comprobaciones que T8 dejó abiertas están cerradas** (T13):
+> `validator.schema.org` da **0 errores y 0 avisos** en `/` y `/en/`, y quedó
+> automatizado en `npm run verify:publicado`, 20 criterios en verde `[medido]`. Lo único
+> que sigue exigiendo ojos es la previsualización real al compartir el enlace.
+>
+> Lo que queda abierto no es código: A3–A7 y poblar `program.days`.
+
 > **El plan `001-mejora-calidad` está completo: T1 a T10.**
 >
 > Los **siete verificadores en verde** con `npm run verify:todo`, y `astro check`
@@ -27,7 +46,8 @@ Actualizado: **2026-07-31** · Rama de trabajo: `claude/framework-app-profesiona
 > | T9 · Cierre y cifras finales | §5i |
 > | Reseñas y programa de ejemplo | §5j |
 >
-> **PR abierto:** [#2](https://github.com/Daniel990310/Seminario-Wireless-Lab/pull/2), `MERGEABLE`. Ver §6.
+> **PR #2 fusionado en `main`** el 2026-07-31 (`df22be4`). `main` y la rama de
+> trabajo tienen ahora **el mismo árbol**. Ver §6.
 >
 > **Sitio publicado (provisional, con `noindex`):**
 > <https://seminario-wireless-lab.danielcaignet99.workers.dev> · Ver §6c.
@@ -173,20 +193,33 @@ cualquier herramienta y no solo a Claude Code.
 | T8 · `og:image` por idioma | **Completada y verificada.** 20 criterios en `npm run verify:seo`. Ver §5g |
 | T9 · Verificación final | **Completada.** Tabla línea base contra resultado en §5i. `astro check` 0/0/0 |
 | T10 · Componentes interactivos (RF-6) | **Completada.** Las 5 interacciones resueltas, ninguna con Radix. Ver §5h |
+| T11 · Reseñas y programa de ejemplo (RF-7, RF-8) | **Completada.** Requisito escrito después del código, declarado como tal. Ver §5j |
+| T12 · Publicación (RNF-7) | **Completada.** Workers con `noindex` provisional. Ídem sobre el requisito. Ver §6c |
+| T13 · Comprobar el sitio publicado (RNF-3.1, RNF-7) | **Completada.** `npm run verify:publicado`, 20 criterios. Ver §6d |
 
 ### Lo que mide el verificador ahora mismo
 
-Con `npm run build && npm run verify` al cerrar T4:
+Con `npm run build && npm run verify:todo` el **2026-07-31 sobre `8f4bdfc`**, exit 0
+`[medido]`. La columna «al cerrar T4» se conserva porque dos cifras cambiaron sin que
+el sitio empeorara, y verlas juntas evita leerlo como una regresión:
 
-| Comprobación | Valor | Límite | |
-| ------------ | ----- | ------ | - |
-| RNF-1.1 Hallazgos axe WCAG 2.1 AA | 0 | 0 | cumple |
-| RNF-1.3 Nodos con contraste indeterminado | **0** (eran 104) | 0 | cumple |
-| RNF-1.4 Secciones sin nombre accesible | **0** (eran 7) | 0 | cumple |
-| RNF-1.5 Saltos de nivel en encabezados | 0 | 0 | cumple |
-| RNF-2.1 JavaScript comprimido | **0,0 kB** | 115 kB → informativo | cumple |
-| RNF-2.2 Primera carga comprimida | **136,1 kB** | 260 kB → informativo | cumple |
-| RNF-2.6 Tipografías | **122,6 kB** | 125 kB → informativo | cumple |
+| Comprobación | Al cerrar T4 | Hoy | Límite | |
+| ------------ | ------------ | --- | ------ | - |
+| RNF-1.1 Hallazgos axe WCAG 2.1 AA | 0 | 0 | 0 | cumple |
+| RNF-1.3 Nodos con contraste indeterminado | **0** (eran 104) | 0 | 0 | cumple |
+| RNF-1.4 Secciones sin nombre accesible | **0** (eran 7) | 0 | 0 | cumple |
+| RNF-1.5 Saltos de nivel en encabezados | 0 | 0 | 0 | cumple |
+| RNF-2.1 JavaScript comprimido | 0,0 kB | **1,4 kB** | 115 kB → informativo | cumple |
+| RNF-2.2 Primera carga comprimida | 136,1 kB | **140,7 kB** | 260 kB → informativo | cumple |
+| RNF-2.6 Tipografías | 122,6 kB | 122,6 kB | 125 kB → informativo | cumple |
+
+**RNF-2.1 no subió porque volviera JavaScript**: desde T8 la métrica incluye el que
+Astro inlinea en el HTML, que antes no se contaba en ninguna parte (§5c). Los archivos
+`.js` siguen en 0,0 kB y no hay ninguna isla que hidratar. Los 4,6 kB de más en la
+primera carga se reparten así: **1,4 kB** son ese JavaScript en línea que la medición de
+T4 no veía, y los **3,2 kB** restantes son HTML —reseñas de expositores y el marcado de
+las pestañas—. `[medido: resta entre las dos corridas; no es un desglose que el
+verificador imprima]`
 
 Los tres techos de peso siguen impresos porque siguen siendo la referencia con la que
 se compara, pero desde la enmienda del 2026-07-30 no bloquean (§0). El código de
@@ -195,9 +228,11 @@ va a terminar en 1 por eso. En ese momento hay dos salidas honestas —declarar 
 exceso en el commit y seguir, o pedirle a Daniel una cifra nueva— y ninguna es
 inventarle un techo.
 
-Los dos incumplimientos abiertos **no son regresiones**: están en la línea base y
-su corrección pertenece a T5 y T6. `npm run verify` termina con código 1 por ellos,
-y eso es correcto.
+**Ya no hay incumplimientos abiertos.** Este párrafo decía que los dos que quedaban
+—RNF-1.3 y RNF-1.4— venían de la línea base y que `verify` terminaba en 1 por ellos.
+T5 y T6 los cerraron, y desde entonces `npm run verify` termina en 0: comprobado el
+2026-07-31 sobre `8f4bdfc` con `npm run verify:todo`, exit 0. Cualquier fallo a partir
+de aquí es una regresión.
 
 Hay siete verificadores, y `npm run verify:todo` los corre en cadena:
 
@@ -207,8 +242,8 @@ Hay siete verificadores, y `npm run verify:todo` los corre en cadena:
 | `npm run verify:tema` | Los 16 criterios de RF-4 que axe no puede evaluar: destello al cargar, sin JavaScript, teclado, persistencia sin cookies, sincronía entre las dos instancias del selector |
 | `npm run verify:red` | Los 7 criterios de T3: que el pulso recorra, que se detenga con movimiento reducido, y que el navegador no pida ningún `.js` |
 | `npm run verify:teclado` | Los 12 criterios de T6 que axe no decide: jerarquía de encabezados, foco visible en todo el recorrido, contraste del anillo, menú móvil por teclado y zoom de texto al 200 % sin desbordar |
-| `npm run verify:idioma` | Los 17 criterios de RF-1: ambas rutas, `lang`, `hreflang` recíproco, título sin traducir, control de idioma por teclado, conservación de la sección, sitemap, cero cadenas en componentes y **textos sin traducir** |
-| `npm run verify:seo` | Los 20 criterios de RNF-3: imágenes para compartir de 1200×630 por idioma, metadatos absolutos, canónico por idioma, sin descripciones duplicadas y `schema.org/Event` completo |
+| `npm run verify:idioma` | Los 19 criterios de RF-1: ambas rutas, `lang`, `hreflang` recíproco, título sin traducir, control de idioma por teclado, conservación de la sección, sitemap, cero cadenas en componentes y **textos sin traducir** |
+| `npm run verify:seo` | Los 22 criterios de RNF-3: imágenes para compartir de 1200×630 por idioma, metadatos absolutos, canónico por idioma, sin descripciones duplicadas, `noindex` provisional y `schema.org/Event` completo |
 | `npm run verify:interaccion` | RF-6: que el contenido siga entero sin JavaScript, que el resaltado de sección siga a la lectura y se exponga con `aria-current`, y que no haya primitivas de Radix instaladas sin usar |
 
 Todos requieren un `npm run build` previo.
@@ -402,15 +437,19 @@ Dos cifras merecen una nota, porque leídas solas engañan:
 
 Los siete verificadores en verde:
 
-| Verificador | Criterios |
-| ----------- | --------- |
-| `verify` · accesibilidad y peso | 7 presupuestos, 8 corridas |
-| `verify:tema` · RF-4 | 17 |
-| `verify:red` · T3 | 7 |
-| `verify:teclado` · T6 | 12 |
-| `verify:idioma` · RF-1 | 17 |
-| `verify:seo` · RNF-3 | 20 |
-| `verify:interaccion` · RF-6 | 8 |
+| Verificador | Criterios al cerrar T9 | Hoy (2026-07-31, `8f4bdfc`) |
+| ----------- | --------------------- | --------------------------- |
+| `verify` · accesibilidad y peso | 7 presupuestos, 8 corridas | igual |
+| `verify:tema` · RF-4 | 17 | 17 |
+| `verify:red` · T3 | 7 | 7 |
+| `verify:teclado` · T6 | 12 | 12 |
+| `verify:idioma` · RF-1 | 17 | **19** |
+| `verify:seo` · RNF-3 | 20 | **22** |
+| `verify:interaccion` · RF-6 | 8 | **9** |
+
+Los tres que crecieron lo hicieron en `3fe4c74`, `00e00f4` y `8f4bdfc`, después de
+cerrarse su tarea. Se añade la columna porque las cifras del cierre se citaban como si
+siguieran vigentes `[medido: conteo de líneas de criterio en la corrida del 2026-07-31]`.
 
 ### Lo que sigue abierto, y no es código
 
@@ -734,6 +773,14 @@ pesa menos (33.996 B en 1 archivo, contra 34.732 B en 2). Está en `specs/fuente
 - El contenido de la rama es un **superconjunto** de `main`: `main` no tiene nada
   que la rama no tenga. No hay que fusionar nada hacia atrás.
 - El trabajo posterior necesitaba un **PR nuevo**. No reabrir ni reutilizar el #1.
+- **El PR #2 ya se fusionó** (`df22be4`, 2026-07-31): `main` contiene todo el
+  trabajo de T1 a T10, y su árbol es **idéntico** al de la rama de trabajo, que se
+  conserva porque hay clones en el móvil, en el PC y en Antigravity.
+- Se fusionó con **merge commit, no con squash**: los mensajes de los 46 commits
+  son el registro de qué se descartó y por qué, y este proyecto se apoya en ese
+  registro para cambiar de entorno sin perder el hilo.
+- **Ya se puede conectar Cloudflare a `main`** sin publicar una versión vieja, que
+  era el riesgo mientras el PR estuviera abierto.
 
 ### PR #2, abierto el 2026-07-31
 
@@ -857,23 +904,114 @@ grep -o '<link rel="canonical"[^>]*' dist/index.html
 grep -o '<meta name="robots"[^>]*' dist/index.html
 ```
 
+### Salvaguarda: no indexar si nadie declaró la URL
+
+Añadida el 2026-07-31, después de que el primer despliegue saliera indexable por
+error. `astro.config.mjs` exporta `SITE_ES_RESPALDO`, que dice si la URL vino del
+entorno o del respaldo, y `BaseLayout` fuerza `noindex` cuando vino del respaldo
+**aunque el host coincida con el de producción**.
+
+Los tres casos, comprobados: `[medido]`
+
+| `SITE_URL` | Resultado |
+| ---------- | --------- |
+| Sin declarar | `noindex` — la salvaguarda actúa |
+| `https://seminario-wireless.pucv.cl` | Indexable |
+| `https://…workers.dev` | `noindex` |
+
+`verify:seo` fija el comportamiento: comprueba que haya `noindex` cuando la URL es
+provisional **y** que no lo haya cuando es la definitiva. Preferimos no ser
+indexados por error antes que ser indexados con enlaces rotos.
+
+### Conectar Git a `main`: se hace en el panel, no por API
+
+`[verificado]` en la documentación de Cloudflare: conectar un Worker existente a
+un repositorio es un flujo interactivo del dashboard y exige autorizar la
+aplicación de GitHub. No hay forma de automatizarlo desde aquí.
+
+Como el Worker **ya existe**, hay que usar «conectar un Worker existente» y no el
+asistente de creación, que es donde se atascó el primer intento:
+
+1. **Workers & Pages** → `seminario-wireless-lab` → **Settings** → **Builds** →
+   **Connect**.
+2. Repositorio `Daniel990310/Seminario-Wireless-Lab`, rama de producción `main`.
+3. Ajustes de compilación:
+
+   | Campo | Valor |
+   | ----- | ----- |
+   | Build command | `npm run build` |
+   | Deploy command | `npx wrangler deploy` |
+   | Root directory | `/` — **no** `/dist` |
+
+4. **Variable de entorno de compilación** (no del Worker):
+   `SITE_URL = https://seminario-wireless-lab.danielcaignet99.workers.dev`
+
+**El nombre del Worker debe coincidir con el `name` de `wrangler.jsonc`** o la
+compilación falla. Hoy coinciden: `seminario-wireless-lab`.
+
+Si no se define `SITE_URL`, la salvaguarda de arriba evita el daño grave —el
+sitio no se indexará— pero el canónico y las imágenes para compartir seguirán
+apuntando a un dominio que aún no existe.
+
 ### Qué falta para el despliegue definitivo
 
 1. **Decidir Workers o Pages.** Hoy está en Workers, que exige `SITE_URL` a mano.
    Pages la deduce sola con `CF_PAGES_URL`. Para un sitio estático puro, Pages es
    menos configuración; Workers es lo que Cloudflare recomienda para proyectos
    nuevos. Las dos sirven: está comparado en el README.
-2. **Conectar Git** para que cada rama tenga su previsualización. Ojo: `main` va
-   43 commits por detrás mientras el PR #2 siga abierto, así que conectarlo a
-   `main` publicaría la versión vieja.
+2. **Conectar Git** para que cada rama tenga su previsualización. La advertencia
+   que había aquí —«`main` va 43 commits por detrás, conectarlo publicaría la
+   versión vieja»— **ya no aplica**: el PR #2 se fusionó el 2026-07-31 (`df22be4`)
+   y `main` tiene el mismo árbol que la rama de trabajo. Se corrige el 2026-07-31,
+   al detectarse que contradecía al encabezado de este mismo archivo.
 3. **Dominio definitivo** y, después, `npm run og`.
 
-### Lo que la URL pública acaba de desbloquear
+### Lo que la URL pública desbloqueó, y qué se hizo con ello
 
-Los dos pendientes de T8 que necesitaban un sitio accesible ya se pueden cerrar:
+Los dos pendientes de T8 que necesitaban un sitio accesible: el primero **está
+cerrado** (§6d), el segundo sigue exigiendo mirar.
 
-- Validar los datos estructurados de `/` y `/en/` en <https://validator.schema.org>.
-- Ver la previsualización real del enlace compartiéndolo.
+- ✅ Validar los datos estructurados de `/` y `/en/` en <https://validator.schema.org>.
+- ⏳ Ver la previsualización real del enlace compartiéndolo.
+
+## 6d. T13 · Comprobar el sitio publicado
+
+`npm run verify:publicado -- https://…` — **20 criterios, todos en verde** contra la URL
+provisional el 2026-07-31 `[medido]`. Queda **fuera de `verify:todo`** a propósito
+(RNF-7.5): depende de la red y de `validator.schema.org`, y la autoridad sobre el
+cumplimiento no puede depender de que haya conexión.
+
+Lo que cierra, y que `dist/` no puede responder:
+
+| Criterio | Medición |
+| -------- | -------- |
+| RNF-3.1 · validador oficial | **0 errores y 0 avisos** en ambos idiomas; reconoce `Event`, `Place`, `PostalAddress`, `Country`, `Organization`, `Person` |
+| RNF-3.2 · la imagen se sirve | HTTP 200, 1200×630, 123 kB (es) y 121 kB (en) |
+| RNF-7.3 · el dominio provisional no se indexa | `noindex, nofollow` en `/` y `/en/` |
+| RNF-3.3 · el canónico apunta al host servido | coincide en las dos rutas |
+
+**No lleva ningún dominio escrito.** La URL se pasa por argumento o por
+`SITIO_PUBLICADO`, y sin ella informa **OMITIDO** y sale en 0: no hay incumplimiento que
+declarar, pero tampoco se calla. Un verificador que pasa en silencio sin comprobar nada
+es peor que uno que falla.
+
+### La prueba de sensibilidad destapó dos defectos del propio verificador
+
+Se apuntó el guion a una copia de `dist/` servida en `127.0.0.1`, donde varios criterios
+deben fallar. Falla: **6 incumplimientos y código 1**. Y el motivo es real —ese build se
+compiló sin `SITE_URL`, así que canoniza a `seminario-wireless.pucv.cl`, que todavía no
+resuelve—, lo que es de paso una demostración en vivo de la trampa de §6c.
+
+1. **Un fallo de red abortaba el proceso** con un rastro de pila en vez de reportar el
+   criterio. Ahora toda petición va envuelta y un dominio que no resuelve sale como `✗`
+   con su código de error.
+2. **«Sin errores» pasaba en verde habiendo validado nada.** Si el validador no alcanza
+   la URL responde sin nodos: cero errores sobre cero datos. Se añadió un criterio
+   previo que exige que reconozca el `Event`. Es el mismo falso positivo de T2, cuando
+   axe daba 0 hallazgos con el selector de tema sin ninguna opción marcada.
+
+Los dos salieron de romper deliberadamente lo que el guion vigila, no de un despliegue
+real. Es exactamente para lo que `AGENTS.md` exige la prueba.
 
 ## 7. Pendientes que no dependen del código
 

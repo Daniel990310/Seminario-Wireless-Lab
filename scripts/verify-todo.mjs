@@ -1,5 +1,5 @@
 /**
- * Corre los cuatro verificadores y resume.
+ * Corre los siete verificadores y resume.
  *
  * No es un `&&` encadenado: si el primero falla, un `&&` nunca llegaría a los
  * demás y parecería que no existen. Además el encadenado depende del shell, y

@@ -17,12 +17,31 @@ import tailwindcss from '@tailwindcss/vite';
  */
 export const PRODUCTION_SITE = 'https://seminario-wireless.pucv.cl';
 
-const site =
+const sitioDeclarado =
   process.env.SITE_URL || // Anulación manual
   process.env.CF_PAGES_URL || // Cloudflare Pages
   process.env.DEPLOY_PRIME_URL || // Netlify: previsualización por rama
-  process.env.URL || // Netlify: producción
-  PRODUCTION_SITE;
+  process.env.URL; // Netlify: producción
+
+const site = sitioDeclarado || PRODUCTION_SITE;
+
+/*
+ * ¿La URL de arriba salió del entorno, o es el respaldo?
+ *
+ * Importa para decidir si el sitio puede indexarse. Cuando nadie declara la
+ * URL, `site` cae a `PRODUCTION_SITE` y el sitio **cree** estar en producción
+ * aunque esté publicado en otra parte: el enlace canónico apunta a un dominio
+ * que quizá ni existe, y el `noindex` de previsualización se apaga.
+ *
+ * Pasó de verdad en el primer despliegue a Cloudflare Workers, el 2026-07-31:
+ * `CF_PAGES_URL` solo la define Pages, no Workers, así que sin `SITE_URL` el
+ * build salió creyéndose producción. Ver `ESTADO.md` §6c.
+ *
+ * `BaseLayout` usa esta bandera para forzar `noindex` cuando la URL es el
+ * respaldo. Es defensa en profundidad: preferimos no ser indexados por error
+ * antes que ser indexados con URLs rotas.
+ */
+export const SITE_ES_RESPALDO = !sitioDeclarado;
 
 export default defineConfig({
   site,

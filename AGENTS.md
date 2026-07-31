@@ -19,10 +19,14 @@ repositorio, así que **si no está escrito aquí, no ocurrió**.
 git fetch origin && git status -sb   # ¿parto del estado que creo?
 npm install
 npm run build        # genera dist/
-npm run verify       # accesibilidad y presupuestos de peso
-npm run verify:tema  # los criterios de RF-4 que axe no puede evaluar
+npm run verify:todo  # los siete verificadores en cadena
 npm run check        # tipos
 ```
+
+Los siete cubren accesibilidad y peso (`verify`, la autoridad), tema, red, teclado,
+idioma, SEO e interacción; la tabla con qué mide cada uno está en
+[`specs/README.md`](specs/README.md). Hay un octavo, `npm run verify:publicado -- <url>`,
+que comprueba el **sitio en vivo** y queda fuera de la cadena porque depende de la red.
 
 **Nunca reescribir historia ya publicada en la rama de trabajo** (`push --force`,
 rebase de commits empujados). Hay clones en varios entornos y se rompen todos.
@@ -142,7 +146,7 @@ ese entorno Playwright resuelve el suyo.
 | D3 | Registro de asistentes: previsto en la especificación, no implementado |
 | D4 | Swiss Modernism 2.0 más minimalismo; Crimson Pro y Atkinson Hyperlegible Next |
 | D5 | Dos temas con selector: claro por omisión, oscuro y «según el sistema» |
-| D6 | **Se adopta shadcn/ui sobre Radix.** El cliente busca un sitio interactivo |
+| D6 | **Se adopta shadcn/ui sobre Radix.** El cliente busca un sitio interactivo. **Pero no se materializó en ningún componente**: las 5 interacciones de RF-6 se resolvieron con HTML nativo porque RF-6.2 exige que el contenido exista sin JavaScript. La base queda montada desde T3; instalar una primitiva es un comando, y hace falta un motivo escrito. Ver la enmienda de RF-6 |
 
 ## Ya evaluado y descartado
 

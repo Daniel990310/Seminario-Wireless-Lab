@@ -95,7 +95,8 @@ línea base. `npx astro check`: 0 errores. Presupuestos: JavaScript 109,6 / 115 
 primera carga 247,0 / 260 kB, tipografías 110,9 / 125 kB.
 
 Los criterios de RF-4 que axe no puede evaluar se comprobaron con un guion propio
-de Playwright, 16 comprobaciones, todas en verde:
+de Playwright: 16 comprobaciones al cerrarse la tarea, **17 hoy** `[medido]`, todas en
+verde. La tabla siguiente resume las que fijaron los criterios:
 
 | Criterio | Medición |
 | -------- | -------- |
@@ -277,6 +278,28 @@ Revisión visual del par en el sitio real, no en una muestra.
 **Si el presupuesto no alcanza**, la primera concesión es quitar JetBrains Mono
 (−40,4 kB). Está identificada de antemano para que no se decida a la carrera.
 
+**Cumplida el 2026-07-30** (commit `918a13e`). Las tres familias se auto-hospedan con
+el proveedor `local` de Astro, subconjunto latino: Crimson Pro 48.200 B, Atkinson
+Hyperlegible Next 33.996 B y JetBrains Mono 40.404 B, **122,6 kB en total**
+`[medido]`. Space Grotesk (22.288 B) e Inter (48.256 B) salieron del repositorio.
+**La concesión no hizo falta**: JetBrains Mono se queda, porque el total cabe en el
+techo de 125 kB con 2,4 kB de margen.
+
+Las tipografías suben 11,7 kB respecto de la línea base y fue deliberado: se gastan
+en Atkinson Hyperlegible Next, diseñada para baja visión. La cifra sola parece un
+retroceso de rendimiento, así que va con nota también en `verification.md` y en
+`ESTADO.md` §5i.
+
+**Dos de las cuatro comprobaciones de esta tarea no están automatizadas**, y vale
+más decirlo que darlas por buenas: ningún verificador mide **RNF-2.3** (ninguna
+petición a dominios de terceros en la carga inicial) ni **RNF-2.4** (sin
+desplazamiento de diseño al cargar las tipografías) `[medido: ningún script de
+scripts/ observa peticiones fuera de 127.0.0.1 ni desplazamiento]`. Lo que sí está
+medido es el peso y los 0 hallazgos de axe. Que no haya peticiones externas se
+sostiene hoy en que las tres familias están auto-hospedadas y no hay analítica —una
+propiedad del código, no una medición—, así que basta que alguien añada un `<link>`
+remoto para incumplir RNF-2.3 sin que nada falle.
+
 ---
 
 ## T4b · Refinamiento visual con componentes estáticos de 21st.dev
@@ -360,7 +383,8 @@ idioma desde `#programa` llega a `#programa`. Cero cadenas escritas en
 componentes.
 
 **Cumplida el 2026-07-31.** Los cuatro puntos se comprueban en
-`npm run verify:idioma`, 15 criterios. Se añadió uno que el enunciado no pedía y
+`npm run verify:idioma`, que al cerrarse la tarea tenía 15 criterios y hoy tiene **19**
+`[medido]` en la corrida del 2026-07-31. Se añadió uno que el enunciado no pedía y
 que hace falta igual: detectar **textos sin traducir**. La interfaz de `tipos.ts`
 obliga a que ninguna clave falte —probado quitando una: `astro check` falla— pero
 no puede saber si el inglés quedó con el español copiado. Eso solo se ve comparando
@@ -381,8 +405,8 @@ las dos páginas generadas. Detalle en `ESTADO.md` §5f.
 revisada de verdad, no supuesta.
 
 **Cumplida el 2026-07-31**, con dos matices declarados. `npm run verify:seo`
-comprueba 20 criterios, incluida la estructura de `schema.org/Event` en ambos
-idiomas. Lo que **no** se ha hecho, porque no se puede sin URL pública: pasar los
+comprobaba 20 criterios al cerrarse la tarea y hoy comprueba **22** `[medido]`,
+incluida la estructura de `schema.org/Event` en ambos idiomas. Lo que **no** se ha hecho, porque no se puede sin URL pública: pasar los
 datos por la herramienta de Google y ver la previsualización real del enlace en
 una plataforma. Queda anotado en `ESTADO.md` §5g con las dos formas de cerrarlo.
 Las imágenes sí están revisadas abriendo los PNG, que fue como se descubrió que la
@@ -411,15 +435,33 @@ primitiva de Radix se justifica por el componente que habilita.
 **Comprobación:** `npm run verify` sigue en cero hallazgos con los componentes
 montados. Recorrido por teclado completo en cada uno. JavaScript ≤ 115 kB.
 
-**Parcial el 2026-07-31: 1 de 5 interacciones.** No es una renuncia técnica.
-Tres esperan contenido que no existe —`program.days` está vacío y los expositores
-no tienen reseña— y el selector de tema ya está resuelto mejor con radios
-nativos a 0 kB. Instalar `Tabs`, `Accordion` o `Dialog` ahora incumpliría el
-punto 4 de esta misma tarea: «ninguna primitiva sin un componente que la use».
+**Completada el 2026-07-31** (commit `00e00f4`). **Las 5 interacciones de RF-6 están
+resueltas, y ninguna con una primitiva de Radix.** Detalle en `ESTADO.md` §5h.
 
-Implementada la sección activa en la navegación, que no necesita primitiva.
-Verificada en `npm run verify:interaccion`. Qué datos hacen falta para
-desbloquear el resto: `ESTADO.md` §5h.
+| Interacción | Primitiva propuesta en RF-6 | Cómo se resolvió |
+| ----------- | --------------------------- | ---------------- |
+| Programa por jornada en pestañas | `Tabs` | Mejora progresiva sobre el patrón ARIA de la W3C; sin JavaScript las jornadas quedan apiladas |
+| Resumen de sesión desplegable | `Accordion` | `<details>` nativo |
+| Ficha de expositor | `Dialog` | `<details>` nativo (`ESTADO.md` §5j) |
+| Selector de tema de tres estados | `ToggleGroup` | Radios nativos, ya resueltos en T2: 0 kB y RF-4 verificado 17/17 |
+| Sección activa en la navegación | Ninguna | `IntersectionObserver` propio, con `aria-current="location"` |
+
+**El motivo común es RF-6.2**, que exige que el contenido siga accesible sin
+JavaScript: eso descarta cualquier componente que solo exista al hidratar. La
+desviación respecto de la columna «Primitiva» de RF-6 **está pendiente de enmienda en
+`requirements.md`**, donde esa tabla sigue declarando las cinco primitivas de Radix.
+
+Verificada en `npm run verify:interaccion`, **9 criterios** al 2026-07-31 `[medido]`.
+Uno se informa como
+**OMITIDO** mientras `program.days` esté vacío —las pestañas por jornada— en vez de
+darse por bueno `[medido: verify:todo, 2026-07-31]`.
+
+**Estado intermedio, conservado como registro** (commit `5c45462`, mismo día): la
+tarea se cerró primero como «1 de 5», con tres interacciones esperando contenido que
+no existía. Lo que las desbloqueó fue `3fe4c74`: las reseñas de expositores desde
+fuentes públicas y el programa de ejemplo apagado por omisión. Ninguna de esas dos
+piezas tiene requisito propio en `requirements.md`, y eso también queda pendiente de
+regularizar.
 
 ---
 
@@ -446,6 +488,90 @@ de React + Motion» cuando hoy son 1,4 kB. También documentaba el contenido en 
 
 ---
 
+## T11 · Contenido de expositores y programa de ejemplo
+
+**Satisface:** RF-7, RF-8 · **Depende de:** T7 (el contenido va por idioma)
+
+**Tarea escrita después de la implementación** (commit `3fe4c74`, 2026-07-31). No es
+una tarea que haya guiado el trabajo: se redacta para que lo implementado quede
+trazado contra un requisito, como exige `../README.md`. La infracción se declara en
+RF-7 y en RF-8.
+
+- Reseña y línea de investigación por expositor, en ambos idiomas, con la clave
+  tipada para que falte una y no compile.
+- Cada reseña apoyada en un perfil público, enlazado desde la ficha.
+- Ficha desplegable sin JavaScript.
+- Programa de ejemplo apagado por omisión, con las tres salvaguardas de RF-8.
+
+**Cumplida el 2026-07-31.** Detalle en `ESTADO.md` §5j. La ficha usa `<details>` y no
+un diálogo de Radix, por RF-6.2 y porque cuesta 0 kB. Se verificó **con la bandera del
+programa de ejemplo encendida**, no solo apagada, como pide RF-8.5: los siete
+verificadores siguen en verde y el aviso aparece donde debe.
+
+Dos hallazgos de contenido que la búsqueda dejó y merecen quedar aquí: Reinaldo A.
+Valenzuela estudió en la Universidad de Chile antes de doctorarse en el Imperial
+College, y Rodolfo Feick ha coautorado mediciones a 28 GHz en el área del banco de
+pruebas COSMOS, el mismo proyecto del que Gil Zussman es investigador principal. Lo
+segundo respalda con hechos lo que la sección «Red de colaboración» afirma.
+
+---
+
+## T12 · Publicación
+
+**Satisface:** RNF-7 · **Depende de:** T8
+
+**Tarea escrita después de la implementación** (commits `a906415`, `17572a9`,
+`8f4bdfc`, 2026-07-31), igual que T11.
+
+- Configuración de despliegue versionada en el repositorio.
+- URL declarada por entorno, y `noindex` obligatorio cuando nadie la declara.
+- Ningún verificador atado a un dominio concreto.
+
+**Cumplida el 2026-07-31.** El sitio está publicado con `noindex` en una URL
+provisional de Workers. Detalle en `ESTADO.md` §6c, incluida la trampa que costó un
+despliegue de más: `wrangler deploy` no lee `astro.config.mjs`, así que sin `SITE_URL`
+declarada el build sale con el dominio de respaldo.
+
+---
+
+## T13 · Comprobar el sitio publicado
+
+**Satisface:** RNF-3.1, RNF-7 · **Depende de:** T12
+
+Cierra las dos comprobaciones que T8 dejó abiertas por falta de URL pública, y las
+convierte en comando en vez de dejarlas como paso manual que se deja de hacer.
+
+- Validar los datos estructurados de ambos idiomas con el validador oficial.
+- Comprobar que la imagen para compartir **se sirve** y mide 1200×630.
+- Comprobar que el dominio provisional no se indexa.
+
+**Cumplida el 2026-07-31.** `npm run verify:publicado`, **20 criterios en verde**
+contra la URL publicada `[medido]`. `validator.schema.org` da **0 errores y 0 avisos**
+en `/` y `/en/`, con `Event`, `Place`, `PostalAddress`, `Country`, `Organization` y
+`Person` reconocidos. Queda fuera de `verify:todo` a propósito (RNF-7.5): depende de
+la red y de un servicio de terceros.
+
+**Prueba de sensibilidad, que destapó dos defectos del propio verificador.** Se apuntó
+el guion a una copia servida en `127.0.0.1`, donde varios criterios deben fallar: da
+**6 incumplimientos y código 1**, y el motivo es real —ese build se compiló sin
+`SITE_URL`, así que canoniza al dominio de producción, que todavía no resuelve—.
+
+1. **Un fallo de red abortaba el proceso** con un rastro de pila en vez de reportar el
+   criterio como incumplido. Ahora toda petición va envuelta y un dominio que no
+   resuelve sale como `✗`, con el código de error.
+2. **«Sin errores» pasaba en verde habiendo validado nada.** Si el validador no
+   alcanza la URL, responde sin nodos: cero errores sobre cero datos. Se añadió un
+   criterio previo que exige que reconozca el `Event`. Es el mismo falso positivo que
+   en T2 dejó el selector sin ninguna opción marcada con axe en cero hallazgos.
+
+**Lo que sigue sin poder comprobarse automáticamente:** cómo se ve la tarjeta al
+compartir el enlace en una plataforma real. Exige compartirlo y mirarlo, y además con
+`noindex, nofollow` hay plataformas que suprimen la previsualización, así que la
+prueba definitiva solo es posible con el dominio definitivo. Queda impreso al final de
+cada corrida en vez de darse por hecho.
+
+---
+
 ## Trazabilidad
 
 | Requisito | Tareas |
@@ -456,12 +582,15 @@ de React + Motion» cuando hoy son 1,4 kB. También documentaba el contenido en 
 | RF-4 Selector de tema | T2 |
 | RNF-1 Accesibilidad | T2, T5, T6 |
 | RNF-2 Rendimiento | T3, T4 |
-| D6 shadcn/ui sobre Radix | T3, T10 |
-| RNF-3 SEO | T7, T8 |
+| D6 shadcn/ui sobre Radix | T3, T10 — **sin ninguna primitiva instalada**, ver la enmienda de RF-6 |
+| RNF-3 SEO | T7, T8, T13 |
 | RNF-4 Privacidad | T2 (`localStorage`, sin cookies) |
 | RNF-5 Mantenibilidad | T7, T9 |
 | RNF-6 Verificación | T1, T9 |
 | RF-6 Interacción | T10 |
+| RF-7 Fichas de expositor | T11 |
+| RF-8 Programa de ejemplo | T11 |
+| RNF-7 Publicación | T12, T13 |
 
 ## Fuera de estas tareas
 

@@ -1,5 +1,6 @@
 ---
 import { Font } from 'astro:assets';
+import { SITE_ES_RESPALDO } from '../../astro.config.mjs';
 import { IDIOMAS, rutaBase, type Contenido, type Idioma } from '~/data/contenido';
 import '~/styles/global.css';
 
@@ -50,11 +51,18 @@ const ogLocale = lang === 'es' ? 'es_CL' : 'en_US';
 const ogImage = new URL(`/og/${lang}.png`, sitio).href;
 
 /*
- * Mientras el sitio viva en una URL de previsualización (*.pages.dev, *.netlify.app)
- * se pide a los buscadores que no lo indexen: evita que la copia provisional
- * compita con el dominio institucional definitivo por el mismo contenido.
+ * Mientras el sitio viva en una URL de previsualización (*.pages.dev,
+ * *.workers.dev, *.netlify.app) se pide a los buscadores que no lo indexen:
+ * evita que la copia provisional compita con el dominio institucional
+ * definitivo por el mismo contenido.
+ *
+ * La segunda condición es la salvaguarda: si **nadie declaró** la URL y el
+ * build cayó al respaldo, no se indexa aunque el host coincida. Sin ella, un
+ * despliegue sin `SITE_URL` se cree producción y pide ser indexado con enlaces
+ * canónicos que apuntan a un dominio que quizá ni existe. Pasó el 2026-07-31
+ * en el primer despliegue a Workers; ver `ESTADO.md` §6c.
  */
-const isPreview = canonical.host !== 'seminario-wireless.pucv.cl';
+const isPreview = canonical.host !== 'seminario-wireless.pucv.cl' || SITE_ES_RESPALDO;
 
 // Datos estructurados: permiten que buscadores y calendarios reconozcan
 // el seminario como un evento con fecha y lugar.

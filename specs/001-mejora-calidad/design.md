@@ -385,3 +385,95 @@ Un comando del proyecto, `npm run verify`, que sobre el build:
 | Falta la traducción al inglés de los textos largos | La estructura bilingüe queda lista y el inglés puede completarse después (A7) |
 | Reimplementar el haz en SVG puede quedar peor que el original | Se compara contra el actual antes de eliminar React; si no alcanza calidad, se replantea con el presupuesto sobre la mesa |
 | Atkinson Hyperlegible y Crimson Pro no combinan bien en la práctica | Se verifica con el sitio real antes de descartar la alternativa «Academic/Archival» (EB Garamond + Crimson Text) |
+
+## 6. Decisiones de diseño de T5 a T13
+
+**Este apartado se escribió el 2026-07-31, después de implementar.** Hasta aquí el
+documento se había quedado en D6: el «cómo y por qué» de T5 en adelante vivía solo en
+`ESTADO.md`, que es un diario de continuidad —cronológico, por sesión— y no la
+especificación. Un diario responde «qué pasó ese día»; este documento tiene que
+responder «por qué el sitio es así», que es lo que hace falta al cambiarlo.
+
+### 6.1 · Interacción sin ninguna primitiva de Radix
+
+**Decisión: HTML nativo en las cinco interacciones de RF-6.** La alternativa era el
+catálogo de React que D6 habilitó.
+
+| Interacción | Alternativa descartada | Elegido | Por qué |
+| ----------- | ---------------------- | ------- | ------- |
+| Programa por jornada | `Tabs` de Radix | Mejora progresiva sobre el patrón ARIA de la W3C | Sin JavaScript las jornadas quedan apiladas y legibles; con Radix no existirían hasta hidratar |
+| Resumen de sesión | `Accordion` | `<details>` nativo | Se despliega sin una línea de script |
+| Ficha de expositor | `Dialog` | `<details>` nativo | Ídem, y 36 kB menos. Se pierde el atrapado de foco y el fondo oscurecido, que una reseña de tres líneas no necesita |
+| Selector de tema | `ToggleGroup` | Radios nativos | El navegador ya da agrupación, estado programático y flechas. Cambiarlo sería añadir JavaScript para obtener lo que ya funciona |
+| Sección activa | Ninguna propuesta | `IntersectionObserver` propio | Marca con `aria-current="location"`, no solo con color |
+
+**El criterio que decide es RF-6.2:** el contenido tiene que seguir accesible sin
+JavaScript. Eso descarta cualquier componente que solo exista al hidratar, y con él el
+catálogo entero. Se buscó en 21st.dev antes de decidir: los ocho resultados de pestañas
+eran `react-aria-components`, Headless UI o shadcn, y ninguno funciona sin hidratar.
+
+**Consecuencia sobre D6, dicha sin adornos:** la decisión del cliente de adoptar
+shadcn/ui **no se materializó en ningún componente**. Lo que el cliente pedía —un sitio
+interactivo— se cumplió con HTML nativo, y la base de shadcn queda montada desde T3
+para cuando algo la justifique. Si Daniel quiere shadcn/ui en el producto y no solo el
+resultado, es una decisión nueva y necesita requisito nuevo.
+
+### 6.2 · Un solo control de idioma, no un selector de dos estados
+
+**Decisión: un enlace que muestra el idioma de destino** («English» en la página en
+español), siguiendo el patrón «Two languages» del U.S. Web Design System. Descartados:
+el desplegable —una interacción de más y esconde que existe otra versión— y las dos
+píldoras segmentadas, que en la barra quedaban idénticas y contiguas al selector de
+tema y se confundían con él. No se adopta el `role="button"` que sugiere el USWDS: el
+control navega a otra URL, y anunciarlo como botón diría que la acción ocurre aquí.
+Razonado en la enmienda de RF-1.5.
+
+### 6.3 · La figura de propagación en columnas propias
+
+**Decisión: la figura deja de estar detrás del texto y ocupa columnas.** No fue una
+preferencia estética: era la causa de los 28 nodos con contraste indeterminado que la
+línea base reportaba. Medir el síntoma habría sido subir contraste sobre un fondo no
+uniforme; mover la figura elimina la causa. Lo que costó el cierre no fue la retícula
+sino que axe razona con `clientRects`, y `overflow: hidden` no los encoge: los `path`
+seguían tapando texto para la herramienta sin taparlo a la vista.
+
+### 6.4 · Programa de ejemplo: apagado, condicionado y anunciado
+
+**Decisión: existe, pero no puede publicarse por descuido.** Un programa ficticio en el
+sitio de un evento real, con fechas y sede reales, es información falsa con la que
+alguien podría organizar un viaje: el mismo criterio que prohíbe generar los logos
+institucionales. De ahí las tres salvaguardas de RF-8: bandera apagada por omisión,
+efecto solo si el programa real está vacío, y aviso visible con `role="note"` anunciado
+antes del programa. La alternativa —no tenerlo— dejaba las pestañas de T10 sin forma de
+verificarse hasta que existiera la agenda real.
+
+### 6.5 · Reseñas con fuente citable
+
+**Decisión: cada reseña se apoya en un perfil público enlazado desde la ficha**, y la
+clave está tipada para que falte una y no compile. La alternativa —redactar de memoria
+o dejar fichas vacías— produce lo que un sitio institucional no puede permitirse: dato
+sin respaldo. Lo que las fuentes solo hacen `[probable]` va marcado «por confirmar»,
+que es el caso de la afiliación de Rodolfo Feick (A3).
+
+## 7. Publicación
+
+**Decisión: Cloudflare Workers con configuración versionada** (`wrangler.jsonc`), y la
+URL declarada por entorno.
+
+La alternativa era Pages, que deduce la URL sola con `CF_PAGES_URL` y exige menos
+configuración para un sitio estático; Workers es lo que Cloudflare recomienda para
+proyectos nuevos. Las dos sirven, y la comparación está en el `README.md`. Se eligió
+Workers, y el precio de esa elección es tener que declarar `SITE_URL` a mano.
+
+**El precio se paga con una salvaguarda, no con disciplina:** `wrangler deploy` no lee
+`astro.config.mjs`, así que un despliegue sin `SITE_URL` compila con el dominio de
+respaldo. Si nadie declara la URL, el sitio **no se indexa** (RNF-7.2). Sin esa regla,
+un despliegue mal configurado publica canónicos e imágenes apuntando a un dominio que
+no existe, y eso sí es difícil de deshacer: ya costó un despliegue de más.
+
+**Ningún verificador lleva un dominio escrito** (RNF-7.4). Uno lo llevaba, y dejó de
+comprobar en cuanto el dominio cambió. `verify:publicado` recibe la URL por argumento o
+por `SITIO_PUBLICADO`, y sin ella informa OMITIDO en vez de pasar en silencio.
+
+**Queda fuera de `verify:todo`** porque depende de la red y de `validator.schema.org`.
+La autoridad sobre el cumplimiento no puede depender de que haya conexión.
