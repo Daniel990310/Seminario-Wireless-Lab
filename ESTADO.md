@@ -781,6 +781,23 @@ pesa menos (33.996 B en 1 archivo, contra 34.732 B en 2). Está en `specs/fuente
   registro para cambiar de entorno sin perder el hilo.
 - **Ya se puede conectar Cloudflare a `main`** sin publicar una versión vieja, que
   era el riesgo mientras el PR estuviera abierto.
+- **El PR #3 también se fusionó** (`b84b38d`, 2026-07-31), con el cierre de 001, y
+  su anotación en `main` con el **PR #4**.
+- **La anotación de una fusión viaja siempre en el PR siguiente**, porque no se
+  puede registrar dentro del PR que se está fusionando. Así que ver uno o dos
+  commits de registro por delante de `main` es lo normal y no significa que haya
+  trabajo sin fusionar. Lo que importa es que no haya **código** por delante.
+
+### PR #3, fusionado el 2026-07-31
+
+<https://github.com/Daniel990310/Seminario-Wireless-Lab/pull/3> · `MERGED`
+(`b84b38d`), con merge commit y sin squash, igual que el #2 y por el mismo motivo.
+
+Contenido: los cuatro commits que quedaban fuera de `main` —el `noindex` cuando
+nadie declara la URL (`8f4bdfc`), la sincronización de las especificaciones
+(`f9f2e79`) y el cierre de 001 (`e53f013`)—. **`main` vuelve a tener el mismo árbol
+que la rama de trabajo**, que se conserva porque hay clones en el móvil, en el PC y
+en Antigravity.
 
 ### PR #2, abierto el 2026-07-31
 
