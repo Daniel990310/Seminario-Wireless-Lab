@@ -16,9 +16,18 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
 )}`;
 ---
 
+<!--
+  Fondo opaco permanente, no translúcido (T5).
+
+  Antes la barra era transparente sobre el hero y ganaba fondo al hacer scroll.
+  Eso dejaba su texto —logo, seis enlaces, los rótulos del selector de tema y el
+  botón de contacto: 11 nodos— con el contraste indeterminado, porque detrás
+  había los degradados del hero. Un color plano lo resuelve de raíz y, de paso,
+  elimina el script que sincronizaba la barra con el desplazamiento.
+-->
 <header
   id="site-header"
-  class="fixed inset-x-0 top-0 z-40 border-b border-transparent transition-colors duration-300"
+  class="fixed inset-x-0 top-0 z-40 border-b border-border bg-background"
 >
   <nav class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
     <a href="#top" class="flex items-center gap-3">
@@ -74,8 +83,9 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
           </svg>
         </summary>
 
+        <!-- Opaco y sin sombra: igual que la barra, y el sistema separa con retícula, no con elevación. -->
         <div
-          class="absolute right-0 mt-3 w-60 overflow-hidden rounded-surface border border-border bg-surface/95 shadow-2xl backdrop-blur-lg"
+          class="absolute right-0 mt-3 w-60 overflow-hidden rounded-surface border border-border bg-surface"
         >
           <ul class="divide-y divide-border">
             {
@@ -115,21 +125,6 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
 </header>
 
 <script>
-  // La barra gana fondo sólido al alejarse del hero.
-  const header = document.getElementById('site-header');
-
-  if (header) {
-    const solid = ['bg-background/85', 'backdrop-blur-md', 'border-border'];
-
-    const sync = () => {
-      header.classList.toggle('border-transparent', window.scrollY <= 24);
-      for (const cls of solid) header.classList.toggle(cls, window.scrollY > 24);
-    };
-
-    sync();
-    window.addEventListener('scroll', sync, { passive: true });
-  }
-
   // El menú se cierra al elegir un destino o al pulsar fuera.
   const menu = document.querySelector<HTMLDetailsElement>('[data-mobile-menu]');
 

@@ -2,40 +2,47 @@
 /**
  * Estado provisional de la sección de programa.
  *
- * Sin brillos ni haces decorativos: solo la etiqueta de estado y el aviso. El
- * único movimiento son los frentes de onda del fondo, que es el mismo motivo
- * físico del hero y no un adorno de interfaz.
+ * Sin brillos ni haces decorativos: solo la etiqueta de estado y el aviso.
+ *
+ * **Los frentes de onda de `Ripple` se retiraron en T5**, y no por accidente.
+ * Sus círculos miden hasta 540 px y son elementos con `background-color`: sus
+ * rects desbordaban cualquier contenedor —`overflow-hidden` recorta el dibujo,
+ * no los rects— y dejaban el texto vecino con el contraste indeterminado para
+ * axe. Además usaban `shadow-xl`, que contradice la regla del sistema de
+ * separar con retícula y no con elevación (`global.css`, `.surface`).
+ *
+ * El motivo físico de la propagación sigue presente, y mejor resuelto, en la
+ * figura del hero. Revertir esto es reponer el import y el bloque.
  */
-import { Ripple } from '~/components/ui/ripple';
 import { seminar } from '~/data/seminar';
 
 const { program, contact } = seminar;
 ---
 
-<div class="surface relative overflow-hidden rounded-surface px-6 py-16 text-center sm:px-12 sm:py-24">
-  <Ripple
-    mainCircleSize={190}
-    mainCircleOpacity={0.08}
-    numCircles={6}
-    className="text-primary/15"
-  />
+<!--
+  Alineado a la izquierda, no centrado (T4b). Era el único bloque centrado de la
+  página, flotando en una caja gris con mucho aire muerto: leía como un cartel de
+  error. Alineado al mismo eje que el resto, es lo que en realidad es —una ficha
+  de estado— y la retícula lo absorbe sin llamar la atención.
+-->
+<div class="border-t hairline pt-8">
+  <p class="eyebrow flex items-center gap-2 text-muted-foreground">
+    <span class="block size-1.5 rounded-full bg-primary" aria-hidden="true"></span>
+    En preparación
+  </p>
 
-  <div class="relative mx-auto max-w-xl">
-    <p class="eyebrow inline-flex items-center gap-2.5 text-muted-foreground">
-      <span class="block size-1.5 rounded-full bg-primary" aria-hidden="true"></span>
-      En preparación
-    </p>
-
-    <p class="mt-7 font-display text-xl font-semibold text-foreground sm:text-2xl">
+  <div class="mt-6 grid gap-x-16 gap-y-4 lg:grid-cols-[minmax(0,28rem)_minmax(0,24rem)]">
+    <p class="font-display text-xl leading-snug font-semibold text-foreground sm:text-2xl">
       {program.pendingNotice}
     </p>
-    <p class="mt-4 text-base leading-relaxed text-muted-foreground">{program.pendingDetail}</p>
-
-    <a
-      href={`mailto:${contact.email}?subject=${encodeURIComponent('Consulta por el programa — Beyond Connectivity 2026')}`}
-      class="mt-8 inline-block text-sm font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
-    >
-      Solicitar aviso de publicación
-    </a>
+    <div>
+      <p class="text-base leading-relaxed text-muted-foreground">{program.pendingDetail}</p>
+      <a
+        href={`mailto:${contact.email}?subject=${encodeURIComponent('Consulta por el programa — Beyond Connectivity 2026')}`}
+        class="mt-4 inline-block text-sm font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
+      >
+        Solicitar aviso de publicación
+      </a>
+    </div>
   </div>
 </div>

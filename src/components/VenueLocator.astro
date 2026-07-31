@@ -9,7 +9,6 @@
  * razones: no se envía la visita a un tercero sin consentimiento, y si una red
  * institucional bloquea el embed el bloque no queda como un recuadro roto.
  */
-import { Ripple } from '~/components/ui/ripple';
 import { seminar } from '~/data/seminar';
 
 const { venue } = seminar;
@@ -22,67 +21,71 @@ const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&laye
 ---
 
 <div
-  class="surface relative overflow-hidden rounded-surface"
+  class="surface rounded-surface"
   data-venue-locator
   data-embed={EMBED}
   data-embed-title={`Mapa de ${venue.name}`}
 >
-  <div class="absolute inset-0 grid-backdrop opacity-45" aria-hidden="true"></div>
-
-  <div
-    class="relative flex h-[320px] flex-col items-center justify-center px-6 text-center sm:h-[420px]"
-    data-locator-panel
-  >
+  <!--
+    Altura mínima, no fija: con `h-` el bloque de texto desbordaba el panel en
+    los anchos estrechos, donde los dos botones se apilan.
+  -->
+  <div class="flex min-h-[320px] flex-col sm:min-h-[420px]" data-locator-panel>
     <!--
-      Ripple de Magic UI: anillos concéntricos que laten alrededor del marcador,
-      como una zona de cobertura. Solo CSS, sin JavaScript en el cliente.
-    -->
-    <Ripple
-      mainCircleSize={120}
-      mainCircleOpacity={0.16}
-      numCircles={6}
-      className="text-primary/30"
-    />
+      Banda del marcador (T5): la retícula técnica vive aquí, en una zona **sin
+      texto encima**. Antes envolvía al contenido completo y dejaba la
+      dirección, los botones y la nota con el contraste indeterminado.
 
-    <!-- `currentColor` para que el marcador siga al tema sin duplicar el SVG. -->
-    <svg
-      class="relative size-12 text-primary sm:size-14"
-      viewBox="0 0 48 48"
-      fill="none"
+      Los anillos de cobertura de `Ripple` se retiraron: sus círculos son
+      elementos con `background-color` de hasta 470 px, y sus rects desbordaban
+      esta banda por mucho que `overflow-hidden` recorte el dibujo, con lo que
+      axe seguía sin poder determinar el fondo del texto vecino. Usaban además
+      `shadow-xl`, que el sistema no admite.
+    -->
+    <div
+      class="relative flex flex-1 items-center justify-center overflow-hidden border-b border-border"
       aria-hidden="true"
     >
-      <g stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M24 42c0 0 13-12.2 13-21.7A13 13 0 1 0 11 20.3C11 29.8 24 42 24 42Z" />
-      </g>
-      <circle cx="24" cy="20" r="4.5" fill="currentColor" />
-    </svg>
+      <div class="absolute inset-0 grid-backdrop opacity-45"></div>
 
-    <p class="relative mt-5 font-display text-lg font-semibold text-foreground">
-      {venue.street}, {venue.district}
-    </p>
-    <p class="relative mt-1 text-sm text-muted-foreground">{venue.city}, {venue.country}</p>
-
-    <div class="relative mt-7 flex flex-wrap items-center justify-center gap-3">
-      <button
-        type="button"
-        data-locator-load
-        class="rounded-control border border-primary/40 bg-primary/8 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/15"
-      >
-        Cargar mapa interactivo
-      </button>
-      <a
-        href={venue.mapsUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="rounded-control border border-border-control px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
-      >
-        Abrir en Google Maps
-      </a>
+      <!-- `currentColor` para que el marcador siga al tema sin duplicar el SVG. -->
+      <svg class="relative size-12 text-primary sm:size-14" viewBox="0 0 48 48" fill="none">
+        <g stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M24 42c0 0 13-12.2 13-21.7A13 13 0 1 0 11 20.3C11 29.8 24 42 24 42Z" />
+        </g>
+        <circle cx="24" cy="20" r="4.5" fill="currentColor" />
+      </svg>
     </div>
 
-    <p class="relative mt-5 max-w-xs text-xs leading-relaxed text-muted-foreground">
-      Al cargar el mapa se solicita contenido a OpenStreetMap.
-    </p>
+    <!-- Campo de texto: fondo plano y opaco, sin nada por delante ni por debajo. -->
+    <div class="bg-surface px-6 py-6 text-center">
+      <p class="font-display text-lg font-semibold text-foreground">
+        {venue.street}, {venue.district}
+      </p>
+      <p class="mt-2 text-sm text-muted-foreground">{venue.city}, {venue.country}</p>
+
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <button
+          type="button"
+          data-locator-load
+          class="rounded-control border border-primary/40 bg-primary/8 px-5 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/15"
+        >
+          Cargar mapa interactivo
+        </button>
+        <a
+          href={venue.mapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded-control border border-border-control px-5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
+        >
+          Abrir en Google Maps
+        </a>
+      </div>
+
+      <p class="mx-auto mt-6 max-w-xs text-xs leading-relaxed text-muted-foreground">
+        Al cargar el mapa se solicita contenido a OpenStreetMap.
+      </p>
+    </div>
   </div>
 </div>
 

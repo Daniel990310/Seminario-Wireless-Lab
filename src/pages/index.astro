@@ -152,7 +152,8 @@ const hasProgram = program.days.length > 0;
 
     <!-- Sede -->
     <Section id="sede" eyebrow="Sede" title="Auditorio de la Sede PUCV Santiago">
-      <div class="mt-12 grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
+      <!-- `items-start`, no `items-center`: centrar dejaba un vacío grande sobre la dirección. -->
+      <div class="mt-12 grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-16">
         <div class="reveal">
           <address class="space-y-1 text-base not-italic sm:text-lg">
             <p class="font-display text-lg font-semibold text-foreground">{venue.name}</p>
