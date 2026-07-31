@@ -50,15 +50,17 @@ Lo que se hizo:
    y `get_inspiration` respeten la identidad visual. Versionado a propósito: útil que
    viaje a todos los clones.
 
-**Pendiente para Daniel** (3 preguntas):
+**Las 3 preguntas que quedaron abiertas aquí ya están respondidas.** Se conservan con
+su respuesta porque el registro de qué se preguntó importa:
 
-- ¿Agregar T4b (refinamiento visual con componentes estáticos de 21st.dev)?
-- ¿Confirmar RF-6 / T10 (componentes interactivos: Tabs, Accordion, Dialog)?
-- ¿Rotar la API key de 21st.dev? La que se compartió en el chat está comprometida.
+| Pregunta | Respuesta de Daniel, 2026-07-30 |
+| -------- | ------------------------------- |
+| ¿Agregar T4b (refinamiento visual)? | **Sí.** Ya está completada; ver §5d |
+| ¿Confirmar RF-6 / T10 (componentes interactivos)? | **Sí.** T10 desbloqueada |
+| ¿Rotar la API key de 21st.dev? | **Hecha y revocada la anterior.** Ver §6b |
 
-**Siguiente tarea sin bloqueo: sigue siendo T4 (tipografía).** Nada de lo hecho en esta
-sesión cambia el orden de las tareas; solo enriquece el flujo para cuando se llegue a
-componentes.
+**Lo que decía esta sección sobre la siguiente tarea quedó obsoleto:** T4, T4b, T5 y
+la parte de T6 que cierra RNF-1.4 están completadas. El estado vigente está en §4.
 
 ## 0. Traspaso a Antigravity — 2026-07-30, tarde
 
@@ -408,10 +410,18 @@ vías están documentadas en `.env.example`; es la vía (a) la que quedó en uso
 - Daniel fijó una clave nueva con
   `[System.Environment]::SetEnvironmentVariable('API_KEY_21ST','<clave>','User')`. La
   clave que hay ahora en el entorno autentica contra 21st.dev. `[verificado]`
-- **No consta que la clave vieja haya sido revocada en el dashboard de 21st.dev.**
-  `[supuesto]` Cambiar el valor de la variable de entorno reemplaza cuál se usa, no
-  invalida la anterior: la comprometida sigue viva hasta que se borre desde
-  https://21st.dev. Pendiente de confirmar con Daniel.
+- **La clave comprometida se revocó en el dashboard de 21st.dev.** `[verificado]`
+  Daniel lo confirmó el 2026-07-30. **Incidente cerrado.**
+
+  Conviene retener por qué hacían falta los dos pasos: cambiar el valor de la
+  variable de entorno solo decide *cuál se usa*, no invalida la anterior. La clave
+  que se pegó en el chat siguió siendo válida hasta que se borró desde
+  <https://21st.dev>. La documentación del propio servidor pide además generar una
+  clave nueva en vez de reaprovechar las anteriores a la migración de Magic.
+
+  Comprobación posterior a la revocación: `get_usage` siguió respondiendo
+  autenticado (`tier: free`, 2 recuperaciones disponibles), lo que confirma que la
+  variable de entorno lleva la clave nueva y no la revocada. `[medido]`
 - La clave **no** quedó en el historial de PowerShell
   (`ConsoleHost_history.txt` no contiene ninguna ocurrencia de `API_KEY_21ST`).
   `[verificado]`
