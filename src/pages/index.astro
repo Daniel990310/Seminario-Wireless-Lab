@@ -154,7 +154,14 @@ const hasProgram = program.days.length > 0;
     <Section id="sede" eyebrow="Sede" title="Auditorio de la Sede PUCV Santiago">
       <!-- `items-start`, no `items-center`: centrar dejaba un vacío grande sobre la dirección. -->
       <div class="mt-12 grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-16">
-        <div class="reveal">
+        <!--
+          `min-w-0`: los items de una retícula traen `min-width: auto`, así que el
+          contenido más largo —aquí el correo, con el texto al 200 %— impone un
+          ancho mínimo y la columna empuja la página hacia la derecha antes de que
+          `overflow-wrap` llegue a partir nada. Con `min-w-0` la columna encoge y
+          el texto parte (WCAG 1.4.4, T6).
+        -->
+        <div class="reveal min-w-0">
           <address class="space-y-1 text-base not-italic sm:text-lg">
             <p class="font-display text-lg font-semibold text-foreground">{venue.name}</p>
             <p class="text-muted-foreground">{venue.street}</p>
@@ -163,7 +170,8 @@ const hasProgram = program.days.length > 0;
           </address>
 
           <!-- Los enlaces a mapas viven en el panel localizador, a la derecha. -->
-          <dl class="mt-10 grid gap-6 border-t hairline pt-8 sm:grid-cols-2">
+          <!-- `[&>div]:min-w-0` por lo mismo que la columna: el correo no partía. -->
+          <dl class="mt-10 grid gap-6 border-t hairline pt-8 [&>div]:min-w-0 sm:grid-cols-2">
             <div>
               <dt class="eyebrow text-muted-foreground">Fechas</dt>
               <dd class="mt-2 text-base text-foreground">{seminar.dates.label}</dd>

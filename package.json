@@ -11,6 +11,7 @@
     "verify": "node scripts/verify.mjs",
     "verify:tema": "node scripts/verify-tema.mjs",
     "verify:red": "node scripts/verify-red.mjs",
+    "verify:teclado": "node scripts/verify-teclado.mjs",
     "verify:todo": "node scripts/verify-todo.mjs"
   },
   "dependencies": {

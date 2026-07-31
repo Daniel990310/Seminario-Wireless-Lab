@@ -1,12 +1,11 @@
 /**
- * Corre los tres verificadores y resume.
+ * Corre los cuatro verificadores y resume.
  *
- * No es un `&&` encadenado por dos razones. La primera: `npm run verify` termina
- * con código 1 de forma legítima mientras RNF-1.3 y RNF-1.4 sigan abiertos (los
- * cierran T5 y T6), así que un `&&` nunca llegaría a los otros dos y parecería que
- * no existen. La segunda: el encadenado depende del shell, y este proyecto se
- * desarrolla desde entornos distintos —incluido Windows— donde `&&` y `;` no se
- * comportan igual. Aquí no hay shell: se lanzan procesos y se suman resultados.
+ * No es un `&&` encadenado: si el primero falla, un `&&` nunca llegaría a los
+ * demás y parecería que no existen. Además el encadenado depende del shell, y
+ * este proyecto se desarrolla desde entornos distintos —incluido Windows— donde
+ * `&&` y `;` no se comportan igual. Aquí no hay shell: se lanzan procesos y se
+ * suman resultados.
  */
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -17,6 +16,7 @@ const VERIFICADORES = [
   { guion: 'verify.mjs', nombre: 'Accesibilidad y peso', autoridad: true },
   { guion: 'verify-tema.mjs', nombre: 'Selector de tema (RF-4)' },
   { guion: 'verify-red.mjs', nombre: 'Red de colaboración (T3)' },
+  { guion: 'verify-teclado.mjs', nombre: 'Semántica, foco y teclado (T6)' },
 ];
 
 const correr = (guion) =>
@@ -43,14 +43,14 @@ if (fallidos.length === 0) {
 }
 
 /*
- * Se distingue el verificador de autoridad de los complementarios: mientras T5 y
- * T6 estén abiertas, `verify` va a fallar y eso es lo esperado. Un fallo en los
- * otros dos, en cambio, sí es una regresión.
+ * Desde el 2026-07-30 no hay incumplimientos esperados: `verify` quedó en verde
+ * al cerrarse RNF-1.3 y RNF-1.4. Cualquier fallo a partir de aquí es una
+ * regresión, no un pendiente conocido, y hay que tratarlo como tal.
  */
 console.log(
   `\n${fallidos.length} verificador(es) con incumplimientos. Revisar el detalle de arriba.`,
 );
 console.log(
-  'Recordatorio: RNF-1.3 y RNF-1.4 siguen abiertos por diseño hasta T5 y T6.\n',
+  'Ya no hay incumplimientos esperados: esto es una regresión, no un pendiente.\n',
 );
 process.exit(1);

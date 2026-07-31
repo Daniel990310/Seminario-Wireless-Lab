@@ -333,7 +333,14 @@ a la vista. Mecanismo y descartes en `ESTADO.md` §5b.
 - Zoom de texto al 200 % sin desbordamiento horizontal.
 
 **Comprobación:** las 7 secciones se anuncian como regiones. Recorrido por
-teclado verificado manualmente en ambos temas. Cero hallazgos de axe.
+teclado verificado en ambos temas. Cero hallazgos de axe.
+
+**Cumplida el 2026-07-30.** El recorrido por teclado no se verificó «manualmente»
+como decía este enunciado: se automatizó en `npm run verify:teclado`, 12 criterios,
+porque una comprobación manual que no se automatiza se deja de hacer. Aparecieron
+dos incumplimientos reales de WCAG 1.4.4 al ampliar solo la tipografía —la barra de
+navegación y la sección Sede desbordaban—, ambos corregidos. Detalle en
+`ESTADO.md` §5e.
 
 ---
 

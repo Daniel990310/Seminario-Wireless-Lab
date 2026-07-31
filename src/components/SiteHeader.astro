@@ -29,7 +29,14 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
   id="site-header"
   class="fixed inset-x-0 top-0 z-40 border-b border-border bg-background"
 >
-  <nav class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
+  <!--
+    `flex-wrap` para el zoom de texto (WCAG 1.4.4, T6). Los `media query` de
+    Tailwind se resuelven en `rem` sobre el tamaño **inicial** del navegador, así
+    que quien solo agranda la fuente —sin ampliar la página— sigue recibiendo el
+    diseño de escritorio con el texto al doble, y la barra desbordaba a la
+    derecha. Envolviendo, la barra crece hacia abajo en vez de salirse.
+  -->
+  <nav class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-4 sm:px-8">
     <a href="#top" class="flex items-center gap-3">
       <span
         class="grid size-8 shrink-0 place-items-center rounded-full border border-primary/40 bg-primary/8"

@@ -159,7 +159,7 @@ cualquier herramienta y no solo a Claude Code.
 | T4 · Tipografía | **Completada y verificada.** Crimson Pro + Atkinson Hyperlegible Next (122,6 kB) |
 | T4b · Refinamiento visual | **Completada y verificada.** Sin componentes del catálogo: ver §5d |
 | T5 · Retícula de 12 columnas (RNF-1.3) | **Completada y verificada.** 104 → **0** nodos indeterminados. Ver §5b |
-| T6 · Nombres accesibles y teclado (RNF-1.4) | **Parcial.** RNF-1.4 cerrado (0 de 7 secciones sin nombre). Faltan foco visible, recorrido por teclado y zoom al 200 % |
+| T6 · Nombres accesibles y teclado (RNF-1.4) | **Completada y verificada.** 12 criterios en `npm run verify:teclado`. Ver §5e |
 | T7 · Sitio bilingüe (RF-1) | Pendiente |
 | T8 · `og:image` por idioma | Pendiente |
 | T9 · Verificación final | Pendiente |
@@ -190,13 +190,14 @@ Los dos incumplimientos abiertos **no son regresiones**: están en la línea bas
 su corrección pertenece a T5 y T6. `npm run verify` termina con código 1 por ellos,
 y eso es correcto.
 
-Hay tres verificadores, y `npm run verify:todo` los corre en cadena:
+Hay cuatro verificadores, y `npm run verify:todo` los corre en cadena:
 
 | Comando | Qué cubre |
 | ------- | --------- |
 | `npm run verify` | **La autoridad.** axe-core en 2 anchos × 2 temas, y los presupuestos de peso |
 | `npm run verify:tema` | Los 16 criterios de RF-4 que axe no puede evaluar: destello al cargar, sin JavaScript, teclado, persistencia sin cookies, sincronía entre las dos instancias del selector |
 | `npm run verify:red` | Los 7 criterios de T3: que el pulso recorra, que se detenga con movimiento reducido, y que el navegador no pida ningún `.js` |
+| `npm run verify:teclado` | Los 12 criterios de T6 que axe no decide: jerarquía de encabezados, foco visible en todo el recorrido, contraste del anillo, menú móvil por teclado y zoom de texto al 200 % sin desbordar |
 
 Todos requieren un `npm run build` previo.
 
@@ -291,6 +292,40 @@ donde evoca un plano y ahí sí viene a cuento.
 
 `npm run verify:todo` en verde después de cada cambio, y revisión visual en los dos
 temas y los dos anchos.
+
+## 5e. T6, y por qué se automatizó lo que WCAG deja como manual
+
+RNF-1.4 se cerró junto con T5. Lo que quedaba —foco visible, recorrido por teclado
+y zoom de texto— son las tres cosas que WCAG deja como **comprobación manual**, y
+una comprobación manual que no se automatiza es una que se deja de hacer. De ahí
+`scripts/verify-teclado.mjs`, con 12 criterios. `[medido]`
+
+**Un falso positivo que conviene no repetir.** La primera versión medía el foco
+llamando a `el.focus()` desde JavaScript y daba 2 de 3 elementos sin anillo. Era la
+prueba la que estaba mal: el navegador distingue si el foco vino del teclado, y el
+foco programático no siempre activa `:focus-visible`. Recorriendo con `Tab` de
+verdad salen **39 paradas, todas con anillo**, con ratios de 7,24:1 en claro y
+7,96:1 en oscuro contra un umbral de 3:1.
+
+**Dos defectos reales de WCAG 1.4.4, ambos corregidos:**
+
+Los `media query` de Tailwind se resuelven en `rem` sobre el tamaño **inicial** del
+navegador. Quien amplía solo la tipografía —sin ampliar la página— sigue recibiendo
+el diseño de escritorio con el texto al doble. Eso desbordaba:
+
+1. **La barra de navegación**, a 1440 px. Resuelto con `flex-wrap`: crece hacia
+   abajo en lugar de salirse.
+2. **La sección Sede**, a 390 px, exactamente 28 px. La causa era de retícula, no
+   de texto: los items de una retícula traen `min-width: auto`, así que el correo
+   largo imponía un ancho mínimo y `overflow-wrap` nunca llegaba a partir nada.
+   Resuelto con `min-w-0` en la columna y en las celdas del `dl`, más
+   `overflow-wrap: break-word` en `body`.
+
+El diagnóstico útil fue que **los cuatro elementos se salían los mismos 28 px**: eso
+descarta el contenido de cada uno y señala a un ancestro común.
+
+Los nombres de expositor pasaron de `h3` a `h4`. El rótulo del grupo ya era `h3`, así
+que cada nombre se anunciaba como su hermano y el índice de encabezados quedaba plano.
 
 ## 5c. RNF-2.1 ahora sí mide todo el JavaScript
 

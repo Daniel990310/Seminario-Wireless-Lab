@@ -37,9 +37,15 @@ const initials = speaker.name
     {initials}
   </span>
   <div class="min-w-0">
-    <h3 class="font-display text-lg leading-tight font-semibold text-foreground">
+    <!--
+      `h4`, no `h3` (T6): el rótulo del grupo —«Expositores internacionales»— ya
+      es el `h3` de este bloque. Con ambos en `h3`, cada nombre se anunciaba como
+      hermano del rótulo en vez de como hijo, y el índice de encabezados de un
+      lector de pantalla quedaba plano.
+    -->
+    <h4 class="font-display text-lg leading-tight font-semibold text-foreground">
       {speaker.name}
-    </h3>
+    </h4>
     <p
       class:list={[
         'mt-2 text-sm leading-snug text-muted-foreground',

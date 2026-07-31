@@ -177,6 +177,18 @@
     text-wrap: pretty;
   }
 
+  /*
+   * Zoom de texto al 200 % sin desbordamiento horizontal (WCAG 1.4.4, T6).
+   *
+   * Sin esto, una dirección o un correo largo se salen del viewport cuando se
+   * amplía solo la tipografía: las palabras largas no tienen dónde partir y el
+   * `overflow-x: hidden` del `body` las esconde en vez de resolverlas, que es
+   * peor —el contenido queda inalcanzable sin barra que lo delate—.
+   */
+  body {
+    overflow-wrap: break-word;
+  }
+
   :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
