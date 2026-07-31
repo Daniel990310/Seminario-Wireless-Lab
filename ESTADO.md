@@ -161,7 +161,7 @@ cualquier herramienta y no solo a Claude Code.
 | T5 · Retícula de 12 columnas (RNF-1.3) | **Completada y verificada.** 104 → **0** nodos indeterminados. Ver §5b |
 | T6 · Nombres accesibles y teclado (RNF-1.4) | **Completada y verificada.** 12 criterios en `npm run verify:teclado`. Ver §5e |
 | T7 · Sitio bilingüe (RF-1) | **Completada y verificada.** 15 criterios en `npm run verify:idioma`. Ver §5f |
-| T8 · `og:image` por idioma | Pendiente |
+| T8 · `og:image` por idioma | **Completada y verificada.** 20 criterios en `npm run verify:seo`. Ver §5g |
 | T9 · Verificación final | Pendiente |
 | T10 · Componentes interactivos (RF-6) | **Desbloqueada: RF-6 confirmada por Daniel el 2026-07-30.** |
 
@@ -190,7 +190,7 @@ Los dos incumplimientos abiertos **no son regresiones**: están en la línea bas
 su corrección pertenece a T5 y T6. `npm run verify` termina con código 1 por ellos,
 y eso es correcto.
 
-Hay cinco verificadores, y `npm run verify:todo` los corre en cadena:
+Hay seis verificadores, y `npm run verify:todo` los corre en cadena:
 
 | Comando | Qué cubre |
 | ------- | --------- |
@@ -198,7 +198,8 @@ Hay cinco verificadores, y `npm run verify:todo` los corre en cadena:
 | `npm run verify:tema` | Los 16 criterios de RF-4 que axe no puede evaluar: destello al cargar, sin JavaScript, teclado, persistencia sin cookies, sincronía entre las dos instancias del selector |
 | `npm run verify:red` | Los 7 criterios de T3: que el pulso recorra, que se detenga con movimiento reducido, y que el navegador no pida ningún `.js` |
 | `npm run verify:teclado` | Los 12 criterios de T6 que axe no decide: jerarquía de encabezados, foco visible en todo el recorrido, contraste del anillo, menú móvil por teclado y zoom de texto al 200 % sin desbordar |
-| `npm run verify:idioma` | Los 15 criterios de RF-1: ambas rutas, `lang`, `hreflang` recíproco, título sin traducir, selector por teclado, conservación de la sección, sitemap, cero cadenas en componentes y **textos sin traducir** |
+| `npm run verify:idioma` | Los 17 criterios de RF-1: ambas rutas, `lang`, `hreflang` recíproco, título sin traducir, control de idioma por teclado, conservación de la sección, sitemap, cero cadenas en componentes y **textos sin traducir** |
+| `npm run verify:seo` | Los 20 criterios de RNF-3: imágenes para compartir de 1200×630 por idioma, metadatos absolutos, canónico por idioma, sin descripciones duplicadas y `schema.org/Event` completo |
 
 Todos requieren un `npm run build` previo.
 
@@ -293,6 +294,56 @@ donde evoca un plano y ahí sí viene a cuento.
 
 `npm run verify:todo` en verde después de cada cambio, y revisión visual en los dos
 temas y los dos anchos.
+
+## 5g. T8, imágenes para compartir
+
+Una imagen por idioma, 1200×630, en `public/og/es.png` y `en.png`. Se generan con
+`npm run og` y **se versionan**: forman parte del sitio, no son un subproducto del
+build.
+
+### Cómo se generan, y por qué así
+
+El lienzo es una página real del proyecto —`src/pages/og/<idioma>.astro`, sobre
+`CartelOg.astro`—, así que usa las mismas tipografías, tokens y figura que el
+sitio. `scripts/generar-og.mjs` la abre con Playwright y la captura.
+
+| Alternativa | Por qué no |
+| ----------- | ---------- |
+| `satori` + `sharp`, la vía que documenta Astro | Dos dependencias nuevas, y obliga a describir el cartel otra vez en otro lenguaje y mantener las dos versiones sincronizadas a mano |
+| `web-asset-generator`, que la tarea mandaba evaluar | Es un skill de Claude Code que exige Python y Pillow. `AGENTS.md` establece que el proyecto no depende de Claude Code, y no usaría las tipografías del sitio |
+| **Playwright** ✅ | Ya está instalado para los verificadores: cero dependencias nuevas, y el cartel es el sitio |
+
+**No se generan en cada build a propósito.** Son activos estables que solo cambian
+si cambia el título o la fecha, y hacer que `npm run build` dependa de arrancar un
+navegador es frágil justo donde más caro sale.
+
+Los lienzos quedan fuera del sitemap (`filter` en la configuración) y fuera de la
+auditoría de accesibilidad (`verify` los excluye): no son páginas para visitar,
+miden 1200×630 fijos y no llevan navegación. Contarlos ensuciaría las cifras.
+
+### Un fallo que solo se ve mirando
+
+La primera captura salió con la tipografía de reserva: el titular en sans en vez
+de Crimson Pro. Faltaba el componente `<Font>`, que es quien emite las reglas
+`@font-face` con las rutas reales de los `woff2`. Importar `global.css` no basta,
+porque las variables de fuente las define `astro:assets`. **`verify:seo` no lo
+habría detectado** —la imagen existía y medía 1200×630—: hizo falta abrir el PNG.
+
+### Lo que queda para Daniel
+
+`verify:seo` comprueba la **estructura** de `schema.org/Event` contra los campos
+que exige, en ambos idiomas. Lo que no puede hacer es pasarla por el validador de
+Google, que necesita una URL pública o que se pegue el código a mano. Pendiente,
+con dos formas de cerrarlo:
+
+1. Pegar el bloque `application/ld+json` de cada página en
+   <https://validator.schema.org>.
+2. Cuando el sitio esté publicado, pasar ambas URLs por la prueba de resultados
+   enriquecidos de Google.
+
+Lo mismo con la previsualización del enlace, que la tarea pide revisar «de verdad,
+no supuesta»: hasta que el sitio tenga URL pública, las plataformas no pueden leer
+el `og:image`. **Las imágenes sí están revisadas visualmente**, abriendo los PNG.
 
 ## 5f. T7, y qué pasa cuando lleguen cambios de texto
 

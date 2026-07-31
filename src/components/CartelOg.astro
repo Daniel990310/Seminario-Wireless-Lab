@@ -1,0 +1,92 @@
+---
+/**
+ * Cartel para compartir en redes (RNF-3.2), 1200×630.
+ *
+ * Es una página real del proyecto, no una plantilla aparte, y eso es
+ * deliberado: usa las mismas tipografías, los mismos tokens y la misma figura
+ * que el sitio, así que la previsualización de un enlace se parece a lo que la
+ * persona encuentra al abrirlo. Una plantilla separada se desincroniza en
+ * cuanto cambia un color.
+ *
+ * `scripts/generar-og.mjs` la abre con Playwright y la captura a PNG. No se
+ * genera en cada build a propósito: son activos estables que solo cambian si
+ * cambia el título o la fecha, y hacer que `npm run build` dependa de arrancar
+ * un navegador es frágil justo en el sitio donde más caro sale.
+ *
+ * No lleva enlaces ni navegación: no es una página para visitar. Queda fuera
+ * del sitemap y de la auditoría de accesibilidad, que se ocupan de las páginas
+ * reales.
+ */
+import { Font } from 'astro:assets';
+import PropagationFigure from './PropagationFigure.astro';
+import { contenido, type Idioma } from '~/data/contenido';
+import '~/styles/global.css';
+
+interface Props {
+  lang: Idioma;
+}
+
+const c = contenido(Astro.props.lang);
+---
+
+<!doctype html>
+<html lang={c.lang} data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <title>{c.title}</title>
+    <meta name="robots" content="noindex, nofollow" />
+
+    <!--
+      Sin esto el cartel sale con la tipografía de reserva: `<Font>` es lo que
+      emite las reglas `@font-face` con las rutas reales de los `woff2`. Se
+      comprobó capturando sin él, y el titular salía en la sans en vez de en
+      Crimson Pro.
+    -->
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-body" preload />
+    <Font cssVariable="--font-mono" />
+    <style>
+      /* Lienzo exacto de Open Graph. Sin márgenes del navegador. */
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="relative flex h-[630px] w-[1200px] bg-background">
+      <!-- Campo de texto: mismas proporciones que el hero del sitio. -->
+      <div class="flex w-[680px] flex-col justify-center gap-8 px-16">
+        <p class="eyebrow flex items-center gap-4 text-[0.8rem]">
+          <span>{c.ui.hero.eyebrow}</span>
+          <span class="h-px w-10 bg-primary/40"></span>
+          <span class="text-muted-foreground">{c.organizers[0].shortName} · {c.venue.country}</span>
+        </p>
+
+        <!-- Título oficial, en inglés en ambos idiomas (RF-1.2). -->
+        <h1 class="font-display text-[3.1rem] leading-[1.05] font-semibold text-foreground">
+          {c.title}
+        </h1>
+
+        <span class="block h-px w-28 bg-primary/80"></span>
+
+        <div class="flex flex-col gap-2">
+          <p class="font-display text-2xl font-semibold text-foreground">{c.dates.label}</p>
+          <p class="text-lg text-muted-foreground">{c.venue.name}</p>
+        </div>
+      </div>
+
+      <!-- La figura, en su propia mitad: la misma que identifica al sitio. -->
+      <div class="relative w-[520px]">
+        <PropagationFigure
+          titulo={c.ui.hero.figuraTitulo}
+          descripcion={c.ui.hero.figuraDescripcion}
+        />
+      </div>
+    </div>
+  </body>
+</html>

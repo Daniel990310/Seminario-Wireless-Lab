@@ -53,7 +53,9 @@ Mismo comando: `npm run build && npm run verify`, 2 anchos × 2 temas.
 | Contraste indeterminado | **0 nodos** en las 4 corridas, eran 104 | Categoría `incomplete`. RNF-1.3 cerrado |
 | Secciones sin nombre accesible | **0 de 7**, eran 7 de 7 | `aria-labelledby` en cada `<section>` apuntando a su encabezado. RNF-1.4 cerrado |
 | Criterios de T6 | **12 de 12** | `npm run verify:teclado`, 2 temas × 2 anchos |
-| Criterios de RF-1 | **15 de 15** | `npm run verify:idioma` |
+| Criterios de RF-1 | **17 de 17** | `npm run verify:idioma` |
+| Criterios de RNF-3 | **20 de 20** | `npm run verify:seo` |
+| Imágenes para compartir | 2, de 1200×630 | `npm run og`. Las dimensiones se leen de la cabecera IHDR del PNG, sin librería de imágenes |
 | Páginas auditadas por `verify` | **2** (`/` y `/en/`), 8 corridas | Desde T7 |
 | Traducción faltante detectada al compilar | sí | Comprobado quitando `cargarMapa` de `en.ts`: `astro check` responde `Property 'cargarMapa' is missing`. `[verificado]` |
 | Foco visible en el recorrido | **39 paradas, todas con anillo** | Recorriendo con `Tab` real, no con `el.focus()`: el foco programático no siempre activa `:focus-visible` y daba fallos inexistentes |

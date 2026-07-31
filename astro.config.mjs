@@ -52,6 +52,9 @@ export default defineConfig({
     // `i18n` en el sitemap emite las alternativas por idioma en cada URL (RF-1.8).
     sitemap({
       i18n: { defaultLocale: 'es', locales: { es: 'es', en: 'en' } },
+      // `/og/` son los lienzos de los que se capturan las imágenes para
+      // compartir: no son páginas para visitar y no deben indexarse.
+      filter: (pagina) => !pagina.includes('/og/'),
     }),
     react(),
   ],

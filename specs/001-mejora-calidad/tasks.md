@@ -380,6 +380,18 @@ las dos páginas generadas. Detalle en `ESTADO.md` §5f.
 **Comprobación:** validador de Google sin errores. Previsualización del enlace
 revisada de verdad, no supuesta.
 
+**Cumplida el 2026-07-31**, con dos matices declarados. `npm run verify:seo`
+comprueba 20 criterios, incluida la estructura de `schema.org/Event` en ambos
+idiomas. Lo que **no** se ha hecho, porque no se puede sin URL pública: pasar los
+datos por la herramienta de Google y ver la previsualización real del enlace en
+una plataforma. Queda anotado en `ESTADO.md` §5g con las dos formas de cerrarlo.
+Las imágenes sí están revisadas abriendo los PNG, que fue como se descubrió que la
+primera tanda salió con la tipografía de reserva.
+
+`web-asset-generator` se evaluó y se descartó: es un skill de Claude Code que
+exige Python y Pillow, y `AGENTS.md` establece que el proyecto no depende de
+Claude Code. Se usa Playwright, ya instalado para los verificadores.
+
 ---
 
 ## T10 · Componentes interactivos con shadcn/ui
