@@ -27,7 +27,7 @@ Actualizado: **2026-07-31** · Rama de trabajo: `claude/framework-app-profesiona
 > | T9 · Cierre y cifras finales | §5i |
 > | Reseñas y programa de ejemplo | §5j |
 >
-> **La rama está subida y el PR lo tiene que abrir Daniel:** ver §6.
+> **PR abierto:** [#2](https://github.com/Daniel990310/Seminario-Wireless-Lab/pull/2), `MERGEABLE`. Ver §6.
 
 ## 0b. Primera sesión de Antigravity — 2026-07-30, noche
 
@@ -730,21 +730,19 @@ pesa menos (33.996 B en 1 archivo, contra 34.732 B en 2). Está en `specs/fuente
   es todo el trabajo SDD, de T1 a T10. Subida a `origin` el 2026-07-31 (`cf7fffc`).
 - El contenido de la rama es un **superconjunto** de `main`: `main` no tiene nada
   que la rama no tenga. No hay que fusionar nada hacia atrás.
-- El trabajo posterior necesita un **PR nuevo**. No reabrir ni reutilizar el #1.
+- El trabajo posterior necesitaba un **PR nuevo**. No reabrir ni reutilizar el #1.
 
-### El PR nuevo lo tiene que abrir Daniel
+### PR #2, abierto el 2026-07-31
 
-`gh` en este equipo está autenticado como **`danielcaignet-dataseed`**, que solo
-tiene permiso **`READ`** sobre `Daniel990310/Seminario-Wireless-Lab`. Crear el PR
-falla con `must be a collaborator`. El `git push` sí funciona porque va por SSH
-con otra credencial.
+<https://github.com/Daniel990310/Seminario-Wireless-Lab/pull/2> · `OPEN` y
+`MERGEABLE` · 43 commits, 299 archivos.
 
-Dos formas de resolverlo:
-
-1. Abrirlo desde la web:
-   <https://github.com/Daniel990310/Seminario-Wireless-Lab/compare/main...claude/framework-app-profesional-n4wa0t?expand=1>
-2. O autenticar `gh` con la cuenta `Daniel990310` (`gh auth login`) y entonces sí
-   se puede crear desde la terminal.
+**Trampa de credenciales, por si reaparece:** `gh` estaba autenticado como
+`danielcaignet-dataseed`, con permiso `READ` sobre el repositorio, y
+`gh pr create` fallaba con `must be a collaborator`. El `git push` sí funcionaba,
+porque va por SSH con otra credencial —de ahí que el problema no se note hasta
+intentar abrir el PR—. Se resolvió con `gh auth login` usando la cuenta
+`Daniel990310`.
 
 ## 6b. Servidor MCP de 21st.dev
 
