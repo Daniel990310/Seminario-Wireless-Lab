@@ -27,7 +27,8 @@ Actualizado: **2026-07-31** · Rama de trabajo: `claude/framework-app-profesiona
 > | T9 · Cierre y cifras finales | §5i |
 > | Reseñas y programa de ejemplo | §5j |
 >
-> **PR abierto:** [#2](https://github.com/Daniel990310/Seminario-Wireless-Lab/pull/2), `MERGEABLE`. Ver §6.
+> **PR #2 fusionado en `main`** el 2026-07-31 (`df22be4`). `main` y la rama de
+> trabajo tienen ahora **el mismo árbol**. Ver §6.
 >
 > **Sitio publicado (provisional, con `noindex`):**
 > <https://seminario-wireless-lab.danielcaignet99.workers.dev> · Ver §6c.
@@ -734,6 +735,14 @@ pesa menos (33.996 B en 1 archivo, contra 34.732 B en 2). Está en `specs/fuente
 - El contenido de la rama es un **superconjunto** de `main`: `main` no tiene nada
   que la rama no tenga. No hay que fusionar nada hacia atrás.
 - El trabajo posterior necesitaba un **PR nuevo**. No reabrir ni reutilizar el #1.
+- **El PR #2 ya se fusionó** (`df22be4`, 2026-07-31): `main` contiene todo el
+  trabajo de T1 a T10, y su árbol es **idéntico** al de la rama de trabajo, que se
+  conserva porque hay clones en el móvil, en el PC y en Antigravity.
+- Se fusionó con **merge commit, no con squash**: los mensajes de los 46 commits
+  son el registro de qué se descartó y por qué, y este proyecto se apoya en ese
+  registro para cambiar de entorno sin perder el hilo.
+- **Ya se puede conectar Cloudflare a `main`** sin publicar una versión vieja, que
+  era el riesgo mientras el PR estuviera abierto.
 
 ### PR #2, abierto el 2026-07-31
 
