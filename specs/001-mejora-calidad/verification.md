@@ -2,7 +2,7 @@
 
 Generado por `npm run verify`. **No editar a mano**: se sobrescribe en cada corrida.
 
-**Fecha:** 2026-07-31 · **Commit:** `d35af09`
+**Fecha:** 2026-07-31 · **Commit:** `9e78a7b`
 **Resultado:** todos los presupuestos cumplidos
 
 Método: axe-core sobre el build servido localmente, en 1440×900 y 390×844,
@@ -51,7 +51,7 @@ de `dist` menciona**, y que por tanto ningún navegador descarga:
 | Archivo huérfano | Comprimido |
 | ---------------- | ---------- |
 | `_astro\client.D9vVWfjN.js` | 59536 B |
-| `_astro\PaginaSeminario.BCzgQioX.css` | 11585 B |
+| `_astro\PaginaSeminario.oU0HNYHf.css` | 11558 B |
 
 Total huérfano: 71.1 kB.
 

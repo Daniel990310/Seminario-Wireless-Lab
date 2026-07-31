@@ -38,8 +38,26 @@ por parte de la persona.
    traducirse.
 3. Cada versión declara su idioma en el atributo `lang` del documento.
 4. Ambas versiones se referencian mutuamente con `hreflang`, más un `x-default`.
-5. El selector de idioma es alcanzable y operable por teclado, y su estado
-   actual se comunica de forma programática, no solo por color.
+5. El cambio de idioma es alcanzable y operable por teclado, y el idioma actual
+   del documento se comunica de forma programática, no solo por color.
+
+   > **Enmienda del 31 de julio de 2026, decidida por Daniel.** La redacción
+   > anterior —«el selector … su estado actual se comunica de forma
+   > programática»— presuponía un control con dos opciones y una marcada. Con
+   > **exactamente dos idiomas**, el patrón «Select a language · Two languages»
+   > del U.S. Web Design System define un **único** control que muestra el idioma
+   > de destino: en la página en español dice «English». No hay estado que marcar,
+   > porque el idioma actual lo declara `<html lang>`, que ya exige el criterio 3.
+   >
+   > Se adopta ese patrón por tres razones: es el estándar de accesibilidad para
+   > este caso exacto; la implementación anterior producía dos píldoras
+   > segmentadas idénticas y contiguas en la barra —idioma y tema— que se
+   > confundían entre sí; y evita el desplegable, que cuesta una interacción de
+   > más y esconde que existe otra versión.
+   >
+   > Lo que **no** se adopta del USWDS: su sugerencia de `role="button"` en el
+   > enlace. Este control navega a otra URL, y anunciarlo como botón le indicaría
+   > al lector de pantalla que la acción ocurre en esta página.
 6. Cambiar de idioma conserva la sección en la que se estaba.
 7. Ninguna cadena de texto queda escrita directamente en los componentes: todas
    provienen de la fuente de contenido por idioma.

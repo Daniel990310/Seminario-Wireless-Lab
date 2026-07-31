@@ -341,6 +341,40 @@ componente nuevo bilingüe es: recibir `c` por props y añadir sus cadenas a
 lo exige el compilador. Lo que sí hay que respetar es no escribir cadenas en el
 marcado: `verify:idioma` lo comprueba estáticamente sobre todos los `.astro`.
 
+### El cambio de idioma: un solo control, y por qué
+
+**Enmienda de RF-1.5 decidida por Daniel el 2026-07-31**, registrada en
+`requirements.md`. La primera implementación mostraba los dos idiomas con el
+activo marcado por `aria-current`. Cumplía el requisito literal y estaba mal.
+
+Lo que dice la evidencia, buscada a petición de Daniel:
+
+- El **U.S. Web Design System** define un patrón para sitios de exactamente dos
+  idiomas —«Select a language · Two languages»— y es **un único control que
+  muestra el idioma de destino**: en la página en español, dice «English». El
+  idioma actual no se marca porque lo declara `<html lang>`. `[verificado]`
+- **Nada de banderas.** Una bandera es un país, no un idioma: el español de este
+  sitio no es el de España ni el inglés el de EE. UU.
+- **Nada de desplegable.** Es lo más común en la web, pero cuesta dos
+  interacciones donde aquí basta una, y esconde que existe otra versión. Se
+  justifica a partir de unos cinco idiomas.
+
+El defecto concreto que arregló: en la barra quedaban **dos píldoras segmentadas
+idénticas y contiguas** —idioma y tema— que se confundían entre sí.
+
+Dos apartes deliberados de la guía del USWDS, ambos anotados en el componente:
+
+1. **No se pone `role="button"`** en el enlace, que su guía sugiere. Este control
+   navega a otra URL; anunciarlo como botón le diría al lector de pantalla que la
+   acción ocurre en esta página.
+2. **`xml:lang` se incluye pero no hace nada.** En un documento HTML5 servido como
+   `text/html` es herencia de XHTML y la especificación solo lo admite si coincide
+   con `lang`. Se conserva por seguir el patrón; el que trabaja es `lang`.
+
+El enlace se construye con `getRelativeLocaleUrl()` de `astro:i18n` en vez de
+componer la ruta a mano: sigue la configuración de `astro.config.mjs`, así que un
+cambio de estrategia de rutas no lo deja apuntando a un sitio que ya no existe.
+
 ### Un falso positivo que costó tres intentos
 
 `verify:teclado` empezó a fallar al añadir el selector de idioma: el anillo de foco

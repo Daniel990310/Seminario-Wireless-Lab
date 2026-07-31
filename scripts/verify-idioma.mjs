@@ -131,16 +131,37 @@ for (const [idioma, page] of Object.entries(paginas)) {
 // ---------------------------------------------------------------------------
 // 3. Selector de idioma: teclado y estado programático (RF-1.5)
 // ---------------------------------------------------------------------------
-{
-  const page = paginas.es;
-  const actual = await page.evaluate(() => {
-    const marcado = document.querySelector('a[data-idioma][aria-current]');
-    return marcado?.getAttribute('data-idioma') ?? null;
+for (const [idioma, page] of Object.entries(paginas)) {
+  const esperado = idioma === 'es' ? 'en' : 'es';
+
+  /*
+   * RF-1.5, enmendada el 2026-07-31: con dos idiomas el control es uno solo y
+   * muestra el idioma de destino, siguiendo el patrón «Two languages» del
+   * U.S. Web Design System. El idioma actual no se marca en el control porque
+   * lo declara `<html lang>`, que ya se comprueba en RF-1.3.
+   */
+  const control = await page.evaluate(() => {
+    const a = document.querySelector('a[data-cambio-idioma]');
+    if (!a) return null;
+    return {
+      href: a.getAttribute('href'),
+      lang: a.getAttribute('lang'),
+      xmlLang: a.getAttribute('xml:lang'),
+      hreflang: a.getAttribute('hreflang'),
+      texto: a.textContent?.trim(),
+    };
   });
+
   check(
-    'RF-1.5 · el idioma activo se marca con aria-current',
-    actual === 'es',
-    actual ? `aria-current en «${actual}»` : 'ningún enlace marcado',
+    `RF-1.5 · un solo control, hacia el otro idioma (${idioma})`,
+    !!control && control.lang === esperado && control.hreflang === esperado,
+    control ? `«${control.texto}» → ${control.href}` : 'no existe',
+  );
+
+  check(
+    `RF-1.5 · el control declara lang y xml:lang (${idioma})`,
+    control?.lang === esperado && control?.xmlLang === esperado,
+    `lang="${control?.lang}" xml:lang="${control?.xmlLang}"`,
   );
 
   // Alcanzable por teclado: debe aparecer en el recorrido de tabulación.
@@ -148,9 +169,15 @@ for (const [idioma, page] of Object.entries(paginas)) {
   let alcanzado = false;
   for (let i = 0; i < 25 && !alcanzado; i++) {
     await page.keyboard.press('Tab');
-    alcanzado = await page.evaluate(() => !!document.activeElement?.closest('a[data-idioma]'));
+    alcanzado = await page.evaluate(
+      () => !!document.activeElement?.closest('a[data-cambio-idioma]'),
+    );
   }
-  check('RF-1.5 · el selector se alcanza con el teclado', alcanzado, alcanzado ? 'sí' : 'no');
+  check(
+    `RF-1.5 · el control se alcanza con el teclado (${idioma})`,
+    alcanzado,
+    alcanzado ? 'sí' : 'no',
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -159,7 +186,7 @@ for (const [idioma, page] of Object.entries(paginas)) {
 {
   const page = await ctx.newPage();
   await page.goto(`${BASE}/#programa`, { waitUntil: 'networkidle' });
-  await page.click('a[data-idioma="en"]');
+  await page.click('a[data-cambio-idioma]');
   await page.waitForLoadState('networkidle');
   const destino = new URL(page.url());
   check(
