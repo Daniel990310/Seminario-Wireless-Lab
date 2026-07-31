@@ -95,7 +95,8 @@ línea base. `npx astro check`: 0 errores. Presupuestos: JavaScript 109,6 / 115 
 primera carga 247,0 / 260 kB, tipografías 110,9 / 125 kB.
 
 Los criterios de RF-4 que axe no puede evaluar se comprobaron con un guion propio
-de Playwright, 16 comprobaciones, todas en verde:
+de Playwright: 16 comprobaciones al cerrarse la tarea, **17 hoy** `[medido]`, todas en
+verde. La tabla siguiente resume las que fijaron los criterios:
 
 | Criterio | Medición |
 | -------- | -------- |
@@ -277,6 +278,28 @@ Revisión visual del par en el sitio real, no en una muestra.
 **Si el presupuesto no alcanza**, la primera concesión es quitar JetBrains Mono
 (−40,4 kB). Está identificada de antemano para que no se decida a la carrera.
 
+**Cumplida el 2026-07-30** (commit `918a13e`). Las tres familias se auto-hospedan con
+el proveedor `local` de Astro, subconjunto latino: Crimson Pro 48.200 B, Atkinson
+Hyperlegible Next 33.996 B y JetBrains Mono 40.404 B, **122,6 kB en total**
+`[medido]`. Space Grotesk (22.288 B) e Inter (48.256 B) salieron del repositorio.
+**La concesión no hizo falta**: JetBrains Mono se queda, porque el total cabe en el
+techo de 125 kB con 2,4 kB de margen.
+
+Las tipografías suben 11,7 kB respecto de la línea base y fue deliberado: se gastan
+en Atkinson Hyperlegible Next, diseñada para baja visión. La cifra sola parece un
+retroceso de rendimiento, así que va con nota también en `verification.md` y en
+`ESTADO.md` §5i.
+
+**Dos de las cuatro comprobaciones de esta tarea no están automatizadas**, y vale
+más decirlo que darlas por buenas: ningún verificador mide **RNF-2.3** (ninguna
+petición a dominios de terceros en la carga inicial) ni **RNF-2.4** (sin
+desplazamiento de diseño al cargar las tipografías) `[medido: ningún script de
+scripts/ observa peticiones fuera de 127.0.0.1 ni desplazamiento]`. Lo que sí está
+medido es el peso y los 0 hallazgos de axe. Que no haya peticiones externas se
+sostiene hoy en que las tres familias están auto-hospedadas y no hay analítica —una
+propiedad del código, no una medición—, así que basta que alguien añada un `<link>`
+remoto para incumplir RNF-2.3 sin que nada falle.
+
 ---
 
 ## T4b · Refinamiento visual con componentes estáticos de 21st.dev
@@ -360,7 +383,8 @@ idioma desde `#programa` llega a `#programa`. Cero cadenas escritas en
 componentes.
 
 **Cumplida el 2026-07-31.** Los cuatro puntos se comprueban en
-`npm run verify:idioma`, 15 criterios. Se añadió uno que el enunciado no pedía y
+`npm run verify:idioma`, que al cerrarse la tarea tenía 15 criterios y hoy tiene **19**
+`[medido]` en la corrida del 2026-07-31. Se añadió uno que el enunciado no pedía y
 que hace falta igual: detectar **textos sin traducir**. La interfaz de `tipos.ts`
 obliga a que ninguna clave falte —probado quitando una: `astro check` falla— pero
 no puede saber si el inglés quedó con el español copiado. Eso solo se ve comparando
@@ -381,8 +405,8 @@ las dos páginas generadas. Detalle en `ESTADO.md` §5f.
 revisada de verdad, no supuesta.
 
 **Cumplida el 2026-07-31**, con dos matices declarados. `npm run verify:seo`
-comprueba 20 criterios, incluida la estructura de `schema.org/Event` en ambos
-idiomas. Lo que **no** se ha hecho, porque no se puede sin URL pública: pasar los
+comprobaba 20 criterios al cerrarse la tarea y hoy comprueba **22** `[medido]`,
+incluida la estructura de `schema.org/Event` en ambos idiomas. Lo que **no** se ha hecho, porque no se puede sin URL pública: pasar los
 datos por la herramienta de Google y ver la previsualización real del enlace en
 una plataforma. Queda anotado en `ESTADO.md` §5g con las dos formas de cerrarlo.
 Las imágenes sí están revisadas abriendo los PNG, que fue como se descubrió que la
@@ -411,15 +435,33 @@ primitiva de Radix se justifica por el componente que habilita.
 **Comprobación:** `npm run verify` sigue en cero hallazgos con los componentes
 montados. Recorrido por teclado completo en cada uno. JavaScript ≤ 115 kB.
 
-**Parcial el 2026-07-31: 1 de 5 interacciones.** No es una renuncia técnica.
-Tres esperan contenido que no existe —`program.days` está vacío y los expositores
-no tienen reseña— y el selector de tema ya está resuelto mejor con radios
-nativos a 0 kB. Instalar `Tabs`, `Accordion` o `Dialog` ahora incumpliría el
-punto 4 de esta misma tarea: «ninguna primitiva sin un componente que la use».
+**Completada el 2026-07-31** (commit `00e00f4`). **Las 5 interacciones de RF-6 están
+resueltas, y ninguna con una primitiva de Radix.** Detalle en `ESTADO.md` §5h.
 
-Implementada la sección activa en la navegación, que no necesita primitiva.
-Verificada en `npm run verify:interaccion`. Qué datos hacen falta para
-desbloquear el resto: `ESTADO.md` §5h.
+| Interacción | Primitiva propuesta en RF-6 | Cómo se resolvió |
+| ----------- | --------------------------- | ---------------- |
+| Programa por jornada en pestañas | `Tabs` | Mejora progresiva sobre el patrón ARIA de la W3C; sin JavaScript las jornadas quedan apiladas |
+| Resumen de sesión desplegable | `Accordion` | `<details>` nativo |
+| Ficha de expositor | `Dialog` | `<details>` nativo (`ESTADO.md` §5j) |
+| Selector de tema de tres estados | `ToggleGroup` | Radios nativos, ya resueltos en T2: 0 kB y RF-4 verificado 17/17 |
+| Sección activa en la navegación | Ninguna | `IntersectionObserver` propio, con `aria-current="location"` |
+
+**El motivo común es RF-6.2**, que exige que el contenido siga accesible sin
+JavaScript: eso descarta cualquier componente que solo exista al hidratar. La
+desviación respecto de la columna «Primitiva» de RF-6 **está pendiente de enmienda en
+`requirements.md`**, donde esa tabla sigue declarando las cinco primitivas de Radix.
+
+Verificada en `npm run verify:interaccion`, **9 criterios** al 2026-07-31 `[medido]`.
+Uno se informa como
+**OMITIDO** mientras `program.days` esté vacío —las pestañas por jornada— en vez de
+darse por bueno `[medido: verify:todo, 2026-07-31]`.
+
+**Estado intermedio, conservado como registro** (commit `5c45462`, mismo día): la
+tarea se cerró primero como «1 de 5», con tres interacciones esperando contenido que
+no existía. Lo que las desbloqueó fue `3fe4c74`: las reseñas de expositores desde
+fuentes públicas y el programa de ejemplo apagado por omisión. Ninguna de esas dos
+piezas tiene requisito propio en `requirements.md`, y eso también queda pendiente de
+regularizar.
 
 ---
 

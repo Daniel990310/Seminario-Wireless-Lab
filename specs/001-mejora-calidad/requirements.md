@@ -1,6 +1,9 @@
 # 001 — Mejora de calidad del sitio
 
 **Estado:** requisitos acordados. Diseño escrito. Sin decisiones bloqueantes.
+**Implementación:** T1 a T10 completadas y verificadas (`tasks.md`). El cierre formal
+de 001 está pendiente: la tabla de primitivas de RF-6 no refleja lo que se
+implementó, y hay trabajo sin requisito. Lista en [`../README.md`](../README.md) §Estado.
 **Línea base:** [`../baseline/auditoria-2026-07-29.md`](../baseline/auditoria-2026-07-29.md)
 **Procedencia de las cifras:** [`../fuentes.md`](../fuentes.md)
 

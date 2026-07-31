@@ -10,6 +10,15 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 Actualizado: **2026-07-31** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
 · Último commit de tarea: `00e00f4` (T10)
 
+> **Revisión del flujo SDD, 2026-07-31.** Se sincronizó el rastro documental, que se
+> había quedado atrás: `tasks.md` daba T10 por parcial y T4 sin nota de cierre,
+> `specs/README.md` seguía en T3 con tres verificadores de siete, y tres conteos de
+> criterios se citaban desfasados. **El código no se tocó.** Lo que sigue pendiente son
+> decisiones, no sincronización: enmendar la tabla de primitivas de RF-6, dar requisito
+> al programa de ejemplo, a las reseñas y al despliegue, cerrar las dos comprobaciones
+> de T8 que la URL pública desbloqueó, y llevar a `design.md` el «cómo y por qué» de T5
+> a T10, que hoy vive solo en este archivo. Lista en `specs/README.md` §Estado.
+
 > **El plan `001-mejora-calidad` está completo: T1 a T10.**
 >
 > Los **siete verificadores en verde** con `npm run verify:todo`, y `astro check`
@@ -177,17 +186,27 @@ cualquier herramienta y no solo a Claude Code.
 
 ### Lo que mide el verificador ahora mismo
 
-Con `npm run build && npm run verify` al cerrar T4:
+Con `npm run build && npm run verify:todo` el **2026-07-31 sobre `8f4bdfc`**, exit 0
+`[medido]`. La columna «al cerrar T4» se conserva porque dos cifras cambiaron sin que
+el sitio empeorara, y verlas juntas evita leerlo como una regresión:
 
-| Comprobación | Valor | Límite | |
-| ------------ | ----- | ------ | - |
-| RNF-1.1 Hallazgos axe WCAG 2.1 AA | 0 | 0 | cumple |
-| RNF-1.3 Nodos con contraste indeterminado | **0** (eran 104) | 0 | cumple |
-| RNF-1.4 Secciones sin nombre accesible | **0** (eran 7) | 0 | cumple |
-| RNF-1.5 Saltos de nivel en encabezados | 0 | 0 | cumple |
-| RNF-2.1 JavaScript comprimido | **0,0 kB** | 115 kB → informativo | cumple |
-| RNF-2.2 Primera carga comprimida | **136,1 kB** | 260 kB → informativo | cumple |
-| RNF-2.6 Tipografías | **122,6 kB** | 125 kB → informativo | cumple |
+| Comprobación | Al cerrar T4 | Hoy | Límite | |
+| ------------ | ------------ | --- | ------ | - |
+| RNF-1.1 Hallazgos axe WCAG 2.1 AA | 0 | 0 | 0 | cumple |
+| RNF-1.3 Nodos con contraste indeterminado | **0** (eran 104) | 0 | 0 | cumple |
+| RNF-1.4 Secciones sin nombre accesible | **0** (eran 7) | 0 | 0 | cumple |
+| RNF-1.5 Saltos de nivel en encabezados | 0 | 0 | 0 | cumple |
+| RNF-2.1 JavaScript comprimido | 0,0 kB | **1,4 kB** | 115 kB → informativo | cumple |
+| RNF-2.2 Primera carga comprimida | 136,1 kB | **140,7 kB** | 260 kB → informativo | cumple |
+| RNF-2.6 Tipografías | 122,6 kB | 122,6 kB | 125 kB → informativo | cumple |
+
+**RNF-2.1 no subió porque volviera JavaScript**: desde T8 la métrica incluye el que
+Astro inlinea en el HTML, que antes no se contaba en ninguna parte (§5c). Los archivos
+`.js` siguen en 0,0 kB y no hay ninguna isla que hidratar. Los 4,6 kB de más en la
+primera carga se reparten así: **1,4 kB** son ese JavaScript en línea que la medición de
+T4 no veía, y los **3,2 kB** restantes son HTML —reseñas de expositores y el marcado de
+las pestañas—. `[medido: resta entre las dos corridas; no es un desglose que el
+verificador imprima]`
 
 Los tres techos de peso siguen impresos porque siguen siendo la referencia con la que
 se compara, pero desde la enmienda del 2026-07-30 no bloquean (§0). El código de
@@ -196,9 +215,11 @@ va a terminar en 1 por eso. En ese momento hay dos salidas honestas —declarar 
 exceso en el commit y seguir, o pedirle a Daniel una cifra nueva— y ninguna es
 inventarle un techo.
 
-Los dos incumplimientos abiertos **no son regresiones**: están en la línea base y
-su corrección pertenece a T5 y T6. `npm run verify` termina con código 1 por ellos,
-y eso es correcto.
+**Ya no hay incumplimientos abiertos.** Este párrafo decía que los dos que quedaban
+—RNF-1.3 y RNF-1.4— venían de la línea base y que `verify` terminaba en 1 por ellos.
+T5 y T6 los cerraron, y desde entonces `npm run verify` termina en 0: comprobado el
+2026-07-31 sobre `8f4bdfc` con `npm run verify:todo`, exit 0. Cualquier fallo a partir
+de aquí es una regresión.
 
 Hay siete verificadores, y `npm run verify:todo` los corre en cadena:
 
@@ -208,8 +229,8 @@ Hay siete verificadores, y `npm run verify:todo` los corre en cadena:
 | `npm run verify:tema` | Los 16 criterios de RF-4 que axe no puede evaluar: destello al cargar, sin JavaScript, teclado, persistencia sin cookies, sincronía entre las dos instancias del selector |
 | `npm run verify:red` | Los 7 criterios de T3: que el pulso recorra, que se detenga con movimiento reducido, y que el navegador no pida ningún `.js` |
 | `npm run verify:teclado` | Los 12 criterios de T6 que axe no decide: jerarquía de encabezados, foco visible en todo el recorrido, contraste del anillo, menú móvil por teclado y zoom de texto al 200 % sin desbordar |
-| `npm run verify:idioma` | Los 17 criterios de RF-1: ambas rutas, `lang`, `hreflang` recíproco, título sin traducir, control de idioma por teclado, conservación de la sección, sitemap, cero cadenas en componentes y **textos sin traducir** |
-| `npm run verify:seo` | Los 20 criterios de RNF-3: imágenes para compartir de 1200×630 por idioma, metadatos absolutos, canónico por idioma, sin descripciones duplicadas y `schema.org/Event` completo |
+| `npm run verify:idioma` | Los 19 criterios de RF-1: ambas rutas, `lang`, `hreflang` recíproco, título sin traducir, control de idioma por teclado, conservación de la sección, sitemap, cero cadenas en componentes y **textos sin traducir** |
+| `npm run verify:seo` | Los 22 criterios de RNF-3: imágenes para compartir de 1200×630 por idioma, metadatos absolutos, canónico por idioma, sin descripciones duplicadas, `noindex` provisional y `schema.org/Event` completo |
 | `npm run verify:interaccion` | RF-6: que el contenido siga entero sin JavaScript, que el resaltado de sección siga a la lectura y se exponga con `aria-current`, y que no haya primitivas de Radix instaladas sin usar |
 
 Todos requieren un `npm run build` previo.
@@ -403,15 +424,19 @@ Dos cifras merecen una nota, porque leídas solas engañan:
 
 Los siete verificadores en verde:
 
-| Verificador | Criterios |
-| ----------- | --------- |
-| `verify` · accesibilidad y peso | 7 presupuestos, 8 corridas |
-| `verify:tema` · RF-4 | 17 |
-| `verify:red` · T3 | 7 |
-| `verify:teclado` · T6 | 12 |
-| `verify:idioma` · RF-1 | 17 |
-| `verify:seo` · RNF-3 | 20 |
-| `verify:interaccion` · RF-6 | 8 |
+| Verificador | Criterios al cerrar T9 | Hoy (2026-07-31, `8f4bdfc`) |
+| ----------- | --------------------- | --------------------------- |
+| `verify` · accesibilidad y peso | 7 presupuestos, 8 corridas | igual |
+| `verify:tema` · RF-4 | 17 | 17 |
+| `verify:red` · T3 | 7 | 7 |
+| `verify:teclado` · T6 | 12 | 12 |
+| `verify:idioma` · RF-1 | 17 | **19** |
+| `verify:seo` · RNF-3 | 20 | **22** |
+| `verify:interaccion` · RF-6 | 8 | **9** |
+
+Los tres que crecieron lo hicieron en `3fe4c74`, `00e00f4` y `8f4bdfc`, después de
+cerrarse su tarea. Se añade la columna porque las cifras del cierre se citaban como si
+siguieran vigentes `[medido: conteo de líneas de criterio en la corrida del 2026-07-31]`.
 
 ### Lo que sigue abierto, y no es código
 
@@ -921,9 +946,11 @@ apuntando a un dominio que aún no existe.
    Pages la deduce sola con `CF_PAGES_URL`. Para un sitio estático puro, Pages es
    menos configuración; Workers es lo que Cloudflare recomienda para proyectos
    nuevos. Las dos sirven: está comparado en el README.
-2. **Conectar Git** para que cada rama tenga su previsualización. Ojo: `main` va
-   43 commits por detrás mientras el PR #2 siga abierto, así que conectarlo a
-   `main` publicaría la versión vieja.
+2. **Conectar Git** para que cada rama tenga su previsualización. La advertencia
+   que había aquí —«`main` va 43 commits por detrás, conectarlo publicaría la
+   versión vieja»— **ya no aplica**: el PR #2 se fusionó el 2026-07-31 (`df22be4`)
+   y `main` tiene el mismo árbol que la rama de trabajo. Se corrige el 2026-07-31,
+   al detectarse que contradecía al encabezado de este mismo archivo.
 3. **Dominio definitivo** y, después, `npm run og`.
 
 ### Lo que la URL pública acaba de desbloquear
