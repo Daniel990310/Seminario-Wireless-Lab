@@ -27,11 +27,34 @@ const site =
 export default defineConfig({
   site,
   output: 'static',
-  // React se usa solo como capa de renderizado para los componentes de Magic UI
-  // (src/components/ui). La mayoría se renderiza en el servidor sin directiva
-  // `client:*`, por lo que no envían JavaScript: sus animaciones son CSS. Solo
-  // se hidratan los que necesitan medir el DOM o seguir el cursor.
-  integrations: [sitemap(), react()],
+
+  /*
+   * Sitio bilingüe (RF-1, T7).
+   *
+   * `prefixDefaultLocale: false` deja el español en la raíz y el inglés en
+   * `/en/`. Se prefiere a prefijar ambos idiomas porque la organización es
+   * chilena y `/` es la dirección que se va a repartir e imprimir; obligar a
+   * `/es/` añadiría una redirección permanente a la ruta más usada.
+   *
+   * NO se activa `redirectToDefaultLocale` ni ninguna detección por navegador:
+   * RF-1.1 exige que cada versión sea alcanzable por sí misma, sin depender de
+   * lo que el navegador declare.
+   */
+  i18n: {
+    defaultLocale: 'es',
+    locales: ['es', 'en'],
+    routing: { prefixDefaultLocale: false },
+  },
+
+  // React se usa solo como capa de renderizado. Los componentes se renderizan en
+  // el servidor sin directiva `client:*`, por lo que no envían JavaScript.
+  integrations: [
+    // `i18n` en el sitemap emite las alternativas por idioma en cada URL (RF-1.8).
+    sitemap({
+      i18n: { defaultLocale: 'es', locales: { es: 'es', en: 'en' } },
+    }),
+    react(),
+  ],
   vite: {
     plugins: [tailwindcss()],
     resolve: {

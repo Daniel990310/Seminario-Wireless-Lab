@@ -1,19 +1,16 @@
 ---
 import ThemeSelector from './ThemeSelector.astro';
-import { seminar } from '~/data/seminar';
+import LanguageSelector from './LanguageSelector.astro';
+import type { Contenido } from '~/data/contenido';
+import type { Idioma } from '~/data/contenido';
 
-const links = [
-  { href: '#seminario', label: 'El seminario' },
-  { href: '#programa', label: 'Programa' },
-  { href: '#expositores', label: 'Expositores' },
-  { href: '#red', label: 'Red' },
-  { href: '#sede', label: 'Sede' },
-  { href: '#organizacion', label: 'Organización' },
-];
+interface Props {
+  c: Contenido;
+}
 
-const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
-  'Consulta — Beyond Connectivity 2026',
-)}`;
+const { c } = Astro.props;
+const lang = c.lang as Idioma;
+const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asuntoConsulta)}`;
 ---
 
 <!--
@@ -45,16 +42,17 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
         <span class="block size-1.5 rounded-full bg-primary"></span>
       </span>
       <span class="leading-tight">
-        <span class="block font-display text-sm font-semibold text-foreground">Beyond Connectivity</span>
+        <!-- Título oficial abreviado, en inglés en ambos idiomas (RF-1.2). -->
+        <span class="block font-display text-sm font-semibold text-foreground">{c.tituloCorto}</span>
         <span class="eyebrow block text-[0.6rem] text-muted-foreground">
-          {seminar.dates.shortLabel} · PUCV
+          {c.dates.shortLabel} · {c.organizers[0].shortName}
         </span>
       </span>
     </a>
 
     <ul class="hidden items-center gap-7 lg:flex">
       {
-        links.map((link) => (
+        c.nav.map((link) => (
           <li>
             <a href={link.href} class="text-sm text-muted-foreground transition-colors hover:text-primary">
               {link.label}
@@ -66,14 +64,18 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
 
     <div class="flex items-center gap-2">
       <div class="hidden sm:block">
-        <ThemeSelector group="tema-barra" />
+        <LanguageSelector actual={lang} legend={c.ui.idioma.legend} />
+      </div>
+
+      <div class="hidden sm:block">
+        <ThemeSelector group="tema-barra" c={c} />
       </div>
 
       <a
         href={mailto}
         class="hidden rounded-control border border-primary/40 bg-primary/8 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/15 sm:block"
       >
-        Contacto
+        {c.ui.contacto}
       </a>
 
       <!--
@@ -83,7 +85,7 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
       <details class="relative lg:hidden" data-mobile-menu>
         <summary
           class="flex size-10 cursor-pointer list-none items-center justify-center rounded-full border border-border-control text-foreground transition-colors hover:border-primary/50 hover:text-primary [&::-webkit-details-marker]:hidden"
-          aria-label="Abrir menú de navegación"
+          aria-label={c.ui.abrirMenu}
         >
           <svg class="size-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
             <path d="M2 4.5h12M2 8h12M2 11.5h12" stroke-linecap="round" />
@@ -96,7 +98,7 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
         >
           <ul class="divide-y divide-border">
             {
-              links.map((link) => (
+              c.nav.map((link) => (
                 <li>
                   <a
                     href={link.href}
@@ -112,7 +114,7 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
                 href={mailto}
                 class="block px-5 py-3.5 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
               >
-                Contacto
+                {c.ui.contacto}
               </a>
             </li>
             <!--
@@ -121,8 +123,12 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
               contra el `overflow-hidden` del panel.
             -->
             <li class="flex flex-col items-start gap-2 px-5 py-3.5 sm:hidden">
-              <span class="eyebrow text-muted-foreground">{seminar.ui.theme.legend}</span>
-              <ThemeSelector group="tema-menu" />
+              <span class="eyebrow text-muted-foreground">{c.ui.idioma.legend}</span>
+              <LanguageSelector actual={lang} legend={c.ui.idioma.legend} />
+            </li>
+            <li class="flex flex-col items-start gap-2 px-5 py-3.5 sm:hidden">
+              <span class="eyebrow text-muted-foreground">{c.ui.tema.legend}</span>
+              <ThemeSelector group="tema-menu" c={c} />
             </li>
           </ul>
         </div>

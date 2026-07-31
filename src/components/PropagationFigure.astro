@@ -11,9 +11,12 @@
 
 interface Props {
   class?: string;
+  /** Nombre accesible de la figura. Llega traducido (RF-1.7). */
+  titulo: string;
+  descripcion: string;
 }
 
-const { class: className = '' } = Astro.props;
+const { class: className = '', titulo, descripcion } = Astro.props;
 
 // El SVG usa `preserveAspectRatio="xMidYMid meet"` en lugar de `slice`: el hero
 // es mucho más alto que la proporción del lienzo, y recortar dejaba el
@@ -97,13 +100,8 @@ const rays = [
   aria-labelledby="fig-title fig-desc"
   preserveAspectRatio="xMidYMid meet"
 >
-  <title id="fig-title">Detección inalámbrica en bandas mmWave y sub-THz</title>
-  <desc id="fig-desc">
-    Representación esquemática de un emisor de radio cuyos frentes de onda se
-    propagan sobre una retícula polar de rango, alcanzan un objeto y regresan
-    como ecos, formando una nube de puntos que reconstruye el contorno del
-    objeto detectado.
-  </desc>
+  <title id="fig-title">{titulo}</title>
+  <desc id="fig-desc">{descripcion}</desc>
 
   <defs>
     <radialGradient id="fig-source-glow" cx="0.5" cy="0.5" r="0.5">

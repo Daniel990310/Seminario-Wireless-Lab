@@ -17,6 +17,7 @@ const VERIFICADORES = [
   { guion: 'verify-tema.mjs', nombre: 'Selector de tema (RF-4)' },
   { guion: 'verify-red.mjs', nombre: 'Red de colaboración (T3)' },
   { guion: 'verify-teclado.mjs', nombre: 'Semántica, foco y teclado (T6)' },
+  { guion: 'verify-idioma.mjs', nombre: 'Sitio bilingüe (RF-1)' },
 ];
 
 const correr = (guion) =>

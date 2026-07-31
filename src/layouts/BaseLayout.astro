@@ -1,19 +1,42 @@
 ---
 import { Font } from 'astro:assets';
-import { seminar, type Speaker } from '~/data/seminar';
+import { IDIOMAS, rutaBase, type Contenido, type Idioma } from '~/data/contenido';
 import '~/styles/global.css';
 
 interface Props {
+  c: Contenido;
   title?: string;
   description?: string;
 }
 
+const { c } = Astro.props;
+const seminar = c;
+const lang = c.lang as Idioma;
+
 const {
-  title = `${seminar.title} — ${seminar.dates.shortLabel}`,
-  description = seminar.seo.description,
+  title = `${c.title} — ${c.dates.shortLabel}`,
+  description = c.seo.description,
 } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://example.com');
+const sitio = Astro.site ?? 'https://example.com';
+const canonical = new URL(Astro.url.pathname, sitio);
+
+/*
+ * `hreflang` recíproco más `x-default` (RF-1.4).
+ *
+ * `x-default` apunta al español porque es la versión de la institución que
+ * organiza; es lo que debe recibir quien llega sin una preferencia declarada.
+ * Cada idioma se enlaza a sí mismo además de al otro: así lo pide la
+ * especificación, y omitir la autorreferencia es el error habitual.
+ */
+const alternativas = IDIOMAS.map((idioma) => ({
+  hreflang: idioma,
+  href: new URL(rutaBase(idioma), sitio).href,
+}));
+const xDefault = new URL(rutaBase('es'), sitio).href;
+
+/** Locale de Open Graph. El español del sitio es de Chile. */
+const ogLocale = lang === 'es' ? 'es_CL' : 'en_US';
 
 /*
  * Mientras el sitio viva en una URL de previsualización (*.pages.dev, *.netlify.app)
@@ -57,20 +80,19 @@ const eventSchema = {
   },
   // Las afiliaciones aún sin confirmar se omiten del schema en vez de
   // declararse como organización.
-  performer: ([...seminar.speakers.international, ...seminar.speakers.national] as Speaker[]).map(
-    (speaker) => ({
-      '@type': 'Person',
-      name: speaker.name,
-      affiliation: speaker.affiliationPending
-        ? undefined
-        : { '@type': 'Organization', name: speaker.affiliation },
-    }),
-  ),
+  performer: [...seminar.speakers.international, ...seminar.speakers.national].map((speaker) => ({
+    '@type': 'Person',
+    name: speaker.name,
+    affiliation: speaker.affiliationPending
+      ? undefined
+      : { '@type': 'Organization', name: speaker.affiliation },
+  })),
+  inLanguage: lang,
 };
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -108,6 +130,10 @@ const eventSchema = {
     <meta name="description" content={description} />
     <meta name="keywords" content={seminar.seo.keywords.join(', ')} />
     <link rel="canonical" href={canonical.href} />
+
+    <!-- Cada versión se enlaza a sí misma y a la otra, más `x-default` (RF-1.4). -->
+    {alternativas.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    <link rel="alternate" hreflang="x-default" href={xDefault} />
     {isPreview && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <!-- Se declara por tema para que la barra del navegador móvil acompañe. -->
@@ -116,11 +142,11 @@ const eventSchema = {
     <meta name="generator" content={Astro.generator} />
 
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Beyond Connectivity — PUCV" />
+    <meta property="og:site_name" content={`${c.tituloCorto} — ${c.organizers[0].shortName}`} />
     <meta property="og:title" content={seminar.title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical.href} />
-    <meta property="og:locale" content="es_CL" />
+    <meta property="og:locale" content={ogLocale} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={seminar.title} />
     <meta name="twitter:description" content={description} />
@@ -138,7 +164,7 @@ const eventSchema = {
       href="#contenido"
       class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-control focus:bg-primary focus:px-4 focus:py-2 focus:font-medium focus:text-primary-foreground"
     >
-      Saltar al contenido
+      {c.ui.saltarAlContenido}
     </a>
 
     <slot />

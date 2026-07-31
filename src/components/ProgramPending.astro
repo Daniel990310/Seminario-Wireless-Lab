@@ -14,9 +14,14 @@
  * El motivo físico de la propagación sigue presente, y mejor resuelto, en la
  * figura del hero. Revertir esto es reponer el import y el bloque.
  */
-import { seminar } from '~/data/seminar';
+import type { Contenido } from '~/data/contenido';
 
-const { program, contact } = seminar;
+interface Props {
+  c: Contenido;
+}
+
+const { c } = Astro.props;
+const { program, contact, ui } = c;
 ---
 
 <!--
@@ -28,7 +33,7 @@ const { program, contact } = seminar;
 <div class="border-t hairline pt-8">
   <p class="eyebrow flex items-center gap-2 text-muted-foreground">
     <span class="block size-1.5 rounded-full bg-primary" aria-hidden="true"></span>
-    En preparación
+    {ui.programa.enPreparacion}
   </p>
 
   <div class="mt-6 grid gap-x-16 gap-y-4 lg:grid-cols-[minmax(0,28rem)_minmax(0,24rem)]">
@@ -38,10 +43,10 @@ const { program, contact } = seminar;
     <div>
       <p class="text-base leading-relaxed text-muted-foreground">{program.pendingDetail}</p>
       <a
-        href={`mailto:${contact.email}?subject=${encodeURIComponent('Consulta por el programa — Beyond Connectivity 2026')}`}
+        href={`mailto:${contact.email}?subject=${encodeURIComponent(ui.programa.asuntoConsultaPrograma)}`}
         class="mt-4 inline-block text-sm font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
       >
-        Solicitar aviso de publicación
+        {ui.programa.solicitarAviso}
       </a>
     </div>
   </div>

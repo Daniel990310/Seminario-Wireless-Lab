@@ -359,6 +359,13 @@ navegación y la sección Sede desbordaban—, ambos corregidos. Detalle en
 idioma desde `#programa` llega a `#programa`. Cero cadenas escritas en
 componentes.
 
+**Cumplida el 2026-07-31.** Los cuatro puntos se comprueban en
+`npm run verify:idioma`, 15 criterios. Se añadió uno que el enunciado no pedía y
+que hace falta igual: detectar **textos sin traducir**. La interfaz de `tipos.ts`
+obliga a que ninguna clave falte —probado quitando una: `astro check` falla— pero
+no puede saber si el inglés quedó con el español copiado. Eso solo se ve comparando
+las dos páginas generadas. Detalle en `ESTADO.md` §5f.
+
 ---
 
 ## T8 · Imagen para compartir y metadatos

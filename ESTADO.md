@@ -160,7 +160,7 @@ cualquier herramienta y no solo a Claude Code.
 | T4b · Refinamiento visual | **Completada y verificada.** Sin componentes del catálogo: ver §5d |
 | T5 · Retícula de 12 columnas (RNF-1.3) | **Completada y verificada.** 104 → **0** nodos indeterminados. Ver §5b |
 | T6 · Nombres accesibles y teclado (RNF-1.4) | **Completada y verificada.** 12 criterios en `npm run verify:teclado`. Ver §5e |
-| T7 · Sitio bilingüe (RF-1) | Pendiente |
+| T7 · Sitio bilingüe (RF-1) | **Completada y verificada.** 15 criterios en `npm run verify:idioma`. Ver §5f |
 | T8 · `og:image` por idioma | Pendiente |
 | T9 · Verificación final | Pendiente |
 | T10 · Componentes interactivos (RF-6) | **Desbloqueada: RF-6 confirmada por Daniel el 2026-07-30.** |
@@ -190,7 +190,7 @@ Los dos incumplimientos abiertos **no son regresiones**: están en la línea bas
 su corrección pertenece a T5 y T6. `npm run verify` termina con código 1 por ellos,
 y eso es correcto.
 
-Hay cuatro verificadores, y `npm run verify:todo` los corre en cadena:
+Hay cinco verificadores, y `npm run verify:todo` los corre en cadena:
 
 | Comando | Qué cubre |
 | ------- | --------- |
@@ -198,6 +198,7 @@ Hay cuatro verificadores, y `npm run verify:todo` los corre en cadena:
 | `npm run verify:tema` | Los 16 criterios de RF-4 que axe no puede evaluar: destello al cargar, sin JavaScript, teclado, persistencia sin cookies, sincronía entre las dos instancias del selector |
 | `npm run verify:red` | Los 7 criterios de T3: que el pulso recorra, que se detenga con movimiento reducido, y que el navegador no pida ningún `.js` |
 | `npm run verify:teclado` | Los 12 criterios de T6 que axe no decide: jerarquía de encabezados, foco visible en todo el recorrido, contraste del anillo, menú móvil por teclado y zoom de texto al 200 % sin desbordar |
+| `npm run verify:idioma` | Los 15 criterios de RF-1: ambas rutas, `lang`, `hreflang` recíproco, título sin traducir, selector por teclado, conservación de la sección, sitemap, cero cadenas en componentes y **textos sin traducir** |
 
 Todos requieren un `npm run build` previo.
 
@@ -292,6 +293,65 @@ donde evoca un plano y ahí sí viene a cuento.
 
 `npm run verify:todo` en verde después de cada cambio, y revisión visual en los dos
 temas y los dos anchos.
+
+## 5f. T7, y qué pasa cuando lleguen cambios de texto
+
+Español en `/`, inglés en `/en/`, con el i18n nativo de Astro
+(`prefixDefaultLocale: false`). `npm run verify` audita **2 páginas y 8 corridas**;
+`npm run verify:idioma` cubre los 15 criterios de RF-1.
+
+### Cómo está partido el contenido
+
+| Archivo | Qué lleva |
+| ------- | --------- |
+| `src/data/comun.ts` | Lo que **no** se traduce: título oficial, nombres institucionales, nombres de personas, dirección postal, fechas ISO, código FOVI |
+| `src/data/tipos.ts` | La interfaz que ambos idiomas deben satisfacer |
+| `src/data/es.ts` · `en.ts` | El contenido traducible, `satisfies ContenidoIdioma` |
+| `src/data/contenido.ts` | Los compone y resuelve los códigos de país |
+
+La regla para decidir dónde va algo: **si traducirlo produce un dato falso o un
+nombre que nadie usa, no se traduce.** Los nombres institucionales entran ahí —una
+traducción inventada de una universidad es el mismo tipo de error que un logo
+inventado, que este proyecto ya tiene prohibido—.
+
+Ningún componente importa `es` ni `en`: reciben `c: Contenido` por props. Así un
+componente no puede quedarse atado a un idioma sin que se note.
+
+### Las dos garantías, y lo que cada una NO cubre
+
+1. **Falta una clave** → error de compilación. `satisfies ContenidoIdioma` hace que
+   `astro check` falle. **Probado**, no supuesto: al quitar `cargarMapa` de `en.ts`,
+   `astro check` respondió `Property 'cargarMapa' is missing`. `[verificado]`
+2. **Una clave existe pero con el texto sin traducir** → TypeScript **no lo ve**: la
+   clave está y su tipo es `string`. Por eso `verify:idioma` compara las dos
+   páginas ya generadas, texto a texto por posición, y avisa de cualquier
+   coincidencia que no esté justificada. La lista de coincidencias legítimas
+   —título oficial, instituciones, personas, dirección, cifras— vive en el propio
+   verificador y debe mantenerse corta: si crece sin control, deja de detectar nada.
+
+Esa segunda garantía es la que importa **cuando lleguen los cambios de texto tras
+la revisión**: editar solo el español y olvidar el inglés no rompe la compilación,
+pero sí rompe `verify:idioma`.
+
+### Lo que T7 NO obliga a rehacer
+
+Una tarea posterior que añada componentes —T10— **no rehace T7**. El coste de un
+componente nuevo bilingüe es: recibir `c` por props y añadir sus cadenas a
+`tipos.ts`, `es.ts` y `en.ts`. Los dos últimos son obligatorios porque el primero
+lo exige el compilador. Lo que sí hay que respetar es no escribir cadenas en el
+marcado: `verify:idioma` lo comprueba estáticamente sobre todos los `.astro`.
+
+### Un falso positivo que costó tres intentos
+
+`verify:teclado` empezó a fallar al añadir el selector de idioma: el anillo de foco
+daba 1,05:1 contra un umbral de 3:1. No era un fallo del sitio. **`transition-colors`
+de Tailwind incluye `outline-color` entre las propiedades que anima**, así que medir
+justo después del `Tab` captura el color *de partida* de la transición y no el
+final. Con las transiciones anuladas: 10,99:1 y 8,96:1.
+
+Es exactamente la regla que `specs/fuentes.md` ya tenía registrada desde T2 —«toda
+medición de contraste anula antes las transiciones»—, aprendida entonces con la
+opacidad de `.reveal`. El verificador nuevo no la aplicaba. Ahora sí.
 
 ## 5e. T6, y por qué se automatizó lo que WCAG deja como manual
 

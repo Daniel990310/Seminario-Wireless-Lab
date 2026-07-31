@@ -1,6 +1,12 @@
 ---
 import PropagationFigure from './PropagationFigure.astro';
-import { seminar } from '~/data/seminar';
+import type { Contenido } from '~/data/contenido';
+
+interface Props {
+  c: Contenido;
+}
+
+const { c } = Astro.props;
 ---
 
 <!--
@@ -21,27 +27,30 @@ import { seminar } from '~/data/seminar';
   aria-labelledby="top-titulo"
   class="relative px-5 pt-24 pb-16 sm:px-8 sm:pt-32 sm:pb-24"
 >
-  <div id="contenido" class="mx-auto grid max-w-7xl gap-12 lg:grid-cols-12 lg:items-start lg:gap-8">
+  <div class="mx-auto grid max-w-7xl gap-12 lg:grid-cols-12 lg:items-start lg:gap-8">
     <!-- Campo de texto: columnas 1–7 -->
-    <div class="lg:col-span-7">
+    <div class="min-w-0 lg:col-span-7">
       <p class="eyebrow flex flex-wrap items-center gap-x-4 gap-y-2">
-        <span>Seminario internacional</span>
+        <span>{c.ui.hero.eyebrow}</span>
         <span class="h-px w-8 bg-primary/40" aria-hidden="true"></span>
-        <span class="text-muted-foreground">PUCV · Chile · 2026</span>
+        <span class="text-muted-foreground">
+          {c.organizers[0].shortName} · {c.venue.country} · 2026
+        </span>
       </p>
 
       <!--
         Título sin degradados ni animación de texto: el registro es
         institucional, y la jerarquía se resuelve con peso y color sólido.
+        Va en inglés en ambos idiomas por RF-1.2; por eso sale de `comun.ts`.
       -->
       <h1 id="top-titulo" class="mt-8 text-hero leading-[1.04] font-semibold text-foreground">
-        Beyond Connectivity: Wireless Sensing in mmWave and Sub-THz Bands
+        {c.title}
       </h1>
 
       <span class="mt-8 block h-px w-24 bg-primary/80" aria-hidden="true"></span>
 
       <p class="mt-8 max-w-2xl font-display text-base leading-snug text-muted-foreground sm:text-xl">
-        {seminar.subtitle}
+        {c.subtitle}
       </p>
 
       <!--
@@ -51,17 +60,17 @@ import { seminar } from '~/data/seminar';
       -->
       <dl class="mt-12 grid gap-px overflow-hidden rounded-surface border border-border sm:grid-cols-2">
         <div class="bg-surface p-6">
-          <dt class="eyebrow text-muted-foreground">Fechas</dt>
+          <dt class="eyebrow text-muted-foreground">{c.ui.hero.fechasEyebrow}</dt>
           <dd class="mt-2 font-display text-lg font-semibold text-foreground">
-            {seminar.dates.label}
+            {c.dates.label}
           </dd>
         </div>
         <div class="bg-surface p-6">
-          <dt class="eyebrow text-muted-foreground">Lugar</dt>
+          <dt class="eyebrow text-muted-foreground">{c.ui.hero.lugarEyebrow}</dt>
           <dd class="mt-2 font-display text-lg font-semibold text-foreground">
-            {seminar.venue.name}
+            {c.venue.name}
           </dd>
-          <dd class="mt-2 text-sm text-muted-foreground">{seminar.venue.fullAddress}</dd>
+          <dd class="mt-2 text-sm text-muted-foreground">{c.venue.fullAddress}</dd>
         </div>
       </dl>
 
@@ -74,51 +83,41 @@ import { seminar } from '~/data/seminar';
           href="#programa"
           class="rounded-control bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity duration-200 hover:opacity-90"
         >
-          Ver programa
+          {c.ui.hero.verPrograma}
         </a>
         <a
           href="#expositores"
           class="rounded-control border border-border-control px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary"
         >
-          Expositores
+          {c.ui.hero.verExpositores}
         </a>
       </div>
     </div>
 
     <!--
       Campo de la figura: columnas 8–12. Es contenido ilustrativo, no
-      decoración de fondo, así que va en su propia celda y con su propio
-      encuadre. La retícula técnica vive dentro de esta caja y no llega a
-      ningún texto.
+      decoración de fondo, así que va en su propia celda.
+
+      Sin `grid-backdrop`: su paso de 72 px no se alineaba con la retícula de
+      12 columnas ni con nada más, y competía con la retícula **polar** del
+      radar, que sí significa algo: son los anillos de rango. Dos retículas
+      superpuestas que dicen cosas distintas es una de más.
+
+      Sin pie de figura visible, y la razón es medible: los `path` de los
+      frentes de onda tienen rects mucho mayores que su parte visible
+      —`overflow-hidden` recorta el dibujo, no los rects— de modo que unas
+      líneas del pie caían dentro del rect de un arco y otras no. axe compara la
+      pila de elementos de cada línea de texto y, al diferir, devolvía
+      `elmPartiallyObscuring`. La descripción no se pierde: el SVG declara
+      `role="img"` y `aria-labelledby`, ahora con el texto traducido.
     -->
     <figure class="relative lg:col-span-5 lg:self-stretch">
-      <!--
-        Sin marco ni superficie. Encerrarla en una caja con borde la convertía en
-        «una imagen»; suelta, la retícula polar de la figura lee como parte de la
-        retícula de la página, que es de lo que trata Swiss Modernism. La
-        retícula técnica queda detrás, sin texto encima.
-      -->
-      <!--
-        Sin `grid-backdrop`. Su paso de 72 px no se alineaba con la retícula de
-        12 columnas ni con nada más, y competía con la retícula **polar** del
-        radar, que sí significa algo: son los anillos de rango. Dos retículas
-        superpuestas que dicen cosas distintas es una de más.
-      -->
       <div class="relative h-full min-h-[22rem]">
-        <PropagationFigure />
+        <PropagationFigure
+          titulo={c.ui.hero.figuraTitulo}
+          descripcion={c.ui.hero.figuraDescripcion}
+        />
       </div>
-      <!--
-        Sin pie de figura visible, y la razón es medible: los `path` de los
-        frentes de onda tienen rects mucho mayores que su parte visible
-        —`overflow-hidden` recorta el dibujo, no los rects— de modo que unas
-        líneas del pie caían dentro del rect de un arco y otras no. axe compara
-        la pila de elementos de cada línea de texto y, al diferir, devolvía
-        `elmPartiallyObscuring`: contraste indeterminado.
-
-        No se pierde la descripción: el SVG ya declara `role="img"` y
-        `aria-labelledby="fig-title fig-desc"`, así que los lectores de pantalla
-        la anuncian igual, sin un nodo de texto que axe no pueda medir.
-      -->
     </figure>
   </div>
 </section>

@@ -1,0 +1,281 @@
+---
+/**
+ * La página completa del seminario, parametrizada por idioma (T7).
+ *
+ * Existe para que `/` y `/en/` **no** sean dos copias del mismo marcado. Las
+ * rutas de `src/pages/` solo eligen el idioma; toda la estructura vive aquí, así
+ * que un cambio de composición no puede aplicarse a un idioma y olvidarse en el
+ * otro.
+ */
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import SiteHeader from '~/components/SiteHeader.astro';
+import Hero from '~/components/Hero.astro';
+import Section from '~/components/Section.astro';
+import SpeakerCard from '~/components/SpeakerCard.astro';
+import CollaborationNetwork from '~/components/CollaborationNetwork.astro';
+import ProgramPending from '~/components/ProgramPending.astro';
+import LogoWall from '~/components/LogoWall.astro';
+import VenueLocator from '~/components/VenueLocator.astro';
+import SiteFooter from '~/components/SiteFooter.astro';
+import { contenido, type Idioma } from '~/data/contenido';
+
+interface Props {
+  lang: Idioma;
+}
+
+const c = contenido(Astro.props.lang);
+const { program, speakers, topics, venue, organizers, participants, funding, about, ui } = c;
+const hasProgram = program.days.length > 0;
+---
+
+<BaseLayout c={c}>
+  <SiteHeader c={c} />
+
+  <main>
+    <Hero c={c} />
+
+    <!-- El seminario -->
+    <Section
+      id="seminario"
+      eyebrow={ui.secciones.seminario.eyebrow}
+      title={ui.secciones.seminario.title}
+      lead={about.lead}
+    >
+      <div class="mt-14 grid gap-14 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+        <div class="reveal min-w-0 space-y-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
+          {about.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+
+        <!-- Temas del seminario -->
+        <ul class="grid gap-px overflow-hidden rounded-surface border border-border sm:grid-cols-2">
+          {
+            topics.map((topic, index) => (
+              <li
+                class="reveal min-w-0 bg-surface/60 p-5"
+                style={`transition-delay:${index * 80}ms`}
+              >
+                <h3 class="font-display text-base font-semibold text-foreground">{topic.title}</h3>
+                <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{topic.description}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </Section>
+
+    <!-- Programa -->
+    <Section
+      id="programa"
+      eyebrow={ui.secciones.programa.eyebrow}
+      title={ui.secciones.programa.title}
+      lead={`${c.dates.label} · ${venue.name}`}
+      tinted
+    >
+      <div class="mt-12">
+        {
+          hasProgram ? (
+            <div class="space-y-10">
+              {program.days.map((day) => (
+                <article class="reveal">
+                  <header class="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b hairline pb-4">
+                    <h3 class="font-display text-xl font-semibold text-foreground">{day.label}</h3>
+                    <p class="eyebrow text-muted-foreground">{day.date}</p>
+                  </header>
+                  <ul class="divide-y divide-border">
+                    {day.sessions.map((session) => (
+                      <li class="grid gap-1 py-4 sm:grid-cols-[7rem_1fr] sm:gap-6">
+                        <p class="font-mono text-sm text-primary">{session.time}</p>
+                        <div class="min-w-0">
+                          <p class="text-base text-foreground">{session.title}</p>
+                          {session.speaker && (
+                            <p class="mt-1 text-sm text-muted-foreground">{session.speaker}</p>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          ) : (
+            /* Estado provisional: se reemplaza solo al poblar program.days */
+            <div class="reveal">
+              <ProgramPending c={c} />
+            </div>
+          )
+        }
+      </div>
+    </Section>
+
+    <!-- Expositores -->
+    <Section
+      id="expositores"
+      eyebrow={ui.secciones.expositores.eyebrow}
+      title={ui.secciones.expositores.title}
+      lead={ui.secciones.expositores.lead}
+    >
+      <div class="mt-14 space-y-14">
+        <div>
+          <h3 class="reveal eyebrow flex items-center gap-4 text-muted-foreground">
+            <span>{ui.expositores.internacionales}</span>
+            <span class="h-px flex-1 bg-border" aria-hidden="true"></span>
+          </h3>
+          <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {
+              speakers.international.map((speaker, index) => (
+                <SpeakerCard speaker={speaker} index={index} />
+              ))
+            }
+          </div>
+        </div>
+
+        <div>
+          <h3 class="reveal eyebrow flex items-center gap-4 text-muted-foreground">
+            <span>{ui.expositores.nacionales}</span>
+            <span class="h-px flex-1 bg-border" aria-hidden="true"></span>
+          </h3>
+          <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {
+              speakers.national.map((speaker, index) => (
+                <SpeakerCard speaker={speaker} index={index} />
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </Section>
+
+    <!-- Red de colaboración: topología del seminario -->
+    <Section
+      id="red"
+      eyebrow={ui.secciones.red.eyebrow}
+      title={ui.secciones.red.title}
+      lead={ui.secciones.red.lead}
+      tinted
+    >
+      <!--
+        Sin `client:visible`: desde T3 la red es Astro puro y no se hidrata. Antes
+        era una isla de React porque `AnimatedBeam` medía la posición de cada nodo
+        en el DOM; ahora la geometría está fijada por construcción.
+      -->
+      <div class="reveal mt-14">
+        <CollaborationNetwork c={c} />
+      </div>
+    </Section>
+
+    <!-- Sede -->
+    <Section id="sede" eyebrow={ui.secciones.sede.eyebrow} title={ui.secciones.sede.title}>
+      <!-- `items-start`, no `items-center`: centrar dejaba un vacío grande sobre la dirección. -->
+      <div class="mt-12 grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-16">
+        <!--
+          `min-w-0`: los items de una retícula traen `min-width: auto`, así que el
+          contenido más largo —aquí el correo, con el texto al 200 %— impone un
+          ancho mínimo y la columna empuja la página hacia la derecha antes de que
+          `overflow-wrap` llegue a partir nada. Con `min-w-0` la columna encoge y
+          el texto parte (WCAG 1.4.4, T6).
+        -->
+        <div class="reveal min-w-0">
+          <address class="space-y-1 text-base not-italic sm:text-lg">
+            <p class="font-display text-lg font-semibold text-foreground">{venue.name}</p>
+            <p class="text-muted-foreground">{venue.street}</p>
+            <p class="text-muted-foreground">{venue.district}, {venue.city}</p>
+            <p class="text-muted-foreground">{venue.country}</p>
+          </address>
+
+          <!-- Los enlaces a mapas viven en el panel localizador, a la derecha. -->
+          <!-- `[&>div]:min-w-0` por lo mismo que la columna: el correo no partía. -->
+          <dl class="mt-10 grid gap-6 border-t hairline pt-8 [&>div]:min-w-0 sm:grid-cols-2">
+            <div>
+              <dt class="eyebrow text-muted-foreground">{ui.sede.fechas}</dt>
+              <dd class="mt-2 text-base text-foreground">{c.dates.label}</dd>
+            </div>
+            <div>
+              <dt class="eyebrow text-muted-foreground">{ui.sede.consultas}</dt>
+              <dd class="mt-2 text-base">
+                <a
+                  href={`mailto:${c.contact.email}`}
+                  class="text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
+                >
+                  {c.contact.email}
+                </a>
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="reveal min-w-0">
+          <VenueLocator c={c} />
+        </div>
+      </div>
+    </Section>
+
+    <!-- Organización, instituciones y financiamiento -->
+    <Section
+      id="organizacion"
+      eyebrow={ui.secciones.organizacion.eyebrow}
+      title={ui.secciones.organizacion.title}
+    >
+      <div class="mt-14 space-y-16">
+        <div>
+          <h3 class="reveal eyebrow flex items-center gap-4 text-muted-foreground">
+            <span>{ui.organizacion.organizan}</span>
+            <span class="h-px flex-1 bg-border" aria-hidden="true"></span>
+          </h3>
+          <div class="mt-8">
+            <LogoWall institutions={organizers} size="lg" />
+          </div>
+          <ul class="mt-6 space-y-1 text-sm text-muted-foreground">
+            {organizers.map((organizer) => <li>{organizer.name}</li>)}
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="reveal eyebrow flex items-center gap-4 text-muted-foreground">
+            <span>{ui.organizacion.participantes}</span>
+            <span class="h-px flex-1 bg-border" aria-hidden="true"></span>
+          </h3>
+          <div class="mt-8">
+            <LogoWall institutions={participants} />
+          </div>
+          <ul class="mt-6 grid gap-1 text-sm text-muted-foreground sm:grid-cols-2">
+            {participants.map((participant) => <li>{participant.name}</li>)}
+          </ul>
+        </div>
+
+        <!-- Financiamiento: obligatorio dar crédito a ANID y al proyecto FOVI -->
+        <div class="reveal surface rounded-surface p-7 sm:p-10">
+          <h3 class="eyebrow text-muted-foreground">{ui.organizacion.financia}</h3>
+          <div class="mt-7 grid gap-8 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-10">
+            <a
+              href={funding.agency.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block opacity-80 transition-opacity hover:opacity-100"
+              title={funding.agency.name}
+            >
+              <img
+                src={funding.agency.logo}
+                alt={funding.agency.name}
+                class="h-14 w-auto object-contain sm:h-16"
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+            <div class="min-w-0">
+              <p class="font-display text-base font-semibold text-foreground">
+                {funding.agency.name} ({funding.agency.shortName})
+              </p>
+              <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {ui.organizacion.proyecto}
+                <span class="font-mono text-primary">{funding.project.code}</span>,
+                <span class="italic"> {funding.project.name}</span>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Section>
+  </main>
+
+  <SiteFooter c={c} />
+</BaseLayout>

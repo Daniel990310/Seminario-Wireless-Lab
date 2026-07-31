@@ -48,9 +48,13 @@
  * de gradiente sobre el RECUADRO del trayecto, así que el brillo era una banda
  * vertical barriendo en horizontal. Aquí el pulso recorre la curva misma.
  */
-import { seminar } from '~/data/seminar';
+import type { Contenido } from '~/data/contenido';
 
-const { hub, foreign, local } = seminar.network;
+interface Props {
+  c: Contenido;
+}
+
+const { hub, foreign, local } = Astro.props.c.network;
 
 /*
  * Trayectos, en el sistema de coordenadas del SVG conector: 100 × 100, donde el

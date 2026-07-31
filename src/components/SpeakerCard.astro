@@ -1,8 +1,11 @@
 ---
-import type { Speaker } from '~/data/seminar';
+import type { Contenido } from '~/data/contenido';
+
+/** El expositor ya viene resuelto por idioma desde `contenido()`. */
+type Expositor = Contenido['speakers']['international'][number];
 
 interface Props {
-  speaker: Speaker;
+  speaker: Expositor;
   index: number;
 }
 

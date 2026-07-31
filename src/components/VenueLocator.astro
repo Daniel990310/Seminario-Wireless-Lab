@@ -9,9 +9,14 @@
  * razones: no se envía la visita a un tercero sin consentimiento, y si una red
  * institucional bloquea el embed el bloque no queda como un recuadro roto.
  */
-import { seminar } from '~/data/seminar';
+import type { Contenido } from '~/data/contenido';
 
-const { venue } = seminar;
+interface Props {
+  c: Contenido;
+}
+
+const { c } = Astro.props;
+const { venue, ui } = c;
 
 // Coordenadas aproximadas de Antonio Bellet 314, Providencia.
 const LAT = -33.421;
@@ -24,7 +29,7 @@ const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&laye
   class="surface rounded-surface"
   data-venue-locator
   data-embed={EMBED}
-  data-embed-title={`Mapa de ${venue.name}`}
+  data-embed-title={ui.sede.tituloMapa}
 >
   <!--
     Altura mínima, no fija: con `h-` el bloque de texto desbordaba el panel en
@@ -59,6 +64,7 @@ const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&laye
 
     <!-- Campo de texto: fondo plano y opaco, sin nada por delante ni por debajo. -->
     <div class="bg-surface px-6 py-6 text-center">
+      <!-- La dirección postal no se traduce; el país sí. Ver `src/data/comun.ts`. -->
       <p class="font-display text-lg font-semibold text-foreground">
         {venue.street}, {venue.district}
       </p>
@@ -70,7 +76,7 @@ const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&laye
           data-locator-load
           class="rounded-control border border-primary/40 bg-primary/8 px-5 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/15"
         >
-          Cargar mapa interactivo
+          {ui.sede.cargarMapa}
         </button>
         <a
           href={venue.mapsUrl}
@@ -78,12 +84,12 @@ const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&laye
           rel="noopener noreferrer"
           class="rounded-control border border-border-control px-5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
         >
-          Abrir en Google Maps
+          {ui.sede.abrirEnGoogleMaps}
         </a>
       </div>
 
       <p class="mx-auto mt-6 max-w-xs text-xs leading-relaxed text-muted-foreground">
-        Al cargar el mapa se solicita contenido a OpenStreetMap.
+        {ui.sede.avisoMapa}
       </p>
     </div>
   </div>

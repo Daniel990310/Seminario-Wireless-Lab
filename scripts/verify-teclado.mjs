@@ -107,6 +107,22 @@ for (const tema of ['light', 'dark']) {
   await page.goto(URL_BASE, { waitUntil: 'networkidle' });
   await page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), tema);
 
+  /*
+   * Anular las transiciones ANTES de medir el anillo de foco.
+   *
+   * `transition-colors` de Tailwind incluye `outline-color` entre las
+   * propiedades que anima, así que al medir justo después de un `Tab` se captura
+   * el color **de partida** —`currentColor`— y no el final. Eso daba 1,05:1 en
+   * un anillo que en realidad cumple 7:1.
+   *
+   * Es la misma regla que ya estaba registrada en `specs/fuentes.md` para la
+   * medición de contraste, aprendida entonces con las transiciones de opacidad:
+   * toda medición de color anula antes las transiciones.
+   */
+  await page.addStyleTag({
+    content: '*, *::before, *::after { transition: none !important; animation: none !important; }',
+  });
+
   // Cuántos elementos deberían poder recibir el foco.
   const enfocables = await page.evaluate(() => {
     const sel = 'a[href], button, summary, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -164,7 +180,7 @@ for (const tema of ['light', 'dark']) {
       if (!el || el === document.body) return null;
       const s = getComputedStyle(el);
       return {
-        etiqueta: `${el.tagName.toLowerCase()}${el.type === 'radio' ? '[radio]' : ''}`,
+        etiqueta: `${el.tagName.toLowerCase()}${el.type === 'radio' ? '[radio]' : ''} «${(el.textContent ?? '').trim().slice(0, 18)}» .${(el.getAttribute('class') ?? '').split(' ')[0]}`,
         visible: el.matches(':focus-visible'),
         ancho: parseFloat(s.outlineWidth) || 0,
         estilo: s.outlineStyle,
@@ -184,18 +200,20 @@ for (const tema of ['light', 'dark']) {
       : `${muestras.length} paradas, todas con anillo`,
   );
 
-  const ratios = muestras
+  const conRatio = muestras
     .map((m) => {
       const a = rgb(m.color);
       const b = rgb(m.fondo);
-      return a && b ? ratio(a, b) : 0;
+      return { ...m, ratio: a && b ? ratio(a, b) : 0 };
     })
-    .filter(Boolean);
-  const peor = ratios.length ? Math.min(...ratios) : 0;
+    .filter((m) => m.ratio > 0);
+  const peor = conRatio.length ? conRatio.reduce((p, m) => (m.ratio < p.ratio ? m : p)) : null;
   check(
     `T6 · el anillo de foco cumple 3:1 (WCAG 1.4.11) (${tema})`,
-    peor >= 3,
-    `peor ratio ${peor.toFixed(2)}:1`,
+    !!peor && peor.ratio >= 3,
+    peor
+      ? `peor ratio ${peor.ratio.toFixed(2)}:1 en ${peor.etiqueta} · anillo ${peor.color} · ${peor.estilo} ${peor.ancho}px · focus-visible=${peor.visible}`
+      : 'sin medir',
   );
 
   await ctx.close();

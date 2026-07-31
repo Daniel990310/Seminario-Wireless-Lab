@@ -1,0 +1,65 @@
+---
+/**
+ * Selector de idioma (RF-1.5, RF-1.6).
+ *
+ * Son **enlaces**, no botones ni un `select`: cada idioma tiene una URL propia y
+ * estable (RF-1.1), así que lo correcto es navegar. Además se pueden abrir en
+ * otra pestaña, compartir e indexar, cosa que un control con JavaScript no da.
+ *
+ * El idioma activo se marca con `aria-current="page"`, no solo con color: RF-1.5
+ * pide que el estado se comunique de forma programática. El color es refuerzo.
+ *
+ * Cada enlace lleva `lang` y `hreflang` del idioma al que apunta, y su rótulo va
+ * en ese mismo idioma: quien busca la versión inglesa busca «English».
+ */
+import { IDIOMAS, NOMBRES_IDIOMA, rutaBase, type Idioma } from '~/data/contenido';
+
+interface Props {
+  actual: Idioma;
+  legend: string;
+}
+
+const { actual, legend } = Astro.props;
+---
+
+<nav aria-label={legend} class="flex items-center">
+  <ul class="flex items-center gap-0 rounded-control border border-border-control p-0.5">
+    {
+      IDIOMAS.map((idioma) => (
+        <li>
+          <a
+            href={rutaBase(idioma)}
+            hreflang={idioma}
+            lang={idioma}
+            data-idioma={idioma}
+            aria-current={idioma === actual ? 'page' : undefined}
+            class="block rounded-[2px] px-2.5 py-1 text-[0.6875rem] font-medium text-muted-foreground transition-colors hover:text-foreground aria-[current]:bg-primary aria-[current]:text-primary-foreground"
+          >
+            {NOMBRES_IDIOMA[idioma]}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<script>
+  /*
+   * Conservar la sección al cambiar de idioma (RF-1.6).
+   *
+   * El fragmento (`#programa`) no viaja al servidor, así que no hay forma de
+   * resolverlo al generar el sitio: hay que copiarlo al enlace en el cliente.
+   *
+   * Se actualiza en cada clic y no una sola vez al cargar, porque el fragmento
+   * cambia mientras la persona navega por la página. Si este script no corre, el
+   * enlace sigue siendo válido y lleva al inicio del otro idioma: se pierde la
+   * sección, no el acceso.
+   */
+  for (const enlace of document.querySelectorAll<HTMLAnchorElement>('a[data-idioma]')) {
+    enlace.addEventListener('click', () => {
+      const destino = new URL(enlace.href);
+      destino.hash = window.location.hash;
+      enlace.href = destino.toString();
+    });
+  }
+</script>
