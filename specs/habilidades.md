@@ -281,10 +281,24 @@ Lo que es de riesgo bajo o nulo:
 - Componentes **sin estado**, renderizados en el servidor sin directiva `client:*`.
   Es exactamente el patrón que ya usa `src/components/ui`.
 
-### Flujo de integración de 21st.dev en el SDD (5 fases)
+### Flujo de integración en el SDD (6 fases)
 
 Cada componente del catálogo pasa por el mismo flujo que cualquier otra dependencia.
 El orden importa: explorar es gratis, gastar cuota es caro.
+
+La fase 0 se añadió el 2026-07-30 después de perder tiempo real por saltársela.
+
+#### 0. CONSULTAR LA FUENTE (antes de escribir una sola línea)
+
+Antes de programar contra la API de cualquier librería —Astro, Tailwind, axe-core,
+shadcn—, mirar la documentación **de la versión instalada**, no la de la memoria.
+El orden de preferencia está en §7 y no es negociable: `node_modules` primero,
+Context7 después, la web al final.
+
+Ejemplo de por qué: RNF-2.1 informó «0,0 kB de JavaScript» durante semanas en una
+página que sí ejecuta JavaScript. La causa era un cambio de comportamiento de Astro
+v5 —cada `<script>` se renderiza tal como se declara, sin agruparlo ni sacarlo a un
+archivo— que una consulta a la documentación habría revelado en un minuto.
 
 #### 1. EXPLORAR (gratis, ilimitado)
 
@@ -308,6 +322,11 @@ Para cada candidato, responder estas cuatro preguntas en orden:
    `aria-*` adecuados o sin soporte de teclado son candidatos a fallar.
 
 #### 3. PROTOTIPAR
+
+**Antes de elegir camino: reducir el encargo a una sola pieza.** El servidor rinde
+con un componente acotado y falla con composiciones de página. Si lo que se quiere
+es una sección entera, descomponerla y pedir la pieza más pequeña que resuelva el
+problema. Ver «Cómo se pide bien» más abajo, con el caso en que se incumplió.
 
 Dos caminos según el caso:
 
@@ -337,7 +356,28 @@ enlace cuando la decisión sea de Daniel.
 - `npm run build && npm run verify`
 - Reportar las mediciones de peso en el commit (son informativas desde la enmienda).
 - **Accesibilidad: 0 hallazgos de axe, bloqueante.** Si falla, corregir o retirar.
-- Revisión visual en ambos temas antes de declarar completado.
+- **Revisión visual con capturas, no de memoria.** «Revisar en ambos temas» no es
+  mirar el código y suponer. Levantar `dist/` con Playwright, forzar
+  `.reveal { opacity: 1 !important }`, capturar los dos temas × los dos anchos y
+  **mirar las imágenes**. En esta sesión eso detectó tres cosas que la lectura del
+  código no daba: un bloque centrado que rompía el eje de la página, un filete que
+  no separaba nada y una retícula de fondo que competía con la del propio radar.
+  Hay guiones reutilizables en el registro de la sesión; son ~40 líneas.
+
+#### 6. DIAGNOSTICAR CUANDO FALLA (medir, no teorizar)
+
+Si un verificador falla y la causa no es obvia, **prohibido arreglar a ciegas**. El
+orden que funcionó:
+
+1. Volcar el detalle crudo que da la herramienta, no solo el recuento. En axe eso
+   es `messageKey` y `data` por nodo, no el total.
+2. Leer la fuente de la herramienta instalada para saber qué significa ese código.
+3. Interrogar a la herramienta en el navegador con sus propias funciones internas.
+4. Formular una hipótesis y **descartarla midiendo**, no razonando.
+
+En la cola final de T5 se descartaron así tres hipótesis plausibles y falsas, cada
+una con un experimento de un minuto. Cada intento de arreglar sin medir costó un
+ciclo completo de build y verificación.
 
 ### Contexto para generaciones: `.21st/design.json`
 
@@ -418,3 +458,111 @@ siempre que pasen el filtro de §5 y sirvan a un requisito escrito.
   mayoritariamente retículas de puntos con WebGL, degradados y heros de lista de
   espera. **El filtro de §5 descarta casi todo lo que devuelve `search`.** Conviene
   contar con eso antes de planificar una tarea que dependa del catálogo.
+
+### Cómo se pide bien, según la propia documentación del servidor
+
+`[verificado]` en el repositorio oficial `21st-dev/magic-mcp` y en las guías de uso
+con Claude Code, contrastado el 2026-07-30.
+
+- **Un componente acotado por llamada.** La herramienta rinde con **una** pieza
+  delimitada y se atraganta con páginas enteras de varios componentes. La
+  descomposición la hace quien pide, no el servidor.
+
+  Esto explica un error propio del 2026-07-30: se le pidió a `generate` un hero
+  completo —retícula de 12 columnas, titular, bloque de datos, figura técnica
+  lateral y tres direcciones de diseño— en una sola llamada. Aunque la cuota no
+  hubiera estado agotada, ese encargo estaba fuera de lo que la herramienta hace
+  bien. Lo correcto habría sido pedir **el bloque de datos de fecha y sede**, y
+  nada más.
+
+- **Clave nueva, no reutilizada.** La documentación pide expresamente generar una
+  clave nueva de 21st.dev y no reaprovechar las anteriores a la migración de Magic.
+  Refuerza el pendiente de rotación que sigue abierto (`ESTADO.md` §6b).
+
+- **Lo que se envía sale del equipo.** El prompt y el contexto que se le pasa
+  —incluido `.21st/design.json`— viajan a la API de 21st.dev. Para este proyecto no
+  es un problema: es un sitio público de un seminario y los tokens de diseño ya
+  están versionados. Queda anotado porque la regla no es «no importa», sino «aquí
+  no importa».
+
+- **Los metadatos se cachean, no se vuelven a pedir.** Los identificadores y
+  comandos de instalación que devuelve `search` se anotan en el SDD en lugar de
+  repetir la búsqueda en cada sesión.
+
+## 7. Context7: la documentación de la versión que corre
+
+Servidor MCP conectado por la cuenta de claude.ai. Dos herramientas:
+`resolve-library-id` (nombre → identificador) y `query-docs` (identificador +
+pregunta → fragmentos de documentación con ejemplos).
+
+### La regla que ordena las tres fuentes
+
+Cuando hace falta saber cómo se comporta una librería, **el orden no es indistinto**:
+
+| Orden | Fuente | Cuándo | Por qué |
+| ----- | ------ | ------ | ------- |
+| 1.º | **`node_modules`** | La librería está instalada y la pregunta es sobre su comportamiento real | Es el código **exacto** que corre. No hay desfase de versión posible |
+| 2.º | **Context7** | Comportamiento del framework, configuración, migraciones, API pública | Documentación al día, con versión. Evita responder de memoria |
+| 3.º | **Búsqueda web** | Nada de lo anterior alcanza, o hace falta contexto de producto (precios, cuotas, estado del servicio) | Es la menos precisa y la que más ruido trae |
+
+Esta jerarquía no es teórica. El 2026-07-30, para averiguar por qué axe marcaba
+nodos como indeterminados:
+
+- La búsqueda web y el `raw.githubusercontent` de la rama `develop` **dieron una
+  respuesta incompleta**: el archivo de `develop` ni siquiera contenía el código
+  que emite `bgOverlap`.
+- `node_modules/axe-core/axe.js` —la versión 4.12.1, la que corre el verificador—
+  lo tenía en la línea 24432, con el mecanismo entero alrededor.
+
+**Si la librería está en `node_modules`, empezar por ahí.** Context7 es para lo que
+no se puede leer localmente: decisiones de diseño del framework, cambios entre
+versiones mayores, configuración recomendada.
+
+### Cómo consultarlo bien `[verificado]` en la guía oficial
+
+- **Pasar el identificador directo cuando ya se conoce** (`/org/proyecto`): ahorra
+  el paso de resolución.
+- **Un concepto por consulta.** Preguntas que mezclan temas devuelven fragmentos
+  peores. Si la duda abarca dos cosas, son dos llamadas, salvo que la pregunta sea
+  precisamente cómo interactúan.
+- **Mencionar la versión en la pregunta** si importa: la selecciona sola.
+- **Máximo 3 llamadas por pregunta.** Si a la tercera no aparece, cambiar de fuente.
+- Preguntar por casos de uso concretos —configuración, llamada de API, paso de
+  instalación—, no por conceptos sueltos («auth», «hooks»).
+
+### Identificadores ya resueltos para este proyecto
+
+Anotados para no volver a gastar una llamada en resolverlos:
+
+| Librería | Identificador | Reputación / calidad |
+| -------- | ------------- | -------------------- |
+| Astro | `/withastro/docs` | Alta · 84,8 · 6.587 fragmentos |
+| Astro (alternativa) | `/websites/astro_build_en` | Alta · 78,9 |
+
+Consulta ya hecha y aprovechable: **Astro v5 renderiza cada `<script>` tal como se
+declara**, sin agruparlo ni moverlo al `<head>`; `build.inlineStylesheets: 'never'`
+controla el CSS, no los scripts; `vite.build.assetsInlineLimit` controla activos.
+De ahí salió la corrección de RNF-2.1.
+
+### Cuándo NO usarlo
+
+No es para refactorizar, escribir guiones desde cero, depurar la lógica del
+proyecto ni resolver conceptos generales de programación. Para eso no aporta y solo
+gasta contexto.
+
+## 8. Qué herramienta aplica a cada tarea que queda
+
+Decidido con el filtro de §5 y con lo medido el 2026-07-30. Sirve para no volver a
+plantear una tarea contando con una herramienta que no la va a resolver.
+
+| Tarea | Herramienta que sí aporta | Qué no usar, y por qué |
+| ----- | ------------------------- | ---------------------- |
+| **T6** · Foco, teclado y zoom al 200 % | `verify:tema` y recorrido manual con Playwright. Context7 si hay dudas sobre el foco en componentes de shadcn | 21st.dev: no hay componente que resuelva un recorrido de foco |
+| **T7** · Sitio bilingüe | **Context7 sobre `/withastro/docs`**: el enrutado i18n de Astro es configuración de framework, justo lo que Context7 resuelve bien. Consultar **antes** de diseñar la estructura de rutas | 21st.dev: un selector de idioma son 10 líneas; traer React para eso no se sostiene |
+| **T8** · `og:image` por idioma | Context7 para la generación de imágenes en tiempo de compilación con Astro | 21st.dev: no aplica |
+| **T9** · Verificación final | `npm run verify:todo` más la revisión visual con capturas de la fase 5 | — |
+| **T10** · Componentes interactivos (RF-6) | **21st.dev es aquí donde de verdad rinde**: es su único caso natural en el plan. Explorar con `search` (gratis) y pedir **una pieza acotada por llamada**, nunca una sección entera. Gastar `get_component` solo tras pasar el filtro de §5. Context7 sobre shadcn/Radix para el comportamiento accesible | `generate`: cuota agotable sin previo aviso; no planificar contando con él |
+
+**Regla general que se desprende:** 21st.dev sirve cuando el problema es *«qué
+componente interactivo pongo aquí»*. Context7 sirve cuando el problema es *«cómo se
+comporta esta herramienta»*. Casi todas las tareas que quedan son del segundo tipo.

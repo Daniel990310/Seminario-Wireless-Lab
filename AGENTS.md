@@ -163,6 +163,26 @@ ninguna herramienta**, aunque los skills instalados sean capaces de hacerlo. Los
 archivos de `public/logos/` son marcadores de posición deliberados hasta que las
 instituciones entreguen los oficiales.
 
+## Servidores MCP: cuál sirve para qué
+
+Detalle completo, con cuotas y lecciones medidas, en
+[`specs/habilidades.md`](specs/habilidades.md) §6bis, §7 y §8. Lo esencial:
+
+- **Antes de programar contra la API de una librería, consultar la fuente.** En
+  este orden: `node_modules` si está instalada —es el código exacto que corre—,
+  luego **Context7**, y la búsqueda web al final. Saltarse esto costó una métrica
+  equivocada durante semanas: RNF-2.1 informaba «0,0 kB de JavaScript» en una
+  página que sí lo ejecuta, por un cambio de comportamiento de Astro v5.
+- **Context7** responde «¿cómo se comporta esta herramienta?»: configuración,
+  migraciones, API pública. Un concepto por consulta, máximo tres por pregunta.
+- **21st.dev** responde «¿qué componente interactivo pongo aquí?». Su único caso
+  natural en el plan es T10. Se le pide **una pieza acotada por llamada**, nunca
+  una sección entera. `search` es gratis; `get_component` son 2 al día y
+  `generate` se agota sin previo aviso.
+- Casi todas las tareas que quedan son del primer tipo, no del segundo.
+- **Ninguna decisión de diseño se declara terminada sin mirar capturas** de los
+  dos temas y los dos anchos. Leer el código y suponer no cuenta.
+
 ## Convenciones de código
 
 - **Contenido en archivos de datos.** Nada de texto escrito en componentes: todo
