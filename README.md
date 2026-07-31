@@ -143,6 +143,45 @@ cualquier hosting. No requiere Node.js en el servidor.
 
 El sitio se publica en **Cloudflare Pages**.
 
+### Workers o Pages: los dos sirven, y no se configuran igual
+
+El sitio es 100 % estático, así que funciona en cualquiera de los dos. La
+diferencia que importa está en **cómo sabe el sitio en qué dominio vive**:
+
+| | Cloudflare Pages | Cloudflare Workers |
+| - | ---------------- | ------------------ |
+| Configuración | Ninguna en el repo | `wrangler.jsonc` con `assets.directory` |
+| URL del despliegue | `CF_PAGES_URL`, **automática** | **Hay que definir `SITE_URL` a mano** |
+| Comando de deploy | Lo hace Pages | `npx wrangler deploy` |
+
+`astro.config.mjs` lee `CF_PAGES_URL`, que **solo existe en Pages**. En Workers,
+sin `SITE_URL`, el sitio cae al respaldo `PRODUCTION_SITE` —un dominio que aún no
+existe— y además se apaga el `noindex` de previsualización, porque el código cree
+que ya está en producción.
+
+#### Si se despliega en Workers
+
+En **Workers & Pages → Create → Workers → Connect to Git**:
+
+| Campo | Valor |
+| ----- | ----- |
+| Build command | `npm run build` |
+| Deploy command | `npx wrangler deploy` |
+| **Root directory** | **`/`** — la raíz del repositorio, **no** `/dist` |
+| Versión de Node | 20 o superior |
+
+`/dist` en *Root directory* es el error habitual: ahí no está el
+`wrangler.jsonc`, y el despliegue termina sin publicar nada. La carpeta de
+activos ya la declara ese archivo.
+
+Después del **primer** despliegue, Cloudflare da una URL del tipo
+`seminario-wireless-lab.<subdominio>.workers.dev`. Con esa URL:
+
+1. Añadir la variable **`SITE_URL`** con ese valor, en *Settings → Variables*.
+2. Volver a desplegar, para que el canónico, el sitemap y las imágenes para
+   compartir la usen.
+3. Regenerar las imágenes con `npm run og` si el dominio va a ser el definitivo.
+
 ### Conectar el repositorio
 
 En el panel de Cloudflare: **Workers & Pages → Create → Pages → Connect to Git**,
