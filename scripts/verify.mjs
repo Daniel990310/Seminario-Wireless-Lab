@@ -143,6 +143,7 @@ async function medirPeso(rutaPagina) {
   const archivos = await listarArchivos(DIST);
   const grupos = {
     javascript: 0,
+    javascriptEnLinea: 0,
     css: 0,
     html: 0,
     tipografias: 0,
@@ -190,12 +191,32 @@ async function medirPeso(rutaPagina) {
   }
 
   /*
+   * JavaScript EN LÍNEA. Astro 5 renderiza cada `<script>` tal como se declara:
+   * no los agrupa ni los saca a un archivo, así que acaban dentro del HTML y
+   * ningún `.js` los representa. Antes de medirlos, RNF-2.1 informaba «0,0 kB de
+   * JavaScript» en una página que sí ejecuta JavaScript —menú móvil, selector de
+   * tema, carga diferida del mapa—, y esa lectura era engañosa aunque la cifra
+   * de archivos fuera correcta.
+   *
+   * Se mide por diferencia de gzip, con y sin esos bloques, en vez de comprimir
+   * los fragmentos por separado: dentro del HTML comparten diccionario con el
+   * resto del documento, y comprimirlos aislados sobrestima su costo real.
+   *
+   * `application/ld+json` queda fuera a propósito: son metadatos, no código.
+   */
+  const bloquesEnLinea = /<script(?![^>]*\bsrc=)(?![^>]*type="application\/ld\+json")[^>]*>[\s\S]*?<\/script>/g;
+  const htmlSinEnLinea = html.replace(bloquesEnLinea, '');
+  const gz = (texto) => gzipSync(Buffer.from(texto, 'utf8'), { level: 9 }).length;
+  grupos.javascriptEnLinea = Math.max(0, gz(html) - gz(htmlSinEnLinea));
+
+  /*
    * Primera carga (RNF-2.2) = lo que el navegador pide para pintar la página.
    * Se excluyen los logos, que llevan `loading="lazy"` y están bajo el pliegue,
    * y el mapa, que solo se solicita si la persona lo pide. Incluirlos infla la
    * cifra con bytes que la mayoría de las visitas nunca descarga.
    *
-   * El HTML incluye los scripts en línea, que son el JavaScript que sí corre.
+   * `javascriptEnLinea` NO se suma aquí: ya está contado dentro de `html`.
+   * Sumarlo sería contabilizarlo dos veces.
    */
   grupos.primeraCarga = grupos.javascript + grupos.css + grupos.html + grupos.tipografias;
   return grupos;
@@ -367,7 +388,9 @@ const comprobaciones = [
   { id: 'RNF-1.3', nombre: 'Nodos con contraste indeterminado', valor: totalIndeterminados, limite: 0 },
   { id: 'RNF-1.4', nombre: 'Secciones sin nombre accesible', valor: semantica.seccionesSinNombre, limite: 0 },
   { id: 'RNF-1.5', nombre: 'Saltos de nivel en encabezados', valor: semantica.saltosDeNivel, limite: 0 },
-  { id: 'RNF-2.1', nombre: 'JavaScript comprimido', valor: peso.javascript, limite: PRESUPUESTOS.javascript, esPeso: true },
+  // Archivos + scripts en línea. Medir solo los archivos daba «0,0 kB» en una
+  // página que sí ejecuta JavaScript. Ver `medirPeso`.
+  { id: 'RNF-2.1', nombre: 'JavaScript comprimido', valor: peso.javascript + peso.javascriptEnLinea, limite: PRESUPUESTOS.javascript, esPeso: true },
   { id: 'RNF-2.2', nombre: 'Primera carga comprimida', valor: peso.primeraCarga, limite: PRESUPUESTOS.primeraCarga, esPeso: true },
   { id: 'RNF-2.6', nombre: 'Tipografías', valor: peso.tipografias, limite: PRESUPUESTOS.tipografias, esPeso: true },
 ];
@@ -475,7 +498,9 @@ el desglose por corrida más abajo.
 
 | Recurso | Comprimido |
 | ------- | ---------- |
-| JavaScript | ${kB(peso.javascript)} |
+| JavaScript en archivos \`.js\` | ${kB(peso.javascript)} |
+| JavaScript en línea, dentro del HTML | ${kB(peso.javascriptEnLinea)} |
+| JavaScript total (RNF-2.1) | ${kB(peso.javascript + peso.javascriptEnLinea)} |
 | Tipografías | ${kB(peso.tipografias)} |
 | HTML (incluye los scripts en línea) | ${kB(peso.html)} |
 | CSS | ${kB(peso.css)} |

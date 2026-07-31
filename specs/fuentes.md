@@ -52,7 +52,7 @@ Mismo comando: `npm run build && npm run verify`, 2 anchos × 2 temas.
 | Contraste insuficiente | **0 nodos** en las 4 corridas | Sin cambio respecto de T2 |
 | Contraste indeterminado | **0 nodos** en las 4 corridas, eran 104 | Categoría `incomplete`. RNF-1.3 cerrado |
 | Secciones sin nombre accesible | **0 de 7**, eran 7 de 7 | `aria-labelledby` en cada `<section>` apuntando a su encabezado. RNF-1.4 cerrado |
-| JavaScript comprimido | 0,0 kB | Suma de los `.js` de `dist/`. **No incluye los scripts que Astro inlinea en el HTML**, que sí existen: ver `ESTADO.md` §5c |
+| JavaScript comprimido | **1,1 kB** | Archivos `.js` referenciados (0,0 kB) **más** los scripts en línea del HTML (1,1 kB), medidos por diferencia de gzip. La métrica se corrigió el 2026-07-30: antes solo contaba archivos e informaba 0,0 kB en una página que sí ejecuta JavaScript. Ver `ESTADO.md` §5c |
 | Primera carga comprimida | 137,0 kB | JS + CSS + HTML + tipografías |
 | Tipografías | 122,6 kB | Sin cambio respecto de T4 |
 

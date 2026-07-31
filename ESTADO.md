@@ -281,17 +281,31 @@ donde evoca un plano y ahí sí viene a cuento.
 `npm run verify:todo` en verde después de cada cambio, y revisión visual en los dos
 temas y los dos anchos.
 
-## 5c. RNF-2.1 no mide todo el JavaScript
+## 5c. RNF-2.1 ahora sí mide todo el JavaScript
 
-`verify` informa `JavaScript comprimido 0,0 kB` porque suma los archivos `.js` de
-`dist/`, y Astro **inlinea** los scripts pequeños dentro del HTML. El sitio sí
-ejecuta JavaScript en el cliente: el menú móvil, el selector de tema, la carga
-diferida del mapa y —hasta T5— la barra. Ese peso entra en «primera carga», no en
-«JavaScript». `[medido]`
+**Corregido el 2026-07-30.** Antes `verify` informaba `JavaScript comprimido
+0,0 kB` porque solo sumaba los archivos `.js` de `dist/`. El sitio sí ejecuta
+JavaScript —menú móvil, selector de tema, carga diferida del mapa— y ese código
+vive **dentro del HTML**: Astro 5 renderiza cada `<script>` tal como se declara,
+sin agruparlo ni sacarlo a un archivo. `[verificado]` en la documentación de Astro
+(«`<script>` tags are rendered directly as declared», cambio de v5).
 
-Ni la cifra ni `verify:red` son falsos: el navegador efectivamente no pide ningún
-`.js`. Pero leer «0,0 kB de JavaScript» como «el sitio no tiene JavaScript» es un
-error, y conviene saberlo antes de apoyarse en esa cifra.
+La cifra de archivos no era falsa y `verify:red` tampoco: el navegador no pide
+ningún `.js`. Pero publicar «0,0 kB de JavaScript» invitaba a leer «este sitio no
+tiene JavaScript», que es distinto. Se corrigió la **medición**, no el sitio:
+
+- `medirPeso` calcula `javascriptEnLinea` por **diferencia de gzip** del HTML con
+  y sin los bloques `<script>` en línea. Comprimir los fragmentos por separado
+  sobrestima: dentro del HTML comparten diccionario con el resto del documento.
+- `application/ld+json` queda fuera: son metadatos, no código.
+- RNF-2.1 pasa a medir archivos + en línea. **Resultado: 1,1 kB** contra un techo
+  de 115 kB. `[medido]`
+- `primeraCarga` **no** cambia y no lo suma dos veces: ese peso ya estaba contado
+  dentro de `html`.
+
+Es el mismo tipo de corrección que ya se hizo con las transiciones de opacidad en
+la medición de contraste (`fuentes.md`): cuando el verificador mide de una forma
+que induce a error, se arregla el verificador.
 
 ## 5. T3, cómo quedó
 
