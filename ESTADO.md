@@ -7,21 +7,27 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-07-30 noche** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
-· Último commit de tarea: `dcaf20a` (T5, RNF-1.4 y T4b)
+Actualizado: **2026-07-31** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
+· Último commit de tarea: `00e00f4` (T10)
 
-> **`npm run verify` está en verde por primera vez:** 0 hallazgos de axe,
-> 0 nodos indeterminados, 0 secciones sin nombre, todos los presupuestos
-> cumplidos. Los tres verificadores en verde con `npm run verify:todo`.
+> **El plan `001-mejora-calidad` está completo: T1 a T10.**
 >
-> Commits de esta sesión, todos en la rama de trabajo:
+> Los **siete verificadores en verde** con `npm run verify:todo`, y `astro check`
+> sin errores ni advertencias. La tabla de línea base contra resultado está en §5i.
 >
-> | Commit | Qué |
-> | ------ | --- |
-> | `dcaf20a` | T5, RNF-1.4 y T4b en el código |
-> | `3f147c2` | Registro en las especificaciones |
-> | `707475d` | Retirada de `Ripple`, sin uso tras T5 |
-> | `a6610d4` | RNF-2.1 pasa a medir también el JavaScript en línea |
+> | Tarea | Dónde está el detalle |
+> | ----- | --------------------- |
+> | T5 · Retícula de 12 columnas | §5b · 104 → 0 nodos indeterminados |
+> | RNF-2.1 · Medición del JavaScript | §5c · pasa a incluir el código en línea |
+> | T4b · Refinamiento visual | §5d |
+> | T6 · Foco, teclado y zoom | §5e · dos incumplimientos reales de WCAG 1.4.4 |
+> | T7 · Sitio bilingüe | §5f · español en `/`, inglés en `/en/` |
+> | T8 · Imágenes para compartir | §5g |
+> | T10 · Interacción | §5h · las 5 resueltas, ninguna con Radix |
+> | T9 · Cierre y cifras finales | §5i |
+> | Reseñas y programa de ejemplo | §5j |
+>
+> **La rama está subida y el PR lo tiene que abrir Daniel:** ver §6.
 
 ## 0b. Primera sesión de Antigravity — 2026-07-30, noche
 
