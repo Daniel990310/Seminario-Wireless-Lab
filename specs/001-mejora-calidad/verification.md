@@ -2,7 +2,7 @@
 
 Generado por `npm run verify`. **No editar a mano**: se sobrescribe en cada corrida.
 
-**Fecha:** 2026-07-31 · **Commit:** `5c45462`
+**Fecha:** 2026-07-31 · **Commit:** `6e9d468`
 **Resultado:** todos los presupuestos cumplidos
 
 Método: axe-core sobre el build servido localmente, en 1440×900 y 390×844,
@@ -25,7 +25,7 @@ de ese orden respecto de la línea base no indica un cambio real.
 | RNF-1.4 | Secciones sin nombre accesible | 7 | 0 | 0 | cumple |
 | RNF-1.5 | Saltos de nivel en encabezados | 0 | 0 | 0 | cumple |
 | RNF-2.1 | JavaScript comprimido | 109.3 kB | 1.4 kB | 115.0 kB | cumple |
-| RNF-2.2 | Primera carga comprimida | 241.2 kB | 139.0 kB | 260.0 kB | cumple |
+| RNF-2.2 | Primera carga comprimida | 241.2 kB | 140.7 kB | 260.0 kB | cumple |
 | RNF-2.6 | Tipografías | 110.9 kB | 122.6 kB | 125.0 kB | cumple |
 
 En RNF-1.1 y RNF-1.3 la columna «Actual» **suma todas las corridas**, mientras que
@@ -40,10 +40,10 @@ el desglose por corrida más abajo.
 | JavaScript en línea, dentro del HTML | 1.4 kB |
 | JavaScript total (RNF-2.1) | 1.4 kB |
 | Tipografías | 122.6 kB |
-| HTML (incluye el CSS y los scripts en línea) | 16.4 kB |
+| HTML (incluye el CSS y los scripts en línea) | 18.1 kB |
 | CSS | 0.0 kB |
 | Imágenes SVG | 3.3 kB |
-| **Primera carga** | **139.0 kB** |
+| **Primera carga** | **140.7 kB** |
 
 Solo se cuenta lo que la página referencia. Archivos generados que **ningún archivo
 de `dist` menciona**, y que por tanto ningún navegador descarga:
@@ -51,9 +51,9 @@ de `dist` menciona**, y que por tanto ningún navegador descarga:
 | Archivo huérfano | Comprimido |
 | ---------------- | ---------- |
 | `_astro\client.D9vVWfjN.js` | 59536 B |
-| `_astro\PropagationFigure.BzsfrSl5.css` | 11552 B |
+| `_astro\PropagationFigure.Dobofc1p.css` | 11656 B |
 
-Total huérfano: 71.1 kB.
+Total huérfano: 71.2 kB.
 
 ## Por corrida
 

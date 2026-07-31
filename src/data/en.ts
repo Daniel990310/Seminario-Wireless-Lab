@@ -39,6 +39,43 @@ export const en = {
 
   afiliacionPorConfirmar: 'Affiliation to be confirmed',
 
+  /*
+   * Written from the public institutional and academic profiles linked in
+   * `comun.ts`. Every claim is checkable at the source linked in the card.
+   */
+  expositores: {
+    zussman: {
+      resena:
+        'Kenneth Brayer Professor of Electrical Engineering and department chair at Columbia University, where he leads the Wireless and Mobile Networking Lab. He is Columbia PI of the COSMOS testbed, part of the NSF PAWR programme. PhD in Electrical Engineering from the Technion, with a postdoc at MIT.',
+      linea: 'Wireless, mobile and resilient networks',
+    },
+    du: {
+      resena:
+        'Researcher at Nokia Bell Labs since 2015, working on the fundamentals of wireless communication: communication theory, radio system design and optimisation, and millimetre-wave propagation measurement. PhD from KTH Stockholm, with a postdoc at MIT.',
+      linea: 'mmWave propagation and channel modelling',
+    },
+    valenzuela: {
+      resena:
+        'Director of the Wireless Communications Research department at Nokia Bell Labs and a member of the US National Academy of Engineering, which elected him in 2017 for leadership in multi-antenna systems and channel modelling. Bell Labs Fellow and IEEE Fellow. He studied engineering at Universidad de Chile and holds a PhD from Imperial College London.',
+      linea: 'MIMO, smart antennas and propagation',
+    },
+    feick: {
+      resena:
+        'Heads the Wireless Communications Research Group at Universidad Técnica Federico Santa María, with a long record in channel measurement campaigns and propagation characterisation. He has co-authored 28 GHz measurements in the COSMOS testbed area, the same project Columbia University takes part in.',
+      linea: 'Channel measurement and characterisation',
+    },
+    gutierrez: {
+      resena:
+        'Assistant professor in the Electrical Engineering Department at Pontificia Universidad Católica de Chile since 2024, and an IEEE Senior Member. PhD from the University of Porto, MSc from Politecnico di Torino and an electronics engineering degree from PUCV. He collaborates with the CISTER centre in Porto and chaired the IEEE ComSoc Chile chapter.',
+      linea: 'Real-time wireless networked systems, IoT and localisation',
+    },
+    toledo: {
+      resena:
+        'Assistant professor in the Electrical Engineering Department at Universidad de Santiago de Chile. He leads a Fondecyt Initiation project on adaptive wireless networks using autonomous drones as mobile base stations, applied to millimetre waves in 5G and 6G.',
+      linea: 'Drone-assisted networks and energy efficiency',
+    },
+  },
+
   funding: {
     projectName: 'Wireless sensing in mmWave and sub-THz bands',
   },
@@ -160,12 +197,17 @@ export const en = {
     expositores: {
       internacionales: 'International speakers',
       nacionales: 'Chilean speakers',
+      verFicha: 'Read profile',
+      lineaInvestigacion: 'Research area',
+      verPerfil: 'Institutional profile',
     },
 
     programa: {
       enPreparacion: 'In preparation',
       solicitarAviso: 'Request publication notice',
       asuntoConsultaPrograma: 'Programme enquiry — Beyond Connectivity 2026',
+      avisoDemostracion:
+        'Sample programme. These sessions are fictional and only show the format: none has been agreed with the speakers.',
     },
 
     sede: {

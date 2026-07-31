@@ -296,6 +296,73 @@ donde evoca un plano y ahí sí viene a cuento.
 `npm run verify:todo` en verde después de cada cambio, y revisión visual en los dos
 temas y los dos anchos.
 
+## 5j. Reseñas de expositores y programa de ejemplo
+
+### Las reseñas son datos verificables, no relleno
+
+Cada expositor tiene reseña y línea de investigación en los dos idiomas,
+redactadas a partir de **perfiles institucionales y académicos públicos**: páginas
+de facultad, Nokia Bell Labs, ANID, CISTER, Google Scholar, IEEE Xplore. La ficha
+enlaza el perfil que sirvió de fuente, así que cualquier dato es comprobable.
+
+Las reseñas viven en `es.ts` y `en.ts` porque son texto. La clave de cada una está
+**tipada** en `ContenidoIdioma`, de modo que **añadir un expositor sin su reseña en
+ambos idiomas no compila**: una ficha vacía en un sitio institucional es peor que
+no tener ficha.
+
+Dos hallazgos que salieron de buscar y merecen quedar registrados:
+
+- **Reinaldo A. Valenzuela estudió ingeniería en la Universidad de Chile** antes
+  de doctorarse en el Imperial College. Es miembro de la Academia Nacional de
+  Ingeniería de EE. UU. y Fellow del IEEE. Para un seminario en Chile, el dato no
+  es anecdótico.
+- **Rodolfo Feick ha coautorado mediciones a 28 GHz en el área del banco de
+  pruebas COSMOS**, que es el mismo proyecto del que Gil Zussman es investigador
+  principal por Columbia. Hay colaboración previa real entre dos de los
+  expositores, y eso respalda lo que la sección «Red de colaboración» afirma.
+
+**La afiliación de Feick sigue marcada como pendiente**, a propósito. Las fuentes
+públicas lo sitúan al frente del Wireless Communications Research Group de la
+**Universidad Técnica Federico Santa María**, pero eso es `[probable]` hasta que la
+organización lo confirme, y este proyecto no publica datos institucionales sin
+confirmar. Basta cambiar dos líneas de `comun.ts` cuando Daniel lo confirme.
+
+### La ficha usa `<details>`, no un diálogo de Radix
+
+Tres razones, en orden de peso:
+
+1. **RF-6.2 exige que el contenido siga accesible sin JavaScript.** `<details>` se
+   despliega sin una línea de script. Un `<dialog>` no se abre sin él, y con Radix
+   el contenido ni siquiera existiría hasta hidratar.
+2. Cuesta **0 kB**. Radix `Dialog` traería del orden de 36 kB con React.
+3. Es el patrón que el proyecto ya usa para el menú móvil.
+
+Lo que se pierde frente a un modal: no atrapa el foco ni oscurece el fondo. Para
+una reseña de tres líneas que no exige ninguna decisión, no hace falta.
+
+### El programa de ejemplo está APAGADO por defecto
+
+`src/data/programa-demo.ts` tiene dos jornadas completas, con temas elegidos según
+la línea de investigación real de cada expositor para que la demostración sea
+verosímil. **Los títulos, los horarios y la existencia misma de las sesiones son
+invención.**
+
+Está detrás de `PROGRAMA_DEMOSTRATIVO` en `comun.ts`, en `false`, y con dos
+salvaguardas más:
+
+- Solo se activa **si el programa real está vacío**: dejar la bandera puesta por
+  descuido no puede sobrescribir un programa ya publicado.
+- Cuando está activo, la sección muestra un **aviso visible** —con `role="note"`,
+  para que un lector de pantalla lo anuncie antes que el programa— diciendo que
+  las sesiones son ficticias. El aviso no es opcional.
+
+El motivo es el mismo por el que este proyecto prohíbe generar los logos
+institucionales: un programa apócrifo en el sitio de un evento real, con fechas y
+sede reales, es información falsa con la que alguien podría organizar un viaje.
+
+Se verificó **con la bandera encendida**: los siete verificadores siguen en verde
+y el aviso aparece donde debe.
+
 ## 5i. T9 · Cierre: línea base contra resultado
 
 Medido el 2026-07-31 con `npm run build && npm run verify:todo`, sobre **2
@@ -349,15 +416,15 @@ Los siete verificadores en verde:
 
 ## 5h. T10: qué se hizo, y qué espera contenido
 
-**1 de las 5 interacciones de RF-6 está implementada.** No es una decisión
-técnica ni una renuncia: tres esperan contenido que todavía no existe y una ya
-estaba resuelta mejor sin la primitiva.
+**2 de las 5 interacciones de RF-6 están implementadas** (la ficha de expositor se
+sumó el 2026-07-31 al llegar las reseñas, §5j). De las tres restantes, dos esperan
+contenido y una ya estaba resuelta mejor sin la primitiva.
 
 | Interacción | Primitiva | Estado |
 | ----------- | --------- | ------ |
 | Programa por jornada en pestañas | `Tabs` | **Bloqueada.** `program.days` está vacío en ambos idiomas: no hay jornadas que separar |
 | Resumen de sesión desplegable | `Accordion` | **Bloqueada.** No hay sesiones, y por tanto tampoco resúmenes |
-| Ficha de expositor en diálogo | `Dialog` | **Bloqueada.** `ExpositorComun` tiene nombre, afiliación y país; no hay reseña ni línea de investigación que mostrar |
+| Ficha de expositor en diálogo | `Dialog` | **Implementada el 2026-07-31**, con `<details>` nativo en vez de Radix. Ver §5j |
 | Selector de tema de tres estados | `ToggleGroup` | **Resuelta sin Radix.** Ya funciona con radios nativos: 0 kB, recorrido con flechas del navegador y RF-4 verificado 17/17 |
 | Sección activa en la navegación | Ninguna | **Implementada** |
 

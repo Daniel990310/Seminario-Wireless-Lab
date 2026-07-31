@@ -80,6 +80,32 @@ rects de los descendientes. Un elemento decorativo grande y absolutamente
 posicionado sigue «tapando» texto para axe aunque no se vea. El mecanismo completo
 y las tres hipótesis descartadas por medición están en `ESTADO.md` §5b.
 
+### Reseñas de los expositores `[verificado]` el 2026-07-31
+
+Redactadas a partir de perfiles públicos, no de conocimiento previo. Cada ficha
+del sitio enlaza su fuente para que el dato sea comprobable por quien lo lea.
+
+| Expositor | Fuente |
+| --------- | ------ |
+| Gil Zussman | <https://www.ee.columbia.edu/gil-zussman> y el WiMNet Lab de Columbia |
+| Jinfeng Du | Perfil de investigador de Nokia Bell Labs e IEEE Xplore |
+| Reinaldo A. Valenzuela | <https://www.nokia.com/people/reinaldo-valenzuela/> |
+| Rodolfo Feick | Wireless Communications Group, UTFSM, y dblp |
+| Miguel Gutiérrez Gaitán | Ingeniería UC, CISTER Oporto y el portal de investigadores de ANID |
+| Karel Toledo de la Garza | Portal de investigadores de ANID y USACH |
+
+**Dos datos que conviene no perder:**
+
+- Valenzuela **estudió ingeniería en la Universidad de Chile** antes de doctorarse
+  en el Imperial College. `[verificado]`
+- Feick **coautoró mediciones a 28 GHz en el área del banco de pruebas COSMOS**,
+  el mismo proyecto del que Zussman es investigador principal por Columbia:
+  hay colaboración previa real entre dos expositores. `[verificado]` en dblp.
+
+**La afiliación de Feick sigue sin confirmar en el sitio.** Las fuentes públicas
+lo sitúan en la **Universidad Técnica Federico Santa María**, pero es `[probable]`
+hasta que la organización lo confirme.
+
 **Ratios de contraste que fijaron los tokens.** Medidos pareja por pareja antes de
 escribir el valor en `global.css`, no estimados. El umbral es 4,5:1 para texto
 normal y 3:1 para texto grande y para límites de controles (WCAG 1.4.11).

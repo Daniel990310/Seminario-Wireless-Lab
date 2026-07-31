@@ -36,6 +36,47 @@ export const es = {
 
   afiliacionPorConfirmar: 'Afiliación por confirmar',
 
+  /*
+   * Reseñas redactadas a partir de los perfiles institucionales y académicos
+   * públicos que enlaza `comun.ts` (IEEE Xplore, páginas de facultad, ANID,
+   * Google Scholar). Cada dato es comprobable en la fuente enlazada en la ficha.
+   *
+   * Deliberadamente sobrias y sin superlativos: es una conferencia académica, y
+   * los honores hablan solos. Nada de logros que no aparezcan en una fuente.
+   */
+  expositores: {
+    zussman: {
+      resena:
+        'Profesor Kenneth Brayer de Ingeniería Eléctrica y director del departamento en Columbia University, donde dirige el Wireless and Mobile Networking Lab. Es investigador principal por Columbia del banco de pruebas COSMOS, de la iniciativa PAWR de la NSF. Doctor en Ingeniería Eléctrica por el Technion y posdoctorado en el MIT.',
+      linea: 'Redes inalámbricas, móviles y resilientes',
+    },
+    du: {
+      resena:
+        'Investigador en Nokia Bell Labs desde 2015, donde trabaja en los fundamentos de las comunicaciones inalámbricas: teoría de la comunicación, diseño y optimización de sistemas de radio y medición de propagación en ondas milimétricas. Doctor por el KTH de Estocolmo y posdoctorado en el MIT.',
+      linea: 'Propagación en mmWave y modelado de canal',
+    },
+    valenzuela: {
+      resena:
+        'Director del departamento de investigación en Comunicaciones Inalámbricas de Nokia Bell Labs y miembro de la Academia Nacional de Ingeniería de Estados Unidos, que lo eligió en 2017 por su liderazgo en sistemas multiantena y modelado de canal. Bell Labs Fellow y Fellow del IEEE. Estudió Ingeniería en la Universidad de Chile y se doctoró en el Imperial College de Londres.',
+      linea: 'MIMO, antenas inteligentes y propagación',
+    },
+    feick: {
+      resena:
+        'Encabeza el Wireless Communications Research Group de la Universidad Técnica Federico Santa María, con una trayectoria larga en campañas de medición de canal y caracterización de propagación. Ha coautorado mediciones a 28 GHz en el área del banco de pruebas COSMOS, el mismo proyecto en el que participa Columbia University.',
+      linea: 'Medición y caracterización de canal',
+    },
+    gutierrez: {
+      resena:
+        'Profesor asistente del Departamento de Ingeniería Eléctrica de la Pontificia Universidad Católica de Chile desde 2024, y Senior Member del IEEE. Doctor por la Universidad de Oporto, magíster por el Politécnico de Turín e ingeniero civil electrónico por la PUCV. Colabora con el centro CISTER de Oporto y presidió el capítulo chileno de IEEE ComSoc.',
+      linea: 'Redes inalámbricas de tiempo real, IoT y localización',
+    },
+    toledo: {
+      resena:
+        'Profesor asistente del Departamento de Ingeniería Eléctrica de la Universidad de Santiago de Chile. Dirige un proyecto Fondecyt de Iniciación sobre redes inalámbricas adaptativas con drones autónomos como estaciones base móviles, con aplicación a ondas milimétricas en 5G y 6G.',
+      linea: 'Redes asistidas por drones y eficiencia energética',
+    },
+  },
+
   funding: {
     projectName: 'Detección inalámbrica en mmWave y sub-THz',
   },
@@ -156,12 +197,17 @@ export const es = {
     expositores: {
       internacionales: 'Expositores internacionales',
       nacionales: 'Expositores nacionales',
+      verFicha: 'Ver reseña',
+      lineaInvestigacion: 'Línea de investigación',
+      verPerfil: 'Perfil institucional',
     },
 
     programa: {
       enPreparacion: 'En preparación',
       solicitarAviso: 'Solicitar aviso de publicación',
       asuntoConsultaPrograma: 'Consulta por el programa — Beyond Connectivity 2026',
+      avisoDemostracion:
+        'Programa de ejemplo. Estas sesiones son ficticias y sirven solo para mostrar el formato: ninguna ha sido acordada con los expositores.',
     },
 
     sede: {

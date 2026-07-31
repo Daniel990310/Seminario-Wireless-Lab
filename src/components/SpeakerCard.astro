@@ -7,9 +7,10 @@ type Expositor = Contenido['speakers']['international'][number];
 interface Props {
   speaker: Expositor;
   index: number;
+  ui: Contenido['ui'];
 }
 
-const { speaker, index } = Astro.props;
+const { speaker, index, ui } = Astro.props;
 
 // Iniciales como marca visual mientras no haya retratos disponibles.
 const initials = speaker.name
@@ -28,35 +29,86 @@ const initials = speaker.name
   sistema dice no usar. El filete superior sí hace trabajo —marca dónde empieza
   cada ficha dentro de la retícula— y repite el tratamiento que ya usan los
   rótulos de grupo de esta misma sección.
+
+  La reseña va en un `<details>` nativo y **no** en un diálogo de Radix (RF-6).
+  Tres razones, en orden de peso:
+
+  1. RF-6.2 exige que el contenido siga accesible sin JavaScript. `<details>` se
+     despliega sin una línea de script; un `<dialog>` no se abre sin él, y con
+     Radix el contenido ni siquiera existiría hasta hidratar.
+  2. Cuesta 0 kB. Radix `Dialog` traería del orden de 36 kB con React.
+  3. Es el patrón que el proyecto ya usa para el menú móvil, así que no
+     introduce una forma nueva de hacer lo mismo.
+
+  Lo que se pierde frente a un modal: no atrapa el foco ni oscurece el fondo.
+  Para una reseña de tres líneas que no exige decisión, eso no hace falta.
 -->
-<article
-  class="reveal flex items-start gap-4 border-t hairline pt-5"
-  style={`transition-delay:${index * 70}ms`}
->
-  <span
-    class="grid size-10 shrink-0 place-items-center rounded-surface border border-primary/30 font-display text-xs font-semibold text-primary"
-    aria-hidden="true"
-  >
-    {initials}
-  </span>
-  <div class="min-w-0">
-    <!--
-      `h4`, no `h3` (T6): el rótulo del grupo —«Expositores internacionales»— ya
-      es el `h3` de este bloque. Con ambos en `h3`, cada nombre se anunciaba como
-      hermano del rótulo en vez de como hijo, y el índice de encabezados de un
-      lector de pantalla quedaba plano.
-    -->
-    <h4 class="font-display text-lg leading-tight font-semibold text-foreground">
-      {speaker.name}
-    </h4>
-    <p
-      class:list={[
-        'mt-2 text-sm leading-snug text-muted-foreground',
-        speaker.affiliationPending && 'italic',
-      ]}
+<article class="reveal border-t hairline pt-5" style={`transition-delay:${index * 70}ms`}>
+  <div class="flex items-start gap-4">
+    <span
+      class="grid size-10 shrink-0 place-items-center rounded-surface border border-primary/30 font-display text-xs font-semibold text-primary"
+      aria-hidden="true"
     >
-      {speaker.affiliation}
-    </p>
-    {speaker.country && <p class="eyebrow mt-2 text-muted-foreground">{speaker.country}</p>}
+      {initials}
+    </span>
+    <div class="min-w-0">
+      <!--
+        `h4`, no `h3` (T6): el rótulo del grupo —«Expositores internacionales»— ya
+        es el `h3` de este bloque. Con ambos en `h3`, cada nombre se anunciaba como
+        hermano del rótulo en vez de como hijo, y el índice de encabezados de un
+        lector de pantalla quedaba plano.
+      -->
+      <h4 class="font-display text-lg leading-tight font-semibold text-foreground">
+        {speaker.name}
+      </h4>
+      <p
+        class:list={[
+          'mt-2 text-sm leading-snug text-muted-foreground',
+          speaker.affiliationPending && 'italic',
+        ]}
+      >
+        {speaker.affiliation}
+      </p>
+      {speaker.country && <p class="eyebrow mt-2 text-muted-foreground">{speaker.country}</p>}
+    </div>
   </div>
+
+  <details class="group mt-4">
+    <summary
+      class="inline-flex cursor-pointer list-none items-center gap-2 text-sm font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary [&::-webkit-details-marker]:hidden"
+    >
+      {ui.expositores.verFicha}
+      <!-- Gira al abrir: indica el estado sin depender solo del texto. -->
+      <svg
+        class="size-3 transition-transform group-open:rotate-180"
+        viewBox="0 0 12 12"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        aria-hidden="true"
+      >
+        <path d="M2.5 4.5 6 8l3.5-3.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </summary>
+
+    <div class="mt-4 border-l-2 border-border pl-4">
+      <p class="text-sm leading-relaxed text-muted-foreground">{speaker.resena}</p>
+
+      <p class="eyebrow mt-4 text-muted-foreground">{ui.expositores.lineaInvestigacion}</p>
+      <p class="mt-1 text-sm text-foreground">{speaker.linea}</p>
+
+      {
+        speaker.perfil && (
+          <a
+            href={speaker.perfil}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-4 inline-block text-sm text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
+          >
+            {ui.expositores.verPerfil}
+          </a>
+        )
+      }
+    </div>
+  </details>
 </article>

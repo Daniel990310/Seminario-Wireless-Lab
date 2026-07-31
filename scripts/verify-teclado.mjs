@@ -127,6 +127,15 @@ for (const tema of ['light', 'dark']) {
   const enfocables = await page.evaluate(() => {
     const sel = 'a[href], button, summary, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])';
     return [...document.querySelectorAll(sel)].filter((el) => {
+      /*
+       * Fuera lo que está dentro de un `<details>` cerrado —el panel del menú
+       * móvil, las reseñas de los expositores—: ese contenido no está expuesto,
+       * así que no llegar a él con Tab es lo correcto, no un fallo. Se cuenta el
+       * `summary`, que es el control que sí debe alcanzarse.
+       */
+      const detalle = el.closest('details');
+      if (detalle && !detalle.open && el.tagName !== 'SUMMARY') return false;
+
       const r = el.getBoundingClientRect();
       const s = getComputedStyle(el);
       // Los radios del selector de tema están ocultos a la vista pero son
@@ -146,7 +155,13 @@ for (const tema of ['light', 'dark']) {
       const el = document.activeElement;
       if (!el || el === document.body) return null;
       const r = el.getBoundingClientRect();
-      return `${el.tagName}|${el.getAttribute('href') ?? el.getAttribute('value') ?? el.textContent?.trim().slice(0, 20)}|${Math.round(r.top)}`;
+      /*
+       * La marca incluye las DOS coordenadas. Con solo `top`, varios controles
+       * idénticos en la misma fila —los seis «Ver reseña» de los expositores,
+       * por ejemplo— producían la misma marca, el bucle la tomaba por una vuelta
+       * al principio y cortaba el recorrido a la mitad.
+       */
+      return `${el.tagName}|${el.getAttribute('href') ?? el.getAttribute('value') ?? el.textContent?.trim().slice(0, 20)}|${Math.round(r.top)}x${Math.round(r.left)}`;
     });
     if (!marca) {
       sinFoco++;

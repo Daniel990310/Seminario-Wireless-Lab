@@ -19,6 +19,22 @@
  * etiqueta, para no repetir «Estados Unidos» en seis lugares.
  */
 
+/**
+ * Enciende el programa DEMOSTRATIVO de `programa-demo.ts`.
+ *
+ * ⚠️ **Debe quedar en `false` en cualquier despliegue público.** Con `true`, la
+ * sección «Programa» muestra sesiones inventadas —marcadas como tales con un
+ * aviso visible— para poder ver cómo se comporta con contenido.
+ *
+ * Un programa apócrifo en el sitio de un evento real, con fechas y sede reales,
+ * es información falsa con la que alguien podría organizar un viaje. Por eso
+ * está apagado por defecto y por eso el aviso no es opcional.
+ *
+ * Al publicar el programa real: poblar `program.days` en `es.ts` y `en.ts`, y
+ * borrar esta bandera junto con `programa-demo.ts`.
+ */
+export const PROGRAMA_DEMOSTRATIVO = false;
+
 export type CodigoPais = 'US' | 'CL';
 
 export interface Institucion {
@@ -30,12 +46,19 @@ export interface Institucion {
 }
 
 export interface ExpositorComun {
+  /** Clave estable para enlazar con la reseña de cada idioma. */
+  id: string;
   name: string;
   /** Nombre institucional. No se traduce; ver la nota de arriba. */
   affiliation?: string;
   country?: CodigoPais;
   /** Sin afiliación confirmada: cada idioma pone su propio texto. */
   affiliationPending?: boolean;
+  /**
+   * Perfil institucional o académico público. Se enlaza en la ficha para que
+   * cualquier dato de la reseña sea comprobable en su fuente.
+   */
+  perfil?: string;
 }
 
 export interface NodoRed {
@@ -71,23 +94,62 @@ export const comun = {
       'https://www.google.com/maps/search/?api=1&query=Antonio+Bellet+314%2C+Providencia%2C+Santiago%2C+Chile',
   },
 
+  /*
+   * Los perfiles enlazados son la fuente de cada reseña: cualquier dato de la
+   * ficha se puede comprobar ahí. Las reseñas en sí viven en los archivos de
+   * idioma, porque son texto y se traducen.
+   */
   speakers: {
     international: [
-      { name: 'Gil Zussman', affiliation: 'Columbia University', country: 'US' },
-      { name: 'Jinfeng Du', affiliation: 'Nokia Bell Labs', country: 'US' },
-      { name: 'Reinaldo A. Valenzuela', affiliation: 'Nokia Bell Labs', country: 'US' },
+      {
+        id: 'zussman',
+        name: 'Gil Zussman',
+        affiliation: 'Columbia University',
+        country: 'US',
+        perfil: 'https://www.ee.columbia.edu/gil-zussman',
+      },
+      {
+        id: 'du',
+        name: 'Jinfeng Du',
+        affiliation: 'Nokia Bell Labs',
+        country: 'US',
+        perfil: 'https://www.bell-labs.com/about/researcher-profiles/jinfengdu/',
+      },
+      {
+        id: 'valenzuela',
+        name: 'Reinaldo A. Valenzuela',
+        affiliation: 'Nokia Bell Labs',
+        country: 'US',
+        perfil: 'https://www.nokia.com/people/reinaldo-valenzuela/',
+      },
     ],
     national: [
-      { name: 'Rodolfo Feick', affiliationPending: true },
+      /*
+       * La afiliación sigue marcada como pendiente a propósito. Las fuentes
+       * públicas lo sitúan al frente del Wireless Communications Research Group
+       * de la Universidad Técnica Federico Santa María, pero eso es `[probable]`
+       * hasta que la organización lo confirme, y este proyecto no publica datos
+       * institucionales sin confirmar. Ver `ESTADO.md` §7.
+       */
       {
+        id: 'feick',
+        name: 'Rodolfo Feick',
+        affiliationPending: true,
+        perfil: 'http://investigacion.electronica.usm.cl/~wcg/',
+      },
+      {
+        id: 'gutierrez',
         name: 'Miguel Gutiérrez Gaitán',
         affiliation: 'Pontificia Universidad Católica de Chile',
         country: 'CL',
+        perfil: 'https://www.ing.uc.cl/academicos-e-investigadores/miguel-jose-gutierrez-gaitan/',
       },
       {
+        id: 'toledo',
         name: 'Karel Toledo de la Garza',
         affiliation: 'Universidad de Santiago de Chile',
         country: 'CL',
+        perfil: 'https://investigadores.anid.cl/en/public_search/researcher?id=34038',
       },
     ],
   },

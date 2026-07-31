@@ -9,9 +9,16 @@
  * `contenido(lang)` por props. Así un componente no puede quedarse atado a un
  * idioma sin que se note.
  */
-import { comun, type CodigoPais, type ExpositorComun, type NodoRed } from './comun';
+import {
+  comun,
+  PROGRAMA_DEMOSTRATIVO,
+  type CodigoPais,
+  type ExpositorComun,
+  type NodoRed,
+} from './comun';
 import { es } from './es';
 import { en } from './en';
+import { programaDemoEs, programaDemoEn } from './programa-demo';
 
 export const IDIOMAS = ['es', 'en'] as const;
 export type Idioma = (typeof IDIOMAS)[number];
@@ -41,12 +48,21 @@ export function contenido(lang: Idioma) {
   // Los expositores combinan nombre e institución (comunes) con país y estado
   // de afiliación (traducidos). Sin afiliación confirmada, cada idioma pone su
   // propio texto en lugar de dejar el hueco.
-  const expositor = (e: ExpositorComun) => ({
-    name: e.name,
-    affiliation: e.affiliation ?? t.afiliacionPorConfirmar,
-    affiliationPending: e.affiliationPending ?? false,
-    country: pais(e.country),
-  });
+  const expositor = (e: ExpositorComun) => {
+    // La clave está tipada en `ContenidoIdioma`, así que un expositor sin
+    // reseña en algún idioma no compila.
+    const ficha = t.expositores[e.id as keyof typeof t.expositores];
+    return {
+      id: e.id,
+      name: e.name,
+      affiliation: e.affiliation ?? t.afiliacionPorConfirmar,
+      affiliationPending: e.affiliationPending ?? false,
+      country: pais(e.country),
+      perfil: e.perfil,
+      resena: ficha.resena,
+      linea: ficha.linea,
+    };
+  };
 
   const nodo = (n: NodoRed) => ({
     label: n.label,
@@ -70,7 +86,24 @@ export function contenido(lang: Idioma) {
       fullAddress: `${comun.venue.street}, ${comun.venue.district}, ${comun.venue.city}, ${t.venue.country}`,
     },
 
-    program: t.program,
+    /*
+     * Los días demostrativos solo entran si la bandera está encendida Y el
+     * programa real está vacío: si alguien ya publicó el programa de verdad,
+     * dejar la bandera puesta por descuido no puede sobrescribirlo.
+     *
+     * `esDemostracion` viaja con los datos para que la sección pueda avisar de
+     * que lo que se ve está inventado. El aviso no es opcional.
+     */
+    program: {
+      ...t.program,
+      days:
+        PROGRAMA_DEMOSTRATIVO && t.program.days.length === 0
+          ? lang === 'es'
+            ? programaDemoEs
+            : programaDemoEn
+          : t.program.days,
+      esDemostracion: PROGRAMA_DEMOSTRATIVO && t.program.days.length === 0,
+    },
     about: t.about,
     topics: t.topics,
 

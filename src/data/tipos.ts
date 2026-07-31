@@ -51,6 +51,19 @@ export interface ContenidoIdioma {
   /** Texto para un expositor cuya afiliación aún no está confirmada. */
   afiliacionPorConfirmar: string;
 
+  /**
+   * Reseña de cada expositor, por `id` de `comun.ts`.
+   *
+   * Es un `Record` con clave obligatoria por expositor, así que **añadir uno
+   * nuevo sin su reseña en los dos idiomas rompe la compilación**, que es
+   * justo lo que se quiere: una ficha vacía en un sitio institucional es peor
+   * que no tener ficha.
+   */
+  expositores: Record<
+    'zussman' | 'du' | 'valenzuela' | 'feick' | 'gutierrez' | 'toledo',
+    { resena: string; linea: string }
+  >;
+
   funding: {
     /** Nombre del proyecto FOVI. El código no se traduce. */
     projectName: string;
@@ -124,12 +137,19 @@ export interface ContenidoIdioma {
     expositores: {
       internacionales: string;
       nacionales: string;
+      /** Abre la ficha con la reseña. */
+      verFicha: string;
+      lineaInvestigacion: string;
+      /** Enlace al perfil institucional, que es la fuente de la reseña. */
+      verPerfil: string;
     };
 
     programa: {
       enPreparacion: string;
       solicitarAviso: string;
       asuntoConsultaPrograma: string;
+      /** Aviso obligatorio cuando se muestran las sesiones de ejemplo. */
+      avisoDemostracion: string;
     };
 
     sede: {
