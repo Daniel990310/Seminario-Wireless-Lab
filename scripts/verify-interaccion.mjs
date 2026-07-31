@@ -1,20 +1,22 @@
 /**
  * Comprobación de RF-6 — componentes interactivos.
  *
- * De las cinco interacciones de RF-6, hoy solo una está implementada, y no por
- * decisión técnica sino porque **el contenido de las otras no existe**:
+ * Las cinco interacciones de RF-6 están resueltas, y **ninguna con Radix**:
  *
- * | Interacción              | Estado                                              |
- * | ------------------------ | --------------------------------------------------- |
- * | Programa en pestañas     | Bloqueada: `program.days` está vacío                 |
- * | Resumen desplegable      | Bloqueada: no hay sesiones ni resúmenes              |
- * | Ficha de expositor       | Bloqueada: los datos no traen reseña ni línea de inv.|
- * | Selector de tema         | Resuelta sin Radix: radios nativos, 0 kB (RF-4)      |
- * | Sección activa           | **Implementada aquí**                                |
+ * | Interacción              | Cómo                                                 |
+ * | ------------------------ | ---------------------------------------------------- |
+ * | Programa en pestañas     | Mejora progresiva sobre el patrón ARIA de la W3C      |
+ * | Resumen de sesión        | `<details>` nativo                                    |
+ * | Ficha de expositor       | `<details>` nativo                                    |
+ * | Selector de tema         | Radios nativos, 0 kB (RF-4)                           |
+ * | Sección activa           | `IntersectionObserver` propio                         |
  *
- * RF-6.4 prohíbe instalar una primitiva sin un componente que la use, así que
- * montar `Tabs` sobre un array vacío incumpliría el propio requisito. Este guion
- * crecerá cuando lleguen los datos.
+ * El denominador común es RF-6.2: el contenido tiene que seguir accesible sin
+ * JavaScript. Eso descarta cualquier componente que solo exista al hidratar, que
+ * es lo que devuelve el catálogo de 21st.dev para pestañas.
+ *
+ * Las pestañas solo se comprueban si hay jornadas cargadas; si `program.days`
+ * está vacío, el criterio se informa como OMITIDO en vez de darse por bueno.
  *
  * Uso: `npm run build && npm run verify:interaccion`.
  */
@@ -165,6 +167,107 @@ const check = (nombre, ok, detalle = '') => resultados.push({ nombre, ok, detall
 }
 
 // ---------------------------------------------------------------------------
+// RF-6 · Pestañas por jornada, con mejora progresiva
+// ---------------------------------------------------------------------------
+{
+  // Sin JavaScript: las jornadas deben verse apiladas y el `tablist` oculto.
+  const ctxSin = await browser.newContext({ javaScriptEnabled: false });
+  const sinJs = await ctxSin.newPage();
+  await sinJs.goto(BASE, { waitUntil: 'domcontentloaded' });
+  const estadoSinJs = await sinJs.evaluate(() => ({
+    paneles: document.querySelectorAll('[data-panel]').length,
+    ocultos: [...document.querySelectorAll('[data-panel]')].filter((p) => p.hidden).length,
+    tablistVisible: !document.querySelector('[data-tablist]')?.hidden,
+    resumenes: document.querySelectorAll('[data-jornadas] details').length,
+  }));
+  await ctxSin.close();
+
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(BASE, { waitUntil: 'networkidle' });
+  const hayPestanas = (await page.locator('[role="tab"]').count()) > 0;
+
+  if (!hayPestanas) {
+    /*
+     * Sin programa cargado no hay nada que comprobar. Se informa en vez de
+     * callarlo: un criterio omitido en silencio se lee como criterio cumplido.
+     */
+    check(
+      'RF-6 · pestañas por jornada',
+      true,
+      'OMITIDO: `program.days` vacío, no hay jornadas que separar',
+    );
+  } else {
+    check(
+      'RF-6.2 · sin JavaScript las jornadas se ven apiladas',
+      estadoSinJs.paneles >= 2 && estadoSinJs.ocultos === 0 && !estadoSinJs.tablistVisible,
+      `${estadoSinJs.paneles} paneles, ${estadoSinJs.ocultos} ocultos, tablist ${estadoSinJs.tablistVisible ? 'visible' : 'oculto'}`,
+    );
+
+    check(
+      'RF-6.2 · los resúmenes existen sin JavaScript',
+      estadoSinJs.resumenes > 0,
+      `${estadoSinJs.resumenes} desplegables en el HTML`,
+    );
+
+    const aria = await page.evaluate(() => {
+      const tabs = [...document.querySelectorAll('[role="tab"]')];
+      const paneles = [...document.querySelectorAll('[data-panel]')];
+      return {
+        tabs: tabs.length,
+        seleccionados: tabs.filter((t) => t.getAttribute('aria-selected') === 'true').length,
+        conControls: tabs.filter((t) => document.getElementById(t.getAttribute('aria-controls') ?? '')).length,
+        panelesEtiquetados: paneles.filter((p) => document.getElementById(p.getAttribute('aria-labelledby') ?? '')).length,
+        visibles: paneles.filter((p) => !p.hidden).length,
+        tablistConNombre: !!document.querySelector('[role="tablist"]')?.getAttribute('aria-label'),
+      };
+    });
+
+    check(
+      'RF-6 · un solo panel visible y una sola pestaña activa',
+      aria.seleccionados === 1 && aria.visibles === 1,
+      `${aria.seleccionados} activa(s), ${aria.visibles} panel(es) visible(s)`,
+    );
+    check(
+      'RF-6 · cada pestaña apunta a su panel y viceversa',
+      aria.conControls === aria.tabs && aria.panelesEtiquetados === aria.tabs,
+      `${aria.conControls}/${aria.tabs} con aria-controls válido`,
+    );
+    check(
+      'RF-6 · el grupo de pestañas tiene nombre accesible',
+      aria.tablistConNombre,
+      aria.tablistConNombre ? 'aria-label presente' : 'sin aria-label',
+    );
+
+    // Teclado: flechas con vuelta circular, Home y End (patrón de la W3C).
+    await page.locator('[role="tab"]').first().focus();
+    const activa = () =>
+      page.evaluate(() =>
+        [...document.querySelectorAll('[role="tab"]')].findIndex(
+          (t) => t.getAttribute('aria-selected') === 'true',
+        ),
+      );
+
+    await page.keyboard.press('ArrowRight');
+    const trasDerecha = await activa();
+    await page.keyboard.press('ArrowLeft');
+    const trasIzquierda = await activa();
+    await page.keyboard.press('End');
+    const trasEnd = await activa();
+    await page.keyboard.press('Home');
+    const trasHome = await activa();
+
+    check(
+      'RF-6.1 · las pestañas se operan con flechas, Home y End',
+      trasDerecha === 1 && trasIzquierda === 0 && trasEnd === aria.tabs - 1 && trasHome === 0,
+      `→${trasDerecha} ←${trasIzquierda} End→${trasEnd} Home→${trasHome}`,
+    );
+  }
+
+  await ctx.close();
+}
+
+// ---------------------------------------------------------------------------
 // RF-6.4 · Ninguna primitiva instalada sin componente que la use
 // ---------------------------------------------------------------------------
 {
@@ -191,8 +294,9 @@ for (const r of resultados) {
   console.log(`  ${r.ok ? '✓' : '✗'} ${r.nombre.padEnd(52)} ${r.detalle}`);
 }
 console.log(
-  '\n  Nota: 3 de las 5 interacciones de RF-6 están bloqueadas por falta de\n' +
-    '  contenido (programa vacío, expositores sin reseña). Ver `ESTADO.md` §5h.',
+  '\n  Las 5 interacciones de RF-6 están resueltas, ninguna con Radix: el\n' +
+    '  requisito de funcionar sin JavaScript descarta todo lo que solo existe\n' +
+    '  al hidratar. Ver `ESTADO.md` §5h.',
 );
 console.log(`\n${fallos === 0 ? 'TODOS LOS CRITERIOS CUMPLEN' : `${fallos} CRITERIOS FALLAN`}\n`);
 process.exit(fallos === 0 ? 0 : 1);

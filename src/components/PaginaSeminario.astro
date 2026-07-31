@@ -14,6 +14,7 @@ import Section from '~/components/Section.astro';
 import SpeakerCard from '~/components/SpeakerCard.astro';
 import CollaborationNetwork from '~/components/CollaborationNetwork.astro';
 import ProgramPending from '~/components/ProgramPending.astro';
+import ProgramaJornadas from '~/components/ProgramaJornadas.astro';
 import LogoWall from '~/components/LogoWall.astro';
 import VenueLocator from '~/components/VenueLocator.astro';
 import SiteFooter from '~/components/SiteFooter.astro';
@@ -88,27 +89,7 @@ const hasProgram = program.days.length > 0;
                   <strong class="font-semibold">{ui.programa.avisoDemostracion}</strong>
                 </p>
               )}
-              {program.days.map((day) => (
-                <article class="reveal">
-                  <header class="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b hairline pb-4">
-                    <h3 class="font-display text-xl font-semibold text-foreground">{day.label}</h3>
-                    <p class="eyebrow text-muted-foreground">{day.date}</p>
-                  </header>
-                  <ul class="divide-y divide-border">
-                    {day.sessions.map((session) => (
-                      <li class="grid gap-1 py-4 sm:grid-cols-[7rem_1fr] sm:gap-6">
-                        <p class="font-mono text-sm text-primary">{session.time}</p>
-                        <div class="min-w-0">
-                          <p class="text-base text-foreground">{session.title}</p>
-                          {session.speaker && (
-                            <p class="mt-1 text-sm text-muted-foreground">{session.speaker}</p>
-                          )}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </article>
-              ))}
+              <ProgramaJornadas c={c} />
             </div>
           ) : (
             /* Estado provisional: se reemplaza solo al poblar program.days */

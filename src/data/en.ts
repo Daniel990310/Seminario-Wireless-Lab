@@ -208,6 +208,8 @@ export const en = {
       asuntoConsultaPrograma: 'Programme enquiry — Beyond Connectivity 2026',
       avisoDemostracion:
         'Sample programme. These sessions are fictional and only show the format: none has been agreed with the speakers.',
+      jornadas: 'Seminar days',
+      verResumen: 'Abstract',
     },
 
     sede: {

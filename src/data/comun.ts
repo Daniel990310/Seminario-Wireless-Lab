@@ -70,7 +70,16 @@ export interface NodoRed {
 export interface DiaPrograma {
   date: string;
   label: string;
-  sessions: Array<{ time: string; title: string; speaker?: string }>;
+  sessions: Array<{
+    time: string;
+    title: string;
+    speaker?: string;
+    /**
+     * Resumen de la charla. Opcional a propósito: una pausa o un almuerzo no
+     * lo tienen, y forzarlo obligaría a inventar texto.
+     */
+    summary?: string;
+  }>;
 }
 
 export const comun = {

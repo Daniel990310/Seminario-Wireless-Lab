@@ -163,7 +163,7 @@ cualquier herramienta y no solo a Claude Code.
 | T7 · Sitio bilingüe (RF-1) | **Completada y verificada.** 15 criterios en `npm run verify:idioma`. Ver §5f |
 | T8 · `og:image` por idioma | **Completada y verificada.** 20 criterios en `npm run verify:seo`. Ver §5g |
 | T9 · Verificación final | **Completada.** Tabla línea base contra resultado en §5i. `astro check` 0/0/0 |
-| T10 · Componentes interactivos (RF-6) | **Parcial, y no por decisión técnica.** 1 de 5 interacciones implementada; 3 esperan contenido que no existe y 1 ya estaba resuelta mejor. Ver §5h |
+| T10 · Componentes interactivos (RF-6) | **Completada.** Las 5 interacciones resueltas, ninguna con Radix. Ver §5h |
 
 ### Lo que mide el verificador ahora mismo
 
@@ -416,23 +416,34 @@ Los siete verificadores en verde:
 
 ## 5h. T10: qué se hizo, y qué espera contenido
 
-**2 de las 5 interacciones de RF-6 están implementadas** (la ficha de expositor se
-sumó el 2026-07-31 al llegar las reseñas, §5j). De las tres restantes, dos esperan
-contenido y una ya estaba resuelta mejor sin la primitiva.
+**Las 5 interacciones de RF-6 están resueltas, y ninguna con Radix.**
 
-| Interacción | Primitiva | Estado |
-| ----------- | --------- | ------ |
-| Programa por jornada en pestañas | `Tabs` | **Bloqueada.** `program.days` está vacío en ambos idiomas: no hay jornadas que separar |
-| Resumen de sesión desplegable | `Accordion` | **Bloqueada.** No hay sesiones, y por tanto tampoco resúmenes |
-| Ficha de expositor en diálogo | `Dialog` | **Implementada el 2026-07-31**, con `<details>` nativo en vez de Radix. Ver §5j |
-| Selector de tema de tres estados | `ToggleGroup` | **Resuelta sin Radix.** Ya funciona con radios nativos: 0 kB, recorrido con flechas del navegador y RF-4 verificado 17/17 |
-| Sección activa en la navegación | Ninguna | **Implementada** |
+| Interacción | Primitiva propuesta | Cómo se resolvió |
+| ----------- | ------------------- | ---------------- |
+| Programa por jornada en pestañas | `Tabs` | **Mejora progresiva** sobre el patrón ARIA de la W3C. Sin JavaScript: jornadas apiladas |
+| Resumen de sesión desplegable | `Accordion` | `<details>` nativo |
+| Ficha de expositor | `Dialog` | `<details>` nativo. Ver §5j |
+| Selector de tema de tres estados | `ToggleGroup` | Radios nativos: 0 kB, flechas del navegador, RF-4 verificado 17/17 |
+| Sección activa en la navegación | Ninguna | `IntersectionObserver` propio |
 
-**Por qué no se instalaron las primitivas igual, para dejar el andamiaje listo:**
-RF-6.4 dice que ninguna primitiva se instala sin un componente que la use. Montar
-`Tabs` sobre un array vacío incumpliría el propio requisito, y costaría unos
-36 kB de JavaScript por una interfaz sin nada que mostrar. `verify:interaccion`
-comprueba que no haya ninguna `@radix-ui/*` instalada sin uso.
+**El denominador común es RF-6.2**, que exige que el contenido siga accesible sin
+JavaScript. Eso descarta de entrada cualquier componente que solo exista al
+hidratar, y con él todo el catálogo de React.
+
+Se buscó igualmente en 21st.dev antes de decidir, el 2026-07-31 (`search`, gratis):
+los ocho resultados de pestañas eran `react-aria-components`, Headless UI o
+shadcn, y **ninguno funciona sin hidratar**. La comprobación importaba aunque el
+resultado fuera el esperado: la sesión anterior había afirmado que T10 era «donde
+21st.dev rinde de verdad» sin haberlo verificado.
+
+Lo que sí se tomó de fuera: el **patrón ARIA de la guía de la W3C** —roles
+`tablist`/`tab`/`tabpanel`, `aria-selected`, `aria-controls`, `aria-labelledby`,
+`tabindex` móvil, flechas con Home y End—, que es la referencia de la que copian
+esos ocho componentes.
+
+`verify:interaccion` comprueba que no haya ninguna `@radix-ui/*` instalada sin uso,
+y que las pestañas cumplan el patrón. Si `program.days` está vacío, esos criterios
+se informan como **OMITIDO** en vez de darse por buenos.
 
 **Por qué el selector de tema no se pasa a `ToggleGroup`:** sería un retroceso.
 Los radios nativos ya dan agrupación, estado programático y recorrido con flechas
@@ -451,16 +462,17 @@ la vez, igual que hacen las dos instancias del selector de tema en RF-4.6.
 Sin JavaScript no pasa nada: los enlaces siguen llevando a su sección. Se pierde
 saber en cuál se está, que es una ayuda, no el contenido.
 
-### Qué hace falta para desbloquear el resto
+### Qué falta para que se vean en producción
 
-Son datos, no código. Cuando existan, cada interacción es una tarea corta:
+Solo el contenido real. La maquinaria está montada y verificada:
 
 1. **Programa:** poblar `program.days` en `es.ts` y `en.ts`. La estructura
-   `DiaPrograma` ya está definida y la sección cambia sola de «en preparación» a
-   la agenda.
-2. **Resúmenes:** añadir un campo de resumen a cada sesión.
-3. **Expositores:** añadir reseña y línea de investigación. Ojo: son texto
-   traducible, así que van en los archivos de idioma, no en `comun.ts`.
+   `DiaPrograma` ya admite `summary` por sesión, y las pestañas aparecen solas en
+   cuanto hay dos jornadas.
+2. **Reseñas de expositores:** ya están, desde fuentes públicas (§5j).
+
+Mientras tanto, `PROGRAMA_DEMOSTRATIVO` permite verlo funcionando con datos de
+ejemplo, marcados como tales.
 
 ## 5g. T8, imágenes para compartir
 

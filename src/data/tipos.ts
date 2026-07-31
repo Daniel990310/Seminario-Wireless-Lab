@@ -150,6 +150,10 @@ export interface ContenidoIdioma {
       asuntoConsultaPrograma: string;
       /** Aviso obligatorio cuando se muestran las sesiones de ejemplo. */
       avisoDemostracion: string;
+      /** Nombre accesible del grupo de pestañas de jornadas. */
+      jornadas: string;
+      /** Abre el resumen de una sesión. */
+      verResumen: string;
     };
 
     sede: {
