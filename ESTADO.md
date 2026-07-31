@@ -866,6 +866,55 @@ grep -o '<link rel="canonical"[^>]*' dist/index.html
 grep -o '<meta name="robots"[^>]*' dist/index.html
 ```
 
+### Salvaguarda: no indexar si nadie declaró la URL
+
+Añadida el 2026-07-31, después de que el primer despliegue saliera indexable por
+error. `astro.config.mjs` exporta `SITE_ES_RESPALDO`, que dice si la URL vino del
+entorno o del respaldo, y `BaseLayout` fuerza `noindex` cuando vino del respaldo
+**aunque el host coincida con el de producción**.
+
+Los tres casos, comprobados: `[medido]`
+
+| `SITE_URL` | Resultado |
+| ---------- | --------- |
+| Sin declarar | `noindex` — la salvaguarda actúa |
+| `https://seminario-wireless.pucv.cl` | Indexable |
+| `https://…workers.dev` | `noindex` |
+
+`verify:seo` fija el comportamiento: comprueba que haya `noindex` cuando la URL es
+provisional **y** que no lo haya cuando es la definitiva. Preferimos no ser
+indexados por error antes que ser indexados con enlaces rotos.
+
+### Conectar Git a `main`: se hace en el panel, no por API
+
+`[verificado]` en la documentación de Cloudflare: conectar un Worker existente a
+un repositorio es un flujo interactivo del dashboard y exige autorizar la
+aplicación de GitHub. No hay forma de automatizarlo desde aquí.
+
+Como el Worker **ya existe**, hay que usar «conectar un Worker existente» y no el
+asistente de creación, que es donde se atascó el primer intento:
+
+1. **Workers & Pages** → `seminario-wireless-lab` → **Settings** → **Builds** →
+   **Connect**.
+2. Repositorio `Daniel990310/Seminario-Wireless-Lab`, rama de producción `main`.
+3. Ajustes de compilación:
+
+   | Campo | Valor |
+   | ----- | ----- |
+   | Build command | `npm run build` |
+   | Deploy command | `npx wrangler deploy` |
+   | Root directory | `/` — **no** `/dist` |
+
+4. **Variable de entorno de compilación** (no del Worker):
+   `SITE_URL = https://seminario-wireless-lab.danielcaignet99.workers.dev`
+
+**El nombre del Worker debe coincidir con el `name` de `wrangler.jsonc`** o la
+compilación falla. Hoy coinciden: `seminario-wireless-lab`.
+
+Si no se define `SITE_URL`, la salvaguarda de arriba evita el daño grave —el
+sitio no se indexará— pero el canónico y las imágenes para compartir seguirán
+apuntando a un dominio que aún no existe.
+
 ### Qué falta para el despliegue definitivo
 
 1. **Decidir Workers o Pages.** Hoy está en Workers, que exige `SITE_URL` a mano.

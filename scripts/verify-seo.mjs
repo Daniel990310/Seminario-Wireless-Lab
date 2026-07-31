@@ -117,6 +117,32 @@ for (const [idioma, ruta] of Object.entries(paginas)) {
     !!m.canonical && new URL(m.canonical).pathname === canonicalEsperado,
     m.canonical ?? 'sin canonical',
   );
+
+  /*
+   * RNF-3.3 · `noindex` mientras la URL sea provisional.
+   *
+   * Se deduce del canónico: si el host no es el de producción, el documento
+   * TIENE que llevar `noindex`. Y si nadie declaró la URL en el entorno, el
+   * canónico sale del respaldo y tampoco debe indexarse, aunque el host
+   * coincida: eso es lo que falló en el primer despliegue a Workers.
+   */
+  const hostProduccion = 'seminario-wireless.pucv.cl';
+  const enProduccion = !!m.canonical && new URL(m.canonical).host === hostProduccion;
+  const urlDeclarada = !!(
+    process.env.SITE_URL ||
+    process.env.CF_PAGES_URL ||
+    process.env.DEPLOY_PRIME_URL ||
+    process.env.URL
+  );
+  const debeLlevarNoindex = !enProduccion || !urlDeclarada;
+
+  check(
+    `RNF-3.3 · noindex solo cuando la URL es provisional (${idioma})`,
+    debeLlevarNoindex ? m.robots?.includes('noindex') : !m.robots,
+    debeLlevarNoindex
+      ? `provisional → ${m.robots ?? 'SIN noindex'}`
+      : `producción → ${m.robots ?? 'indexable'}`,
+  );
 }
 
 // ---------------------------------------------------------------------------

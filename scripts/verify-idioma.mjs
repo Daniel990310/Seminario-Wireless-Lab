@@ -204,8 +204,17 @@ for (const [idioma, page] of Object.entries(paginas)) {
   const page = await ctx.newPage();
   await page.goto(`${BASE}/sitemap-0.xml`);
   const xml = await page.content();
-  const tieneEs = xml.includes('<loc>https://seminario-wireless.pucv.cl/</loc>');
-  const tieneEn = xml.includes('/en/</loc>');
+
+  /*
+   * El host no se da por sabido: se lee del propio sitemap. Antes estaba escrito
+   * `seminario-wireless.pucv.cl` a mano, y el criterio falló en cuanto el sitio
+   * se construyó con la URL real del despliegue, que es lo normal. Un
+   * verificador que solo pasa en un dominio no verifica el sitio, verifica el
+   * dominio.
+   */
+  const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]));
+  const tieneEs = locs.some((u) => u.pathname === '/');
+  const tieneEn = locs.some((u) => u.pathname === '/en/');
   check(
     'RF-1.8 · el sitemap incluye ambas versiones',
     tieneEs && tieneEn,
