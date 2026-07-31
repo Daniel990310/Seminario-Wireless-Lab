@@ -112,6 +112,34 @@ rápido.
 | Selector de tema de tres estados | RF-4 | `ToggleGroup` |
 | Sección activa resaltada en la navegación | En scroll largo se pierde la ubicación | Ninguna: `IntersectionObserver` propio |
 
+> **Enmienda del 31 de julio de 2026: ninguna primitiva de Radix se usó.** La
+> columna «Primitiva» de la tabla anterior es **la propuesta original, no lo
+> implementado**, y se conserva para que se vea qué se descartó y por qué.
+>
+> | Interacción | Propuesta | Implementado |
+> | ----------- | --------- | ------------ |
+> | Programa por jornada | `Tabs` | Mejora progresiva sobre el patrón ARIA de la W3C |
+> | Resumen de sesión | `Accordion` | `<details>` nativo |
+> | Ficha de expositor | `Dialog` | `<details>` nativo |
+> | Selector de tema | `ToggleGroup` | Radios nativos (T2) |
+> | Sección activa | Ninguna | `IntersectionObserver` propio |
+>
+> **El motivo es el criterio 2 de este mismo requisito**: el contenido tiene que
+> seguir accesible sin JavaScript. Eso descarta de entrada cualquier componente que
+> solo exista al hidratar, y con él el catálogo de React completo. Se buscó en
+> 21st.dev antes de decidir: los ocho resultados de pestañas eran
+> `react-aria-components`, Headless UI o shadcn, y ninguno funciona sin hidratar.
+>
+> **Consecuencia sobre D6**, que hay que decir sin adornos: la decisión del cliente
+> de adoptar shadcn/ui sobre Radix **no se materializó en ningún componente**. La
+> base quedó montada en T3 (`components.json`, tokens semánticos, el helper `cn`),
+> así que instalar una primitiva es un comando, pero hoy el sitio no usa ninguna.
+> Lo que el cliente pedía —«un sitio interactivo y no solo informativo»— se cumplió
+> con HTML nativo. Si Daniel quiere específicamente shadcn/ui en el producto y no
+> solo el resultado, eso es una decisión nueva y necesita un requisito nuevo.
+>
+> Detalle en `ESTADO.md` §5h y §5j.
+
 **Criterios de aceptación**
 
 1. Cada interacción es operable **solo con teclado**, y el foco es visible en
@@ -135,6 +163,57 @@ menos que verificar.
 1. La especificación de diseño describe dónde entraría la sección y qué datos
    requeriría, sin agregar código ni dependencias.
 2. Ningún servicio de terceros se integra mientras la decisión esté abierta.
+
+### RF-7 · Fichas de expositor con reseña verificable
+
+**Escrito el 31 de julio de 2026, después del código** (`3fe4c74`). Esto infringe la
+regla 1 de `../README.md` —primero el requisito, después la implementación— y queda
+registrado en lugar de disimularse: el requisito se redacta a partir de lo que se
+implementó, así que su valor está en fijar los criterios de aquí en adelante, no en
+haber guiado la construcción.
+
+Los títulos de charla no dicen de qué trata la sesión y una tarjeta con solo nombre y
+afiliación no permite saber a quién se va a escuchar.
+
+**Criterios de aceptación**
+
+1. Cada expositor tiene reseña y línea de investigación **en ambos idiomas**, con la
+   clave tipada en `ContenidoIdioma`: añadir un expositor sin su reseña en los dos
+   idiomas **no compila**.
+2. Cada reseña se apoya en un **perfil público citable** —página institucional,
+   repositorio académico— y la ficha enlaza esa fuente, de modo que cualquier dato sea
+   comprobable por quien lea.
+3. Ningún dato institucional sin confirmar se publica como confirmado. Lo que está
+   `[probable]` va marcado «por confirmar» (A3), aunque las fuentes públicas
+   concuerden.
+4. La ficha se despliega **sin JavaScript** (deriva de RF-6.2).
+5. Cero hallazgos de axe **con la ficha desplegada**, no solo cerrada.
+
+### RF-8 · Programa: estado provisional y programa de ejemplo
+
+**Escrito el 31 de julio de 2026, después del código** (`3fe4c74`), igual que RF-7 y
+con la misma advertencia.
+
+El programa real no existe todavía y el sitio tiene que poder mostrarse igual, sin
+que la sección quede vacía y sin que nadie confunda una demostración con la agenda.
+
+**Criterios de aceptación**
+
+1. Con `program.days` vacío, la sección muestra el aviso provisional sin cambios en el
+   marcado (ya exigido por RF-2.3).
+2. El programa de ejemplo está **apagado por omisión**, detrás de una única bandera
+   explícita en el código, no de una variable de entorno ni de un archivo suelto.
+3. La bandera **solo surte efecto si el programa real está vacío**: dejarla encendida
+   por descuido no puede sobrescribir una agenda publicada.
+4. Con la bandera encendida, la sección muestra un **aviso visible** con `role="note"`,
+   anunciado **antes** del programa, que declara que las sesiones son ficticias. El
+   aviso no es opcional ni desactivable por configuración.
+5. Los verificadores pasan **con la bandera encendida**, no solo apagada.
+
+**El motivo se declara aquí y no solo en el código:** un programa apócrifo en el sitio
+de un evento real, con fechas y sede reales, es información falsa con la que alguien
+podría organizar un viaje. Es el mismo criterio que prohíbe generar los logos
+institucionales.
 
 ## Requisitos no funcionales
 
@@ -242,6 +321,14 @@ interactivas de T10— sin que el peso sea por sí solo el argumento para rechaz
 
 1. Datos estructurados `schema.org/Event` válidos según el validador de Google,
    en ambos idiomas.
+
+   > **Cerrado el 2026-07-31.** `validator.schema.org` da **0 errores y 0 avisos** en
+   > `/` y `/en/` sobre la URL publicada, con `Event`, `Place`, `PostalAddress`,
+   > `Country`, `Organization` y `Person` reconocidos `[medido]`. La comprobación
+   > estaba pendiente desde T8 porque exige URL pública; ahora está automatizada en
+   > `npm run verify:publicado`, que llama al validador y falla si aparece cualquier
+   > error o aviso. `verify:seo` sigue comprobando la estructura sobre `dist/`, que es
+   > lo que se puede hacer sin red.
 2. `og:image` presente, de 1200×630, con el título y las fechas legibles.
    *Línea base: ausente.*
 3. Enlace canónico correcto por idioma, y `noindex` mientras el sitio esté en una
@@ -279,6 +366,28 @@ estilos.
 2. La verificación falla con código de salida distinto de cero al incumplirse un
    presupuesto, de modo que sirva en integración continua.
 3. Los resultados quedan registrados en `verification.md` con fecha y commit.
+
+### RNF-7 · Publicación
+
+**Escrito el 31 de julio de 2026, después del código** (`a906415`, `17572a9`,
+`8f4bdfc`). Tercera y última vez que esto pasa en 001; las tres quedan declaradas.
+
+**Criterios de aceptación**
+
+1. El despliegue se hace con **configuración versionada** en el repositorio
+   (`wrangler.jsonc`), no con ajustes hechos a mano en un panel que nadie más ve.
+2. La URL pública se declara por entorno —`SITE_URL` o la variable equivalente del
+   proveedor—. **Si nadie la declara, el sitio no se indexa**: `noindex` obligatorio,
+   para que un despliegue mal configurado no pueda publicar enlaces canónicos ni
+   imágenes apuntando a un dominio que no existe.
+3. Mientras el dominio sea provisional, **ambas páginas llevan `noindex, nofollow`**.
+4. **Ningún verificador queda atado a un dominio concreto.** Un verificador que da por
+   bueno un host fijo deja de comprobar en cuanto el dominio cambia, que es
+   exactamente lo que ocurrió antes de `8f4bdfc`.
+5. Lo publicado se comprueba **contra la URL en vivo**, no solo contra `dist/`:
+   `npm run verify:publicado`. Queda fuera de `verify:todo` a propósito, porque
+   depende de la red y de un servicio de terceros, y la autoridad sobre el
+   cumplimiento no puede depender de que haya conexión.
 
 ## Fuera de alcance
 

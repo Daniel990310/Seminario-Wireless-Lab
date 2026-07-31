@@ -488,6 +488,90 @@ de React + Motion» cuando hoy son 1,4 kB. También documentaba el contenido en 
 
 ---
 
+## T11 · Contenido de expositores y programa de ejemplo
+
+**Satisface:** RF-7, RF-8 · **Depende de:** T7 (el contenido va por idioma)
+
+**Tarea escrita después de la implementación** (commit `3fe4c74`, 2026-07-31). No es
+una tarea que haya guiado el trabajo: se redacta para que lo implementado quede
+trazado contra un requisito, como exige `../README.md`. La infracción se declara en
+RF-7 y en RF-8.
+
+- Reseña y línea de investigación por expositor, en ambos idiomas, con la clave
+  tipada para que falte una y no compile.
+- Cada reseña apoyada en un perfil público, enlazado desde la ficha.
+- Ficha desplegable sin JavaScript.
+- Programa de ejemplo apagado por omisión, con las tres salvaguardas de RF-8.
+
+**Cumplida el 2026-07-31.** Detalle en `ESTADO.md` §5j. La ficha usa `<details>` y no
+un diálogo de Radix, por RF-6.2 y porque cuesta 0 kB. Se verificó **con la bandera del
+programa de ejemplo encendida**, no solo apagada, como pide RF-8.5: los siete
+verificadores siguen en verde y el aviso aparece donde debe.
+
+Dos hallazgos de contenido que la búsqueda dejó y merecen quedar aquí: Reinaldo A.
+Valenzuela estudió en la Universidad de Chile antes de doctorarse en el Imperial
+College, y Rodolfo Feick ha coautorado mediciones a 28 GHz en el área del banco de
+pruebas COSMOS, el mismo proyecto del que Gil Zussman es investigador principal. Lo
+segundo respalda con hechos lo que la sección «Red de colaboración» afirma.
+
+---
+
+## T12 · Publicación
+
+**Satisface:** RNF-7 · **Depende de:** T8
+
+**Tarea escrita después de la implementación** (commits `a906415`, `17572a9`,
+`8f4bdfc`, 2026-07-31), igual que T11.
+
+- Configuración de despliegue versionada en el repositorio.
+- URL declarada por entorno, y `noindex` obligatorio cuando nadie la declara.
+- Ningún verificador atado a un dominio concreto.
+
+**Cumplida el 2026-07-31.** El sitio está publicado con `noindex` en una URL
+provisional de Workers. Detalle en `ESTADO.md` §6c, incluida la trampa que costó un
+despliegue de más: `wrangler deploy` no lee `astro.config.mjs`, así que sin `SITE_URL`
+declarada el build sale con el dominio de respaldo.
+
+---
+
+## T13 · Comprobar el sitio publicado
+
+**Satisface:** RNF-3.1, RNF-7 · **Depende de:** T12
+
+Cierra las dos comprobaciones que T8 dejó abiertas por falta de URL pública, y las
+convierte en comando en vez de dejarlas como paso manual que se deja de hacer.
+
+- Validar los datos estructurados de ambos idiomas con el validador oficial.
+- Comprobar que la imagen para compartir **se sirve** y mide 1200×630.
+- Comprobar que el dominio provisional no se indexa.
+
+**Cumplida el 2026-07-31.** `npm run verify:publicado`, **20 criterios en verde**
+contra la URL publicada `[medido]`. `validator.schema.org` da **0 errores y 0 avisos**
+en `/` y `/en/`, con `Event`, `Place`, `PostalAddress`, `Country`, `Organization` y
+`Person` reconocidos. Queda fuera de `verify:todo` a propósito (RNF-7.5): depende de
+la red y de un servicio de terceros.
+
+**Prueba de sensibilidad, que destapó dos defectos del propio verificador.** Se apuntó
+el guion a una copia servida en `127.0.0.1`, donde varios criterios deben fallar: da
+**6 incumplimientos y código 1**, y el motivo es real —ese build se compiló sin
+`SITE_URL`, así que canoniza al dominio de producción, que todavía no resuelve—.
+
+1. **Un fallo de red abortaba el proceso** con un rastro de pila en vez de reportar el
+   criterio como incumplido. Ahora toda petición va envuelta y un dominio que no
+   resuelve sale como `✗`, con el código de error.
+2. **«Sin errores» pasaba en verde habiendo validado nada.** Si el validador no
+   alcanza la URL, responde sin nodos: cero errores sobre cero datos. Se añadió un
+   criterio previo que exige que reconozca el `Event`. Es el mismo falso positivo que
+   en T2 dejó el selector sin ninguna opción marcada con axe en cero hallazgos.
+
+**Lo que sigue sin poder comprobarse automáticamente:** cómo se ve la tarjeta al
+compartir el enlace en una plataforma real. Exige compartirlo y mirarlo, y además con
+`noindex, nofollow` hay plataformas que suprimen la previsualización, así que la
+prueba definitiva solo es posible con el dominio definitivo. Queda impreso al final de
+cada corrida en vez de darse por hecho.
+
+---
+
 ## Trazabilidad
 
 | Requisito | Tareas |
@@ -498,12 +582,15 @@ de React + Motion» cuando hoy son 1,4 kB. También documentaba el contenido en 
 | RF-4 Selector de tema | T2 |
 | RNF-1 Accesibilidad | T2, T5, T6 |
 | RNF-2 Rendimiento | T3, T4 |
-| D6 shadcn/ui sobre Radix | T3, T10 |
-| RNF-3 SEO | T7, T8 |
+| D6 shadcn/ui sobre Radix | T3, T10 — **sin ninguna primitiva instalada**, ver la enmienda de RF-6 |
+| RNF-3 SEO | T7, T8, T13 |
 | RNF-4 Privacidad | T2 (`localStorage`, sin cookies) |
 | RNF-5 Mantenibilidad | T7, T9 |
 | RNF-6 Verificación | T1, T9 |
 | RF-6 Interacción | T10 |
+| RF-7 Fichas de expositor | T11 |
+| RF-8 Programa de ejemplo | T11 |
+| RNF-7 Publicación | T12, T13 |
 
 ## Fuera de estas tareas
 

@@ -10,14 +10,24 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 Actualizado: **2026-07-31** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
 · Último commit de tarea: `00e00f4` (T10)
 
-> **Revisión del flujo SDD, 2026-07-31.** Se sincronizó el rastro documental, que se
-> había quedado atrás: `tasks.md` daba T10 por parcial y T4 sin nota de cierre,
-> `specs/README.md` seguía en T3 con tres verificadores de siete, y tres conteos de
-> criterios se citaban desfasados. **El código no se tocó.** Lo que sigue pendiente son
-> decisiones, no sincronización: enmendar la tabla de primitivas de RF-6, dar requisito
-> al programa de ejemplo, a las reseñas y al despliegue, cerrar las dos comprobaciones
-> de T8 que la URL pública desbloqueó, y llevar a `design.md` el «cómo y por qué» de T5
-> a T10, que hoy vive solo en este archivo. Lista en `specs/README.md` §Estado.
+> **001 queda CERRADA el 2026-07-31, T1 a T13.** La revisión del flujo SDD encontró el
+> código en verde y el rastro documental atrasado. Se corrigió en dos tandas:
+>
+> 1. **Sincronización** (`f9f2e79`): `tasks.md` daba T10 por parcial y T4 sin nota de
+>    cierre, `specs/README.md` seguía describiendo el proyecto en T3 con tres
+>    verificadores de siete, y cuatro conteos de criterios se citaban desfasados.
+> 2. **Regularización**: RF-6 enmendado —ninguna primitiva de Radix se usó, y por tanto
+>    **D6 no se materializó en ningún componente**—; **RF-7, RF-8 y RNF-7** creados para
+>    las tres piezas que se habían implementado sin requisito (reseñas, programa de
+>    ejemplo, despliegue), con **T11, T12 y T13**; `design.md` §6 y §7 con el «cómo y
+>    por qué» de T5 a T13, que vivía solo en este archivo.
+>
+> **Las dos comprobaciones que T8 dejó abiertas están cerradas** (T13):
+> `validator.schema.org` da **0 errores y 0 avisos** en `/` y `/en/`, y quedó
+> automatizado en `npm run verify:publicado`, 20 criterios en verde `[medido]`. Lo único
+> que sigue exigiendo ojos es la previsualización real al compartir el enlace.
+>
+> Lo que queda abierto no es código: A3–A7 y poblar `program.days`.
 
 > **El plan `001-mejora-calidad` está completo: T1 a T10.**
 >
@@ -183,6 +193,9 @@ cualquier herramienta y no solo a Claude Code.
 | T8 · `og:image` por idioma | **Completada y verificada.** 20 criterios en `npm run verify:seo`. Ver §5g |
 | T9 · Verificación final | **Completada.** Tabla línea base contra resultado en §5i. `astro check` 0/0/0 |
 | T10 · Componentes interactivos (RF-6) | **Completada.** Las 5 interacciones resueltas, ninguna con Radix. Ver §5h |
+| T11 · Reseñas y programa de ejemplo (RF-7, RF-8) | **Completada.** Requisito escrito después del código, declarado como tal. Ver §5j |
+| T12 · Publicación (RNF-7) | **Completada.** Workers con `noindex` provisional. Ídem sobre el requisito. Ver §6c |
+| T13 · Comprobar el sitio publicado (RNF-3.1, RNF-7) | **Completada.** `npm run verify:publicado`, 20 criterios. Ver §6d |
 
 ### Lo que mide el verificador ahora mismo
 
@@ -953,12 +966,52 @@ apuntando a un dominio que aún no existe.
    al detectarse que contradecía al encabezado de este mismo archivo.
 3. **Dominio definitivo** y, después, `npm run og`.
 
-### Lo que la URL pública acaba de desbloquear
+### Lo que la URL pública desbloqueó, y qué se hizo con ello
 
-Los dos pendientes de T8 que necesitaban un sitio accesible ya se pueden cerrar:
+Los dos pendientes de T8 que necesitaban un sitio accesible: el primero **está
+cerrado** (§6d), el segundo sigue exigiendo mirar.
 
-- Validar los datos estructurados de `/` y `/en/` en <https://validator.schema.org>.
-- Ver la previsualización real del enlace compartiéndolo.
+- ✅ Validar los datos estructurados de `/` y `/en/` en <https://validator.schema.org>.
+- ⏳ Ver la previsualización real del enlace compartiéndolo.
+
+## 6d. T13 · Comprobar el sitio publicado
+
+`npm run verify:publicado -- https://…` — **20 criterios, todos en verde** contra la URL
+provisional el 2026-07-31 `[medido]`. Queda **fuera de `verify:todo`** a propósito
+(RNF-7.5): depende de la red y de `validator.schema.org`, y la autoridad sobre el
+cumplimiento no puede depender de que haya conexión.
+
+Lo que cierra, y que `dist/` no puede responder:
+
+| Criterio | Medición |
+| -------- | -------- |
+| RNF-3.1 · validador oficial | **0 errores y 0 avisos** en ambos idiomas; reconoce `Event`, `Place`, `PostalAddress`, `Country`, `Organization`, `Person` |
+| RNF-3.2 · la imagen se sirve | HTTP 200, 1200×630, 123 kB (es) y 121 kB (en) |
+| RNF-7.3 · el dominio provisional no se indexa | `noindex, nofollow` en `/` y `/en/` |
+| RNF-3.3 · el canónico apunta al host servido | coincide en las dos rutas |
+
+**No lleva ningún dominio escrito.** La URL se pasa por argumento o por
+`SITIO_PUBLICADO`, y sin ella informa **OMITIDO** y sale en 0: no hay incumplimiento que
+declarar, pero tampoco se calla. Un verificador que pasa en silencio sin comprobar nada
+es peor que uno que falla.
+
+### La prueba de sensibilidad destapó dos defectos del propio verificador
+
+Se apuntó el guion a una copia de `dist/` servida en `127.0.0.1`, donde varios criterios
+deben fallar. Falla: **6 incumplimientos y código 1**. Y el motivo es real —ese build se
+compiló sin `SITE_URL`, así que canoniza a `seminario-wireless.pucv.cl`, que todavía no
+resuelve—, lo que es de paso una demostración en vivo de la trampa de §6c.
+
+1. **Un fallo de red abortaba el proceso** con un rastro de pila en vez de reportar el
+   criterio. Ahora toda petición va envuelta y un dominio que no resuelve sale como `✗`
+   con su código de error.
+2. **«Sin errores» pasaba en verde habiendo validado nada.** Si el validador no alcanza
+   la URL responde sin nodos: cero errores sobre cero datos. Se añadió un criterio
+   previo que exige que reconozca el `Event`. Es el mismo falso positivo de T2, cuando
+   axe daba 0 hallazgos con el selector de tema sin ninguna opción marcada.
+
+Los dos salieron de romper deliberadamente lo que el guion vigila, no de un despliegue
+real. Es exactamente para lo que `AGENTS.md` exige la prueba.
 
 ## 7. Pendientes que no dependen del código
 

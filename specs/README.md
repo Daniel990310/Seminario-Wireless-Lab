@@ -16,6 +16,7 @@ condición medible.
 | [`fuentes.md`](fuentes.md) | **Registro de procedencia**: de dónde sale cada cifra |
 | [`habilidades.md`](habilidades.md) | Qué skills usar, cuándo y con qué precauciones |
 | [`001-mejora-calidad/verification.md`](001-mejora-calidad/verification.md) | Última medición. **Generado por `npm run verify`, no editar** |
+| [`../ESTADO.md`](../ESTADO.md) | Diario de continuidad entre entornos: en qué punto quedó el trabajo |
 | [`../AGENTS.md`](../AGENTS.md) | Reglas de trabajo para agentes y personas |
 
 ## Regla de procedencia
@@ -79,6 +80,13 @@ npm run verify:interaccion # los criterios de RF-6
 npm run verify:todo        # los siete en cadena
 ```
 
+Y uno más, que **no** entra en la cadena porque depende de la red y de un servicio de
+terceros (RNF-7.5):
+
+```bash
+npm run verify:publicado -- https://tu-dominio   # RNF-7 y RNF-3.1 contra el sitio en vivo
+```
+
 `npm run verify` es la autoridad sobre el cumplimiento (implementado en T1).
 Requiere un `build` previo y termina con código distinto de cero si algo incumple.
 
@@ -95,6 +103,7 @@ requieren un `build` previo, y `verify:todo` los lanza como procesos separados �
 | `verify:idioma` | 19 | RF-1: ambas rutas, `lang`, `hreflang` recíproco, título sin traducir, conservación de la sección, sitemap y **textos sin traducir** |
 | `verify:seo` | 22 | RNF-3: imágenes de 1200×630 por idioma, metadatos absolutos, canónico, `noindex` provisional y `schema.org/Event` |
 | `verify:interaccion` | 9 | RF-6: contenido entero sin JavaScript, `aria-current` en la sección activa, patrón ARIA de las pestañas y ninguna primitiva de Radix instalada sin uso |
+| `verify:publicado` | 20 | RNF-7 y RNF-3.1 **contra la URL en vivo**: ambas rutas responden, `noindex` en dominio provisional, canónico y `og:url` sobre el host servido, la imagen se sirve a 1200×630 y `validator.schema.org` sin errores ni avisos. Fuera de la cadena |
 
 Los conteos son los de la corrida del **2026-07-31 sobre `8f4bdfc`** `[medido]`, y van
 fechados porque crecen: `verify:idioma`, `verify:seo` y `verify:interaccion` sumaron
@@ -102,15 +111,18 @@ criterios después de cerrarse su tarea, y los documentos quedaron citando el n�
 viejo (17, 20 y 8). Al añadir una comprobación, actualizar esta tabla.
 
 **Lo que ningún verificador cubre:** RNF-2.3 (ninguna petición a dominios de terceros
-en la carga inicial) y RNF-2.4 (sin desplazamiento de diseño por las tipografías). Hoy
-se cumplen por construcción —tipografías auto-hospedadas, sin analítica— pero eso es
-una propiedad del código, no una medición, y nada falla si alguien la rompe.
+en la carga inicial), RNF-2.4 (sin desplazamiento de diseño por las tipografías) y la
+previsualización real del enlace al compartirlo. Los dos primeros se cumplen hoy por
+construcción —tipografías auto-hospedadas, sin analítica—, pero eso es una propiedad
+del código y no una medición: nada falla si alguien añade un `<link>` remoto. El
+tercero exige mirar, y `verify:publicado` lo imprime al final de cada corrida para que
+no se confunda con algo comprobado.
 
 ## Estado
 
 | Especificación | Estado |
 | -------------- | ------ |
-| [001 — Mejora de calidad](001-mejora-calidad/) | **Implementada y verificada: T1 a T10.** Los siete verificadores en verde. Sin decisiones bloqueantes. Falta el cierre formal (ver abajo). |
+| [001 — Mejora de calidad](001-mejora-calidad/) | **Cerrada el 2026-07-31: T1 a T13.** Siete verificadores en verde sobre `dist/` y uno más contra el sitio publicado. Solo quedan pendientes de terceros (A3–A7). |
 
 Últimas cifras, medidas el 2026-07-31 sobre el commit `8f4bdfc` con
 `npm run build && npm run verify:todo` `[medido]`:
@@ -131,20 +143,31 @@ T6. Dos cifras llevan nota porque leídas solas engañan: RNF-2.1 no bajó de 10
 en el HTML, que antes no se contaba), y las tipografías subieron a propósito al pasar
 a Atkinson Hyperlegible Next. Detalle en `ESTADO.md` §5c y §5i.
 
-**Lo que falta para cerrar 001, y no es código:**
+### Cómo se cerró, el 2026-07-31
 
-1. **Enmendar RF-6** en `requirements.md`: su tabla declara `Tabs`, `Accordion`,
-   `Dialog` y `ToggleGroup`, y ninguna se usó. La razón —RF-6.2, el contenido tiene
-   que existir sin JavaScript— está registrada en `ESTADO.md` §5h, no en el requisito.
-2. **Dar requisito y tarea a lo implementado fuera de la especificación**: el programa
-   de ejemplo apagado por omisión (`src/data/programa-demo.ts`), las reseñas de
-   expositores, y el despliegue en Cloudflare Workers. Los tres están razonados en
-   `ESTADO.md`, pero ninguno pasó por `requirements.md`, que es la regla 1 de este
-   documento.
-3. **Cerrar las dos comprobaciones de T8** que ya no están bloqueadas: validar los
-   datos estructurados y ver la previsualización real del enlace, ahora que hay URL
-   pública.
-4. **`design.md` está congelado en D6**: no registra `<details>` en lugar de `Dialog`,
-   el `IntersectionObserver` de la sección activa, la mejora progresiva de las
-   pestañas ni el control único de idioma. El «cómo y por qué» de T5 a T10 vive hoy en
-   `ESTADO.md`, que es un diario de continuidad y no la especificación.
+La revisión del flujo encontró que el código estaba en verde pero el rastro documental
+no. Se corrigió en dos tandas, y **la segunda dejó tres deudas al descubierto que vale
+más nombrar que enterrar**:
+
+1. **RF-6 quedó enmendado**: declaraba cinco primitivas de Radix y no se usó ninguna.
+   La consecuencia se dice en el propio requisito: **D6 no se materializó en ningún
+   componente**. Lo que el cliente pedía se cumplió con HTML nativo; si quiere
+   shadcn/ui en el producto y no solo el resultado, hace falta un requisito nuevo.
+2. **Tres piezas se habían implementado sin requisito** —reseñas de expositores,
+   programa de ejemplo y el despliegue—. Ahora son RF-7, RF-8 y RNF-7, con T11 y T12,
+   y **cada uno declara que se escribió después del código**. Infringe la regla 1 de
+   este documento tres veces; queda registrado en lugar de disimulado, porque el
+   criterio con el que se falló importa tanto como la corrección.
+3. **Las dos comprobaciones que T8 dejó abiertas están cerradas** (T13). El validador
+   oficial da 0 errores y 0 avisos en ambos idiomas contra la URL publicada, y en vez
+   de dejarlo como paso manual quedó en `npm run verify:publicado`. La única cosa que
+   sigue exigiendo un par de ojos es la previsualización real al compartir el enlace.
+
+Además `design.md` recuperó el «cómo y por qué» de T5 a T13 (§6 y §7), que vivía solo
+en `ESTADO.md`. Un diario responde «qué pasó ese día»; la especificación tiene que
+responder «por qué el sitio es así».
+
+**Lo que queda abierto no es código:** los pendientes A3–A7 —afiliación de Rodolfo
+Feick, correo institucional, logos oficiales, dominio definitivo y traducción de los
+textos largos— y poblar `program.days`, que además hace visibles las pestañas por
+jornada.
