@@ -411,6 +411,16 @@ primitiva de Radix se justifica por el componente que habilita.
 **Comprobación:** `npm run verify` sigue en cero hallazgos con los componentes
 montados. Recorrido por teclado completo en cada uno. JavaScript ≤ 115 kB.
 
+**Parcial el 2026-07-31: 1 de 5 interacciones.** No es una renuncia técnica.
+Tres esperan contenido que no existe —`program.days` está vacío y los expositores
+no tienen reseña— y el selector de tema ya está resuelto mejor con radios
+nativos a 0 kB. Instalar `Tabs`, `Accordion` o `Dialog` ahora incumpliría el
+punto 4 de esta misma tarea: «ninguna primitiva sin un componente que la use».
+
+Implementada la sección activa en la navegación, que no necesita primitiva.
+Verificada en `npm run verify:interaccion`. Qué datos hacen falta para
+desbloquear el resto: `ESTADO.md` §5h.
+
 ---
 
 ## T9 · Verificación final y registro

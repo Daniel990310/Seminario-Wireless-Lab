@@ -163,7 +163,7 @@ cualquier herramienta y no solo a Claude Code.
 | T7 · Sitio bilingüe (RF-1) | **Completada y verificada.** 15 criterios en `npm run verify:idioma`. Ver §5f |
 | T8 · `og:image` por idioma | **Completada y verificada.** 20 criterios en `npm run verify:seo`. Ver §5g |
 | T9 · Verificación final | Pendiente |
-| T10 · Componentes interactivos (RF-6) | **Desbloqueada: RF-6 confirmada por Daniel el 2026-07-30.** |
+| T10 · Componentes interactivos (RF-6) | **Parcial, y no por decisión técnica.** 1 de 5 interacciones implementada; 3 esperan contenido que no existe y 1 ya estaba resuelta mejor. Ver §5h |
 
 ### Lo que mide el verificador ahora mismo
 
@@ -190,7 +190,7 @@ Los dos incumplimientos abiertos **no son regresiones**: están en la línea bas
 su corrección pertenece a T5 y T6. `npm run verify` termina con código 1 por ellos,
 y eso es correcto.
 
-Hay seis verificadores, y `npm run verify:todo` los corre en cadena:
+Hay siete verificadores, y `npm run verify:todo` los corre en cadena:
 
 | Comando | Qué cubre |
 | ------- | --------- |
@@ -200,6 +200,7 @@ Hay seis verificadores, y `npm run verify:todo` los corre en cadena:
 | `npm run verify:teclado` | Los 12 criterios de T6 que axe no decide: jerarquía de encabezados, foco visible en todo el recorrido, contraste del anillo, menú móvil por teclado y zoom de texto al 200 % sin desbordar |
 | `npm run verify:idioma` | Los 17 criterios de RF-1: ambas rutas, `lang`, `hreflang` recíproco, título sin traducir, control de idioma por teclado, conservación de la sección, sitemap, cero cadenas en componentes y **textos sin traducir** |
 | `npm run verify:seo` | Los 20 criterios de RNF-3: imágenes para compartir de 1200×630 por idioma, metadatos absolutos, canónico por idioma, sin descripciones duplicadas y `schema.org/Event` completo |
+| `npm run verify:interaccion` | RF-6: que el contenido siga entero sin JavaScript, que el resaltado de sección siga a la lectura y se exponga con `aria-current`, y que no haya primitivas de Radix instaladas sin usar |
 
 Todos requieren un `npm run build` previo.
 
@@ -294,6 +295,54 @@ donde evoca un plano y ahí sí viene a cuento.
 
 `npm run verify:todo` en verde después de cada cambio, y revisión visual en los dos
 temas y los dos anchos.
+
+## 5h. T10: qué se hizo, y qué espera contenido
+
+**1 de las 5 interacciones de RF-6 está implementada.** No es una decisión
+técnica ni una renuncia: tres esperan contenido que todavía no existe y una ya
+estaba resuelta mejor sin la primitiva.
+
+| Interacción | Primitiva | Estado |
+| ----------- | --------- | ------ |
+| Programa por jornada en pestañas | `Tabs` | **Bloqueada.** `program.days` está vacío en ambos idiomas: no hay jornadas que separar |
+| Resumen de sesión desplegable | `Accordion` | **Bloqueada.** No hay sesiones, y por tanto tampoco resúmenes |
+| Ficha de expositor en diálogo | `Dialog` | **Bloqueada.** `ExpositorComun` tiene nombre, afiliación y país; no hay reseña ni línea de investigación que mostrar |
+| Selector de tema de tres estados | `ToggleGroup` | **Resuelta sin Radix.** Ya funciona con radios nativos: 0 kB, recorrido con flechas del navegador y RF-4 verificado 17/17 |
+| Sección activa en la navegación | Ninguna | **Implementada** |
+
+**Por qué no se instalaron las primitivas igual, para dejar el andamiaje listo:**
+RF-6.4 dice que ninguna primitiva se instala sin un componente que la use. Montar
+`Tabs` sobre un array vacío incumpliría el propio requisito, y costaría unos
+36 kB de JavaScript por una interfaz sin nada que mostrar. `verify:interaccion`
+comprueba que no haya ninguna `@radix-ui/*` instalada sin uso.
+
+**Por qué el selector de tema no se pasa a `ToggleGroup`:** sería un retroceso.
+Los radios nativos ya dan agrupación, estado programático y recorrido con flechas
+sin una línea de manejo de teclado, y cuestan 0 kB. Cambiarlos por Radix añadiría
+JavaScript para obtener lo que el navegador ya hace. Está razonado en el propio
+`ThemeSelector.astro` desde T2.
+
+### La sección activa
+
+`IntersectionObserver` propio, unas líneas, sin primitiva. Marca el enlace con
+**`aria-current="location"`** —el valor que ARIA define para la ubicación dentro
+de un flujo— y no solo con color, así que la información también llega a un lector
+de pantalla. Las dos instancias de la navegación, barra y menú móvil, se marcan a
+la vez, igual que hacen las dos instancias del selector de tema en RF-4.6.
+
+Sin JavaScript no pasa nada: los enlaces siguen llevando a su sección. Se pierde
+saber en cuál se está, que es una ayuda, no el contenido.
+
+### Qué hace falta para desbloquear el resto
+
+Son datos, no código. Cuando existan, cada interacción es una tarea corta:
+
+1. **Programa:** poblar `program.days` en `es.ts` y `en.ts`. La estructura
+   `DiaPrograma` ya está definida y la sección cambia sola de «en preparación» a
+   la agenda.
+2. **Resúmenes:** añadir un campo de resumen a cada sesión.
+3. **Expositores:** añadir reseña y línea de investigación. Ojo: son texto
+   traducible, así que van en los archivos de idioma, no en `comun.ts`.
 
 ## 5g. T8, imágenes para compartir
 

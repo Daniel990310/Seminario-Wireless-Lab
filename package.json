@@ -15,6 +15,7 @@
     "verify:teclado": "node scripts/verify-teclado.mjs",
     "verify:idioma": "node scripts/verify-idioma.mjs",
     "verify:seo": "node scripts/verify-seo.mjs",
+    "verify:interaccion": "node scripts/verify-interaccion.mjs",
     "verify:todo": "node scripts/verify-todo.mjs"
   },
   "dependencies": {

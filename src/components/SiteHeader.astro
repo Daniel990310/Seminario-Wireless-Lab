@@ -50,11 +50,21 @@ const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asun
       </span>
     </a>
 
+    <!--
+      `data-nav` marca los enlaces que siguen a la sección visible (RF-6). El
+      resaltado se aplica con `aria-current="location"`, no solo con color: es el
+      valor que ARIA define para «dónde estoy dentro de un flujo», y sin él la
+      ubicación solo la percibiría quien distingue el color.
+    -->
     <ul class="hidden items-center gap-7 lg:flex">
       {
         c.nav.map((link) => (
           <li>
-            <a href={link.href} class="text-sm text-muted-foreground transition-colors hover:text-primary">
+            <a
+              href={link.href}
+              data-nav={link.href.slice(1)}
+              class="text-sm text-muted-foreground transition-colors hover:text-primary aria-[current]:text-primary aria-[current]:font-medium"
+            >
               {link.label}
             </a>
           </li>
@@ -102,7 +112,8 @@ const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asun
                 <li>
                   <a
                     href={link.href}
-                    class="block px-5 py-3.5 text-sm text-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+                    data-nav={link.href.slice(1)}
+                    class="block px-5 py-3.5 text-sm text-foreground transition-colors hover:bg-primary/10 hover:text-primary aria-[current]:text-primary aria-[current]:font-medium"
                   >
                     {link.label}
                   </a>
@@ -138,6 +149,57 @@ const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asun
 </header>
 
 <script>
+  /*
+   * Sección activa en la navegación (RF-6).
+   *
+   * Es la única de las cinco interacciones de RF-6 que no necesita una
+   * primitiva: `IntersectionObserver` basta y cuesta unas líneas, frente a los
+   * ~36 kB que costaría traer Radix.
+   *
+   * Sin JavaScript no pasa nada: los enlaces siguen llevando a su sección. Lo
+   * que se pierde es saber en cuál se está, que es una ayuda, no el contenido.
+   *
+   * Se marca con `aria-current="location"` —el valor que ARIA define para la
+   * ubicación dentro de un flujo— y no solo con color, para que la información
+   * llegue también a un lector de pantalla.
+   */
+  const enlaces = [...document.querySelectorAll<HTMLAnchorElement>('a[data-nav]')];
+  const secciones = enlaces
+    .map((a) => document.getElementById(a.dataset.nav ?? ''))
+    .filter((s): s is HTMLElement => !!s);
+
+  if (secciones.length) {
+    // Se guarda la última sección visible en lugar de reaccionar a cada
+    // entrada: al desplazarse rápido hay varias cruzando el umbral a la vez, y
+    // sin esto el resaltado parpadea entre dos.
+    const visibles = new Set<string>();
+
+    const pintar = () => {
+      // Gana la primera del documento entre las visibles: es la que encabeza
+      // la parte de la página que se está leyendo.
+      const activa = secciones.find((s) => visibles.has(s.id))?.id ?? null;
+      for (const enlace of enlaces) {
+        if (enlace.dataset.nav === activa) enlace.setAttribute('aria-current', 'location');
+        else enlace.removeAttribute('aria-current');
+      }
+    };
+
+    const observador = new IntersectionObserver(
+      (entradas) => {
+        for (const entrada of entradas) {
+          if (entrada.isIntersecting) visibles.add(entrada.target.id);
+          else visibles.delete(entrada.target.id);
+        }
+        pintar();
+      },
+      // El margen superior descuenta la barra fija: sin él, una sección se
+      // considera visible cuando todavía está detrás del encabezado.
+      { rootMargin: '-96px 0px -55% 0px', threshold: 0 },
+    );
+
+    for (const seccion of secciones) observador.observe(seccion);
+  }
+
   // El menú se cierra al elegir un destino o al pulsar fuera.
   const menu = document.querySelector<HTMLDetailsElement>('[data-mobile-menu]');
 

@@ -19,6 +19,7 @@ const VERIFICADORES = [
   { guion: 'verify-teclado.mjs', nombre: 'Semántica, foco y teclado (T6)' },
   { guion: 'verify-idioma.mjs', nombre: 'Sitio bilingüe (RF-1)' },
   { guion: 'verify-seo.mjs', nombre: 'SEO y metadatos (RNF-3)' },
+  { guion: 'verify-interaccion.mjs', nombre: 'Componentes interactivos (RF-6)' },
 ];
 
 const correr = (guion) =>
