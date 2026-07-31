@@ -162,7 +162,7 @@ cualquier herramienta y no solo a Claude Code.
 | T6 · Nombres accesibles y teclado (RNF-1.4) | **Completada y verificada.** 12 criterios en `npm run verify:teclado`. Ver §5e |
 | T7 · Sitio bilingüe (RF-1) | **Completada y verificada.** 15 criterios en `npm run verify:idioma`. Ver §5f |
 | T8 · `og:image` por idioma | **Completada y verificada.** 20 criterios en `npm run verify:seo`. Ver §5g |
-| T9 · Verificación final | Pendiente |
+| T9 · Verificación final | **Completada.** Tabla línea base contra resultado en §5i. `astro check` 0/0/0 |
 | T10 · Componentes interactivos (RF-6) | **Parcial, y no por decisión técnica.** 1 de 5 interacciones implementada; 3 esperan contenido que no existe y 1 ya estaba resuelta mejor. Ver §5h |
 
 ### Lo que mide el verificador ahora mismo
@@ -295,6 +295,57 @@ donde evoca un plano y ahí sí viene a cuento.
 
 `npm run verify:todo` en verde después de cada cambio, y revisión visual en los dos
 temas y los dos anchos.
+
+## 5i. T9 · Cierre: línea base contra resultado
+
+Medido el 2026-07-31 con `npm run build && npm run verify:todo`, sobre **2
+páginas y 8 corridas** (2 anchos × 2 temas × 2 idiomas). `[medido]`
+
+| Requisito | Línea base | Ahora | Límite | |
+| --------- | ---------- | ----- | ------ | - |
+| RNF-1.1 · Hallazgos axe WCAG 2.1 AA | 16 | **0** | 0 | cumple |
+| RNF-1.3 · Nodos con contraste indeterminado | 28 | **0** | 0 | cumple |
+| RNF-1.4 · Secciones sin nombre accesible | 7 de 7 | **0 de 7** | 0 | cumple |
+| RNF-1.5 · Saltos de nivel en encabezados | 0 | 0 | 0 | cumple |
+| RNF-2.1 · JavaScript comprimido | 109,3 kB | **1,4 kB** | 115 kB | cumple |
+| RNF-2.2 · Primera carga comprimida | 241,2 kB | **139,0 kB** | 260 kB | cumple |
+| RNF-2.6 · Tipografías | 110,9 kB | 122,6 kB | 125 kB | cumple |
+
+`astro check`: **0 errores, 0 advertencias, 0 sugerencias.**
+
+Dos cifras merecen una nota, porque leídas solas engañan:
+
+- **RNF-2.1 no bajó de 109,3 kB a 1,4 kB midiendo lo mismo.** La línea base
+  contaba archivos `.js`, y desde T8 la métrica incluye además el JavaScript que
+  Astro inlinea en el HTML, que antes no se contaba en ninguna parte. La mejora
+  real existe —se quitaron React hidratado y Motion— pero la cifra actual es más
+  exigente que la de partida, no menos. Ver §5c.
+- **Las tipografías subieron** de 110,9 a 122,6 kB, y fue deliberado: T4 cambió a
+  Crimson Pro y Atkinson Hyperlegible Next, esta última diseñada para baja
+  visión. Se gastaron 11,7 kB en legibilidad, con 2,4 kB de margen.
+
+Los siete verificadores en verde:
+
+| Verificador | Criterios |
+| ----------- | --------- |
+| `verify` · accesibilidad y peso | 7 presupuestos, 8 corridas |
+| `verify:tema` · RF-4 | 17 |
+| `verify:red` · T3 | 7 |
+| `verify:teclado` · T6 | 12 |
+| `verify:idioma` · RF-1 | 17 |
+| `verify:seo` · RNF-3 | 20 |
+| `verify:interaccion` · RF-6 | 8 |
+
+### Lo que sigue abierto, y no es código
+
+1. **Logos institucionales oficiales.** Los de `public/logos/` son marcadores
+   deliberados. Está prohibido generarlos o aproximarlos.
+2. **Programa.** `program.days` vacío. Poblarlo desbloquea además tres
+   interacciones de RF-6 (§5h).
+3. **Afiliación de Rodolfo Feick** y **correo institucional definitivo**.
+4. **Dominio.** Al fijarlo, regenerar las imágenes con `npm run og`.
+5. **Validar los datos estructurados** y la previsualización del enlace: ambas
+   necesitan el sitio publicado (§5g).
 
 ## 5h. T10: qué se hizo, y qué espera contenido
 

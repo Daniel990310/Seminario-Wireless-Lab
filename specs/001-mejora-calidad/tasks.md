@@ -435,6 +435,15 @@ desbloquear el resto: `ESTADO.md` §5h.
 
 **Comprobación:** tabla línea base contra resultado, con los números medidos.
 
+**Cumplida el 2026-07-31.** La tabla está en `ESTADO.md` §5i y `verification.md`
+la genera `npm run verify` en cada corrida. `astro check`: 0 errores, 0
+advertencias, 0 sugerencias.
+
+El `README.md` estaba gravemente desactualizado y se rehízo: describía Magic UI
+con dos componentes que ya no existen, las tipografías anteriores a T4 y «110 kB
+de React + Motion» cuando hoy son 1,4 kB. También documentaba el contenido en un
+`seminar.ts` que T7 sustituyó por cuatro archivos.
+
 ---
 
 ## Trazabilidad

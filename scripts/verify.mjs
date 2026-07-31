@@ -509,7 +509,7 @@ el desglose por corrida más abajo.
 | JavaScript en línea, dentro del HTML | ${kB(peso.javascriptEnLinea)} |
 | JavaScript total (RNF-2.1) | ${kB(peso.javascript + peso.javascriptEnLinea)} |
 | Tipografías | ${kB(peso.tipografias)} |
-| HTML (incluye los scripts en línea) | ${kB(peso.html)} |
+| HTML (incluye el CSS y los scripts en línea) | ${kB(peso.html)} |
 | CSS | ${kB(peso.css)} |
 | Imágenes SVG | ${kB(peso.imagenes)} |
 | **Primera carga** | **${kB(peso.primeraCarga)}** |

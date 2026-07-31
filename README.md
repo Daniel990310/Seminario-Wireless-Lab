@@ -8,49 +8,33 @@ la Pontificia Universidad Católica de Valparaíso.
 
 ## Stack
 
-| Pieza        | Elección                               | Por qué                                                                                     |
-| ------------ | -------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Framework    | [Astro](https://astro.build) 7         | Sitio de contenido: genera HTML estático y envía casi nada de JavaScript.                    |
-| Estilos      | Tailwind CSS 4                         | Sistema de diseño en un solo lugar (`src/styles/global.css`), sin CSS muerto en producción.   |
-| Componentes  | [Magic UI](https://magicui.design) (MIT) | Solo dos componentes, copiados al repo en `src/components/ui`. Ver más abajo.               |
-| Tipografía   | Space Grotesk · Inter · JetBrains Mono | Auto-hospedadas: sin peticiones a Google Fonts.                                              |
-| Verificación | `astro check` (TypeScript strict)      | Errores de tipo detectados antes del despliegue.                                             |
+| Pieza        | Elección                                        | Por qué                                                                                    |
+| ------------ | ----------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Framework    | [Astro](https://astro.build) 7                  | Sitio de contenido: genera HTML estático y envía casi nada de JavaScript.                   |
+| Estilos      | Tailwind CSS 4                                  | Sistema de diseño en un solo lugar (`src/styles/global.css`), sin CSS muerto en producción. |
+| Tipografía   | Crimson Pro · Atkinson Hyperlegible Next · JetBrains Mono | Auto-hospedadas: sin peticiones a Google Fonts. Atkinson está diseñada para baja visión.  |
+| Idiomas      | i18n nativo de Astro                            | Español en `/`, inglés en `/en/`. Rutas reales, sin detección por navegador.                |
+| Verificación | `astro check` y siete verificadores propios     | Ver «Comandos». Sin ellos en verde, ninguna afirmación de calidad está respaldada.          |
 
-### Sobre Magic UI
+### Cuánto JavaScript envía este sitio
 
-Se evaluaron **shadcn/ui + Radix**, **Aceternity UI** y **Magic UI**. Se eligió
-Magic UI porque parte de su vocabulario de componentes coincide con el tema del
-seminario: haces que recorren un trayecto, frentes de onda concéntricos, nodos
-enlazados. shadcn/ui + Radix resuelve accesibilidad e interacción, pero este
-sitio casi no tiene widgets interactivos; sería la elección correcta si hubiera
-formularios de inscripción. Aceternity aporta efectos de mucho impacto
-(auroras, meteoritos, tarjetas 3D) que leen como landing de producto, un
-registro equivocado para un evento académico.
+**1,1 kB comprimidos**, y ninguna petición a un archivo `.js`: el poco código que
+corre —menú móvil, selector de tema, carga diferida del mapa, sección activa—
+viaja dentro del HTML.
 
-De Magic UI se conservan **dos** componentes, los que tienen correlato con la
-materia del seminario:
+Conviene saber cómo se llegó aquí, porque el camino tuvo marcha atrás:
 
-- `AnimatedBeam` — los enlaces de la red de colaboración internacional.
-- `Ripple` — frentes de onda concéntricos.
+- Se partió de **Magic UI** con `AnimatedBeam` y `Ripple`, que costaban unos
+  110 kB de React + Motion.
+- **T3** reescribió la red de colaboración con SVG y `stroke-dashoffset`, y quitó
+  Motion. El sitio pasó a no hidratar ninguna isla.
+- **T5** retiró `Ripple`: sus círculos llevaban `background-color` y unos rects
+  enormes que dejaban el texto vecino sin contraste medible para axe, y además
+  usaba sombras, que el sistema de diseño no admite.
 
-Se descartaron a propósito `MagicCard` (halo que sigue al cursor), `BorderBeam`,
-`AuroraText`, `AnimatedShinyText`, `Marquee` y `Particles`: son efectos de
-interfaz, no del tema, y su tono no corresponde a una conferencia científica.
-
-Los componentes están **copiados al repositorio**, no instalados como
-dependencia. Se pueden editar libremente y no hay riesgo de que una
-actualización cambie el diseño. Se documentan en el código las adaptaciones
-respecto del original (por ejemplo, `magic-card` importaba `next-themes`, que es
-de Next.js).
-
-React entra solo como capa de renderizado. La mayoría de los componentes se
-renderiza en el servidor **sin** directiva `client:*`, así que no envían
-JavaScript; sus animaciones son CSS. La única isla hidratada es la red de
-colaboración, porque `AnimatedBeam` mide la posición real de cada nodo en el DOM
-para trazar las curvas. Ese es el costo: unos 110 kB comprimidos de React +
-Motion para esa sección. Si se prefiere un sitio de cero JavaScript, el mismo
-efecto se puede reescribir con SVG y `stroke-dashoffset`, quitando React del
-proyecto.
+React sigue instalado como capa de renderizado, pero hoy **ningún componente se
+hidrata**. `src/components/ui/` está vacío: la base de shadcn/ui sigue montada
+—`components.json` y los alias— por si T10 incorpora componentes interactivos.
 
 ## Comandos
 
@@ -60,20 +44,56 @@ npm run dev        # servidor de desarrollo en localhost:4321
 npm run build      # generar el sitio estático en dist/
 npm run preview    # previsualizar lo generado
 npm run check      # verificación de tipos
+npm run og         # regenerar las imágenes para compartir (requiere build)
 ```
+
+### Verificación
+
+Todos requieren un `npm run build` previo. `npm run verify:todo` los corre en
+cadena y resume.
+
+| Comando                    | Qué comprueba                                                        |
+| -------------------------- | -------------------------------------------------------------------- |
+| `npm run verify`           | **La autoridad.** axe-core en 2 anchos × 2 temas × 2 idiomas, y peso   |
+| `npm run verify:tema`      | Los 17 criterios de RF-4 que axe no puede evaluar                     |
+| `npm run verify:red`       | Los 7 criterios de T3 sobre la red de colaboración                    |
+| `npm run verify:teclado`   | Foco visible, recorrido por teclado y zoom de texto al 200 % (T6)     |
+| `npm run verify:idioma`    | Los 17 criterios de RF-1, incluidos **textos sin traducir**           |
+| `npm run verify:seo`       | Los 20 criterios de RNF-3: imágenes para compartir y metadatos        |
+| `npm run verify:interaccion` | RF-6: contenido íntegro sin JavaScript y sección activa             |
 
 ## Cómo editar el contenido
 
-**Todo el contenido vive en `src/data/seminar.ts`.** No hace falta tocar el
-marcado ni los estilos para actualizar la web.
+**Todo el contenido vive en `src/data/`.** No hace falta tocar el marcado ni los
+estilos para actualizar la web.
 
-| Qué cambiar                     | Dónde                                          |
-| ------------------------------- | ---------------------------------------------- |
-| Título, subtítulo, fechas, sede | `seminar.title`, `dates`, `venue`              |
-| Expositores                     | `seminar.speakers.international` / `.national`  |
-| Instituciones y financiamiento  | `seminar.organizers`, `participants`, `funding` |
-| Texto de presentación y temas   | `seminar.about`, `seminar.topics`               |
-| Correo de contacto              | `seminar.contact.email`                         |
+El sitio es bilingüe, así que el contenido está partido en cuatro archivos:
+
+| Archivo         | Qué lleva                                                                                     |
+| --------------- | --------------------------------------------------------------------------------------------- |
+| `comun.ts`      | Lo que **no** se traduce: título oficial, nombres de instituciones y personas, dirección, fechas ISO, código del proyecto |
+| `es.ts`         | Todo el texto en español                                                                       |
+| `en.ts`         | Lo mismo en inglés                                                                             |
+| `tipos.ts`      | La interfaz que ambos idiomas deben cumplir. **No se edita al cambiar textos**                 |
+
+La regla para saber dónde va algo: *si traducirlo produce un dato falso o un
+nombre que nadie usa, va en `comun.ts`*. «Pontificia Universidad Católica de
+Valparaíso» no se traduce; «Auditorio de la Sede PUCV Santiago» sí.
+
+### Al corregir textos, tocar los dos idiomas
+
+Dos redes de seguridad, y conviene saber qué cubre cada una:
+
+- **Si falta una clave en un idioma, el proyecto no compila.** `astro check`
+  falla indicando cuál. Esto pasa al añadir contenido nuevo.
+- **Si la clave está pero con el texto sin traducir, TypeScript no lo ve**: la
+  clave existe y su tipo es `string`. Para eso está `npm run verify:idioma`, que
+  compara las dos páginas generadas y avisa de textos idénticos sin
+  justificación. **Es la comprobación que importa cuando lleguen correcciones
+  tras la revisión.**
+
+Si se cambia el título o la fecha, regenerar las imágenes para compartir con
+`npm run og`: llevan ese texto dentro y no se actualizan solas.
 
 ### Publicar el programa
 
@@ -102,15 +122,19 @@ program: {
 1. **Logos oficiales.** Los archivos de `public/logos/` son marcadores de
    posición. Ver [`public/logos/README.md`](public/logos/README.md) para el
    detalle de cada archivo y los requisitos de formato.
-2. **Afiliación de Rodolfo Feick**, hoy indicada como «Afiliación por
-   confirmar» en `src/data/seminar.ts`.
+2. **Afiliación de Rodolfo Feick**, hoy «Afiliación por confirmar» en
+   `src/data/comun.ts`.
 3. **Correo de contacto.** `seminario.wireless@pucv.cl` es un valor de ejemplo;
    reemplazar por la casilla institucional real.
 4. **Dominio.** Ajustar `site` en `astro.config.mjs` al dominio definitivo: de
-   él dependen el sitemap y las URLs de Open Graph que se ven al compartir el
-   enlace.
-5. **Imagen para compartir.** Falta un `og:image` (1200×630 px). Sin ella, al
-   compartir en redes o WhatsApp se muestra solo texto.
+   él dependen el sitemap, los `hreflang` y las URLs de las imágenes para
+   compartir. Después, regenerar con `npm run og`.
+5. **Programa.** `program.days` está vacío en ambos idiomas y la sección muestra
+   el aviso provisional. Poblarlo también desbloquea tres interacciones de RF-6
+   que hoy no se pueden implementar por falta de contenido.
+6. **Validar los datos estructurados** en <https://validator.schema.org> y ver
+   la previsualización real del enlace. Requiere el sitio publicado o pegar a
+   mano el bloque `application/ld+json` de cada página.
 
 ## Despliegue
 
@@ -232,20 +256,34 @@ una corrección de contenido se vea al instante.
 
 ```
 src/
-├── data/seminar.ts          # ← todo el contenido editable
-├── layouts/BaseLayout.astro # <head>, SEO, datos estructurados del evento
-├── pages/index.astro        # composición de las secciones
+├── data/                        # ← todo el contenido editable
+│   ├── comun.ts                 #   lo que no se traduce
+│   ├── es.ts · en.ts            #   el texto de cada idioma
+│   ├── tipos.ts                 #   la interfaz que ambos deben cumplir
+│   └── contenido.ts             #   los combina; es lo que reciben los componentes
+├── layouts/BaseLayout.astro     # <head>, SEO, hreflang, datos estructurados
+├── pages/
+│   ├── index.astro              #   español, en la raíz
+│   ├── en/index.astro           #   inglés
+│   └── og/es.astro · en.astro   #   lienzos de las imágenes para compartir
 ├── components/
+│   ├── PaginaSeminario.astro    # la página entera; las rutas solo eligen idioma
 │   ├── PropagationFigure.astro  # gráfica de propagación y detección (SVG propio)
-│   ├── CollaborationNetwork.tsx # red internacional (isla React con AnimatedBeam)
+│   ├── CollaborationNetwork.astro # red internacional, Astro puro sin hidratar
+│   ├── CartelOg.astro           # el cartel de 1200×630 que se captura
+│   ├── LanguageSelector.astro   # cambio de idioma, patrón USWDS de dos idiomas
+│   ├── ThemeSelector.astro      # tres estados con radios nativos, 0 kB
 │   ├── ProgramPending.astro     # estado provisional del programa
 │   ├── Hero.astro, SiteHeader.astro, SiteFooter.astro
 │   ├── Section.astro, SpeakerCard.astro, LogoWall.astro
 │   ├── VenueLocator.astro       # panel de la sede con mapa bajo demanda
-│   └── ui/                      # componentes de Magic UI copiados (MIT)
-├── lib/utils.ts             # helper `cn`, convención de shadcn/ui
-├── styles/global.css        # sistema de diseño (colores, tipografía, keyframes)
-└── assets/fonts/            # fuentes auto-hospedadas
+│   └── ui/                      # vacío: base de shadcn/ui montada, sin componentes
+├── lib/utils.ts                 # helper `cn`, convención de shadcn/ui
+├── styles/global.css            # sistema de diseño en tres capas de tokens
+└── assets/fonts/                # fuentes auto-hospedadas
+
+scripts/                         # los siete verificadores y el generador de imágenes
+public/og/                       # imágenes para compartir, versionadas
 ```
 
 ## Notas de diseño
