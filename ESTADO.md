@@ -639,14 +639,27 @@ pesa menos (33.996 B en 1 archivo, contra 34.732 B en 2). Está en `specs/fuente
 ## 6. Git: cómo está el remoto
 
 - El **PR #1 ya se fusionó** a `main` (2026-07-29), pero llevaba un estado viejo
-  (`9a978d8`, el sitio inicial). **No contiene T1 ni T2.**
-- La rama de trabajo tiene **13 commits sin fusionar** por delante de ese punto: es
-  todo el trabajo SDD.
+  (`9a978d8`, el sitio inicial). **No contiene T1 ni T2.** Está `MERGED`, no
+  simplemente cerrado: esta sección decía «cerrado» y se corrigió el 2026-07-31.
+- La rama de trabajo tiene **39 commits sin fusionar** por delante de ese punto:
+  es todo el trabajo SDD, de T1 a T10. Subida a `origin` el 2026-07-31 (`cf7fffc`).
 - El contenido de la rama es un **superconjunto** de `main`: `main` no tiene nada
   que la rama no tenga. No hay que fusionar nada hacia atrás.
-- Como el PR #1 está cerrado, el trabajo posterior necesita un **PR nuevo**. No
-  reabrir ni reutilizar el #1.
-- **No crear PR sin que Daniel lo pida.**
+- El trabajo posterior necesita un **PR nuevo**. No reabrir ni reutilizar el #1.
+
+### El PR nuevo lo tiene que abrir Daniel
+
+`gh` en este equipo está autenticado como **`danielcaignet-dataseed`**, que solo
+tiene permiso **`READ`** sobre `Daniel990310/Seminario-Wireless-Lab`. Crear el PR
+falla con `must be a collaborator`. El `git push` sí funciona porque va por SSH
+con otra credencial.
+
+Dos formas de resolverlo:
+
+1. Abrirlo desde la web:
+   <https://github.com/Daniel990310/Seminario-Wireless-Lab/compare/main...claude/framework-app-profesional-n4wa0t?expand=1>
+2. O autenticar `gh` con la cuenta `Daniel990310` (`gh auth login`) y entonces sí
+   se puede crear desde la terminal.
 
 ## 6b. Servidor MCP de 21st.dev
 
