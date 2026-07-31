@@ -8,11 +8,20 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 > **Si no está escrito en el repositorio, no ocurrió.**
 
 Actualizado: **2026-07-30 noche** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
-· Último commit de tarea: `918a13e` (T4); después hay commits de documentación y de flujo SDD
+· Último commit de tarea: `dcaf20a` (T5, RNF-1.4 y T4b)
 
-> **T5 y la parte de T6 que cierra RNF-1.4 están implementadas y verificadas, pero
-> SIN COMMITEAR.** `npm run verify` quedó en verde por primera vez: 0 hallazgos,
-> 0 indeterminados, 0 secciones sin nombre, todos los presupuestos cumplidos.
+> **`npm run verify` está en verde por primera vez:** 0 hallazgos de axe,
+> 0 nodos indeterminados, 0 secciones sin nombre, todos los presupuestos
+> cumplidos. Los tres verificadores en verde con `npm run verify:todo`.
+>
+> Commits de esta sesión, todos en la rama de trabajo:
+>
+> | Commit | Qué |
+> | ------ | --- |
+> | `dcaf20a` | T5, RNF-1.4 y T4b en el código |
+> | `3f147c2` | Registro en las especificaciones |
+> | `707475d` | Retirada de `Ripple`, sin uso tras T5 |
+> | `a6610d4` | RNF-2.1 pasa a medir también el JavaScript en línea |
 
 ## 0b. Primera sesión de Antigravity — 2026-07-30, noche
 
