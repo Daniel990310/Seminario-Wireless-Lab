@@ -43,6 +43,34 @@ cierre de T2. Se obtienen con `npm run build && npm run verify` y
 | Tipografías | 110,9 kB | Suma de los woff2 en `dist/_astro/fonts` |
 | Criterios de RF-4 | 16 de 16 | `npm run verify:tema` |
 
+### Después de T5
+
+Mismo comando: `npm run build && npm run verify`, 2 anchos × 2 temas.
+
+| Cifra | Valor | Cómo se obtuvo |
+| ----- | ----- | -------------- |
+| Contraste insuficiente | **0 nodos** en las 4 corridas | Sin cambio respecto de T2 |
+| Contraste indeterminado | **0 nodos** en las 4 corridas, eran 104 | Categoría `incomplete`. RNF-1.3 cerrado |
+| Secciones sin nombre accesible | **0 de 7**, eran 7 de 7 | `aria-labelledby` en cada `<section>` apuntando a su encabezado. RNF-1.4 cerrado |
+| JavaScript comprimido | 0,0 kB | Suma de los `.js` de `dist/`. **No incluye los scripts que Astro inlinea en el HTML**, que sí existen: ver `ESTADO.md` §5c |
+| Primera carga comprimida | 137,0 kB | JS + CSS + HTML + tipografías |
+| Tipografías | 122,6 kB | Sin cambio respecto de T4 |
+
+**Cómo se localizaron los 104 nodos.** No se dedujeron: se corrió axe sobre `dist/`
+con `.reveal { opacity: 1 !important }` —sin eso axe omite el contenido oculto y
+cuenta 66 en vez de 104— y se agruparon los nodos `incomplete` por selector y por
+`messageKey`. Para la cola final se llamó a `axe.commons.dom.getTextElementStack()`
+en el navegador, previa `axe.setup()` —`axe.run()` desmonta su árbol virtual al
+terminar, y sin `setup()` la llamada falla con `_grid` nulo—, que devuelve la pila
+de elementos que axe ve en cada línea de texto. Eso identificó a los culpables por
+nombre: `div.animate-ripple` y `path.fig-wave`.
+
+**Regla que se desprende, y que vale para cualquier medición futura:** axe razona
+con `clientRects`, y `overflow: hidden` recorta el dibujo pero **no** encoge los
+rects de los descendientes. Un elemento decorativo grande y absolutamente
+posicionado sigue «tapando» texto para axe aunque no se vea. El mecanismo completo
+y las tres hipótesis descartadas por medición están en `ESTADO.md` §5b.
+
 **Ratios de contraste que fijaron los tokens.** Medidos pareja por pareja antes de
 escribir el valor en `global.css`, no estimados. El umbral es 4,5:1 para texto
 normal y 3:1 para texto grande y para límites de controles (WCAG 1.4.11).

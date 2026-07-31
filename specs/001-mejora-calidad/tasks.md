@@ -281,14 +281,23 @@ Revisión visual del par en el sitio real, no en una muestra.
 
 ## T4b · Refinamiento visual con componentes estáticos de 21st.dev
 
-**Satisface:** D4, 21st.dev MCP Integration · **Depende de:** T4
+**Satisface:** D4, 21st.dev MCP Integration · **Depende de:** T4 y **T5**
 **Acordado con el cliente el 30 de julio de 2026.**
+
+La dependencia de T5 se añadió el 2026-07-30: T5 rehace la retícula, mueve la
+figura de propagación a columnas propias y reordena los bloques. Refinar
+visualmente las secciones antes de eso es trabajo que T5 deshace.
 
 - Exploración de componentes estáticos (sin JS) en el catálogo de 21st.dev (`search`, `get_inspiration`).
 - Prototipado con `generate` (modo `sketch`) y reimplementación nativa en Astro puro para no agregar JavaScript.
 - Aplicar a secciones clave manteniendo el registro visual de conferencia académica.
 
 **Comprobación:** cero JavaScript agregado (mantiene 0,0 kB), 0 hallazgos de axe.
+
+**Cumplida el 2026-07-30, sin usar el catálogo.** `generate` estaba agotado y lo que
+devuelve `search` no pasa el filtro de registro visual de `habilidades.md` §5. El
+refinamiento salió de auditar la composición existente: alineación, ritmo y una
+quita. Detalle en `ESTADO.md` §5d. JavaScript sigue en 0,0 kB y axe en 0 hallazgos.
 
 ---
 
@@ -305,6 +314,11 @@ Revisión visual del par en el sitio real, no en una muestra.
 
 **Comprobación:** `npm run verify` reporta **cero** nodos indeterminados. El
 resultado se registra en `verification.md`.
+
+**Cumplida el 2026-07-30:** 104 → 0. Lo que costó no fue la retícula sino la cola
+final: axe razona con `clientRects` y `overflow: hidden` no los encoge, así que
+`Ripple` y los `path` del SVG seguían tapando texto para la herramienta sin taparlo
+a la vista. Mecanismo y descartes en `ESTADO.md` §5b.
 
 ---
 

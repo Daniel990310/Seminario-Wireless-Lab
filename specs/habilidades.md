@@ -194,9 +194,10 @@ Aparte de la red, el servidor pide autorización interactiva, que no se puede
 completar en una sesión no interactiva: eso se resuelve con `/mcp` en una sesión
 interactiva o desde los ajustes de conectores de claude.ai.
 
-**Ninguna tarea del plan depende de esto.** 21st.dev genera componentes de interfaz,
-y eso solo aparece en T10, que además está bloqueada porque RF-6 es una propuesta del
-agente y no un requisito del cliente. T4, T5 y T6 no lo necesitan.
+**Ninguna tarea del plan queda bloqueada por esto**, ni siquiera ahora que 21st.dev
+aparece en T4b y T10: T4, T5 y T6 no lo necesitan, y T4b se puede resolver sin el
+catálogo. Desde el 2026-07-30 el servidor **funciona desde el PC de Daniel**, así que
+lo de arriba solo aplica al entorno remoto.
 
 **Nunca pegar la clave en el chat ni en un archivo del repositorio.** Va en el
 entorno del proceso de Claude Code, y hay exactamente dos vías que funcionan:
@@ -393,10 +394,27 @@ Y `search` se puede sustituir por navegar directamente el catálogo en
 ### Qué desbloquea y qué no
 
 Con la enmienda de peso, la objeción principal contra los componentes React del
-catálogo desaparece. **Lo que sigue bloqueado es T10** (componentes interactivos):
-RF-6 es propuesta del agente, no requisito del cliente, y el peso relajado no la
-desbloquea — lo que falta es que Daniel confirme que quiere esas interacciones.
+catálogo desaparece. **T10 ya no está bloqueada:** Daniel confirmó RF-6 el
+2026-07-30, que era lo único que faltaba. Queda registrado en `ESTADO.md` §4.
 
-Lo que sí está desbloqueado: usar 21st.dev para **componentes estáticos** (sin JS)
-en cualquier tarea que toque la composición visual del sitio (T5, T7, T8), siempre
-que pasen el filtro de §5 y sirvan a un requisito escrito.
+Usar 21st.dev para **componentes estáticos** (sin JS) en cualquier tarea que toque
+la composición visual del sitio (T4b, T5, T7, T8) sigue siendo la vía preferente,
+siempre que pasen el filtro de §5 y sirvan a un requisito escrito.
+
+### Lo que la cuota deja hacer de verdad `[medido]` el 2026-07-30
+
+- **`generate` devolvió `{"locked": true, "reason": "generation_limit_reached"}`**
+  en el primer intento del día, con `mode: 'sketch'` y 3 variantes. El plan
+  gratuito trae generaciones diarias y `get_usage` **no las expone**: solo informa
+  las recuperaciones de código. No hay forma de comprobar la cuota antes de
+  gastarla; hay que intentar y leer la respuesta.
+- `get_usage` sí informó `tier: free`, `freeRetrievalsPerDay: 2`. Las búsquedas no
+  tienen límite diario (`freeSearchesPerDay: null`).
+- **`get_inspiration` devolvió `contextApplied: false`** aun pasándole el objeto de
+  `.21st/design.json`. El reordenamiento por contexto de proyecto no se aplicó, así
+  que los resultados vienen del ranking genérico.
+- Consecuencia práctica: para el registro visual de este proyecto el catálogo rinde
+  poco. Una búsqueda de hero editorial para conferencia académica devolvió
+  mayoritariamente retículas de puntos con WebGL, degradados y heros de lista de
+  espera. **El filtro de §5 descarta casi todo lo que devuelve `search`.** Conviene
+  contar con eso antes de planificar una tarea que dependa del catálogo.

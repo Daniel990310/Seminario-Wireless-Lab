@@ -10,6 +10,10 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 Actualizado: **2026-07-30 noche** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
 · Último commit de tarea: `918a13e` (T4); después hay commits de documentación y de flujo SDD
 
+> **T5 y la parte de T6 que cierra RNF-1.4 están implementadas y verificadas, pero
+> SIN COMMITEAR.** `npm run verify` quedó en verde por primera vez: 0 hallazgos,
+> 0 indeterminados, 0 secciones sin nombre, todos los presupuestos cumplidos.
+
 ## 0b. Primera sesión de Antigravity — 2026-07-30, noche
 
 Traspaso recibido de Claude (§0). Se leyeron `AGENTS.md`, `ESTADO.md`, `requirements.md`,
@@ -142,9 +146,9 @@ cualquier herramienta y no solo a Claude Code.
 | T2 · Tokens en tres capas y selector de tema (RF-4) | **Completada y verificada.** 0 hallazgos de contraste en las 4 corridas |
 | T3 · Quitar Motion y montar la base de shadcn/ui | **Completada y verificada.** JavaScript a 0,0 kB. Ver §5 |
 | T4 · Tipografía | **Completada y verificada.** Crimson Pro + Atkinson Hyperlegible Next (122,6 kB) |
-| T4b · Refinamiento visual con 21st.dev | **Aceptada por Daniel (2026-07-30).** Componentes estáticos (sin JS) |
-| T5 · Retícula de 12 columnas (RNF-1.3) | Pendiente. Cierra los nodos indeterminados |
-| T6 · Nombres accesibles y teclado (RNF-1.4) | Pendiente |
+| T4b · Refinamiento visual | **Completada y verificada.** Sin componentes del catálogo: ver §5d |
+| T5 · Retícula de 12 columnas (RNF-1.3) | **Completada y verificada.** 104 → **0** nodos indeterminados. Ver §5b |
+| T6 · Nombres accesibles y teclado (RNF-1.4) | **Parcial.** RNF-1.4 cerrado (0 de 7 secciones sin nombre). Faltan foco visible, recorrido por teclado y zoom al 200 % |
 | T7 · Sitio bilingüe (RF-1) | Pendiente |
 | T8 · `og:image` por idioma | Pendiente |
 | T9 · Verificación final | Pendiente |
@@ -157,8 +161,8 @@ Con `npm run build && npm run verify` al cerrar T4:
 | Comprobación | Valor | Límite | |
 | ------------ | ----- | ------ | - |
 | RNF-1.1 Hallazgos axe WCAG 2.1 AA | 0 | 0 | cumple |
-| RNF-1.3 Nodos con contraste indeterminado | 104 | 0 | **abierto → T5** |
-| RNF-1.4 Secciones sin nombre accesible | 7 | 0 | **abierto → T6** |
+| RNF-1.3 Nodos con contraste indeterminado | **0** (eran 104) | 0 | cumple |
+| RNF-1.4 Secciones sin nombre accesible | **0** (eran 7) | 0 | cumple |
 | RNF-1.5 Saltos de nivel en encabezados | 0 | 0 | cumple |
 | RNF-2.1 JavaScript comprimido | **0,0 kB** | 115 kB → informativo | cumple |
 | RNF-2.2 Primera carga comprimida | **136,1 kB** | 260 kB → informativo | cumple |
@@ -184,6 +188,110 @@ Hay tres verificadores, y `npm run verify:todo` los corre en cadena:
 | `npm run verify:red` | Los 7 criterios de T3: que el pulso recorra, que se detenga con movimiento reducido, y que el navegador no pida ningún `.js` |
 
 Todos requieren un `npm run build` previo.
+
+## 5b. T5, cómo quedó y qué falta
+
+**Completada el 2026-07-30: 104 → 0 nodos indeterminados.** `[medido]` Con RNF-1.4
+cerrado en la misma sesión, `npm run verify` quedó **en verde por primera vez**.
+
+Lo que se hizo, con la causa medida de cada grupo antes de tocar nada (el desglose
+salió de correr axe y agrupar los nodos `incomplete` por selector y `messageKey`):
+
+| Grupo | Nodos | Causa medida | Qué se hizo |
+| ----- | ----- | ------------ | ----------- |
+| Hero | ~10 | Los dos degradados de contraste y `grid-backdrop` quedaban bajo el texto | La figura pasa a columnas propias (8–12) en una retícula de 12; se eliminan los degradados; las tarjetas Fechas/Lugar quedan opacas, sin `backdrop-blur` |
+| Header | 11 | La barra `fixed` era transparente sobre esos degradados | Fondo `bg-background` opaco y filete permanentes |
+| ProgramPending y VenueLocator | 9 | `Ripple` renderizado detrás del texto | Frentes de onda a una banda propia y, después, retirados: ver abajo |
+| Cola larga | 14 | `Ripple` y los `path` del SVG **por rects**, no a la vista | `Ripple` retirado; pie de figura del hero suprimido |
+
+### La lección que cuesta cara: `overflow-hidden` no encoge los rects
+
+Los últimos 14 nodos resistieron tres intentos y la causa no era la que parecía.
+Leyendo la fuente de axe-core (`node_modules/axe-core/axe.js`, función
+`_getBackgroundStack`) el mecanismo es este:
+
+1. `getTextElementStack(node)` calcula **un rect por cada línea de texto**.
+2. Para cada línea toma el centro y busca qué elementos lo cubren.
+3. Si el elemento no es el primero de esa pila → `bgOverlap`.
+4. Si dos líneas del mismo texto dan pilas distintas → `elmPartiallyObscuring`.
+5. Si un elemento de la pila tiene fondo y no cubre todos los rects de texto →
+   `elmPartiallyObscured`.
+
+La clave es que axe usa **`clientRects`**, y `overflow: hidden` recorta el dibujo
+pero **no** encoge los rects de los hijos. Por eso:
+
+- Los círculos de `Ripple` miden hasta 470–540 px, llevan `background-color`
+  (`bg-foreground/25`) y sus rects atravesaban la banda que los contenía,
+  alcanzando textos de otras secciones al apilarse en móvil.
+- Los `path` de los frentes de onda del SVG tienen rects mucho mayores que su
+  parte visible: unas líneas del pie de figura caían dentro y otras fuera, de
+  modo que las pilas diferían.
+
+Tres hipótesis se **descartaron midiendo**, no razonando, y conviene no repetirlas:
+no era el `header` fijo (forzarlo a `position: static` empeora de 14 a 20 nodos), no
+era la cadena de ancestros sin fondo (declarar `bg-background` no cambió nada), y no
+era que los nodos quedaran fuera del viewport (con la página entera dentro del
+viewport salen exactamente los mismos).
+
+### Lo que se retiró, y por qué
+
+- **`Ripple` en `ProgramPending` y `VenueLocator`.** Además del problema de rects,
+  usaba `shadow-xl`, que contradice la regla del propio sistema de separar con
+  retícula y no con elevación (`global.css`, `.surface`). El motivo físico de la
+  propagación sigue presente y mejor resuelto en la figura del hero.
+  `src/components/ui/ripple.tsx` **queda en el repositorio sin uso**: revertir es
+  reponer el import. Si se decide que no vuelve, ese archivo y el token
+  `--animate-ripple` de `global.css` sobran.
+- **El pie de la figura del hero.** Se había añadido en esta misma sesión; no lo
+  pide ningún requisito. La descripción no se pierde: el SVG ya declara
+  `role="img"` y `aria-labelledby="fig-title fig-desc"`.
+
+### Efectos colaterales, los tres deliberados
+
+- Desapareció el script que sincronizaba la barra con el desplazamiento. Era
+  JavaScript **inline** en el HTML, que RNF-2.1 no contabiliza: ver §5c.
+- El panel de `VenueLocator` tenía altura fija y su texto desbordaba en anchos
+  estrechos. Pasó a altura mínima. Era un defecto real de composición.
+- La barra ya no es translúcida sobre el hero. Es una pérdida de efecto a cambio
+  de 11 nodos y de un script menos.
+
+## 5d. T4b, refinamiento visual
+
+Hecha después de T5, no antes, porque T5 rehacía la retícula. **No entró ningún
+componente de 21st.dev**, y la razón está medida en `habilidades.md`: el catálogo
+devuelve retículas de puntos con WebGL, degradados y heros de lista de espera, y el
+filtro de registro visual los descarta. Se trabajó sobre lo que una dirección
+minimalista sí exige: precisión de espaciado, alineación y detalle.
+
+Cuatro cambios, cada uno por un defecto concreto y no por gusto:
+
+| Qué | Defecto | Cambio |
+| --- | ------- | ------ |
+| `ProgramPending` | Único bloque centrado de la página, flotando en una caja gris con mucho aire muerto: leía como cartel de error | Alineado al mismo eje que el resto, en dos columnas, como ficha de estado |
+| `SpeakerCard` | Tarjeta con caja que terminaba en un filete suelto al pie, que no separaba nada | Ficha sin caja, colgando de un filete **superior**, que sí marca dónde empieza |
+| Sección Sede | `lg:items-center` dejaba un vacío grande sobre la dirección | `lg:items-start` |
+| Figura del hero | Encerrada en una caja con borde, leía como «una imagen» | Suelta en su columna, a la altura del bloque de texto |
+
+Y una quita: **el `grid-backdrop` del hero**. Su paso de 72 px no se alineaba con la
+retícula de 12 columnas ni con nada, y competía con la retícula **polar** del radar,
+que sí significa algo —son los anillos de rango—. Dos retículas que dicen cosas
+distintas es una de más. `grid-backdrop` sigue en uso en la banda del localizador,
+donde evoca un plano y ahí sí viene a cuento.
+
+`npm run verify:todo` en verde después de cada cambio, y revisión visual en los dos
+temas y los dos anchos.
+
+## 5c. RNF-2.1 no mide todo el JavaScript
+
+`verify` informa `JavaScript comprimido 0,0 kB` porque suma los archivos `.js` de
+`dist/`, y Astro **inlinea** los scripts pequeños dentro del HTML. El sitio sí
+ejecuta JavaScript en el cliente: el menú móvil, el selector de tema, la carga
+diferida del mapa y —hasta T5— la barra. Ese peso entra en «primera carga», no en
+«JavaScript». `[medido]`
+
+Ni la cifra ni `verify:red` son falsos: el navegador efectivamente no pide ningún
+`.js`. Pero leer «0,0 kB de JavaScript» como «el sitio no tiene JavaScript» es un
+error, y conviene saberlo antes de apoyarse en esa cifra.
 
 ## 5. T3, cómo quedó
 
@@ -237,12 +345,12 @@ pesa menos (33.996 B en 1 archivo, contra 34.732 B en 2). Está en `specs/fuente
 
 ## 6b. Servidor MCP de 21st.dev
 
-**FUNCIONA desde el PC de Daniel (verificado el 2026-07-30).** `mcp__21st__get_usage`
-respondió autenticado: `tier: free`, 2 recuperaciones de código por día, y una búsqueda
-real devolvió resultados del catálogo. La clave está definida como variable de entorno
-de **usuario** en Windows, que es una de las dos vías válidas. Las shells que abre esta
-sesión no la ven (`$env:API_KEY_21ST` sale vacía), pero el proceso de Claude Code sí la
-tenía al arrancar, que es el único momento en que importa.
+**FUNCIONA desde el PC de Daniel.** `[verificado]` El 2026-07-30, ya con la clave
+nueva, `mcp__21st__get_usage` respondió autenticado: `tier: free`, 2 recuperaciones de
+código por día (2 disponibles), búsquedas sin límite diario. La clave está definida como
+variable de entorno de **usuario** en Windows, que es una de las dos vías válidas, y las
+shells que abre esta sesión ya la ven (`$env:API_KEY_21ST` tiene valor). Antes de fijarla
+a nivel de usuario no la veían; eso quedó resuelto.
 
 Lo que sigue es la cronología de cuando no funcionaba, que se conserva porque explica
 qué mirar si vuelve a fallar:
@@ -269,21 +377,34 @@ claude
 y aprobar `21st` cuando `/mcp` lo pida. Si se quiere persistente entre sesiones,
 definir `API_KEY_21ST` como variable de entorno de usuario en Windows en vez de
 exportarla cada vez, o usar el bloque `env` de `.claude/settings.local.json` (que
-Claude Code inyecta antes de expandir `.mcp.json`, y que está en `.gitignore`).
+Claude Code inyecta antes de expandir `.mcp.json`, y que está en `.gitignore`). Las dos
+vías están documentadas en `.env.example`; es la vía (a) la que quedó en uso.
+
+**Qué pasó el 2026-07-30 con la clave:**
+
+- Daniel fijó una clave nueva con
+  `[System.Environment]::SetEnvironmentVariable('API_KEY_21ST','<clave>','User')`. La
+  clave que hay ahora en el entorno autentica contra 21st.dev. `[verificado]`
+- **No consta que la clave vieja haya sido revocada en el dashboard de 21st.dev.**
+  `[supuesto]` Cambiar el valor de la variable de entorno reemplaza cuál se usa, no
+  invalida la anterior: la comprometida sigue viva hasta que se borre desde
+  https://21st.dev. Pendiente de confirmar con Daniel.
+- La clave **no** quedó en el historial de PowerShell
+  (`ConsoleHost_history.txt` no contiene ninguna ocurrencia de `API_KEY_21ST`).
+  `[verificado]`
+- El `.env` sin versionar ya no existe en este clon. Pendiente cerrado para este
+  entorno; sigue anotado por si el archivo reaparece en otro. `[verificado]`
+- Una variable de entorno de usuario vive en texto plano en `HKCU:\Environment` y la
+  lee cualquier proceso del usuario. Es aceptable para una clave de tier free; no lo
+  sería para una credencial con costo asociado.
+
+Para que un proceso nuevo (Claude Code o Antigravity) tome la clave, basta abrir una
+terminal nueva después de fijar la variable: un proceso ya en marcha no la ve.
 
 **Un `.env` NO alimenta esto.** Claude Code no carga archivos `.env`. Hasta el
 2026-07-30, `.gitignore`, `.env.example` y `specs/habilidades.md` afirmaban que la
 clave podía "vivir en el entorno o en un `.env` local"; la segunda mitad era falsa y
 hacía perder tiempo. Los tres archivos quedaron corregidos.
-
-**La clave que se compartió en el chat el 2026-07-30 está comprometida** (quedó en
-la transcripción) y debe rotarse en 21st.dev antes de usarse. No se guardó en
-ningún archivo versionado del repositorio.
-
-**Pendiente para Daniel:** el 2026-07-30 había un `.env` sin versionar en el PC con un
-valor de `API_KEY_21ST` dentro, inerte por lo anterior y posiblemente la clave
-comprometida. Daniel se encarga de borrarlo; queda anotado por si el archivo reaparece
-en otro clon.
 
 Sigue sin ser bloqueante: nada antes de T10 lo necesita.
 
