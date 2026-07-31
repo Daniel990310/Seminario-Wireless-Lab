@@ -1,44 +1,70 @@
 ---
-import { seminar } from '~/data/seminar';
+import ThemeSelector from './ThemeSelector.astro';
+import LanguageSelector from './LanguageSelector.astro';
+import type { Contenido } from '~/data/contenido';
+import type { Idioma } from '~/data/contenido';
 
-const links = [
-  { href: '#seminario', label: 'El seminario' },
-  { href: '#programa', label: 'Programa' },
-  { href: '#expositores', label: 'Expositores' },
-  { href: '#sede', label: 'Sede' },
-  { href: '#organizacion', label: 'Organización' },
-];
+interface Props {
+  c: Contenido;
+}
 
-const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
-  'Consulta — Beyond Connectivity 2026',
-)}`;
+const { c } = Astro.props;
+const lang = c.lang as Idioma;
+const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asuntoConsulta)}`;
 ---
 
+<!--
+  Fondo opaco permanente, no translúcido (T5).
+
+  Antes la barra era transparente sobre el hero y ganaba fondo al hacer scroll.
+  Eso dejaba su texto —logo, seis enlaces, los rótulos del selector de tema y el
+  botón de contacto: 11 nodos— con el contraste indeterminado, porque detrás
+  había los degradados del hero. Un color plano lo resuelve de raíz y, de paso,
+  elimina el script que sincronizaba la barra con el desplazamiento.
+-->
 <header
   id="site-header"
-  class="fixed inset-x-0 top-0 z-40 border-b border-transparent transition-colors duration-300"
+  class="fixed inset-x-0 top-0 z-40 border-b border-border bg-background"
 >
-  <nav class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
+  <!--
+    `flex-wrap` para el zoom de texto (WCAG 1.4.4, T6). Los `media query` de
+    Tailwind se resuelven en `rem` sobre el tamaño **inicial** del navegador, así
+    que quien solo agranda la fuente —sin ampliar la página— sigue recibiendo el
+    diseño de escritorio con el texto al doble, y la barra desbordaba a la
+    derecha. Envolviendo, la barra crece hacia abajo en vez de salirse.
+  -->
+  <nav class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-4 sm:px-8">
     <a href="#top" class="flex items-center gap-3">
       <span
-        class="grid size-8 shrink-0 place-items-center rounded-full border border-signal-400/40 bg-signal-400/5"
+        class="grid size-8 shrink-0 place-items-center rounded-full border border-primary/40 bg-primary/8"
         aria-hidden="true"
       >
-        <span class="block size-1.5 rounded-full bg-signal-300"></span>
+        <span class="block size-1.5 rounded-full bg-primary"></span>
       </span>
       <span class="leading-tight">
-        <span class="block font-display text-sm font-semibold text-mist-100">Beyond Connectivity</span>
-        <span class="eyebrow block text-[0.6rem] text-mist-400">
-          {seminar.dates.shortLabel} · PUCV
+        <!-- Título oficial abreviado, en inglés en ambos idiomas (RF-1.2). -->
+        <span class="block font-display text-sm font-semibold text-foreground">{c.tituloCorto}</span>
+        <span class="eyebrow block text-[0.6rem] text-muted-foreground">
+          {c.dates.shortLabel} · {c.organizers[0].shortName}
         </span>
       </span>
     </a>
 
+    <!--
+      `data-nav` marca los enlaces que siguen a la sección visible (RF-6). El
+      resaltado se aplica con `aria-current="location"`, no solo con color: es el
+      valor que ARIA define para «dónde estoy dentro de un flujo», y sin él la
+      ubicación solo la percibiría quien distingue el color.
+    -->
     <ul class="hidden items-center gap-7 lg:flex">
       {
-        links.map((link) => (
+        c.nav.map((link) => (
           <li>
-            <a href={link.href} class="text-sm text-mist-300 transition-colors hover:text-signal-300">
+            <a
+              href={link.href}
+              data-nav={link.href.slice(1)}
+              class="text-sm text-muted-foreground transition-colors hover:text-primary aria-[current]:text-primary aria-[current]:font-medium"
+            >
               {link.label}
             </a>
           </li>
@@ -47,11 +73,19 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
     </ul>
 
     <div class="flex items-center gap-2">
+      <div class="hidden sm:block">
+        <LanguageSelector actual={lang} legend={c.ui.idioma.legend} />
+      </div>
+
+      <div class="hidden sm:block">
+        <ThemeSelector group="tema-barra" c={c} />
+      </div>
+
       <a
         href={mailto}
-        class="hidden rounded-full border border-signal-400/40 bg-signal-400/10 px-4 py-2 text-sm font-medium text-signal-300 transition-colors hover:bg-signal-400/20 sm:block"
+        class="hidden rounded-control border border-primary/40 bg-primary/8 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/15 sm:block"
       >
-        Contacto
+        {c.ui.contacto}
       </a>
 
       <!--
@@ -60,24 +94,26 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
       -->
       <details class="relative lg:hidden" data-mobile-menu>
         <summary
-          class="flex size-10 cursor-pointer list-none items-center justify-center rounded-full border border-abyss-600 text-mist-200 transition-colors hover:border-signal-400/50 hover:text-signal-300 [&::-webkit-details-marker]:hidden"
-          aria-label="Abrir menú de navegación"
+          class="flex size-10 cursor-pointer list-none items-center justify-center rounded-full border border-border-control text-foreground transition-colors hover:border-primary/50 hover:text-primary [&::-webkit-details-marker]:hidden"
+          aria-label={c.ui.abrirMenu}
         >
           <svg class="size-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
             <path d="M2 4.5h12M2 8h12M2 11.5h12" stroke-linecap="round" />
           </svg>
         </summary>
 
+        <!-- Opaco y sin sombra: igual que la barra, y el sistema separa con retícula, no con elevación. -->
         <div
-          class="absolute right-0 mt-3 w-60 overflow-hidden rounded-xl border border-abyss-600/60 bg-abyss-900/95 shadow-2xl backdrop-blur-lg"
+          class="absolute right-0 mt-3 w-60 overflow-hidden rounded-surface border border-border bg-surface"
         >
-          <ul class="divide-y divide-abyss-700/50">
+          <ul class="divide-y divide-border">
             {
-              links.map((link) => (
+              c.nav.map((link) => (
                 <li>
                   <a
                     href={link.href}
-                    class="block px-5 py-3.5 text-sm text-mist-200 transition-colors hover:bg-signal-400/10 hover:text-signal-300"
+                    data-nav={link.href.slice(1)}
+                    class="block px-5 py-3.5 text-sm text-foreground transition-colors hover:bg-primary/10 hover:text-primary aria-[current]:text-primary aria-[current]:font-medium"
                   >
                     {link.label}
                   </a>
@@ -87,10 +123,23 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
             <li>
               <a
                 href={mailto}
-                class="block px-5 py-3.5 text-sm font-medium text-signal-300 transition-colors hover:bg-signal-400/10"
+                class="block px-5 py-3.5 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
               >
-                Contacto
+                {c.ui.contacto}
               </a>
+            </li>
+            <!--
+              El rótulo va encima y no al lado: en el panel de 15rem el selector
+              y un rótulo en la misma fila no caben, y «Sistema» quedaba cortado
+              contra el `overflow-hidden` del panel.
+            -->
+            <li class="flex flex-col items-start gap-2 px-5 py-3.5 sm:hidden">
+              <span class="eyebrow text-muted-foreground">{c.ui.idioma.legend}</span>
+              <LanguageSelector actual={lang} legend={c.ui.idioma.legend} />
+            </li>
+            <li class="flex flex-col items-start gap-2 px-5 py-3.5 sm:hidden">
+              <span class="eyebrow text-muted-foreground">{c.ui.tema.legend}</span>
+              <ThemeSelector group="tema-menu" c={c} />
             </li>
           </ul>
         </div>
@@ -100,19 +149,55 @@ const mailto = `mailto:${seminar.contact.email}?subject=${encodeURIComponent(
 </header>
 
 <script>
-  // La barra gana fondo sólido al alejarse del hero.
-  const header = document.getElementById('site-header');
+  /*
+   * Sección activa en la navegación (RF-6).
+   *
+   * Es la única de las cinco interacciones de RF-6 que no necesita una
+   * primitiva: `IntersectionObserver` basta y cuesta unas líneas, frente a los
+   * ~36 kB que costaría traer Radix.
+   *
+   * Sin JavaScript no pasa nada: los enlaces siguen llevando a su sección. Lo
+   * que se pierde es saber en cuál se está, que es una ayuda, no el contenido.
+   *
+   * Se marca con `aria-current="location"` —el valor que ARIA define para la
+   * ubicación dentro de un flujo— y no solo con color, para que la información
+   * llegue también a un lector de pantalla.
+   */
+  const enlaces = [...document.querySelectorAll<HTMLAnchorElement>('a[data-nav]')];
+  const secciones = enlaces
+    .map((a) => document.getElementById(a.dataset.nav ?? ''))
+    .filter((s): s is HTMLElement => !!s);
 
-  if (header) {
-    const solid = ['bg-abyss-950/85', 'backdrop-blur-md', 'border-abyss-600/40'];
+  if (secciones.length) {
+    // Se guarda la última sección visible en lugar de reaccionar a cada
+    // entrada: al desplazarse rápido hay varias cruzando el umbral a la vez, y
+    // sin esto el resaltado parpadea entre dos.
+    const visibles = new Set<string>();
 
-    const sync = () => {
-      header.classList.toggle('border-transparent', window.scrollY <= 24);
-      for (const cls of solid) header.classList.toggle(cls, window.scrollY > 24);
+    const pintar = () => {
+      // Gana la primera del documento entre las visibles: es la que encabeza
+      // la parte de la página que se está leyendo.
+      const activa = secciones.find((s) => visibles.has(s.id))?.id ?? null;
+      for (const enlace of enlaces) {
+        if (enlace.dataset.nav === activa) enlace.setAttribute('aria-current', 'location');
+        else enlace.removeAttribute('aria-current');
+      }
     };
 
-    sync();
-    window.addEventListener('scroll', sync, { passive: true });
+    const observador = new IntersectionObserver(
+      (entradas) => {
+        for (const entrada of entradas) {
+          if (entrada.isIntersecting) visibles.add(entrada.target.id);
+          else visibles.delete(entrada.target.id);
+        }
+        pintar();
+      },
+      // El margen superior descuenta la barra fija: sin él, una sección se
+      // considera visible cuando todavía está detrás del encabezado.
+      { rootMargin: '-96px 0px -55% 0px', threshold: 0 },
+    );
+
+    for (const seccion of secciones) observador.observe(seccion);
   }
 
   // El menú se cierra al elegir un destino o al pulsar fuera.

@@ -1,16 +1,71 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 
-// Ajustar `site` al dominio definitivo antes de publicar: define las URLs
-// absolutas del sitemap y de las etiquetas Open Graph.
+/*
+ * Dominio del sitio.
+ *
+ * `site` define las URLs absolutas del sitemap, del enlace canónico y de las
+ * etiquetas Open Graph. Se resuelve desde el entorno para que un despliegue de
+ * previsualización se anuncie con su propia URL en lugar de apuntar a un
+ * dominio que todavía no existe.
+ *
+ * Cuando el dominio institucional esté listo, basta con definir SITE_URL en el
+ * panel del hosting (o cambiar PRODUCTION_SITE aquí abajo).
+ */
+export const PRODUCTION_SITE = 'https://seminario-wireless.pucv.cl';
+
+const site =
+  process.env.SITE_URL || // Anulación manual
+  process.env.CF_PAGES_URL || // Cloudflare Pages
+  process.env.DEPLOY_PRIME_URL || // Netlify: previsualización por rama
+  process.env.URL || // Netlify: producción
+  PRODUCTION_SITE;
+
 export default defineConfig({
-  site: 'https://seminario-wireless.pucv.cl',
+  site,
   output: 'static',
-  integrations: [sitemap()],
+
+  /*
+   * Sitio bilingüe (RF-1, T7).
+   *
+   * `prefixDefaultLocale: false` deja el español en la raíz y el inglés en
+   * `/en/`. Se prefiere a prefijar ambos idiomas porque la organización es
+   * chilena y `/` es la dirección que se va a repartir e imprimir; obligar a
+   * `/es/` añadiría una redirección permanente a la ruta más usada.
+   *
+   * NO se activa `redirectToDefaultLocale` ni ninguna detección por navegador:
+   * RF-1.1 exige que cada versión sea alcanzable por sí misma, sin depender de
+   * lo que el navegador declare.
+   */
+  i18n: {
+    defaultLocale: 'es',
+    locales: ['es', 'en'],
+    routing: { prefixDefaultLocale: false },
+  },
+
+  // React se usa solo como capa de renderizado. Los componentes se renderizan en
+  // el servidor sin directiva `client:*`, por lo que no envían JavaScript.
+  integrations: [
+    // `i18n` en el sitemap emite las alternativas por idioma en cada URL (RF-1.8).
+    sitemap({
+      i18n: { defaultLocale: 'es', locales: { es: 'es', en: 'en' } },
+      // `/og/` son los lienzos de los que se capturan las imágenes para
+      // compartir: no son páginas para visitar y no deben indexarse.
+      filter: (pagina) => !pagina.includes('/og/'),
+    }),
+    react(),
+  ],
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        // Los componentes de Magic UI importan desde `@/lib/utils`.
+        '@': new URL('./src', import.meta.url).pathname,
+      },
+    },
   },
   // Fuentes variables auto-hospedadas desde `src/assets/fonts`.
   //
@@ -20,7 +75,7 @@ export default defineConfig({
   // igualmente calcula métricas de fallback (menos CLS) y emite el preload.
   fonts: [
     {
-      name: 'Space Grotesk',
+      name: 'Crimson Pro',
       cssVariable: '--font-display',
       provider: fontProviders.local(),
       // Solo el subconjunto `latin`: cubre todos los caracteres acentuados del
@@ -28,21 +83,25 @@ export default defineConfig({
       options: {
         variants: [
           {
-            src: ['./src/assets/fonts/space-grotesk-latin.woff2'],
-            weight: '300 700',
+            src: ['./src/assets/fonts/crimson-pro-latin.woff2'],
+            weight: '200 900',
             style: 'normal',
           },
         ],
       },
-      fallbacks: ['ui-sans-serif', 'system-ui', 'sans-serif'],
+      fallbacks: ['ui-serif', 'Georgia', 'serif'],
     },
     {
-      name: 'Inter',
+      name: 'Atkinson Hyperlegible Next',
       cssVariable: '--font-body',
       provider: fontProviders.local(),
       options: {
         variants: [
-          { src: ['./src/assets/fonts/inter-latin.woff2'], weight: '100 900', style: 'normal' },
+          {
+            src: ['./src/assets/fonts/atkinson-hyperlegible-next-latin.woff2'],
+            weight: '200 800',
+            style: 'normal',
+          },
         ],
       },
       fallbacks: ['ui-sans-serif', 'system-ui', 'sans-serif'],

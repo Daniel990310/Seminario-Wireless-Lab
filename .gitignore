@@ -3,3 +3,20 @@ node_modules/
 .astro/
 .DS_Store
 *.log
+
+# Secretos. `.mcp.json` está versionado a propósito, pero solo contiene la
+# REFERENCIA `${API_KEY_21ST}`, nunca el valor.
+#
+# OJO: esa expansión lee el entorno del proceso de Claude Code al arrancar, y Claude
+# Code NO carga archivos `.env`. Poner la clave en un `.env` no hace nada. Las dos
+# vías que sí funcionan están documentadas en `.env.example`.
+#
+# `.env` se sigue ignorando como red de seguridad, no como mecanismo.
+.env
+.env.*
+!.env.example
+
+# Puede llevar la clave en su bloque `env` (una de las dos vías que funcionan). En la
+# máquina de Daniel también lo cubre el ignore global de git, pero eso NO viaja al
+# clon de otro entorno, así que la regla vive aquí.
+.claude/settings.local.json

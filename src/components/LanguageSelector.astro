@@ -1,0 +1,90 @@
+---
+/**
+ * Cambio de idioma (RF-1.5 enmendada, RF-1.6).
+ *
+ * **Un solo control, que muestra el idioma al que se va.** Es el patrón que el
+ * U.S. Web Design System define para sitios de exactamente dos idiomas
+ * («Select a language · Two languages»): en la página en español el control dice
+ * «English», y ya. No se muestra el idioma actual, porque el documento ya lo
+ * declara en `<html lang>`.
+ *
+ * Lo que se descartó, y por qué:
+ *
+ * - **Desplegable con globo**, que es lo más común en la web: cuesta dos
+ *   interacciones —abrir y elegir— para lo que aquí es una, y esconde que existe
+ *   otra versión. Se justifica a partir de unos cinco idiomas.
+ * - **Banderas**: una bandera es un país, no un idioma. El español de este sitio
+ *   no es el de España, y el inglés no es el de EE. UU.
+ * - **Mostrar los dos idiomas con el actual marcado**: era la implementación
+ *   anterior. Cumplía RF-1.5 al pie de la letra, pero producía dos píldoras
+ *   segmentadas idénticas y pegadas en la barra —idioma y tema—, que se
+ *   confundían entre sí.
+ *
+ * Se aparta del USWDS en un punto, a propósito: su guía sugiere `role="button"`
+ * cuando el control se codifica como enlace. Aquí no se pone, porque este control
+ * **navega a otra URL**: anunciarlo como botón le diría al lector de pantalla que
+ * va a pasar algo en esta página, y lo que pasa es una navegación.
+ *
+ * El nombre del idioma va en su propio idioma y con `lang`, para que un lector de
+ * pantalla lo pronuncie con la voz correcta y no lea «English» con fonética
+ * española. Eso es lo que hace el trabajo.
+ *
+ * `xml:lang` acompaña porque la guía del USWDS lo incluye, pero conviene saber
+ * que **en un documento HTML5 servido como `text/html` no tiene efecto**: es
+ * herencia de XHTML y la especificación solo lo admite si coincide con `lang`.
+ * Se escribe con un spread porque los tipos de Astro no lo reconocen.
+ */
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { NOMBRES_IDIOMA, otroIdioma, type Idioma } from '~/data/contenido';
+
+interface Props {
+  actual: Idioma;
+  /** Rótulo del grupo, para lectores de pantalla. */
+  legend: string;
+}
+
+const { actual, legend } = Astro.props;
+const destino = otroIdioma(actual);
+
+/*
+ * `getRelativeLocaleUrl` en lugar de componer la ruta a mano: es la API de
+ * `astro:i18n` y sigue la configuración de `astro.config.mjs`, así que un cambio
+ * de estrategia de rutas no deja este enlace apuntando a un sitio que ya no
+ * existe.
+ */
+const href = getRelativeLocaleUrl(destino, '');
+---
+
+<nav aria-label={legend}>
+  <a
+    href={href}
+    hreflang={destino}
+    lang={destino}
+    data-cambio-idioma
+    class="block rounded-control border border-border-control px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary"
+    {...{ 'xml:lang': destino }}
+  >
+    {NOMBRES_IDIOMA[destino]}
+  </a>
+</nav>
+
+<script>
+  /*
+   * Conservar la sección al cambiar de idioma (RF-1.6).
+   *
+   * El fragmento (`#programa`) no viaja al servidor, así que no hay forma de
+   * resolverlo al generar el sitio: hay que copiarlo al enlace en el cliente.
+   *
+   * Se actualiza en cada clic y no una sola vez al cargar, porque el fragmento
+   * cambia mientras la persona navega por la página. Si este script no corre, el
+   * enlace sigue siendo válido y lleva al inicio del otro idioma: se pierde la
+   * sección, no el acceso.
+   */
+  for (const enlace of document.querySelectorAll<HTMLAnchorElement>('a[data-cambio-idioma]')) {
+    enlace.addEventListener('click', () => {
+      const destino = new URL(enlace.href);
+      destino.hash = window.location.hash;
+      enlace.href = destino.toString();
+    });
+  }
+</script>

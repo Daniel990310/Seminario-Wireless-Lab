@@ -1,0 +1,27 @@
+{
+  // Despliegue en Cloudflare Workers con activos estáticos.
+  //
+  // Sin este archivo, `npx wrangler deploy` no sabe qué publicar y termina sin
+  // hacer nada visible: es exactamente lo que pasaba antes de añadirlo.
+  //
+  // El sitio es 100 % estático —`output: 'static'` en `astro.config.mjs`— así que
+  // no hay ningún script de Worker: solo se sirven los archivos de `dist/`. Por
+  // eso no se declara `main`.
+  //
+  // ⚠️ OJO CON LA URL. `CF_PAGES_URL`, que `astro.config.mjs` usa para saber en
+  // qué dominio vive el sitio, **solo existe en Cloudflare Pages**. En Workers no
+  // se define, y sin ella `site` cae al respaldo `PRODUCTION_SITE`, que hoy es un
+  // dominio que todavía no existe. Consecuencias: el enlace canónico, el sitemap
+  // y las imágenes para compartir apuntarían a un sitio inexistente, y el
+  // `noindex` de las URLs provisionales se desactivaría creyendo que ya estamos
+  // en producción.
+  //
+  // Por eso, al desplegar en Workers hay que definir **`SITE_URL`** en las
+  // variables del proyecto, con la URL real del despliegue. Ver README §Despliegue.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "seminario-wireless-lab",
+  "compatibility_date": "2026-07-31",
+  "assets": {
+    "directory": "./dist"
+  }
+}

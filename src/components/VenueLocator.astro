@@ -9,9 +9,14 @@
  * razones: no se envía la visita a un tercero sin consentimiento, y si una red
  * institucional bloquea el embed el bloque no queda como un recuadro roto.
  */
-import { seminar } from '~/data/seminar';
+import type { Contenido } from '~/data/contenido';
 
-const { venue } = seminar;
+interface Props {
+  c: Contenido;
+}
+
+const { c } = Astro.props;
+const { venue, ui } = c;
 
 // Coordenadas aproximadas de Antonio Bellet 314, Providencia.
 const LAT = -33.421;
@@ -21,57 +26,72 @@ const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&laye
 ---
 
 <div
-  class="surface relative overflow-hidden rounded-xl"
+  class="surface rounded-surface"
   data-venue-locator
   data-embed={EMBED}
-  data-embed-title={`Mapa de ${venue.name}`}
+  data-embed-title={ui.sede.tituloMapa}
 >
-  <div class="absolute inset-0 grid-backdrop opacity-45" aria-hidden="true"></div>
+  <!--
+    Altura mínima, no fija: con `h-` el bloque de texto desbordaba el panel en
+    los anchos estrechos, donde los dos botones se apilan.
+  -->
+  <div class="flex min-h-[320px] flex-col sm:min-h-[420px]" data-locator-panel>
+    <!--
+      Banda del marcador (T5): la retícula técnica vive aquí, en una zona **sin
+      texto encima**. Antes envolvía al contenido completo y dejaba la
+      dirección, los botones y la nota con el contraste indeterminado.
 
-  <div
-    class="relative flex h-[320px] flex-col items-center justify-center px-6 text-center sm:h-[420px]"
-    data-locator-panel
-  >
-    <!-- Marcador sobre anillos de rango: mismo lenguaje visual que el hero -->
-    <svg class="size-28 sm:size-32" viewBox="0 0 120 120" fill="none" aria-hidden="true">
-      <g stroke="#2b3a58" stroke-dasharray="2 6">
-        <circle cx="60" cy="60" r="54" />
-        <circle cx="60" cy="60" r="38" />
-        <circle cx="60" cy="60" r="22" />
-      </g>
-      <circle cx="60" cy="60" r="22" fill="#35d0e6" fill-opacity="0.06" />
-      <g stroke="#35d0e6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M60 76c0 0 9-8.4 9-15a9 9 0 1 0-18 0c0 6.6 9 15 9 15Z" />
-      </g>
-      <circle cx="60" cy="61" r="3" fill="#7ce8f5" />
-    </svg>
+      Los anillos de cobertura de `Ripple` se retiraron: sus círculos son
+      elementos con `background-color` de hasta 470 px, y sus rects desbordaban
+      esta banda por mucho que `overflow-hidden` recorte el dibujo, con lo que
+      axe seguía sin poder determinar el fondo del texto vecino. Usaban además
+      `shadow-xl`, que el sistema no admite.
+    -->
+    <div
+      class="relative flex flex-1 items-center justify-center overflow-hidden border-b border-border"
+      aria-hidden="true"
+    >
+      <div class="absolute inset-0 grid-backdrop opacity-45"></div>
 
-    <p class="mt-5 font-display text-lg font-semibold text-mist-100">
-      {venue.street}, {venue.district}
-    </p>
-    <p class="mt-1 text-sm text-mist-400">{venue.city}, {venue.country}</p>
-
-    <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
-      <button
-        type="button"
-        data-locator-load
-        class="rounded-full border border-signal-400/40 bg-signal-400/10 px-5 py-2.5 text-sm font-medium text-signal-300 transition-colors hover:bg-signal-400/20"
-      >
-        Cargar mapa interactivo
-      </button>
-      <a
-        href={venue.mapsUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="rounded-full border border-abyss-600 px-5 py-2.5 text-sm font-medium text-mist-300 transition-colors hover:border-signal-400/50 hover:text-signal-300"
-      >
-        Abrir en Google Maps
-      </a>
+      <!-- `currentColor` para que el marcador siga al tema sin duplicar el SVG. -->
+      <svg class="relative size-12 text-primary sm:size-14" viewBox="0 0 48 48" fill="none">
+        <g stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M24 42c0 0 13-12.2 13-21.7A13 13 0 1 0 11 20.3C11 29.8 24 42 24 42Z" />
+        </g>
+        <circle cx="24" cy="20" r="4.5" fill="currentColor" />
+      </svg>
     </div>
 
-    <p class="mt-5 max-w-xs text-xs leading-relaxed text-mist-500">
-      Al cargar el mapa se solicita contenido a OpenStreetMap.
-    </p>
+    <!-- Campo de texto: fondo plano y opaco, sin nada por delante ni por debajo. -->
+    <div class="bg-surface px-6 py-6 text-center">
+      <!-- La dirección postal no se traduce; el país sí. Ver `src/data/comun.ts`. -->
+      <p class="font-display text-lg font-semibold text-foreground">
+        {venue.street}, {venue.district}
+      </p>
+      <p class="mt-2 text-sm text-muted-foreground">{venue.city}, {venue.country}</p>
+
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <button
+          type="button"
+          data-locator-load
+          class="rounded-control border border-primary/40 bg-primary/8 px-5 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/15"
+        >
+          {ui.sede.cargarMapa}
+        </button>
+        <a
+          href={venue.mapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded-control border border-border-control px-5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:text-primary"
+        >
+          {ui.sede.abrirEnGoogleMaps}
+        </a>
+      </div>
+
+      <p class="mx-auto mt-6 max-w-xs text-xs leading-relaxed text-muted-foreground">
+        {ui.sede.avisoMapa}
+      </p>
+    </div>
   </div>
 </div>
 

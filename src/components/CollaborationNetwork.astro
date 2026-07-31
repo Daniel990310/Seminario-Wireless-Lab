@@ -1,0 +1,289 @@
+---
+/**
+ * Topología de colaboración del seminario.
+ *
+ * Las instituciones extranjeras quedan a la izquierda y las chilenas a la
+ * derecha; todas convergen en la PUCV, que organiza. Por los trayectos viaja un
+ * pulso: es la misma idea que el tema del seminario, un enlace inalámbrico que
+ * transporta información.
+ *
+ * Antes esto era una isla de React con `AnimatedBeam` de Magic UI, que medía la
+ * posición real de cada nodo en el DOM para trazar la curva y animaba el
+ * gradiente con Motion. Costaba 109,6 kB de JavaScript comprimido. Ahora es
+ * Astro puro: cero JavaScript en el cliente.
+ *
+ * Cómo se sustituyó la medición del DOM por geometría conocida
+ * ------------------------------------------------------------
+ * El problema que resolvía medir el DOM es que los extremos del trayecto tienen
+ * que caer en el centro de cada tarjeta, y ese centro depende del alto del
+ * contenido. Aquí se fija por construcción: cada columna lateral es una retícula
+ * de DOS FILAS IGUALES SIN SEPARACIÓN (`grid-rows-2`, sin `gap`), y la tarjeta se
+ * centra dentro de su fila. Con eso el centro de la fila superior está siempre al
+ * 25 % del alto y el de la inferior al 75 %, sea cual sea el alto del texto. La
+ * separación visual entre tarjetas se hace con relleno dentro de la fila, que no
+ * mueve el centro. Los extremos son entonces constantes y el trayecto se calcula
+ * al compilar.
+ *
+ * El SVG conector ocupa exactamente la franja entre columnas, así que sus bordes
+ * son los bordes de las tarjetas. Lleva `preserveAspectRatio="none"` para
+ * estirarse a esa franja y `vector-effect="non-scaling-stroke"` para que el
+ * estiramiento no engorde el trazo.
+ *
+ * El pulso: por qué el guion se mide en píxeles y no en porcentaje
+ * ----------------------------------------------------------------
+ * El primer intento usó `pathLength="100"` para poder escribir el guion como
+ * porcentaje del recorrido. **No funciona junto con `non-scaling-stroke`.** Medido:
+ * el `stroke-dasharray` computado sale en píxeles de pantalla («16px, 84px»), así
+ * que `pathLength` no normaliza nada y el patrón se repite a lo largo del trazo.
+ * En el eje vertical de móvil, de 470 px, aparecían ~4,7 guiones en vez de uno.
+ *
+ * La solución no es pelear con ello, sino diseñar para el espacio de pantalla: el
+ * ciclo de la animación desplaza el guion **exactamente un período** del patrón
+ * (`PERIODO` px), de modo que el bucle empalma sin salto sea cual sea el largo del
+ * trayecto o la escala del SVG. Con un período de 240 px, en escritorio (trayecto
+ * de 173 px) se ve un solo pulso en vuelo, y en el eje de móvil (470 px) se ven uno
+ * o dos. En ambos casos viajan hacia el nodo central.
+ *
+ * Frente a la versión anterior esto es más fiel al tema: Motion movía una ventana
+ * de gradiente sobre el RECUADRO del trayecto, así que el brillo era una banda
+ * vertical barriendo en horizontal. Aquí el pulso recorre la curva misma.
+ */
+import type { Contenido } from '~/data/contenido';
+
+interface Props {
+  c: Contenido;
+}
+
+const { hub, foreign, local } = Astro.props.c.network;
+
+/*
+ * Trayectos, en el sistema de coordenadas del SVG conector: 100 × 100, donde el
+ * borde izquierdo es el de las tarjetas laterales y el derecho el del nodo
+ * central. Las curvas salen y entran en horizontal para que el empalme con las
+ * tarjetas no muestre un codo.
+ */
+const ENLACES = [
+  { d: 'M0 25 C 55 25, 45 50, 100 50', retardo: 0 },
+  { d: 'M0 75 C 55 75, 45 50, 100 50', retardo: 2.5 },
+];
+
+/*
+ * Guion y hueco del pulso, en píxeles de pantalla (ver la nota de arriba). El
+ * ciclo desplaza justo `PERIODO`, así que el bucle no tiene costura.
+ */
+const GUION = 14;
+const PERIODO = 240;
+
+// Duración del ciclo, en segundos. Lenta a propósito: unos 24 px/s, el ritmo de un
+// instrumento y no de una interfaz.
+const CICLO = 10;
+---
+
+<div class="collab">
+  <!--
+    Vista de escritorio. El mismo contenido aparece dos veces en el marcado, en
+    esta retícula y en la lista de más abajo, pero no hay repetición para un lector
+    de pantalla: `hidden`/`sm:hidden` es `display: none`, que saca el nodo del
+    árbol de accesibilidad, así que en cada ancho solo una de las dos está
+    expuesta. No hace falta `aria-hidden`, y ponerlo en la retícula la ocultaría
+    también en escritorio, donde es la única versión visible.
+
+    Las tarjetas se acotan a 15rem y las franjas de los conectores se quedan con
+    el espacio sobrante (`1fr`): así la curva tiene recorrido para leerse como un
+    enlace en vez de un codo, y el texto no se estira por un ancho que no necesita.
+  -->
+  <div
+    class="mx-auto hidden max-w-5xl sm:grid sm:grid-cols-[minmax(0,15rem)_minmax(2.5rem,1fr)_auto_minmax(2.5rem,1fr)_minmax(0,15rem)]"
+  >
+    <!-- Columna izquierda: instituciones extranjeras -->
+    <div class="grid grid-rows-2">
+      {
+        foreign.map((nodo) => (
+          <div class="flex items-center py-3">
+            <div class="w-full rounded-surface border border-border bg-surface/90 px-4 py-3">
+              <p class="font-display text-sm leading-tight font-semibold text-foreground">
+                {nodo.label}
+              </p>
+              <p class="mt-1 text-xs leading-snug text-muted-foreground">{nodo.detail}</p>
+              <p class="eyebrow mt-1.5 text-[0.6rem] text-muted-foreground">{nodo.country}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- Conector izquierdo: entra al nodo central -->
+    <svg
+      class="h-full w-full"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      fill="none"
+      aria-hidden="true"
+    >
+      {
+        ENLACES.map((e) => (
+          <>
+            <path d={e.d} stroke="var(--border)" stroke-width="1.25" vector-effect="non-scaling-stroke" />
+            <path
+              class="pulso"
+              d={e.d}
+              stroke="var(--primary)"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              vector-effect="non-scaling-stroke"
+              style={`--retardo:${e.retardo}s`}
+            />
+          </>
+        ))
+      }
+    </svg>
+
+    <!-- Nodo central: la institución organizadora -->
+    <div class="flex items-center justify-center">
+      <div
+        class="flex flex-col items-center rounded-surface border border-primary/40 bg-surface px-4 py-5 text-center sm:px-6"
+      >
+        <span
+          class="grid size-9 place-items-center rounded-full border border-primary/40"
+          aria-hidden="true"
+        >
+          <span class="block size-1.5 rounded-full bg-primary"></span>
+        </span>
+        <p class="mt-3 font-display text-sm leading-tight font-semibold text-foreground sm:text-base">
+          {hub.label}
+        </p>
+        <p class="mt-1 text-xs leading-snug text-muted-foreground">{hub.detail}</p>
+        <p class="eyebrow mt-2 text-[0.6rem] text-primary">{hub.role}</p>
+      </div>
+    </div>
+
+    <!--
+      Conector derecho: el mismo trazado reflejado con `scale(-1,1)`, de modo que
+      el pulso viaja hacia el nodo central por los dos lados. Reflejar evita
+      mantener dos juegos de coordenadas que decir lo mismo.
+    -->
+    <svg
+      class="h-full w-full"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      fill="none"
+      aria-hidden="true"
+    >
+      <g transform="translate(100,0) scale(-1,1)">
+        {
+          ENLACES.map((e) => (
+            <>
+              <path d={e.d} stroke="var(--border)" stroke-width="1.25" vector-effect="non-scaling-stroke" />
+              <path
+                class="pulso"
+                d={e.d}
+                stroke="var(--primary)"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                vector-effect="non-scaling-stroke"
+                style={`--retardo:${e.retardo + 0.9}s`}
+              />
+            </>
+          ))
+        }
+      </g>
+    </svg>
+
+    <!-- Columna derecha: instituciones chilenas -->
+    <div class="grid grid-rows-2">
+      {
+        local.map((nodo) => (
+          <div class="flex items-center py-3">
+            <div class="w-full rounded-surface border border-border bg-surface/90 px-4 py-3 text-right">
+              <p class="font-display text-sm leading-tight font-semibold text-foreground">
+                {nodo.label}
+              </p>
+              <p class="mt-1 text-xs leading-snug text-muted-foreground">{nodo.detail}</p>
+              <p class="eyebrow mt-1.5 text-[0.6rem] text-muted-foreground">{nodo.country}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <!--
+    Vista móvil y contenido real para lectores de pantalla. En 390 px las cinco
+    tarjetas en fila no caben, así que se apilan sobre un eje vertical por el que
+    baja el mismo pulso. Es una lista porque eso es lo que es: la institución que
+    organiza y las que participan.
+  -->
+  <div class="relative sm:hidden">
+    <svg
+      class="absolute top-0 left-0 h-full w-px"
+      viewBox="0 0 1 100"
+      preserveAspectRatio="none"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path d="M0.5 0 V100" stroke="var(--border)" stroke-width="1" vector-effect="non-scaling-stroke" />
+      <path
+        class="pulso"
+        d="M0.5 0 V100"
+        stroke="var(--primary)"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        vector-effect="non-scaling-stroke"
+      />
+    </svg>
+
+    <ul class="space-y-3 pl-5">
+      <li class="rounded-surface border border-primary/40 bg-surface px-4 py-3">
+        <p class="font-display text-sm leading-tight font-semibold text-foreground">{hub.label}</p>
+        <p class="mt-1 text-xs leading-snug text-muted-foreground">{hub.detail}</p>
+        <p class="eyebrow mt-1.5 text-[0.6rem] text-primary">{hub.role}</p>
+      </li>
+      {
+        [...foreign, ...local].map((nodo) => (
+          <li class="rounded-surface border border-border bg-surface/90 px-4 py-3">
+            <p class="font-display text-sm leading-tight font-semibold text-foreground">
+              {nodo.label}
+            </p>
+            <p class="mt-1 text-xs leading-snug text-muted-foreground">{nodo.detail}</p>
+            <p class="eyebrow mt-1.5 text-[0.6rem] text-muted-foreground">{nodo.country}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
+
+<style define:vars={{ guion: `${GUION}px`, hueco: `${PERIODO - GUION}px`, periodo: `${PERIODO}px`, ciclo: `${CICLO}s` }}>
+  /*
+   * El pulso solo existe con movimiento permitido. Sin él no se deja quieto un
+   * guion a medio trayecto —que se leería como un trozo de línea de más—: se
+   * oculta, y queda la línea base, que es la que comunica la topología.
+   */
+  .pulso {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pulso {
+      opacity: 1;
+      stroke-dasharray: var(--guion) var(--hueco);
+      animation: recorrer var(--ciclo) linear infinite;
+      animation-delay: var(--retardo, 0s);
+    }
+
+    /*
+     * Un período exacto: al terminar, el patrón coincide con su posición inicial,
+     * así que el bucle no salta. No hay animación de opacidad porque no hace
+     * falta: el guion entra y sale por los extremos del trayecto, que es donde
+     * están las tarjetas.
+     */
+    @keyframes recorrer {
+      from {
+        stroke-dashoffset: var(--periodo);
+      }
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+  }
+</style>
