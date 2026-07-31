@@ -175,12 +175,35 @@ En **Workers & Pages → Create → Workers → Connect to Git**:
 activos ya la declara ese archivo.
 
 Después del **primer** despliegue, Cloudflare da una URL del tipo
-`seminario-wireless-lab.<subdominio>.workers.dev`. Con esa URL:
+`seminario-wireless-lab.<subdominio>.workers.dev`. Con esa URL hay que volver a
+construir y desplegar, para que el canónico, el sitemap y las imágenes para
+compartir apunten a donde el sitio vive de verdad.
 
-1. Añadir la variable **`SITE_URL`** con ese valor, en *Settings → Variables*.
-2. Volver a desplegar, para que el canónico, el sitemap y las imágenes para
-   compartir la usen.
-3. Regenerar las imágenes con `npm run og` si el dominio va a ser el definitivo.
+> **`SITE_URL` es una variable de BUILD, no del Worker.**
+>
+> `astro.config.mjs` la lee mientras corre `npm run build`, así que **no sirve
+> ponerla en las variables del Worker** —esas son de ejecución, y para cuando el
+> Worker corre el HTML ya está escrito—. Va en el entorno del build:
+>
+> - Desplegando a mano: `SITE_URL="https://…" npm run build && npx wrangler deploy`
+> - Con Workers Builds o Pages: en las **variables de entorno de compilación** del
+>   panel, no en las del runtime.
+>
+> Se comprueba en un vistazo:
+> `grep -o '<link rel="canonical"[^>]*' dist/index.html`
+
+#### Despliegue manual, paso a paso
+
+```bash
+npx wrangler login                 # una sola vez
+npm run build && npx wrangler deploy   # primer deploy: devuelve la URL
+
+# con la URL en la mano, rehacer con el dominio correcto
+SITE_URL="https://<tu-url>" npm run build && npx wrangler deploy
+```
+
+Si el dominio va a ser el definitivo, regenerar además las imágenes para
+compartir con `npm run og`: llevan el texto dentro y no se actualizan solas.
 
 ### Conectar el repositorio
 

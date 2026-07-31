@@ -28,6 +28,9 @@ Actualizado: **2026-07-31** · Rama de trabajo: `claude/framework-app-profesiona
 > | Reseñas y programa de ejemplo | §5j |
 >
 > **PR abierto:** [#2](https://github.com/Daniel990310/Seminario-Wireless-Lab/pull/2), `MERGEABLE`. Ver §6.
+>
+> **Sitio publicado (provisional, con `noindex`):**
+> <https://seminario-wireless-lab.danielcaignet99.workers.dev> · Ver §6c.
 
 ## 0b. Primera sesión de Antigravity — 2026-07-30, noche
 
@@ -816,6 +819,61 @@ clave podía "vivir en el entorno o en un `.env` local"; la segunda mitad era fa
 hacía perder tiempo. Los tres archivos quedaron corregidos.
 
 Sigue sin ser bloqueante: nada antes de T10 lo necesita.
+
+## 6c. El sitio está publicado — 2026-07-31
+
+**<https://seminario-wireless-lab.danielcaignet99.workers.dev>** ·
+Cloudflare Workers con activos estáticos, cuenta `danielcaignet99@gmail.com`.
+
+Comprobado en vivo tras el despliegue: `/` y `/en/` responden 200, las imágenes
+para compartir sirven como PNG, el sitemap responde, y en `/en/` el documento
+declara `lang="en"` con canónico propio, `hreflang` recíproco, `x-default` y
+`og:image` absoluto. `[medido]`
+
+**Es un despliegue provisional y lleva `noindex`,** que es lo correcto: la URL
+`workers.dev` no debe competir en buscadores con el dominio institucional
+definitivo. El `noindex` desaparece solo cuando el host coincida con
+`PRODUCTION_SITE`.
+
+### La trampa que costó un despliegue de más
+
+`SITE_URL` es una variable de **compilación**, no del Worker. `astro.config.mjs`
+la lee mientras corre `npm run build`; ponerla en las variables del Worker no
+sirve, porque esas son de ejecución y para entonces el HTML ya está escrito.
+
+El primer despliegue salió con el canónico apuntando a
+`https://seminario-wireless.pucv.cl` —un dominio que aún no existe— y, peor, **sin
+`noindex`**, porque el código creyó estar ya en producción. Se corrigió
+reconstruyendo con la variable en el entorno del build:
+
+```bash
+SITE_URL="https://…" npm run build && npx wrangler deploy
+```
+
+Se comprueba en un vistazo, y conviene hacerlo siempre después de desplegar:
+
+```bash
+grep -o '<link rel="canonical"[^>]*' dist/index.html
+grep -o '<meta name="robots"[^>]*' dist/index.html
+```
+
+### Qué falta para el despliegue definitivo
+
+1. **Decidir Workers o Pages.** Hoy está en Workers, que exige `SITE_URL` a mano.
+   Pages la deduce sola con `CF_PAGES_URL`. Para un sitio estático puro, Pages es
+   menos configuración; Workers es lo que Cloudflare recomienda para proyectos
+   nuevos. Las dos sirven: está comparado en el README.
+2. **Conectar Git** para que cada rama tenga su previsualización. Ojo: `main` va
+   43 commits por detrás mientras el PR #2 siga abierto, así que conectarlo a
+   `main` publicaría la versión vieja.
+3. **Dominio definitivo** y, después, `npm run og`.
+
+### Lo que la URL pública acaba de desbloquear
+
+Los dos pendientes de T8 que necesitaban un sitio accesible ya se pueden cerrar:
+
+- Validar los datos estructurados de `/` y `/en/` en <https://validator.schema.org>.
+- Ver la previsualización real del enlace compartiéndolo.
 
 ## 7. Pendientes que no dependen del código
 
