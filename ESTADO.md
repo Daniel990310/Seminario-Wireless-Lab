@@ -781,9 +781,12 @@ pesa menos (33.996 B en 1 archivo, contra 34.732 B en 2). Está en `specs/fuente
   registro para cambiar de entorno sin perder el hilo.
 - **Ya se puede conectar Cloudflare a `main`** sin publicar una versión vieja, que
   era el riesgo mientras el PR estuviera abierto.
-- **El PR #3 también se fusionó** (`b84b38d`, 2026-07-31), con el cierre de 001.
-  `main` y la rama de trabajo vuelven a tener el mismo árbol: al 2026-07-31 no hay
-  nada sin fusionar.
+- **El PR #3 también se fusionó** (`b84b38d`, 2026-07-31), con el cierre de 001, y
+  su anotación en `main` con el **PR #4**.
+- **La anotación de una fusión viaja siempre en el PR siguiente**, porque no se
+  puede registrar dentro del PR que se está fusionando. Así que ver uno o dos
+  commits de registro por delante de `main` es lo normal y no significa que haya
+  trabajo sin fusionar. Lo que importa es que no haya **código** por delante.
 
 ### PR #3, fusionado el 2026-07-31
 
