@@ -131,10 +131,10 @@ de la tabla de línea base es la medida.
 | Cifra | Valor | Cómo se obtuvo |
 | ----- | ----- | -------------- |
 | JavaScript comprimido | **0,0 kB** | `npm run verify`. La página no referencia ningún `.js`; solo scripts en línea, que van dentro del HTML |
-| Primera carga comprimida | **136,4 kB** | Baja 110,6 kB (−45 %) respecto de T2 |
+| Primera carga comprimida | **136,4 kB** ⚠️ | Baja 110,6 kB (−45 %) respecto de T2. **Cifra baja en 11,8 kB por un defecto del medidor**: ver la corrección del 2026-07-31 más abajo |
 | Peticiones de script del navegador | 0 | `npm run verify:red`, escuchando `resourceType === 'script'` |
 | Islas hidratadas | 0 | Recuento de `astro-island` en el DOM |
-| JavaScript huérfano generado | ~55 kB | `client.*.js` de `@astrojs/react`. Se emite aunque no haya islas y **ningún archivo de `dist` lo referencia**. Se informa aparte, no se suma |
+| JavaScript huérfano generado | ~55 kB → **0** | `client.*.js` de `@astrojs/react`, emitido aunque no hubiera islas. **Desapareció el 2026-07-31 al retirar la integración**, que ningún componente usaba |
 | Haz de Motion, comportamiento | ventana del 10 % de −10 % a 110 % en 7 s | Muestreo de `x1`/`x2` del `linearGradient` cada 500 ms, antes de retirar Motion |
 | `stroke-dasharray` con `non-scaling-stroke` | «16px, 84px» | `getComputedStyle`. Sale en **píxeles**: `pathLength="100"` no lo normaliza |
 | Largo del trayecto en pantalla | 173 px escritorio, 470 px móvil | Recorrido del trayecto transformado con `getScreenCTM`, 200 muestras |
@@ -144,6 +144,48 @@ midió cuál predecía lo observado. Hipótesis A, guion en unidades de usuario
 normalizadas: 1 guion visible. Hipótesis B, guion en píxeles de pantalla:
 `largoPantalla / 100` guiones, o ~4,7 en el eje móvil. Lo observado fueron ~5. Gana
 B. Es la razón por la que el pulso se diseñó en espacio de pantalla.
+
+### Corrección del 2026-07-31: la primera carga estaba subestimada 11,8 kB
+
+**Todas las cifras de primera carga publicadas entre T3 y el 2026-07-31 son bajas en
+11,8 kB comprimidos** —incluidas las 136,4 kB de la tabla anterior y las 140,7 kB del
+cierre de 001—. No fue un cambio de criterio: era un defecto del medidor.
+
+`scripts/verify.mjs` decidía si un archivo estaba referenciado comparando la ruta que
+devuelve `relative()` contra lo que dice el HTML. En Windows `relative()` devuelve
+`_astro\hoja.css` y el HTML referencia `_astro/hoja.css`: **la comparación no coincidía
+nunca, así que todo `.js` o `.css` dentro de una subcarpeta se clasificaba como
+huérfano** y quedaba fuera del presupuesto.
+
+La víctima real era la hoja de estilos del sitio: **11,8 kB comprimidos que el
+navegador sí descarga**, porque el `<head>` la enlaza con
+`<link rel="stylesheet" href="/_astro/PropagationFigure.*.css">`. El desglose informaba
+«CSS 0,0 kB», y una sesión anterior explicó ese cero afirmando que el CSS iba en línea
+dentro del HTML. No iba: el `<link>` estaba ahí y se puede leer en `dist/index.html`.
+
+| Cifra | Antes (mal medida) | Corregida | Cómo se obtuvo |
+| ----- | ------------------ | --------- | -------------- |
+| Primera carga comprimida | 140,7 kB | **152,5 kB** | `npm run verify` con la ruta normalizada a `/` |
+| CSS en hojas enlazadas | 0,0 kB | **11,8 kB** | Ídem. Es la hoja que el `<head>` enlaza |
+| Archivos huérfanos | 2 (71,3 kB) | **0** | El `.css` nunca lo fue; el `client.*.js` de React desapareció al retirar la integración |
+
+**El presupuesto nunca se incumplió**: 152,5 kB contra un techo de 260 kB. Lo que
+estaba mal era la cifra, no el sitio. Y el sentido del error importa: el medidor
+**favorecía** al proyecto, que es la dirección que menos se nota.
+
+**Prueba de sensibilidad de la corrección**, en los dos sentidos, porque un medidor que
+ahora cuenta todo como referenciado sería igual de inútil:
+
+- Un `.js` colocado a mano en `dist/_astro/` y que nadie enlaza **sí se detecta** como
+  huérfano (56 B en el informe). Sin él, el informe dice «Ninguno».
+- La hoja enlazada **sí se cuenta**: el 0,0 kB pasó a 11,8 kB y la primera carga subió
+  exactamente esa cantidad.
+
+Dos ambigüedades del mismo origen, corregidas a la vez: la tabla de cobertura escribía
+la página inglesa como `` `/en\` `` y el peso se medía **solo en la primera página de la
+lista** —que tras ordenar es `/en/`— sin decirlo, cuando RNF-2.1 habla de peso «por
+idioma». Ahora se miden las dos, el presupuesto se juzga contra la más pesada y el
+informe imprime la cifra de cada una. Hoy coinciden: 152,5 kB las dos.
 
 ### Repositorios evaluados
 

@@ -5,11 +5,8 @@
   "compilerOptions": {
     "strictNullChecks": true,
     "baseUrl": ".",
-    "jsx": "react-jsx",
-    "jsxImportSource": "react",
     "paths": {
-      "~/*": ["src/*"],
-      "@/*": ["src/*"]
+      "~/*": ["src/*"]
     }
   }
 }

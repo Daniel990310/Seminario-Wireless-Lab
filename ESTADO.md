@@ -27,6 +27,11 @@ Actualizado: **2026-07-31** · Rama de trabajo: `claude/framework-app-profesiona
 > automatizado en `npm run verify:publicado`, 20 criterios en verde `[medido]`. Lo único
 > que sigue exigiendo ojos es la previsualización real al compartir el enlace.
 >
+> **Después del cierre, el 2026-07-31:** se retiró React y toda la base de shadcn/ui,
+> que ningún componente usaba, y al investigarlo apareció que **la primera carga estaba
+> subestimada en 11,8 kB** por un defecto del medidor —152,5 kB, no 140,7—. Ambas cosas
+> en §5k, con lo que el cliente pidió para el próximo plan y con qué se hace cada parte.
+>
 > Lo que queda abierto no es código: A3–A7 y poblar `program.days`.
 
 > **El plan `001-mejora-calidad` está completo: T1 a T10.**
@@ -339,6 +344,68 @@ donde evoca un plano y ahí sí viene a cuento.
 
 `npm run verify:todo` en verde después de cada cambio, y revisión visual en los dos
 temas y los dos anchos.
+
+## 5k. Se retiró React, y el medidor de peso estaba mal
+
+**2026-07-31, por instrucción de Daniel.** La pregunta era si algo de lo que quedó
+colgado —React, la base de shadcn/ui— sirve para lo que viene, y si no, borrarlo.
+
+### Lo que viene, según el cliente, y con qué se hace
+
+Registrado aquí porque es la entrada del próximo plan: **fotos de los expositores en las
+fichas**, **programa como línea de tiempo vertical** que se recorre y va revelando las
+exposiciones con animación y enlace a la ficha del expositor, **hero con más
+animaciones** y **transiciones más dinámicas**.
+
+Se verificó contra documentación antes de borrar, no de memoria:
+
+| Lo que viene | Con qué se hace | Fuente |
+| ------------ | --------------- | ------ |
+| Fotos de expositores | `<Image />` de `astro:assets` con `layout="constrained"`: genera `srcset` y `sizes` solo. Núcleo de Astro | Documentación de Astro (Context7) |
+| Línea de tiempo que revela al recorrer | `animation-timeline: view()`, CSS puro. Chrome/Edge 115+, Firefox 132+, Safari 18+, ~84 % global, **no Baseline** → detrás de `@supports` y degradando a estático | MDN, caniuse |
+| Hero con más movimiento | `@keyframes` con `prefers-reduced-motion`, como ya hacen `PropagationFigure` y `CollaborationNetwork` | El repositorio |
+| Transiciones al cambiar de idioma | `@view-transition { navigation: auto; }` (Chromium 126+, Safari 18.2+, Firefox en curso) a 0 kB, o `<ClientRouter />` de `astro:transitions`, que **no requiere integración de framework** | MDN, documentación de Astro |
+| Enlace de sesión a expositor | Un ancla | — |
+
+**Ninguna necesita React.** Así que salió: `@astrojs/react`, `react`, `react-dom`,
+`clsx`, `tailwind-merge`, `components.json`, `src/lib/utils.ts` y el alias `@ → ./src`
+—que además estaba escrito con `new URL(...).pathname`, la forma que se rompe en
+Windows—. Resultado medido: **`dist` ya no emite ningún archivo huérfano**; antes
+emitía 59,5 kB comprimidos de runtime de cliente que ningún navegador pedía.
+`astro check` sigue en 0/0/0 y los siete verificadores en verde.
+
+Reinstalarlo es un comando. El candidato natural sigue siendo RF-3, el registro de
+asistentes.
+
+### El hallazgo grave: la primera carga estaba subestimada 11,8 kB
+
+Investigando el «CSS huérfano» apareció que **no era huérfano**: `dist/index.html` lleva
+su `<link rel="stylesheet">`. El defecto estaba en `verify.mjs`, que comparaba la ruta
+del sistema (`_astro\hoja.css` en Windows) contra la del HTML (`_astro/hoja.css`). Nunca
+coincidían, así que **todo `.js` o `.css` en subcarpeta se declaraba huérfano y se
+descontaba del peso**.
+
+| Cifra | Publicada | Real |
+| ----- | --------- | ---- |
+| Primera carga comprimida | 140,7 kB | **152,5 kB** |
+| CSS en hojas enlazadas | 0,0 kB | **11,8 kB** |
+| Archivos huérfanos | 2 (71,3 kB) | **0** |
+
+El techo nunca se incumplió —152,5 contra 260 kB—, pero **el error favorecía al
+proyecto**, que es la dirección que menos se nota. Y hubo algo peor que la cifra: una
+sesión anterior explicó el «CSS 0,0 kB» afirmando que el CSS iba en línea dentro del
+HTML, sin abrir `dist/index.html` a comprobarlo. La explicación era más cómoda que el
+dato.
+
+**Prueba de sensibilidad, en los dos sentidos**, porque un medidor que ahora cuente todo
+como referenciado sería igual de inútil: un `.js` puesto a mano en `dist/_astro/` y que
+nadie enlaza **sí sale** como huérfano (56 B), y al retirarlo el informe vuelve a decir
+«Ninguno».
+
+Dos ambigüedades del mismo origen, corregidas a la vez: la cobertura escribía la página
+inglesa como `` `/en\` ``, y **el peso se medía solo en la primera página de la lista**
+—que tras ordenar es `/en/`— sin declararlo. Ahora se miden las dos, el presupuesto se
+juzga contra la más pesada y el informe imprime ambas. Hoy coinciden.
 
 ## 5j. Reseñas de expositores y programa de ejemplo
 

@@ -224,6 +224,18 @@ constantes y se calculan al compilar.
    cambio que eliminó el JavaScript, igual que contar los logos diferidos.
    `scripts/verify.mjs` ahora mide solo lo referenciado por el HTML y **lista los
    huérfanos aparte** en vez de ignorarlos.
+
+   > **Corrección del 2026-07-31.** Esa detección de huérfanos estaba mal en Windows:
+   > comparaba `_astro\hoja.css` con `_astro/hoja.css`, así que **también daba por
+   > huérfano lo que sí estaba referenciado** y lo descontaba del peso. La hoja de
+   > estilos del sitio —11,8 kB que el navegador descarga— quedaba fuera de RNF-2.2 y
+   > el desglose decía «CSS 0,0 kB». La primera carga real es **152,5 kB**, no 140,7.
+   > Detalle, sentido del error y prueba de sensibilidad en `../fuentes.md`.
+   >
+   > El huérfano que motivó todo esto ya no existe: al retirar `@astrojs/react` el
+   > 2026-07-31, `dist` no emite ningún archivo sin referenciar. La lógica se queda
+   > porque el problema puede volver, y se comprobó que sigue detectando uno de
+   > verdad.
 2. **`pathLength` no normalizaba nada.** El pulso usaba `pathLength="100"` para
    expresar el guion en porcentaje del recorrido. Con
    `vector-effect="non-scaling-stroke"` el guion se mide en **píxeles de pantalla**:
@@ -242,6 +254,12 @@ Un cuarto defecto, en la comprobación y no en el código: contaba los cinco pul
 del marcado, incluido el del eje móvil, que a 1440 px está en `display: none` y por
 eso no anima. Daba «4/5 animando» y parecía un fallo. Ahora filtra por elementos
 representados y se comprueba cada ancho por separado.
+
+> **La base de shadcn que esta tarea montó se retiró el 2026-07-31**, junto con React,
+> por instrucción de Daniel: ningún componente la usaba y emitía 59,5 kB de runtime
+> huérfano por build. Antes de borrar se comprobó que nada de lo previsto para el
+> próximo plan la necesita. Ver `design.md` §6.6. El párrafo siguiente queda como
+> registro de lo que se decidió en T3.
 
 **shadcn/ui: base montada, sin primitivas.** `components.json` queda configurado
 (`tailwind.config` vacío, que es lo que corresponde en Tailwind 4 sin archivo de

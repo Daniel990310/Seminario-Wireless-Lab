@@ -455,6 +455,44 @@ o dejar fichas vacías— produce lo que un sitio institucional no puede permiti
 sin respaldo. Lo que las fuentes solo hacen `[probable]` va marcado «por confirmar»,
 que es el caso de la afiliación de Rodolfo Feick (A3).
 
+### 6.6 · Retirar React y la base de shadcn/ui
+
+**Decisión del 2026-07-31, por instrucción de Daniel: se retira.** Salen
+`@astrojs/react`, `react`, `react-dom`, `clsx`, `tailwind-merge`, `components.json`,
+`src/lib/utils.ts` y el alias `@ → ./src`.
+
+**Qué se comprobó antes de borrar**, porque la pregunta correcta no era «¿se usa hoy?»
+sino «¿sirve para lo que viene?». Lo que viene, según el cliente: fotos de expositores,
+programa como línea de tiempo vertical que se recorre con animaciones y enlaces a la
+ficha del expositor, hero con más movimiento y transiciones más dinámicas.
+
+| Lo que viene | Con qué se hace | Fuente |
+| ------------ | --------------- | ------ |
+| Fotos de expositores | `<Image />` de `astro:assets`, con `layout="constrained"`, que genera `srcset` y `sizes` solo. Núcleo de Astro, sin framework | Documentación de Astro vía Context7 |
+| Línea de tiempo que revela al recorrer | CSS puro: `animation-timeline: view()`. Chrome/Edge 115+, Firefox 132+, Safari 18+, ~84 % global y **no es Baseline**, así que va detrás de `@supports (animation-timeline: scroll())` y degrada a contenido estático | MDN y caniuse |
+| Hero con más movimiento | `@keyframes` y `prefers-reduced-motion`, como ya se hace en `PropagationFigure` y `CollaborationNetwork` | El propio repositorio |
+| Transiciones al cambiar de idioma | `@view-transition { navigation: auto; }` —Chromium 126+ y Safari 18.2+, Firefox en curso— o `<ClientRouter />` de `astro:transitions`, que **no requiere ninguna integración de framework** y añade su propio script | MDN y documentación de Astro |
+| Enlace de cada sesión a su expositor | Un ancla | — |
+
+**Ninguna de las cinco necesita React**, y la única que cuesta JavaScript
+—`ClientRouter`— lo trae Astro, no una librería de componentes. La opción CSS de
+transiciones cuesta 0 kB, y su peor caso es que el navegador navegue como siempre.
+
+**Qué costaba mantenerlo montado:** 59,5 kB comprimidos de runtime emitidos en cada
+build sin que ningún archivo de `dist` los referenciara, cuatro dependencias que
+actualizar, un archivo de configuración apuntando a una carpeta inexistente
+(`src/components/ui`) y un alias construido con `new URL(...).pathname`, la forma que
+`AGENTS.md` prohíbe por romperse en Windows.
+
+**Cuándo volver a instalarlo:** cuando exista un componente que lo justifique. El
+candidato natural es RF-3, el registro de asistentes —formulario con validación,
+selección y confirmación—, que es donde HTML nativo rinde peor. Es un comando.
+
+**Lo que esta decisión NO afirma:** que React sea malo, ni que shadcn/ui no sirva. Lo
+que dice es que hoy no hay ningún componente que lo pida, y que las reglas del proyecto
+—RF-6.4 para las primitivas, «antes de agregar una dependencia, medir su costo»— se
+aplican igual a la infraestructura que a los componentes.
+
 ## 7. Publicación
 
 **Decisión: Cloudflare Workers con configuración versionada** (`wrangler.jsonc`), y la

@@ -28,6 +28,22 @@ import { chromium } from 'playwright';
  */
 const ROOT = fileURLToPath(new URL('..', import.meta.url)).replace(/[\\/]$/, '');
 const DIST = join(ROOT, 'dist');
+
+/*
+ * Toda ruta que se vaya a comparar con una URL o con lo que dice el HTML pasa por
+ * aquí. `relative()` devuelve el separador del sistema, así que en Windows da
+ * `_astro\hoja.css` mientras el HTML referencia `_astro/hoja.css`: la comparación
+ * nunca coincide.
+ *
+ * No es teórico y costó una cifra falsa. Sin esta conversión, **todo `.js` o `.css`
+ * dentro de una subcarpeta se clasificaba como huérfano** y se descontaba del peso:
+ * la hoja de estilos del sitio, 11,8 kB comprimidos que el navegador sí descarga
+ * porque el `<head>` la enlaza, salía del presupuesto de primera carga y el desglose
+ * informaba «CSS 0,0 kB». Una sesión anterior llegó a explicar ese 0,0 diciendo que
+ * el CSS iba en línea dentro del HTML; no iba, había un `<link rel="stylesheet">`.
+ * Es el mismo error de plataforma que el de `import.meta.url` de arriba.
+ */
+const rutaWeb = (p) => p.replace(/\\/g, '/');
 const REPORT = join(ROOT, 'specs/001-mejora-calidad/verification.md');
 const AXE = join(ROOT, 'node_modules/axe-core/axe.min.js');
 
@@ -173,7 +189,7 @@ async function medirPeso(rutaPagina) {
 
   for (const archivo of archivos) {
     const ext = extname(archivo);
-    const rel = relative(DIST, archivo);
+    const rel = rutaWeb(relative(DIST, archivo));
     const tam = (await stat(archivo)).size;
     const comprimido = async () => gzipSync(await readFile(archivo), { level: 9 }).length;
 
@@ -329,8 +345,8 @@ if (!existsSync(DIST)) {
  */
 const paginas = (await listarArchivos(DIST))
   .filter((f) => f.endsWith('index.html'))
-  .filter((f) => !f.replace(/\\/g, '/').includes('og/'))
-  .map((f) => relative(DIST, f))
+  .filter((f) => !rutaWeb(f).includes('og/'))
+  .map((f) => rutaWeb(relative(DIST, f)))
   .sort();
 
 if (!paginas.length) {
@@ -383,7 +399,19 @@ try {
   server.close();
 }
 
-const peso = await medirPeso(paginas[0]);
+/*
+ * El peso se mide en TODAS las páginas y el presupuesto se juzga contra la más
+ * pesada, no contra la primera de la lista.
+ *
+ * Antes se medía `paginas[0]`, que tras ordenar alfabéticamente es `/en/`: el
+ * informe daba la cifra de la versión en inglés sin decirlo, y RNF-2.1 habla de
+ * peso «por idioma». Con dos idiomas de largo distinto, informar uno y llamarlo
+ * el peso del sitio es una ambigüedad del mismo tipo que sumar corridas y
+ * compararlas con una línea base de una sola pantalla.
+ */
+const pesos = [];
+for (const p of paginas) pesos.push({ pagina: p, ...(await medirPeso(p)) });
+const peso = pesos.reduce((a, b) => (b.primeraCarga > a.primeraCarga ? b : a));
 
 // --- Evaluación de presupuestos ---
 const totalViolaciones = corridas.reduce((s, c) => s + c.violaciones.length, 0);
@@ -427,7 +455,7 @@ if (process.argv.includes('--json')) {
   console.log('\n  Por corrida:');
   for (const c of corridas) {
     console.log(
-      `    ${`${c.viewport}/${c.tema}`.padEnd(20)} ${String(c.violaciones.length).padStart(3)} hallazgos, ` +
+      `    ${`/${c.pagina.replace(/index\.html$/, '')} ${c.viewport}/${c.tema}`.padEnd(28)} ${String(c.violaciones.length).padStart(3)} hallazgos, ` +
         `${String(c.indeterminados.length).padStart(3)} indeterminados`,
     );
   }
@@ -509,10 +537,22 @@ el desglose por corrida más abajo.
 | JavaScript en línea, dentro del HTML | ${kB(peso.javascriptEnLinea)} |
 | JavaScript total (RNF-2.1) | ${kB(peso.javascript + peso.javascriptEnLinea)} |
 | Tipografías | ${kB(peso.tipografias)} |
-| HTML (incluye el CSS y los scripts en línea) | ${kB(peso.html)} |
-| CSS | ${kB(peso.css)} |
+| HTML (incluye los scripts en línea) | ${kB(peso.html)} |
+| CSS en hojas enlazadas | ${kB(peso.css)} |
 | Imágenes SVG | ${kB(peso.imagenes)} |
 | **Primera carga** | **${kB(peso.primeraCarga)}** |
+
+${
+  pesos.every((p) => p.primeraCarga === peso.primeraCarga)
+    ? `Las ${pesos.length} páginas auditadas pesan lo mismo. El presupuesto se juzga contra la más pesada; hoy no hay diferencia entre idiomas.`
+    : `Medido sobre \`/${peso.pagina.replace(/index\.html$/, '')}\`, la **más pesada** de las auditadas, que es contra la que se juzga el presupuesto.`
+}
+
+Primera carga por página:
+
+| Página | Primera carga |
+| ------ | ------------- |
+${pesos.map((p) => `| \`/${p.pagina.replace(/index\.html$/, '')}\` | ${kB(p.primeraCarga)} |`).join('\n')}
 
 Solo se cuenta lo que la página referencia. Archivos generados que **ningún archivo
 de \`dist\` menciona**, y que por tanto ningún navegador descarga:
@@ -530,9 +570,9 @@ ${
 Los totales de la tabla anterior suman todas las corridas. Este desglose evita
 leer un total como si fuera un valor por pantalla.
 
-| Pantalla / tema | Hallazgos | Indeterminados |
-| --------------- | --------- | -------------- |
-${corridas.map((c) => `| ${c.viewport} / ${c.tema} | ${c.violaciones.length} | ${c.indeterminados.length} |`).join('\n')}
+| Página | Pantalla / tema | Hallazgos | Indeterminados |
+| ------ | --------------- | --------- | -------------- |
+${corridas.map((c) => `| \`/${c.pagina.replace(/index\.html$/, '')}\` | ${c.viewport} / ${c.tema} | ${c.violaciones.length} | ${c.indeterminados.length} |`).join('\n')}
 
 ## Cobertura
 

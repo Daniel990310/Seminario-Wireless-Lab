@@ -14,13 +14,14 @@ la Pontificia Universidad Católica de Valparaíso.
 | Estilos      | Tailwind CSS 4                                  | Sistema de diseño en un solo lugar (`src/styles/global.css`), sin CSS muerto en producción. |
 | Tipografía   | Crimson Pro · Atkinson Hyperlegible Next · JetBrains Mono | Auto-hospedadas: sin peticiones a Google Fonts. Atkinson está diseñada para baja visión.  |
 | Idiomas      | i18n nativo de Astro                            | Español en `/`, inglés en `/en/`. Rutas reales, sin detección por navegador.                |
-| Verificación | `astro check` y siete verificadores propios     | Ver «Comandos». Sin ellos en verde, ninguna afirmación de calidad está respaldada.          |
+| Verificación | `astro check` y ocho verificadores propios      | Ver «Comandos». Sin ellos en verde, ninguna afirmación de calidad está respaldada.          |
 
 ### Cuánto JavaScript envía este sitio
 
-**1,1 kB comprimidos**, y ninguna petición a un archivo `.js`: el poco código que
-corre —menú móvil, selector de tema, carga diferida del mapa, sección activa—
-viaja dentro del HTML.
+**1,4 kB comprimidos**, y ninguna petición a un archivo `.js`: el poco código que
+corre —menú móvil, selector de tema, carga diferida del mapa, sección activa,
+pestañas del programa— viaja dentro del HTML. La primera carga completa, con
+tipografías y hoja de estilos, es de **152,5 kB** `[medido]`.
 
 Conviene saber cómo se llegó aquí, porque el camino tuvo marcha atrás:
 
@@ -32,9 +33,14 @@ Conviene saber cómo se llegó aquí, porque el camino tuvo marcha atrás:
   enormes que dejaban el texto vecino sin contraste medible para axe, y además
   usaba sombras, que el sistema de diseño no admite.
 
-React sigue instalado como capa de renderizado, pero hoy **ningún componente se
-hidrata**. `src/components/ui/` está vacío: la base de shadcn/ui sigue montada
-—`components.json` y los alias— por si T10 incorpora componentes interactivos.
+- El **2026-07-31 salió React del todo**, junto con la base de shadcn/ui que T3 había
+  montado. No quedaba ningún `.tsx` ni ninguna directiva `client:`, y la integración
+  emitía 59,5 kB comprimidos de runtime en cada build que ningún archivo de `dist`
+  referenciaba. Antes de borrar se comprobó, contra documentación, que lo que viene
+  —fotos, línea de tiempo animada, transiciones— no lo necesita.
+
+Hoy el sitio se compone **solo con Astro**. Si alguna vez hace falta una isla, la
+integración se instala entonces y con un motivo escrito: `specs/001-mejora-calidad/design.md` §6.6.
 
 ## Comandos
 
@@ -58,9 +64,15 @@ cadena y resume.
 | `npm run verify:tema`      | Los 17 criterios de RF-4 que axe no puede evaluar                     |
 | `npm run verify:red`       | Los 7 criterios de T3 sobre la red de colaboración                    |
 | `npm run verify:teclado`   | Foco visible, recorrido por teclado y zoom de texto al 200 % (T6)     |
-| `npm run verify:idioma`    | Los 17 criterios de RF-1, incluidos **textos sin traducir**           |
-| `npm run verify:seo`       | Los 20 criterios de RNF-3: imágenes para compartir y metadatos        |
-| `npm run verify:interaccion` | RF-6: contenido íntegro sin JavaScript y sección activa             |
+| `npm run verify:idioma`    | Los 19 criterios de RF-1, incluidos **textos sin traducir**           |
+| `npm run verify:seo`       | Los 22 criterios de RNF-3: imágenes para compartir y metadatos        |
+| `npm run verify:interaccion` | Los 9 criterios de RF-6: contenido íntegro sin JavaScript y sección activa |
+
+Y uno que **no** entra en la cadena, porque depende de la red y de un servicio externo:
+
+| Comando | Qué comprueba |
+| ------- | ------------- |
+| `npm run verify:publicado -- <url>` | Los 20 criterios de RNF-7 y RNF-3.1 **contra el sitio en vivo**: `noindex` en dominio provisional, canónico, la imagen servida a 1200×630 y `validator.schema.org` sin errores ni avisos |
 
 ## Cómo editar el contenido
 
@@ -339,12 +351,11 @@ src/
 │   ├── Hero.astro, SiteHeader.astro, SiteFooter.astro
 │   ├── Section.astro, SpeakerCard.astro, LogoWall.astro
 │   ├── VenueLocator.astro       # panel de la sede con mapa bajo demanda
-│   └── ui/                      # vacío: base de shadcn/ui montada, sin componentes
-├── lib/utils.ts                 # helper `cn`, convención de shadcn/ui
+│   └── ProgramaJornadas.astro   # pestañas por jornada, mejora progresiva
 ├── styles/global.css            # sistema de diseño en tres capas de tokens
 └── assets/fonts/                # fuentes auto-hospedadas
 
-scripts/                         # los siete verificadores y el generador de imágenes
+scripts/                         # los ocho verificadores y el generador de imágenes
 public/og/                       # imágenes para compartir, versionadas
 ```
 
