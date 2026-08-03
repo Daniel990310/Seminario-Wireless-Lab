@@ -127,6 +127,18 @@ que filtrar por elementos representados (`getClientRects().length`). Sin filtrar
 una vista alternativa oculta por punto de quiebre cuenta como animación que falta:
 daba «4/5 animando» y parecía un fallo donde no lo había.
 
+**Una ruta del sistema no se compara con una URL sin normalizar el separador.** Es la
+misma familia que la trampa siguiente, y costó una cifra falsa durante semanas.
+`relative()` devuelve `_astro\hoja.css` en Windows; el HTML referencia
+`_astro/hoja.css`. `verify.mjs` decidía con esa comparación si un archivo estaba
+referenciado, así que **todo `.js` o `.css` en subcarpeta salía como huérfano** y se
+descontaba del peso: la hoja de estilos del sitio, 11,8 kB que el navegador sí
+descarga, quedaba fuera de RNF-2.2 y el informe decía «CSS 0,0 kB». Peor: una sesión
+explicó ese cero afirmando que el CSS iba en línea, sin abrir el HTML a comprobar que
+había un `<link rel="stylesheet">`. **Toda ruta que se compare con una URL o con el HTML
+pasa por `rutaWeb()`.** Y el error favorecía al proyecto, que es la dirección que menos
+se nota: al corregir, la primera carga pasó de 140,7 a **152,5 kB**.
+
 **`new URL('..', import.meta.url).pathname` se rompe en Windows.** Da
 `/C:/Users/...`, con una barra inicial que `readdir`/`readFile` no resuelven:
 `npm run verify` fallaba con «No existe dist/» aunque `dist/` existiera. Usar
@@ -146,7 +158,7 @@ ese entorno Playwright resuelve el suyo.
 | D3 | Registro de asistentes: previsto en la especificación, no implementado |
 | D4 | Swiss Modernism 2.0 más minimalismo; Crimson Pro y Atkinson Hyperlegible Next |
 | D5 | Dos temas con selector: claro por omisión, oscuro y «según el sistema» |
-| D6 | **Se adopta shadcn/ui sobre Radix.** El cliente busca un sitio interactivo. **Pero no se materializó en ningún componente**: las 5 interacciones de RF-6 se resolvieron con HTML nativo porque RF-6.2 exige que el contenido exista sin JavaScript. La base queda montada desde T3; instalar una primitiva es un comando, y hace falta un motivo escrito. Ver la enmienda de RF-6 |
+| D6 | **Se adopta shadcn/ui sobre Radix.** El cliente busca un sitio interactivo. **No se materializó en ningún componente**: las 5 interacciones de RF-6 se resolvieron con HTML nativo, porque RF-6.2 exige que el contenido exista sin JavaScript. El 2026-07-31, por instrucción de Daniel, **se retiró React y la base de shadcn** —`@astrojs/react`, `react`, `react-dom`, `clsx`, `tailwind-merge`, `components.json`, `src/lib/utils.ts`—: nada de eso lo usaba ningún componente y la integración emitía 59,5 kB de runtime huérfano en cada build. **Reinstalarlo es un comando** si aparece un componente que lo justifique; el candidato natural es el registro de asistentes (RF-3). Ver la enmienda de RF-6 y `design.md` §6.6 |
 
 ## Ya evaluado y descartado
 
@@ -222,11 +234,16 @@ src/
 ├── data/              todo el contenido editable
 ├── layouts/           <head>, SEO, datos estructurados
 ├── pages/             composición
-├── components/        secciones y piezas
+├── components/        secciones y piezas — todas `.astro`, ninguna `.tsx`
 ├── styles/global.css  sistema de diseño
 └── assets/fonts/      tipografías auto-hospedadas
 public/logos/          logos institucionales (hoy marcadores de posición)
+public/og/             imágenes para compartir, generadas con `npm run og`
 ```
+
+**No hay dependencias de interfaz.** El sitio se compone solo con Astro: sin React, sin
+`src/lib/`, sin `components.json`. Si hace falta una isla, se instala la integración
+entonces y se escribe el motivo.
 
 ## Git
 

@@ -2,7 +2,7 @@
 
 Generado por `npm run verify`. **No editar a mano**: se sobrescribe en cada corrida.
 
-**Fecha:** 2026-07-31 · **Commit:** `f9f2e79`
+**Fecha:** 2026-08-03 · **Commit:** `b96f9eb`
 **Resultado:** todos los presupuestos cumplidos
 
 Método: axe-core sobre el build servido localmente, en 1440×900 y 390×844,
@@ -25,7 +25,7 @@ de ese orden respecto de la línea base no indica un cambio real.
 | RNF-1.4 | Secciones sin nombre accesible | 7 | 0 | 0 | cumple |
 | RNF-1.5 | Saltos de nivel en encabezados | 0 | 0 | 0 | cumple |
 | RNF-2.1 | JavaScript comprimido | 109.3 kB | 1.4 kB | 115.0 kB | cumple |
-| RNF-2.2 | Primera carga comprimida | 241.2 kB | 140.7 kB | 260.0 kB | cumple |
+| RNF-2.2 | Primera carga comprimida | 241.2 kB | 152.5 kB | 260.0 kB | cumple |
 | RNF-2.6 | Tipografías | 110.9 kB | 122.6 kB | 125.0 kB | cumple |
 
 En RNF-1.1 y RNF-1.3 la columna «Actual» **suma todas las corridas**, mientras que
@@ -40,42 +40,46 @@ el desglose por corrida más abajo.
 | JavaScript en línea, dentro del HTML | 1.4 kB |
 | JavaScript total (RNF-2.1) | 1.4 kB |
 | Tipografías | 122.6 kB |
-| HTML (incluye el CSS y los scripts en línea) | 18.1 kB |
-| CSS | 0.0 kB |
+| HTML (incluye los scripts en línea) | 18.1 kB |
+| CSS en hojas enlazadas | 11.8 kB |
 | Imágenes SVG | 3.3 kB |
-| **Primera carga** | **140.7 kB** |
+| **Primera carga** | **152.5 kB** |
+
+Medido sobre `/en/`, la **más pesada** de las auditadas, que es contra la que se juzga el presupuesto.
+
+Primera carga por página:
+
+| Página | Primera carga |
+| ------ | ------------- |
+| `/en/` | 152.5 kB |
+| `/` | 152.5 kB |
 
 Solo se cuenta lo que la página referencia. Archivos generados que **ningún archivo
 de `dist` menciona**, y que por tanto ningún navegador descarga:
 
-| Archivo huérfano | Comprimido |
-| ---------------- | ---------- |
-| `_astro\client.D9vVWfjN.js` | 59536 B |
-| `_astro\PropagationFigure.DHFzmLjD.css` | 11759 B |
-
-Total huérfano: 71.3 kB.
+Ninguno.
 
 ## Por corrida
 
 Los totales de la tabla anterior suman todas las corridas. Este desglose evita
 leer un total como si fuera un valor por pantalla.
 
-| Pantalla / tema | Hallazgos | Indeterminados |
-| --------------- | --------- | -------------- |
-| escritorio / light | 0 | 0 |
-| escritorio / dark | 0 | 0 |
-| movil / light | 0 | 0 |
-| movil / dark | 0 | 0 |
-| escritorio / light | 0 | 0 |
-| escritorio / dark | 0 | 0 |
-| movil / light | 0 | 0 |
-| movil / dark | 0 | 0 |
+| Página | Pantalla / tema | Hallazgos | Indeterminados |
+| ------ | --------------- | --------- | -------------- |
+| `/en/` | escritorio / light | 0 | 0 |
+| `/en/` | escritorio / dark | 0 | 0 |
+| `/en/` | movil / light | 0 | 0 |
+| `/en/` | movil / dark | 0 | 0 |
+| `/` | escritorio / light | 0 | 0 |
+| `/` | escritorio / dark | 0 | 0 |
+| `/` | movil / light | 0 | 0 |
+| `/` | movil / dark | 0 | 0 |
 
 ## Cobertura
 
 | Dato | Valor |
 | ---- | ----- |
-| Páginas auditadas | `/en\`, `/` |
+| Páginas auditadas | `/en/`, `/` |
 | Corridas | 8 |
 | Temas distinguibles | sí |
 | Secciones | 7 |

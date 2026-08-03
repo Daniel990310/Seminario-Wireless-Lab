@@ -134,8 +134,15 @@ no se confunda con algo comprobado.
 | RNF-1.4 Secciones sin nombre accesible | 7 de 7 | **0 de 7** | 0 | cumple |
 | RNF-1.5 Saltos de nivel en encabezados | 0 | 0 | 0 | cumple |
 | RNF-2.1 JavaScript comprimido | 109,3 kB | **1,4 kB** | 115 kB | cumple |
-| RNF-2.2 Primera carga comprimida | 241,2 kB | **140,7 kB** | 260 kB | cumple |
+| RNF-2.2 Primera carga comprimida | 241,2 kB | **152,5 kB** | 260 kB | cumple |
 | RNF-2.6 Tipografías | 110,9 kB | 122,6 kB | 125 kB | cumple |
+
+**La primera carga no es 140,7 kB como dijeron los documentos hasta el 2026-07-31.** El
+medidor comparaba rutas con separador del sistema contra las del HTML, y en Windows eso
+descartaba como huérfana la hoja de estilos que el `<head>` enlaza: 11,8 kB reales
+fuera del presupuesto. El techo nunca se incumplió —152,5 contra 260 kB—, pero el error
+favorecía al proyecto, que es la dirección que menos se nota. Corregido, con prueba de
+sensibilidad en los dos sentidos, en [`fuentes.md`](fuentes.md).
 
 Los dos incumplimientos que quedaban abiertos —RNF-1.3 y RNF-1.4— se cerraron en T5 y
 T6. Dos cifras llevan nota porque leídas solas engañan: RNF-2.1 no bajó de 109,3 a
@@ -166,6 +173,15 @@ más nombrar que enterrar**:
 Además `design.md` recuperó el «cómo y por qué» de T5 a T13 (§6 y §7), que vivía solo
 en `ESTADO.md`. Un diario responde «qué pasó ese día»; la especificación tiene que
 responder «por qué el sitio es así».
+
+**Y se retiró lo que quedaba colgado** (§6.6 de `design.md`): React, la base de
+shadcn/ui y el alias `@`, que ningún componente usaba y que emitían 59,5 kB de runtime
+huérfano por build. Antes de borrar se verificó contra documentación —Astro vía
+Context7, MDN y caniuse— que **nada de lo previsto para el próximo plan lo necesita**:
+las fotos de expositores salen de `astro:assets`, la línea de tiempo animada de
+`animation-timeline: view()` con respaldo por `@supports`, y las transiciones entre
+idiomas de `@view-transition` o del `ClientRouter` de Astro. Reinstalarlo es un comando
+si aparece un componente que lo justifique.
 
 **Lo que queda abierto no es código:** los pendientes A3–A7 —afiliación de Rodolfo
 Feick, correo institucional, logos oficiales, dominio definitivo y traducción de los

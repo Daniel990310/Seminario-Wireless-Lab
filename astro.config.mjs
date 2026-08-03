@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 
 /*
@@ -65,8 +64,15 @@ export default defineConfig({
     routing: { prefixDefaultLocale: false },
   },
 
-  // React se usa solo como capa de renderizado. Los componentes se renderizan en
-  // el servidor sin directiva `client:*`, por lo que no envían JavaScript.
+  /*
+   * Sin integración de framework de interfaz. La había —`@astrojs/react`, para
+   * shadcn/ui según D6— y se retiró el 2026-07-31: no quedaba ningún `.tsx` ni
+   * ninguna directiva `client:` desde T3, y la integración emitía en cada build su
+   * runtime de cliente de 59,5 kB comprimidos que ningún archivo de `dist`
+   * referenciaba. Si alguna vez hace falta una isla, se reinstala en un comando; lo
+   * que no se sostiene es mantener la integración sin un componente que la use, que
+   * es la misma regla que RF-6.4 aplica a las primitivas de Radix.
+   */
   integrations: [
     // `i18n` en el sitemap emite las alternativas por idioma en cada URL (RF-1.8).
     sitemap({
@@ -75,16 +81,16 @@ export default defineConfig({
       // compartir: no son páginas para visitar y no deben indexarse.
       filter: (pagina) => !pagina.includes('/og/'),
     }),
-    react(),
   ],
+  /*
+   * Aquí vivía un alias `'@' → ./src`, para que los componentes de Magic UI
+   * importaran `@/lib/utils`. Magic UI salió en T3 y T5, y `src/lib/utils.ts` no lo
+   * usaba nadie. Se retira con el alias, que además estaba construido con
+   * `new URL(...).pathname`: la forma que en Windows da `/C:/Users/…` y que
+   * `AGENTS.md` prohíbe justamente por eso.
+   */
   vite: {
     plugins: [tailwindcss()],
-    resolve: {
-      alias: {
-        // Los componentes de Magic UI importan desde `@/lib/utils`.
-        '@': new URL('./src', import.meta.url).pathname,
-      },
-    },
   },
   // Fuentes variables auto-hospedadas desde `src/assets/fonts`.
   //

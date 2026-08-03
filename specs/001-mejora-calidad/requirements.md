@@ -131,12 +131,24 @@ rápido.
 > `react-aria-components`, Headless UI o shadcn, y ninguno funciona sin hidratar.
 >
 > **Consecuencia sobre D6**, que hay que decir sin adornos: la decisión del cliente
-> de adoptar shadcn/ui sobre Radix **no se materializó en ningún componente**. La
-> base quedó montada en T3 (`components.json`, tokens semánticos, el helper `cn`),
-> así que instalar una primitiva es un comando, pero hoy el sitio no usa ninguna.
-> Lo que el cliente pedía —«un sitio interactivo y no solo informativo»— se cumplió
-> con HTML nativo. Si Daniel quiere específicamente shadcn/ui en el producto y no
-> solo el resultado, eso es una decisión nueva y necesita un requisito nuevo.
+> de adoptar shadcn/ui sobre Radix **no se materializó en ningún componente**. Lo que
+> el cliente pedía —«un sitio interactivo y no solo informativo»— se cumplió con HTML
+> nativo. Si Daniel quiere específicamente shadcn/ui en el producto y no solo el
+> resultado, eso es una decisión nueva y necesita un requisito nuevo.
+>
+> **Segunda enmienda, 2026-07-31: la base se retiró, por instrucción de Daniel.** La
+> base montada en T3 —`@astrojs/react`, `react`, `react-dom`, `clsx`,
+> `tailwind-merge`, `components.json` y `src/lib/utils.ts`— no la usaba ningún
+> componente, no quedaba ni un `.tsx` ni una directiva `client:`, y la integración
+> emitía **59,5 kB comprimidos de runtime de cliente en cada build** que ningún
+> archivo de `dist` referenciaba. Se comprobó antes de borrar que nada de lo previsto
+> para el próximo plan —fotos de expositores, línea de tiempo animada, hero con más
+> movimiento, transiciones entre idiomas— lo necesita: eso se resuelve con
+> `astro:assets`, CSS y la API de transiciones del navegador. Detalle y fuentes en
+> `design.md` §6.6.
+>
+> Reinstalarlo es un comando. El candidato natural sigue siendo RF-3, el registro de
+> asistentes, que es interacción que HTML nativo resuelve peor.
 >
 > Detalle en `ESTADO.md` §5h y §5j.
 
@@ -311,7 +323,10 @@ que declarar en el commit, no un motivo para descartar trabajo. Las comprobacion
 accesibilidad (RNF-1) siguen siendo bloqueantes sin cambio alguno.
 
 En la práctica, hoy no cambia nada: al cerrar T3 el sitio va en **0,0 kB de JavaScript
-y 136,4 kB de primera carga** `[medido]`, muy por debajo de los techos. Lo que la
+y 136,4 kB de primera carga** `[medido]`, muy por debajo de los techos. **Corrección del
+2026-07-31: esa cifra de primera carga estaba baja en 11,8 kB** por un defecto del
+medidor que descartaba la hoja de estilos como huérfana; la medición correcta es
+**152,5 kB**, que sigue muy por debajo del techo de 260 kB. Ver `../fuentes.md`. Lo que la
 enmienda desbloquea es poder volver a meter React —componentes de 21st.dev, islas
 interactivas de T10— sin que el peso sea por sí solo el argumento para rechazarlo.
 
