@@ -7,8 +7,8 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-07-31** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
-· Último commit de tarea: `00e00f4` (T10)
+Actualizado: **2026-08-02** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
+· Último commit de tarea: `49d78ed` (retirada de React y corrección del medidor)
 
 > **001 queda CERRADA el 2026-07-31, T1 a T13.** La revisión del flujo SDD encontró el
 > código en verde y el rastro documental atrasado. Se corrigió en dos tandas:
@@ -854,6 +854,26 @@ pesa menos (33.996 B en 1 archivo, contra 34.732 B en 2). Está en `specs/fuente
   puede registrar dentro del PR que se está fusionando. Así que ver uno o dos
   commits de registro por delante de `main` es lo normal y no significa que haya
   trabajo sin fusionar. Lo que importa es que no haya **código** por delante.
+
+### PR #5, fusionado el 2026-08-02
+
+<https://github.com/Daniel990310/Seminario-Wireless-Lab/pull/5> · `MERGED` (`79ac63d`).
+Retirada de React y de la base de shadcn/ui, y corrección del medidor que subestimaba
+la primera carga en 11,8 kB. Detalle en §5k.
+
+**La trampa de credenciales reapareció, y no es puntual: es recurrente.** `gh pr create`
+falló con `must be a collaborator` porque la **cuenta activa había vuelto a ser
+`danielcaignet-dataseed`**, que solo tiene lectura sobre el repositorio. El `git push`
+funcionó igual, así que el problema no se nota hasta intentar abrir el PR. Se resuelve
+sin volver a autenticarse:
+
+```bash
+gh auth switch --hostname github.com --user Daniel990310
+gh api user -q .login   # comprobar que dice Daniel990310 antes de crear el PR
+```
+
+Hay dos cuentas en el llavero y la activa puede cambiar entre sesiones. **Comprobar la
+cuenta activa antes de abrir un PR**, no después de que falle.
 
 ### PR #3, fusionado el 2026-07-31
 
