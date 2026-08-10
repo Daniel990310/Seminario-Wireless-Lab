@@ -72,22 +72,44 @@ const { imagen, encuadre = '50% 50%' } = Astro.props;
     isolation: isolate;
 
     /*
-     * Espacio para la cabecera fija, y la franja arranca **pegada** a ella.
-     *
-     * La cabecera es `fixed` y opaca, así que la banda pasa por debajo. 70 px sale
-     * de medirla: 71,0 px a 1440 y 73,0 px a 768 y 390 `[medido: 2026-08-09]`. Se
-     * elige por debajo del mínimo a propósito —la banda pierde 1 a 3 px bajo la
-     * cabecera— porque el error en el otro sentido se ve: un valor mayor abre una
-     * franja de fondo plano entre la cabecera y la foto, y la imagen queda
-     * flotando en vez de nacer de la barra.
-     *
-     * Que el valor sea fijo y la cabecera pueda crecer —envuelve al ampliar el
-     * texto, WCAG 1.4.4— es inocuo aquí y solo aquí: lo que la cabecera taparía
-     * es fotografía, no texto.
+     * La altura se comparte con el hero, que necesita reservar sitio bajo una barra
+     * `fixed`. Vive en `global.css` como `--alto-franja` para que no haya dos
+     * números que puedan separarse.
      */
-    margin-top: 4.375rem;
-    height: clamp(9rem, 21vw, 16rem);
+    height: var(--alto-franja);
     --velo: 18%;
+  }
+
+  /*
+   * La contracción.
+   *
+   * Se anima `height` y no `max-height` porque el valor de partida ya es una longitud
+   * resuelta, así que no hace falta el truco de `max-height` para animar desde `auto`.
+   *
+   * `content-visibility` con `allow-discrete` retira además la imagen del árbol de
+   * pintado al terminar: contraída a 0 con `overflow: hidden` seguiría pintándose y
+   * recortándose en cada cuadro para nada.
+   */
+  :root[data-hero-visible='no'] .franja-sede {
+    height: 0;
+    content-visibility: hidden;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .franja-sede {
+      transition:
+        height 420ms var(--ease-out-soft, ease-out),
+        content-visibility 420ms allow-discrete;
+    }
+  }
+
+  /*
+   * El menú móvil es un `<details>` en flujo: al abrirse crece la barra y empujaría la
+   * fotografía hasta media pantalla. Mientras está abierto, la franja se recoge.
+   */
+  header:has([data-mobile-menu][open]) .franja-sede {
+    height: 0;
+    content-visibility: hidden;
   }
 
   /*

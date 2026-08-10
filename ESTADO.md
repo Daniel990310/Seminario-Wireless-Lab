@@ -8,7 +8,15 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 > **Si no está escrito en el repositorio, no ocurrió.**
 
 Actualizado: **2026-08-09** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
-· Último commit de tarea: `49d78ed` (retirada de React y corrección del medidor)
+· Último commit de tarea: `5998723` (identidad PUCV, marcas, retratos y franja de la sede)
+
+> **El árbol está limpio y el sitio está publicado.** La sesión de §10 y §11 se
+> commiteó y se empujó a `origin/claude/framework-app-profesional-n4wa0t`, y se
+> desplegó a Workers el 2026-08-09 (versión `4cca071f`):
+> <https://seminario-wireless-lab.danielcaignet99.workers.dev>
+> `verify:publicado` en verde contra esa URL, con `noindex` porque el dominio es
+> provisional. **Recordar `SITE_URL` al construir para desplegar**, o el canónico
+> apunta a un dominio que no existe: ver el aviso de `wrangler.jsonc`.
 
 > **Hay un plan abierto: [002 · Rediseño visual y movimiento](specs/002-rediseno-visual/requirements.md).**
 > RF-9 está implementado y verificado, y desde el 2026-08-06 el plan creció hasta RF-21.
@@ -19,8 +27,9 @@ Actualizado: **2026-08-09** · Rama de trabajo: `claude/framework-app-profesiona
 Se cerró la sesión de §10 con un commit —ya no hay nada colgando— y encima se hizo esto.
 
 **Lo que se buscaba**, en palabras de Daniel: «darle algo de vida a la página que está muy
-sobria». **Lo que se implementó** es RF-21: una franja fotográfica de la sede a sangre
-completa, encabezando el hero, y una barra que sabe si el titular del hero está a la vista.
+sobria». **Lo que se implementó** es RF-21: la fotografía de la sede va **dentro de la barra
+del sitio**. Al cargar, la barra mide **327 px** y lleva la franja, sin el nombre del evento;
+al pasar de sección se contrae a **71 px** y aparece el nombre `[medido: 2026-08-09]`.
 
 **El dato que decidió el diseño, y que conviene no volver a discutir:** la fotografía tiene
 negro puro y blanco puro en la misma imagen —rango de luminancia **0,000–1,000**—, así que
@@ -49,10 +58,12 @@ de geometría y no de color:
    contenido, esos rects alcanzaron los botones. Se resolvió con `relative z-10` en la
    columna de texto —orden de pintado, no espaciado—, que además garantiza lo que ya se
    daba por hecho.
-2. **La franja flotaba bajo la cabecera.** Se midió la barra: 71,0 px a 1440 y 73,0 px a
-   768 y 390. El margen se fija en 4,375 rem, **por debajo del mínimo**, porque el error
-   contrario abre un hueco de fondo plano y se ve; el suyo esconde 1–3 px de fotografía y
-   no se ve.
+2. **La franja empezó donde no iba.** Primero fue una banda independiente entre `main` y
+   el hero; Daniel corrigió que la fotografía tiene que ser parte de la barra. Al moverla
+   dentro, la barra pasa a tener dos alturas y el hero —que reserva su sitio con relleno,
+   porque la barra es `fixed`— necesita las dos medidas. Viven en `global.css` como
+   `--alto-barra` y `--alto-franja` justamente para que no puedan separarse: si se
+   separan, o aparece un hueco o el titular se esconde debajo de la foto.
 
 Verificado antes de publicar: los **seis** verificadores en verde, incluido `verify` con 0
 hallazgos y 0 indeterminados en las 8 corridas. Peso de primera carga 165,5 kB de 260.

@@ -17,17 +17,7 @@ import ProgramaJornadas from '~/components/ProgramaJornadas.astro';
 import LogoWall from '~/components/LogoWall.astro';
 import VenueLocator from '~/components/VenueLocator.astro';
 import SiteFooter from '~/components/SiteFooter.astro';
-import FranjaSede from '~/components/FranjaSede.astro';
 import { contenido, type Idioma } from '~/data/contenido';
-
-/*
- * Recorte de la fotografía de la sede (RF-21): el nivel de calle —árboles, sello,
- * columnas, entrada—, que es la parte reconocible y la que tiene gente. Se cortó
- * ya apaisado, a la proporción de la banda, en lugar de recortar por CSS el
- * original vertical de 2000×2125: así el navegador no descarga los píxeles que la
- * franja nunca muestra. Ahorro medido: de 126 kB a 55 kB en la variante de 1440.
- */
-import sedeAcceso from '~/assets/fondos/sede-acceso.webp';
 
 interface Props {
   lang: Idioma;
@@ -43,21 +33,12 @@ const hasProgram = program.days.length > 0;
 
   <main>
     <!--
-      Franja de la sede: encabeza el hero.
-
-      Va **antes** del hero y no dentro, por decisión de Daniel del 2026-08-09.
-      Dentro tendría que compartir sitio con la figura del radar y con el titular,
-      y ese es el reparto que descartó el mismo día («va a quedar demasiado
-      cargada»). Como hermana de `main` sangra a los dos bordes sin márgenes
-      negativos, porque el ancho máximo lo imponen las secciones, no `main`.
-
-      Hubo una segunda franja cerrando «El seminario», al 50 %, para cumplir la
-      proporción 90/50 que Daniel había pedido. Se retiró el mismo día: con la
-      franja ya en cabecera, la de abajo repetía el recurso a dos pantallas de
-      distancia sin añadir nada.
+      Aquí estuvo `FranjaSede` unas horas, entre `main` y el hero. Se movió **dentro
+      de la barra** el 2026-08-09, en `SiteHeader.astro`: lo que Daniel pedía es que
+      la barra arranque alta con la fotografía y se contraiga al pasar de sección, no
+      que la foto sea una banda independiente. Queda anotado para que nadie la
+      devuelva aquí sin leer RF-21.
     -->
-    <FranjaSede imagen={sedeAcceso} encuadre="50% 50%" />
-
     <Hero c={c} />
 
     <!-- El seminario -->

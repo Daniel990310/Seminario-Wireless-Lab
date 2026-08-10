@@ -63,6 +63,19 @@
  * saturado anterior. Es fidelidad a la marca, no un error de cálculo.
  */
 :root {
+  /*
+   * Geometría de la barra del sitio (RF-21). Vive aquí, y no en los dos componentes,
+   * porque son dos medidas que **tienen** que coincidir: la barra es `fixed`, así que
+   * el hero reserva su sitio con relleno, y si los números se separan aparece un hueco
+   * o el titular se esconde debajo de la fotografía.
+   *
+   * `--alto-barra` es medido, no estimado: la fila de navegación mide 71,0 px a 1440 y
+   * 73,0 px a 768 y 390 `[medido: 2026-08-09]`. Se toma el mayor, porque quedarse corto
+   * aquí sí se ve.
+   */
+  --alto-franja: clamp(9rem, 21vw, 16rem);
+  --alto-barra: 4.5625rem;
+
   /* Azul PUCV · Pantone 2945 U · derivado de #28598D */
   --navy-900: #0b1827; /* 17,09:1 sobre fondo claro — antes 17,06:1 */
   --navy-700: #1a3a5d; /* 11,11:1 sobre fondo claro — antes 10,99:1 */

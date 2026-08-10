@@ -352,12 +352,12 @@ costó 11 nodos.
 
 | - | Criterio | Cómo se comprueba |
 | - | -------- | ----------------- |
-| RF-21.1 | La franja va **antes** del hero en `main`, a sangre completa, y **no lleva ningún texto encima** | `FranjaSede.astro`; `npm run verify` = 0 indeterminados |
+| RF-21.1 | La franja va **dentro de la barra del sitio**, después de la fila de navegación, y **no lleva ningún texto encima**. Al cargar, la barra mide 327 px con la fotografía; al pasar de sección se contrae a 71 px | `SiteHeader.astro`; `[medido: 2026-08-09]`; `npm run verify` = 0 indeterminados |
 | RF-21.2 | El recorte se corta **apaisado y a la proporción de la banda** (4,38:1), no por CSS sobre el original vertical. Ahorro medido: 126 kB → 55 kB en la variante de 1440 | `sede-acceso.webp`, 2000×457 |
 | RF-21.3 | Dos capas sobre la imagen: velo plano del color de fondo (18 % en claro, **48 % en oscuro**) y degradado al color sólido del hero en el borde inferior, a todo lo ancho | inspección |
 | RF-21.4 | El velo oscuro es 2,7 veces el claro y no igual: con 24 % la franja salía indistinguible de la versión clara y una fachada blanca al sol sobre luminancia 0,006 se lee como un agujero de luz | `[captura, 2026-08-09]` |
-| RF-21.5 | La franja arranca **pegada a la cabecera fija**: margen superior 4,375 rem contra una barra de 71,0 px a 1440 y 73,0 px a 768 y 390. Se elige por debajo del mínimo porque el error contrario abre un hueco de fondo plano y la foto queda flotando | `[medido: 2026-08-09]` |
-| RF-21.6 | El hero baja su relleno superior de `pt-24 sm:pt-32` a `pt-8 sm:pt-12`: ese espacio libraba la cabecera y ahora lo libra la franja | `Hero.astro` |
+| RF-21.5 | La franja se **contrae a 0** con `height` y `content-visibility: hidden` al dejar atrás el titular, y también mientras el menú móvil está abierto —en flujo, crecería la barra hasta media pantalla— | `:root[data-hero-visible='no']`; `header:has([data-mobile-menu][open])` |
+| RF-21.6 | El hero reserva el alto de la barra `fixed` con `--alto-barra + --alto-franja`, los dos en `global.css`. **No** se reduce al contraerse la franja: animar el relleno movería el texto mientras se lee, y para entonces ya está fuera de pantalla | `.sitio-bajo-barra` |
 | RF-21.7 | **El nombre del evento no aparece en la barra mientras el titular del hero está a la vista.** Repetía lo mismo con letra pequeña a 40 px de distancia | `IntersectionObserver` sobre `#top-titulo`; `data-hero-visible` en `<html>` |
 | RF-21.8 | El estado por omisión —sin JavaScript— es **visible**, como `.reveal`. El nombre accesible del enlace vive en `aria-label` y no depende de que el texto se vea | `verify:teclado`, `verify:idioma` |
 | RF-21.9 | Mientras el hero manda, la barra no dibuja su canto inferior: nace de la fotografía y las dos se leen como un bloque. El filete vuelve al desplazarse | `:root[data-hero-visible='si'] .barra-sitio` |
@@ -372,12 +372,15 @@ costó 11 nodos.
 3. **Segunda franja al 50 % cerrando «El seminario»**, que era la lectura literal de la
    proporción 90/50 que Daniel había pedido. Con la franja ya en cabecera, repetía el
    recurso a dos pantallas de distancia sin añadir nada.
-4. **Barra translúcida sobre la foto.** Es el patrón que Daniel pidió —«el menú superior
-   puede estar embebido de alguna forma en la imagen»— y es el único punto de su
-   indicación que **no** se implementó: sobre esta fotografía no hay color de texto que
-   cumpla. Lo que sí se hizo es todo lo demás de ese patrón: barra sin canto, sin nombre
-   duplicado, y relevo con transición al desplazarse. La vía compatible para llegar al
-   resto queda anotada en decisiones abiertas.
+4. **Franja como banda independiente entre `main` y el hero.** Estuvo así unas horas.
+   Daniel lo corrigió: lo que pedía es que la fotografía forme parte de la barra, que
+   arranque alta y se contraiga. Está implementado.
+5. **Barra translúcida *sobre* la foto, con la navegación encima de la imagen.** Es la
+   única parte de la indicación de Daniel que **no** se puede implementar: sobre esta
+   fotografía no hay color de texto que cumpla. La solución adoptada da el mismo
+   resultado por el camino que sí cumple: la foto está dentro de la barra, pero **debajo**
+   de la fila de navegación, que conserva su color plano. Ver A15 si algún día se quiere
+   la navegación literalmente encima de la imagen.
 
 ## Decisiones abiertas nuevas
 

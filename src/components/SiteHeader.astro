@@ -1,6 +1,15 @@
 ---
 import ThemeSelector from './ThemeSelector.astro';
 import LanguageSelector from './LanguageSelector.astro';
+import FranjaSede from './FranjaSede.astro';
+/*
+ * Recorte de la fotografía de la sede (RF-21): el nivel de calle —árboles, sello,
+ * columnas, entrada—, que es la parte reconocible y la que tiene gente. Se cortó ya
+ * apaisado, a la proporción de la banda, en lugar de recortar por CSS el original
+ * vertical de 2000×2125: así el navegador no descarga los píxeles que la franja nunca
+ * muestra. Ahorro medido: de 126 kB a 55 kB en la variante de 1440.
+ */
+import sedeAcceso from '~/assets/fondos/sede-acceso.webp';
 import type { Contenido } from '~/data/contenido';
 import type { Idioma } from '~/data/contenido';
 
@@ -196,6 +205,19 @@ const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asun
       </details>
     </div>
   </nav>
+
+  <!--
+    La franja vive **dentro** de la barra, no debajo, por indicación de Daniel el
+    2026-08-09: al cargar la barra es alta y lleva la fotografía; al pasar de sección
+    se contrae a la altura de siempre y aparece el nombre del evento.
+
+    Va después del `<nav>` y no detrás de él a propósito. Detrás sería la barra
+    translúcida sobre la foto, y sobre esta fotografía ningún color de texto llega a
+    4,5:1 (RF-21). Debajo, la fila de navegación conserva su color plano —contraste
+    calculable, 0 nodos indeterminados— y la foto sigue formando parte de la misma
+    banda. Es lo que se pedía, por el único camino que cumple.
+  -->
+  <FranjaSede imagen={sedeAcceso} encuadre="50% 50%" />
 </header>
 
 <script>
