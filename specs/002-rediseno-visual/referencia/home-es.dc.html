@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="description" content="Recreación del sitio del seminario Beyond Connectivity (PUCV)." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300..700;1,300..700&family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy-900:#0f172a; --navy-700:#1e3a5f; --navy-300:#8fb6df;
+    --gold-700:#8a5206; --gold-400:#e0a94a;
+    --slate-50:#f8fafc; --slate-100:#eff3f8; --slate-300:#cbd5e1; --slate-500:#6b7c91; --slate-600:#475569;
+    --ink-900:#0a1020; --ink-800:#131b2e; --ink-700:#263349; --steel-400:#9ba9bf; --steel-500:#647490; --steel-100:#e8edf5;
+    --pure-white:#ffffff;
+    --font-display:'Crimson Pro', ui-serif, Georgia, serif;
+    --font-sans:'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, sans-serif;
+    --font-mono:'JetBrains Mono', ui-monospace, monospace;
+    --text-hero:clamp(2rem, 4.6vw, 3.9rem);
+    --text-section:clamp(1.5rem, 2.8vw, 2.15rem);
+    --ease-out-soft:cubic-bezier(0.22,1,0.36,1);
+  }
+  [data-theme='light'] {
+    color-scheme: light;
+    --background:var(--slate-50); --surface:var(--slate-100); --foreground:var(--navy-900);
+    --muted-foreground:var(--slate-600); --primary:var(--navy-700); --primary-foreground:var(--pure-white);
+    --accent:var(--gold-700); --accent-foreground:var(--pure-white);
+    --border:var(--slate-300); --border-control:var(--slate-500); --ring:var(--navy-700);
+  }
+  [data-theme='dark'] {
+    color-scheme: dark;
+    --background:var(--ink-900); --surface:var(--ink-800); --foreground:var(--steel-100);
+    --muted-foreground:var(--steel-400); --primary:var(--navy-300); --primary-foreground:var(--ink-900);
+    --accent:var(--gold-400); --accent-foreground:var(--ink-900);
+    --border:var(--ink-700); --border-control:var(--steel-500); --ring:var(--navy-300);
+  }
+  body { margin:0; -webkit-font-smoothing:antialiased; overflow-wrap:break-word; }
+  h1,h2,h3,h4 { margin:0; letter-spacing:-0.015em; text-wrap:balance; font-family:var(--font-display); }
+  p, ul, ol, dl, dd, figure { margin:0; }
+  ul { list-style:none; padding:0; }
+  a { color:inherit; text-decoration:none; }
+  summary { list-style:none; cursor:pointer; }
+  summary::-webkit-details-marker { display:none; }
+  :focus-visible { outline:2px solid var(--ring); outline-offset:2px; border-radius:2px; }
+  @keyframes fig-breathe { 0%,100%{opacity:.35} 40%{opacity:1} }
+  @keyframes fig-sweep { 0%{transform:rotate(-74deg)} 50%{transform:rotate(74deg)} 100%{transform:rotate(-74deg)} }
+  @keyframes fig-echo { 0%{opacity:.28} 6%{opacity:1} 38%,100%{opacity:.28} }
+  @keyframes recorrer { from{stroke-dashoffset:240px} to{stroke-dashoffset:0} }
+  /* La transición NO puede ir en el mismo string inline que cambia max-height:
+     el motor no recalcula ese subárbol y el resumen se queda en 0px. */
+  [data-resumen] { overflow:hidden; transition:max-height .38s cubic-bezier(0.22,1,0.36,1), opacity .3s cubic-bezier(0.22,1,0.36,1); }
+  @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.001ms !important; animation-iteration-count:1 !important; } }
+</style>
+</helmet>
+
+<div data-theme="{{ tema }}" style="background:var(--background);color:var(--foreground);font-family:var(--font-sans);min-height:100vh">
+
+  <header style="position:sticky;top:0;z-index:40;border-bottom:1px solid var(--border);background:var(--background)">
+    <nav style="max-width:80rem;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;column-gap:1rem;row-gap:.5rem;padding:1rem 2rem">
+      <a href="#top" style="display:flex;align-items:center;gap:.75rem">
+        <span aria-hidden="true" style="display:grid;place-items:center;width:2rem;height:2rem;flex-shrink:0;border-radius:9999px;border:1px solid color-mix(in srgb, var(--primary) 40%, transparent);background:color-mix(in srgb, var(--primary) 8%, transparent)">
+          <span style="display:block;width:.375rem;height:.375rem;border-radius:9999px;background:var(--primary)"></span>
+        </span>
+        <span style="line-height:1.25">
+          <span style="display:block;font-family:var(--font-display);font-size:.875rem;font-weight:600;color:var(--foreground)">Beyond Connectivity</span>
+          <span style="display:block;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">21–22 OCT 2026 · PUCV</span>
+        </span>
+      </a>
+
+      <ul style="display:flex;align-items:center;gap:1.75rem">
+        <li><a href="#seminario" style="font-size:.875rem;color:var(--muted-foreground)" style-hover="color:var(--primary)">El seminario</a></li>
+        <li><a href="#programa" style="font-size:.875rem;color:var(--muted-foreground)" style-hover="color:var(--primary)">Programa</a></li>
+        <li><a href="#expositores" style="font-size:.875rem;color:var(--muted-foreground)" style-hover="color:var(--primary)">Expositores</a></li>
+        <li><a href="#red" style="font-size:.875rem;color:var(--muted-foreground)" style-hover="color:var(--primary)">Red</a></li>
+        <li><a href="#sede" style="font-size:.875rem;color:var(--muted-foreground)" style-hover="color:var(--primary)">Sede</a></li>
+        <li><a href="#organizacion" style="font-size:.875rem;color:var(--muted-foreground)" style-hover="color:var(--primary)">Organización</a></li>
+      </ul>
+
+      <div style="display:flex;align-items:center;gap:.5rem">
+        <nav aria-label="Idioma">
+          <a href="#" lang="en" hreflang="en" style="display:block;border-radius:4px;border:1px solid var(--border-control);padding:.5rem 1rem;font-size:.875rem;font-weight:500;color:var(--foreground)" style-hover="border-color:color-mix(in srgb, var(--primary) 50%, transparent);color:var(--primary)">English</a>
+        </nav>
+
+        <fieldset style="display:flex;align-items:center;gap:0;border-radius:4px;border:1px solid var(--border-control);padding:.125rem;margin:0">
+          <legend style="position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)">Tema de la página</legend>
+          <label style="{{ estiloClaro }}"><input type="radio" name="tema-barra" checked="{{ esClaro }}" onChange="{{ ponerClaro }}" style="position:absolute;width:1px;height:1px;opacity:0" />Claro</label>
+          <label style="{{ estiloOscuro }}"><input type="radio" name="tema-barra" checked="{{ esOscuro }}" onChange="{{ ponerOscuro }}" style="position:absolute;width:1px;height:1px;opacity:0" />Oscuro</label>
+          <label style="{{ estiloSistema }}"><input type="radio" name="tema-barra" checked="{{ esSistema }}" onChange="{{ ponerSistema }}" style="position:absolute;width:1px;height:1px;opacity:0" />Sistema</label>
+        </fieldset>
+
+        <a href="mailto:seminario.wireless@pucv.cl?subject=Consulta%20%E2%80%94%20Beyond%20Connectivity%202026" style="border-radius:4px;border:1px solid color-mix(in srgb, var(--primary) 40%, transparent);background:color-mix(in srgb, var(--primary) 8%, transparent);padding:.5rem 1rem;font-size:.875rem;font-weight:500;color:var(--primary)" style-hover="background:color-mix(in srgb, var(--primary) 15%, transparent)">Contacto</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="contenido">
+
+    <section id="top" aria-labelledby="top-titulo" style="position:relative;padding:6rem 2rem 6rem">
+      <div style="max-width:80rem;margin:0 auto;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));align-items:start;gap:2rem">
+        <div style="min-width:0;grid-column:span 7">
+          <p style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground);display:flex;flex-wrap:wrap;align-items:center;column-gap:1rem;row-gap:.5rem">
+            <span>Seminario internacional</span>
+            <span aria-hidden="true" style="height:1px;width:2rem;background:color-mix(in srgb, var(--primary) 40%, transparent)"></span>
+            <span style="color:var(--muted-foreground)">PUCV · Chile · 2026</span>
+          </p>
+
+          <h1 id="top-titulo" style="margin-top:2rem;font-size:var(--text-hero);line-height:1.04;font-weight:600;color:var(--foreground)">Beyond Connectivity: Wireless Sensing in mmWave and Sub-THz Bands</h1>
+
+          <span aria-hidden="true" style="margin-top:2rem;display:block;height:1px;width:6rem;background:color-mix(in srgb, var(--primary) 80%, transparent)"></span>
+
+          <p style="margin-top:2rem;max-width:42rem;font-family:var(--font-display);font-size:1.25rem;line-height:1.375;color:var(--muted-foreground)">International Seminar on Wireless Propagation, Sensing, and Future Communication Networks</p>
+
+          <dl style="margin-top:3rem;display:grid;grid-template-columns:1fr 1fr;gap:1px;overflow:hidden;border-radius:2px;border:1px solid var(--border);background:var(--border)">
+            <div style="background:var(--surface);padding:1.5rem">
+              <dt style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Fechas</dt>
+              <dd style="margin-top:.5rem;font-family:var(--font-display);font-size:1.125rem;font-weight:600;color:var(--foreground)">21 y 22 de octubre de 2026</dd>
+            </div>
+            <div style="background:var(--surface);padding:1.5rem">
+              <dt style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Lugar</dt>
+              <dd style="margin-top:.5rem;font-family:var(--font-display);font-size:1.125rem;font-weight:600;color:var(--foreground)">Auditorio de la Sede PUCV Santiago</dd>
+              <dd style="margin-top:.5rem;font-size:.875rem;color:var(--muted-foreground)">Antonio Bellet 314, Providencia, Santiago, Chile</dd>
+            </div>
+          </dl>
+
+          <div style="margin-top:2rem;display:flex;flex-wrap:wrap;align-items:center;gap:1rem">
+            <a href="#programa" style="border-radius:4px;background:var(--primary);padding:.75rem 1.5rem;font-size:.875rem;font-weight:600;color:var(--primary-foreground)" style-hover="opacity:.9">Ver programa</a>
+            <a href="#expositores" style="border-radius:4px;border:1px solid var(--border-control);padding:.75rem 1.5rem;font-size:.875rem;font-weight:500;color:var(--foreground)" style-hover="border-color:color-mix(in srgb, var(--primary) 50%, transparent);color:var(--primary)">Expositores</a>
+          </div>
+        </div>
+
+        <figure style="position:relative;grid-column:span 5;align-self:stretch">
+          <div style="position:relative;height:100%;min-height:22rem">
+            <svg viewBox="0 0 820 640" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-title fig-desc" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;display:block">
+              <title id="fig-title">Detección inalámbrica en bandas mmWave y sub-THz</title>
+              <desc id="fig-desc">Representación esquemática de un emisor de radio cuyos frentes de onda se propagan sobre una retícula polar de rango, alcanzan un objeto y regresan como una nube de puntos reconstruida a partir de las reflexiones.</desc>
+              <defs>
+                <radialGradient id="fig-source-glow" cx="0.5" cy="0.5" r="0.5">
+                  <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.4"></stop>
+                  <stop offset="45%" stop-color="var(--primary)" stop-opacity="0.12"></stop>
+                  <stop offset="100%" stop-color="var(--primary)" stop-opacity="0"></stop>
+                </radialGradient>
+                <linearGradient id="fig-wave" x1="0" y1="0" x2="1" y2="0.4">
+                  <stop offset="0%" stop-color="var(--primary)"></stop>
+                  <stop offset="100%" stop-color="var(--primary)" stop-opacity="0.35"></stop>
+                </linearGradient>
+                <linearGradient id="fig-ray" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="var(--primary)" stop-opacity="0"></stop>
+                  <stop offset="45%" stop-color="var(--primary)" stop-opacity="0.3"></stop>
+                  <stop offset="100%" stop-color="var(--primary)" stop-opacity="0.55"></stop>
+                </linearGradient>
+                <linearGradient id="fig-sweep" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.45"></stop>
+                  <stop offset="100%" stop-color="var(--primary)" stop-opacity="0"></stop>
+                </linearGradient>
+                <linearGradient id="fig-object" x1="0" y1="0" x2="0.6" y2="1">
+                  <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.09"></stop>
+                  <stop offset="100%" stop-color="var(--primary)" stop-opacity="0.02"></stop>
+                </linearGradient>
+                <filter id="fig-soft" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7"></feGaussianBlur></filter>
+                <clipPath id="fig-clip"><rect width="820" height="640"></rect></clipPath>
+              </defs>
+              <g clip-path="url(#fig-clip)">
+                <g stroke="var(--border)" stroke-opacity="0.9" stroke-dasharray="2 7">
+                  <circle cx="148" cy="322" r="110"></circle>
+                  <circle cx="148" cy="322" r="250"></circle>
+                  <circle cx="148" cy="322" r="390"></circle>
+                  <circle cx="148" cy="322" r="530"></circle>
+                </g>
+                <g stroke="var(--border)" stroke-opacity="0.7">
+                  <line x1="148" y1="322" x2="292.9" y2="-218.9"></line>
+                  <line x1="148" y1="322" x2="406.6" y2="-174.7"></line>
+                  <line x1="148" y1="322" x2="507.9" y2="-107.0"></line>
+                  <line x1="148" y1="322" x2="592.3" y2="-18.9"></line>
+                  <line x1="148" y1="322" x2="655.5" y2="85.4"></line>
+                  <line x1="148" y1="322" x2="694.7" y2="200.8"></line>
+                  <line x1="148" y1="322" x2="708.0" y2="322.0"></line>
+                  <line x1="148" y1="322" x2="694.7" y2="443.2"></line>
+                  <line x1="148" y1="322" x2="655.5" y2="558.6"></line>
+                  <line x1="148" y1="322" x2="592.3" y2="662.9"></line>
+                  <line x1="148" y1="322" x2="507.9" y2="751.0"></line>
+                  <line x1="148" y1="322" x2="406.6" y2="818.7"></line>
+                  <line x1="148" y1="322" x2="292.9" y2="862.9"></line>
+                </g>
+                <path d="M540 186 L664 224 L682 330 L648 424 L560 462 L528 356 Z" fill="url(#fig-object)" stroke="var(--border)" stroke-opacity="1" stroke-width="1.2" stroke-dasharray="6 6"></path>
+                <g stroke="url(#fig-ray)" stroke-width="1.1">
+                  <line x1="148" y1="322" x2="556" y2="196"></line>
+                  <line x1="148" y1="322" x2="618" y2="254"></line>
+                  <line x1="148" y1="322" x2="640" y2="344"></line>
+                  <line x1="148" y1="322" x2="622" y2="400"></line>
+                  <line x1="148" y1="322" x2="588" y2="448"></line>
+                </g>
+                <g stroke="url(#fig-wave)" fill="none" stroke-linecap="round">
+                  <path stroke-opacity="0.66" stroke-width="1.8" d="M 164.22 245.71 A 78 78 0 0 1 164.22 398.29" style="transform-box:fill-box;transform-origin:0% 50%;animation:fig-breathe 11s var(--ease-out-soft) infinite;animation-delay:0s"></path>
+                  <path stroke-opacity="0.605" stroke-width="1.67" d="M 177.11 185.06 A 140 140 0 0 1 177.11 458.94" style="transform-box:fill-box;transform-origin:0% 50%;animation:fig-breathe 11s var(--ease-out-soft) infinite;animation-delay:-1.2s"></path>
+                  <path stroke-opacity="0.55" stroke-width="1.54" d="M 190.00 124.41 A 202 202 0 0 1 190.00 519.59" style="transform-box:fill-box;transform-origin:0% 50%;animation:fig-breathe 11s var(--ease-out-soft) infinite;animation-delay:-2.4s"></path>
+                  <path stroke-opacity="0.495" stroke-width="1.41" d="M 202.89 63.77 A 264 264 0 0 1 202.89 580.23" style="transform-box:fill-box;transform-origin:0% 50%;animation:fig-breathe 11s var(--ease-out-soft) infinite;animation-delay:-3.6s"></path>
+                  <path stroke-opacity="0.44" stroke-width="1.28" d="M 215.78 3.12 A 326 326 0 0 1 215.78 640.88" style="transform-box:fill-box;transform-origin:0% 50%;animation:fig-breathe 11s var(--ease-out-soft) infinite;animation-delay:-4.8s"></path>
+                  <path stroke-opacity="0.385" stroke-width="1.15" d="M 228.67 -57.53 A 388 388 0 0 1 228.67 701.53" style="transform-box:fill-box;transform-origin:0% 50%;animation:fig-breathe 11s var(--ease-out-soft) infinite;animation-delay:-6s"></path>
+                  <path stroke-opacity="0.33" stroke-width="1.02" d="M 241.56 -118.17 A 450 450 0 0 1 241.56 762.17" style="transform-box:fill-box;transform-origin:0% 50%;animation:fig-breathe 11s var(--ease-out-soft) infinite;animation-delay:-7.2s"></path>
+                  <path stroke-opacity="0.275" stroke-width="0.89" d="M 254.45 -178.82 A 512 512 0 0 1 254.45 822.82" style="transform-box:fill-box;transform-origin:0% 50%;animation:fig-breathe 11s var(--ease-out-soft) infinite;animation-delay:-8.4s"></path>
+                  <path stroke-opacity="0.22" stroke-width="0.76" d="M 267.34 -239.46 A 574 574 0 0 1 267.34 883.46" style="transform-box:fill-box;transform-origin:0% 50%;animation:fig-breathe 11s var(--ease-out-soft) infinite;animation-delay:-9.6s"></path>
+                </g>
+                <g style="transform-origin:148px 322px;animation:fig-sweep 17s ease-in-out infinite">
+                  <rect x="148" y="320.5" width="560" height="3" fill="url(#fig-sweep)"></rect>
+                </g>
+                <g fill="var(--primary)">
+                  <g style="animation:fig-echo 4.8s ease-out infinite;animation-delay:0.82s"><circle cx="556" cy="196" r="10.88" fill="var(--primary)" fill-opacity="0.095"></circle><circle cx="556" cy="196" r="3.4" fill-opacity="0.95"></circle></g>
+                  <g style="animation:fig-echo 4.8s ease-out infinite;animation-delay:1.58s"><circle cx="592" cy="222" r="8.32" fill="var(--primary)" fill-opacity="0.08"></circle><circle cx="592" cy="222" r="2.6" fill-opacity="0.8"></circle></g>
+                  <g style="animation:fig-echo 4.8s ease-out infinite;animation-delay:2.12s"><circle cx="618" cy="254" r="9.92" fill="var(--primary)" fill-opacity="0.09"></circle><circle cx="618" cy="254" r="3.1" fill-opacity="0.9"></circle></g>
+                  <g style="animation:fig-echo 4.8s ease-out infinite;animation-delay:0.90s"><circle cx="574" cy="262" r="6.72" fill="var(--primary)" fill-opacity="0.062"></circle><circle cx="574" cy="262" r="2.1" fill-opacity="0.62"></circle></g>
+                  <g style="animation:fig-echo 4.8s ease-out infinite;animation-delay:2.44s"><circle cx="634" cy="296" r="8.96" fill="var(--primary)" fill-opacity="0.085"></circle><circle cx="634" cy="296" r="2.8" fill-opacity="0.85"></circle></g>
+                  <g style="animation:fig-echo 4.8s ease-out infinite;animation-delay:1.49s"><circle cx="600" cy="318" r="6.4" fill="var(--primary)" fill-opacity="0.058"></circle><circle cx="600" cy="318" r="2.0" fill-opacity="0.58"></circle></g>
+                  <g style="animation:fig-echo 4.8s ease-out infinite;animation-delay:2.59s"><circle cx="640" cy="344" r="10.56" fill="var(--primary)" fill-opacity="0.092"></circle><circle cx="640" cy="344" r="3.3" fill-opacity="0.92"></circle></g>
+                  <g style="animation:fig-echo 4.8s ease-out infinite;animation-delay:1.46s"><circle cx="596" cy="372" r="7.36" fill="var(--primary)" fill-opacity="0.07"></circle><circle cx="596" cy="372" r="2.3" fill-opacity="0.7"></circle></g>
+                  <g style="animation:fig-echo 4.8s ease-out infinite;animation-delay:2.27s"><circle cx="622" cy="400" r="8.64" fill="var(--primary)" fill-opacity="0.08"></circle><circle cx="622" cy="400" r="2.7" fill-opacity="0.8"></circle></g>
+                  <g style="animation:fig-echo 4.8s ease-out infinite;animation-delay:0.87s"><circle cx="566" cy="418" r="6.4" fill="var(--primary)" fill-opacity="0.055"></circle><circle cx="566" cy="418" r="2.0" fill-opacity="0.55"></circle></g>
+                  <g style="animation:fig-echo 4.8s ease-out infinite;animation-delay:1.65s"><circle cx="588" cy="448" r="9.6" fill="var(--primary)" fill-opacity="0.088"></circle><circle cx="588" cy="448" r="3.0" fill-opacity="0.88"></circle></g>
+                  <g style="animation:fig-echo 4.8s ease-out infinite;animation-delay:0s"><circle cx="544" cy="350" r="5.76" fill="var(--primary)" fill-opacity="0.045"></circle><circle cx="544" cy="350" r="1.8" fill-opacity="0.45"></circle></g>
+                  <g style="animation:fig-echo 4.8s ease-out infinite;animation-delay:3.34s"><circle cx="660" cy="232" r="6.08" fill="var(--primary)" fill-opacity="0.05"></circle><circle cx="660" cy="232" r="1.9" fill-opacity="0.5"></circle></g>
+                  <g style="animation:fig-echo 4.8s ease-out infinite;animation-delay:3.46s"><circle cx="668" cy="388" r="7.04" fill="var(--primary)" fill-opacity="0.06"></circle><circle cx="668" cy="388" r="2.2" fill-opacity="0.6"></circle></g>
+                </g>
+                <circle cx="148" cy="322" r="96" fill="url(#fig-source-glow)" filter="url(#fig-soft)"></circle>
+                <circle cx="148" cy="322" r="26" stroke="var(--primary)" stroke-opacity="0.3" stroke-width="1"></circle>
+                <circle cx="148" cy="322" r="13" stroke="var(--primary)" stroke-opacity="0.6" stroke-width="1.3"></circle>
+                <circle cx="148" cy="322" r="4.5" fill="var(--primary)"></circle>
+              </g>
+            </svg>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <section id="seminario" aria-labelledby="seminario-titulo" style="position:relative;border-top:1px solid var(--border);padding:7rem 2rem">
+      <div style="max-width:80rem;margin:0 auto">
+        <header style="max-width:48rem">
+          <p style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">El seminario</p>
+          <h2 id="seminario-titulo" style="margin-top:1rem;font-size:var(--text-section);font-weight:600;line-height:1.15">Comunicación y detección sobre la misma infraestructura</h2>
+          <p style="margin-top:1.25rem;font-size:1.125rem;line-height:1.65;color:var(--muted-foreground)">Encuentro internacional dedicado a la detección inalámbrica en bandas de ondas milimétricas y sub-terahertz, y a su papel en las redes de comunicación futuras.</p>
+        </header>
+
+        <div style="margin-top:3.5rem;display:grid;grid-template-columns:1.1fr 1fr;gap:5rem">
+          <div style="min-width:0;display:flex;flex-direction:column;gap:1.5rem;font-size:1.125rem;line-height:1.65;color:var(--muted-foreground)">
+            <p>Las bandas mmWave y sub-THz abren la posibilidad de que una misma infraestructura inalámbrica no solo transmita información, sino que además perciba el entorno: detectar presencia y movimiento, estimar distancias, caracterizar materiales y reconstruir escenas. Esta convergencia entre comunicación y detección es uno de los ejes de las redes 6G.</p>
+            <p>El seminario reúne a investigadores de Estados Unidos y Chile para discutir modelos de propagación, mediciones experimentales, arquitecturas de sensado conjunto y los desafíos abiertos de llevar estas tecnologías a despliegues reales.</p>
+          </div>
+
+          <ul style="display:grid;grid-template-columns:1fr 1fr;gap:1px;overflow:hidden;border-radius:2px;border:1px solid var(--border);background:var(--border)">
+            <li style="min-width:0;background:var(--surface);padding:1.25rem">
+              <h3 style="font-size:1rem;font-weight:600;color:var(--foreground)">Propagación en mmWave y sub-THz</h3>
+              <p style="margin-top:.5rem;font-size:.875rem;line-height:1.6;color:var(--muted-foreground)">Modelos de canal, pérdidas por penetración, dispersión y campañas de medición en bandas milimétricas y sub-terahertz.</p>
+            </li>
+            <li style="min-width:0;background:var(--surface);padding:1.25rem">
+              <h3 style="font-size:1rem;font-weight:600;color:var(--foreground)">Detección inalámbrica</h3>
+              <p style="margin-top:.5rem;font-size:.875rem;line-height:1.6;color:var(--muted-foreground)">Sensado del entorno mediante señales de radio: detección de presencia, estimación de rango y caracterización de materiales.</p>
+            </li>
+            <li style="min-width:0;background:var(--surface);padding:1.25rem">
+              <h3 style="font-size:1rem;font-weight:600;color:var(--foreground)">Comunicación y sensado conjuntos</h3>
+              <p style="margin-top:.5rem;font-size:.875rem;line-height:1.6;color:var(--muted-foreground)">Arquitecturas ISAC que integran transmisión de datos y percepción del entorno sobre la misma infraestructura.</p>
+            </li>
+            <li style="min-width:0;background:var(--surface);padding:1.25rem">
+              <h3 style="font-size:1rem;font-weight:600;color:var(--foreground)">Redes de comunicación futuras</h3>
+              <p style="margin-top:.5rem;font-size:.875rem;line-height:1.6;color:var(--muted-foreground)">Implicancias para el diseño de redes 6G, superficies reconfigurables y despliegues de alta frecuencia.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="programa" aria-labelledby="programa-titulo" style="position:relative;border-top:1px solid var(--border);background:color-mix(in srgb, var(--surface) 40%, transparent);padding:7rem 2rem">
+      <div style="max-width:80rem;margin:0 auto">
+        <header style="max-width:48rem">
+          <p style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Programa</p>
+          <h2 id="programa-titulo" style="margin-top:1rem;font-size:var(--text-section);font-weight:600;line-height:1.15">Jornadas del 21 y 22 de octubre</h2>
+          <p style="margin-top:1.25rem;font-size:1.125rem;line-height:1.65;color:var(--muted-foreground)">21 y 22 de octubre de 2026 · Auditorio de la Sede PUCV Santiago</p>
+        </header>
+
+        <div style="margin-top:3rem">
+          <sc-if value="{{ hayPrograma }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <p role="note" style="border-left:2px solid var(--accent);background:color-mix(in srgb, var(--accent) 8%, transparent);padding:1rem 1.25rem;font-size:.875rem;line-height:1.6;color:var(--foreground)"><strong style="font-weight:600">Programa de ejemplo. Estas sesiones son ficticias y sirven solo para mostrar el formato: ninguna ha sido acordada con los expositores.</strong></p>
+
+              <div style="{{ envolturaEstilo }}">
+
+                <div style="{{ barraEstilo }}">
+                  <p style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Jornadas</p>
+                  <div role="tablist" aria-label="Jornadas del seminario" style="{{ listaTabsEstilo }}">
+                    <sc-for list="{{ jornadas }}" as="dia" hint-placeholder-count="2">
+                      <button type="button" role="tab" aria-selected="{{ dia.seleccionada }}" onClick="{{ dia.elegir }}" style="{{ dia.estiloTab }}">
+                        <span style="display:block;font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">{{ dia.date }}</span>
+                        <span style="display:block;margin-top:.5rem;font-family:var(--font-display);font-size:1.0625rem;line-height:1.3;font-weight:600">{{ dia.label }}</span>
+                        <span style="display:block;margin-top:.5rem;font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">{{ dia.conteo }}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                  <sc-if value="{{ mostrarNota }}" hint-placeholder-val="{{ true }}">
+                    <p style="margin-top:1.75rem;border-top:1px solid var(--border);padding-top:1rem;font-size:.75rem;line-height:1.7;color:var(--muted-foreground)">La agenda se desplaza dentro de su panel. Al llegar al final, el desplazamiento continúa en la página.</p>
+                  </sc-if>
+                </div>
+
+                <div style="min-width:0">
+                  <div id="agenda-panel" tabindex="{{ panelTab }}" role="region" aria-label="Sesiones de la jornada" style="{{ panelEstilo }}">
+                    <div style="position:relative">
+                      <span aria-hidden="true" style="{{ ejeEstilo }}"></span>
+                      <ul style="display:flex;flex-direction:column;gap:.75rem">
+                        <sc-for list="{{ sesiones }}" as="s" hint-placeholder-count="8">
+                          <li data-sesion="{{ s.i }}" style="{{ s.filaEstilo }}">
+                            <p style="{{ horaEstilo }}">{{ s.time }}</p>
+                            <span aria-hidden="true" style="{{ s.puntoEstilo }}"></span>
+                            <div style="{{ s.tarjetaEstilo }}">
+                              <sc-if value="{{ s.tieneResumen }}" hint-placeholder-val="{{ true }}">
+                                <button type="button" aria-expanded="{{ s.abierta }}" onClick="{{ s.alternar }}" style="width:100%;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;padding:1rem 1.25rem;background:transparent;border:0;font:inherit;text-align:left;cursor:pointer">
+                                  <span style="min-width:0">
+                                    <span style="display:block;font-size:1rem;line-height:1.4;color:var(--foreground)">{{ s.title }}</span>
+                                    <span style="display:block;margin-top:.375rem;font-size:.875rem;line-height:1.45;color:var(--muted-foreground)">{{ s.speaker }}</span>
+                                  </span>
+                                  <span aria-hidden="true" style="{{ s.chevronEstilo }}">
+                                    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" style="width:.75rem;height:.75rem;display:block"><path d="M2.5 4.5 6 8l3.5-3.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                  </span>
+                                </button>
+                                <div data-resumen="" style="{{ s.resumenEstilo }}">
+                                  <div id="resumen-{{ s.i }}">
+                                    <p style="padding:0 1.25rem 1.25rem;font-size:.875rem;line-height:1.7;color:var(--muted-foreground)">{{ s.summary }}</p>
+                                  </div>
+                                </div>
+                              </sc-if>
+                              <sc-if value="{{ s.sinResumen }}" hint-placeholder-val="{{ false }}">
+                                <div style="padding:1rem 1.25rem">
+                                  <span style="display:block;font-size:1rem;line-height:1.4;color:var(--foreground)">{{ s.title }}</span>
+                                  <sc-if value="{{ s.speaker }}" hint-placeholder-val="{{ false }}">
+                                    <span style="display:block;margin-top:.375rem;font-size:.875rem;line-height:1.45;color:var(--muted-foreground)">{{ s.speaker }}</span>
+                                  </sc-if>
+                                </div>
+                              </sc-if>
+                            </div>
+                          </li>
+                        </sc-for>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ sinPrograma }}" hint-placeholder-val="{{ true }}">
+            <div style="border-top:1px solid var(--border);padding-top:2rem">
+              <p style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground);display:flex;align-items:center;gap:.5rem">
+                <span aria-hidden="true" style="display:block;width:.375rem;height:.375rem;border-radius:9999px;background:var(--primary)"></span>
+                En preparación
+              </p>
+              <div style="margin-top:1.5rem;display:grid;grid-template-columns:minmax(0,28rem) minmax(0,24rem);column-gap:4rem;row-gap:1rem">
+                <p style="font-family:var(--font-display);font-size:1.5rem;line-height:1.375;font-weight:600;color:var(--foreground)">Programa preliminar próximamente disponible.</p>
+                <div>
+                  <p style="font-size:1rem;line-height:1.65;color:var(--muted-foreground)">Estamos coordinando la agenda de sesiones con los expositores. Esta sección se actualizará con el detalle de charlas, horarios y actividades.</p>
+                  <a href="mailto:seminario.wireless@pucv.cl?subject=Consulta%20por%20el%20programa" style="margin-top:1rem;display:inline-block;font-size:.875rem;font-weight:500;color:var(--primary);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--primary) 40%, transparent);text-underline-offset:4px">Solicitar aviso de publicación</a>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </section>
+
+    <section id="expositores" aria-labelledby="expositores-titulo" style="position:relative;border-top:1px solid var(--border);padding:7rem 2rem">
+      <div style="max-width:80rem;margin:0 auto">
+        <header style="max-width:48rem">
+          <p style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Expositores</p>
+          <h2 id="expositores-titulo" style="margin-top:1rem;font-size:var(--text-section);font-weight:600;line-height:1.15">Investigadores participantes</h2>
+          <p style="margin-top:1.25rem;font-size:1.125rem;line-height:1.65;color:var(--muted-foreground)">Especialistas en propagación, detección inalámbrica y arquitecturas de redes de próxima generación.</p>
+        </header>
+
+        <div style="margin-top:3.5rem;display:flex;flex-direction:column;gap:3.5rem">
+          <div>
+            <h3 style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground);display:flex;align-items:center;gap:1rem;font-weight:400">
+              <span>Expositores internacionales</span>
+              <span aria-hidden="true" style="height:1px;flex:1;background:var(--border)"></span>
+            </h3>
+            <div style="margin-top:1.5rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem">
+
+              <article style="border-top:1px solid var(--border);padding-top:1.25rem">
+                <div style="display:flex;align-items:flex-start;gap:1rem">
+                  <span aria-hidden="true" style="display:grid;place-items:center;width:2.5rem;height:2.5rem;flex-shrink:0;border-radius:2px;border:1px solid color-mix(in srgb, var(--primary) 30%, transparent);font-family:var(--font-display);font-size:.75rem;font-weight:600;color:var(--primary)">GZ</span>
+                  <div style="min-width:0">
+                    <h4 style="font-size:1.125rem;line-height:1.25;font-weight:600;color:var(--foreground)">Gil Zussman</h4>
+                    <p style="margin-top:.5rem;font-size:.875rem;line-height:1.375;color:var(--muted-foreground)">Columbia University</p>
+                    <p style="margin-top:.5rem;font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Estados Unidos</p>
+                  </div>
+                </div>
+                <details style="margin-top:1rem">
+                  <summary style="display:inline-flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:500;color:var(--primary);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--primary) 40%, transparent);text-underline-offset:4px">Ver reseña</summary>
+                  <div style="margin-top:1rem;border-left:2px solid var(--border);padding-left:1rem">
+                    <p style="font-size:.875rem;line-height:1.65;color:var(--muted-foreground)">Profesor Kenneth Brayer de Ingeniería Eléctrica y director del departamento en Columbia University, donde dirige el Wireless and Mobile Networking Lab. Es investigador principal por Columbia del banco de pruebas COSMOS, de la iniciativa PAWR de la NSF. Doctor en Ingeniería Eléctrica por el Technion y posdoctorado en el MIT.</p>
+                    <p style="margin-top:1rem;font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Línea de investigación</p>
+                    <p style="margin-top:.25rem;font-size:.875rem;color:var(--foreground)">Redes inalámbricas, móviles y resilientes</p>
+                    <a href="https://www.ee.columbia.edu/gil-zussman" target="_blank" rel="noopener noreferrer" style="margin-top:1rem;display:inline-block;font-size:.875rem;color:var(--primary);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--primary) 40%, transparent);text-underline-offset:4px">Perfil institucional</a>
+                  </div>
+                </details>
+              </article>
+
+              <article style="border-top:1px solid var(--border);padding-top:1.25rem">
+                <div style="display:flex;align-items:flex-start;gap:1rem">
+                  <span aria-hidden="true" style="display:grid;place-items:center;width:2.5rem;height:2.5rem;flex-shrink:0;border-radius:2px;border:1px solid color-mix(in srgb, var(--primary) 30%, transparent);font-family:var(--font-display);font-size:.75rem;font-weight:600;color:var(--primary)">JD</span>
+                  <div style="min-width:0">
+                    <h4 style="font-size:1.125rem;line-height:1.25;font-weight:600;color:var(--foreground)">Jinfeng Du</h4>
+                    <p style="margin-top:.5rem;font-size:.875rem;line-height:1.375;color:var(--muted-foreground)">Nokia Bell Labs</p>
+                    <p style="margin-top:.5rem;font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Estados Unidos</p>
+                  </div>
+                </div>
+                <details style="margin-top:1rem">
+                  <summary style="display:inline-flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:500;color:var(--primary);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--primary) 40%, transparent);text-underline-offset:4px">Ver reseña</summary>
+                  <div style="margin-top:1rem;border-left:2px solid var(--border);padding-left:1rem">
+                    <p style="font-size:.875rem;line-height:1.65;color:var(--muted-foreground)">Investigador en Nokia Bell Labs desde 2015, donde trabaja en los fundamentos de las comunicaciones inalámbricas: teoría de la comunicación, diseño y optimización de sistemas de radio y medición de propagación en ondas milimétricas. Doctor por el KTH de Estocolmo y posdoctorado en el MIT.</p>
+                    <p style="margin-top:1rem;font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Línea de investigación</p>
+                    <p style="margin-top:.25rem;font-size:.875rem;color:var(--foreground)">Propagación en mmWave y modelado de canal</p>
+                    <a href="https://www.bell-labs.com/about/researcher-profiles/jinfengdu/" target="_blank" rel="noopener noreferrer" style="margin-top:1rem;display:inline-block;font-size:.875rem;color:var(--primary);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--primary) 40%, transparent);text-underline-offset:4px">Perfil institucional</a>
+                  </div>
+                </details>
+              </article>
+
+              <article style="border-top:1px solid var(--border);padding-top:1.25rem">
+                <div style="display:flex;align-items:flex-start;gap:1rem">
+                  <span aria-hidden="true" style="display:grid;place-items:center;width:2.5rem;height:2.5rem;flex-shrink:0;border-radius:2px;border:1px solid color-mix(in srgb, var(--primary) 30%, transparent);font-family:var(--font-display);font-size:.75rem;font-weight:600;color:var(--primary)">RA</span>
+                  <div style="min-width:0">
+                    <h4 style="font-size:1.125rem;line-height:1.25;font-weight:600;color:var(--foreground)">Reinaldo A. Valenzuela</h4>
+                    <p style="margin-top:.5rem;font-size:.875rem;line-height:1.375;color:var(--muted-foreground)">Nokia Bell Labs</p>
+                    <p style="margin-top:.5rem;font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Estados Unidos</p>
+                  </div>
+                </div>
+                <details style="margin-top:1rem">
+                  <summary style="display:inline-flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:500;color:var(--primary);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--primary) 40%, transparent);text-underline-offset:4px">Ver reseña</summary>
+                  <div style="margin-top:1rem;border-left:2px solid var(--border);padding-left:1rem">
+                    <p style="font-size:.875rem;line-height:1.65;color:var(--muted-foreground)">Director del departamento de investigación en Comunicaciones Inalámbricas de Nokia Bell Labs y miembro de la Academia Nacional de Ingeniería de Estados Unidos, que lo eligió en 2017 por su liderazgo en sistemas multiantena y modelado de canal. Bell Labs Fellow y Fellow del IEEE. Estudió Ingeniería en la Universidad de Chile y se doctoró en el Imperial College de Londres.</p>
+                    <p style="margin-top:1rem;font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Línea de investigación</p>
+                    <p style="margin-top:.25rem;font-size:.875rem;color:var(--foreground)">MIMO, antenas inteligentes y propagación</p>
+                    <a href="https://www.nokia.com/people/reinaldo-valenzuela/" target="_blank" rel="noopener noreferrer" style="margin-top:1rem;display:inline-block;font-size:.875rem;color:var(--primary);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--primary) 40%, transparent);text-underline-offset:4px">Perfil institucional</a>
+                  </div>
+                </details>
+              </article>
+
+            </div>
+          </div>
+
+          <div>
+            <h3 style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground);display:flex;align-items:center;gap:1rem;font-weight:400">
+              <span>Expositores nacionales</span>
+              <span aria-hidden="true" style="height:1px;flex:1;background:var(--border)"></span>
+            </h3>
+            <div style="margin-top:1.5rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem">
+
+              <article style="border-top:1px solid var(--border);padding-top:1.25rem">
+                <div style="display:flex;align-items:flex-start;gap:1rem">
+                  <span aria-hidden="true" style="display:grid;place-items:center;width:2.5rem;height:2.5rem;flex-shrink:0;border-radius:2px;border:1px solid color-mix(in srgb, var(--primary) 30%, transparent);font-family:var(--font-display);font-size:.75rem;font-weight:600;color:var(--primary)">RF</span>
+                  <div style="min-width:0">
+                    <h4 style="font-size:1.125rem;line-height:1.25;font-weight:600;color:var(--foreground)">Rodolfo Feick</h4>
+                    <p style="margin-top:.5rem;font-size:.875rem;line-height:1.375;color:var(--muted-foreground);font-style:italic">Afiliación por confirmar</p>
+                  </div>
+                </div>
+                <details style="margin-top:1rem">
+                  <summary style="display:inline-flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:500;color:var(--primary);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--primary) 40%, transparent);text-underline-offset:4px">Ver reseña</summary>
+                  <div style="margin-top:1rem;border-left:2px solid var(--border);padding-left:1rem">
+                    <p style="font-size:.875rem;line-height:1.65;color:var(--muted-foreground)">Encabeza el Wireless Communications Research Group de la Universidad Técnica Federico Santa María, con una trayectoria larga en campañas de medición de canal y caracterización de propagación. Ha coautorado mediciones a 28 GHz en el área del banco de pruebas COSMOS, el mismo proyecto en el que participa Columbia University.</p>
+                    <p style="margin-top:1rem;font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Línea de investigación</p>
+                    <p style="margin-top:.25rem;font-size:.875rem;color:var(--foreground)">Medición y caracterización de canal</p>
+                    <a href="http://investigacion.electronica.usm.cl/~wcg/" target="_blank" rel="noopener noreferrer" style="margin-top:1rem;display:inline-block;font-size:.875rem;color:var(--primary);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--primary) 40%, transparent);text-underline-offset:4px">Perfil institucional</a>
+                  </div>
+                </details>
+              </article>
+
+              <article style="border-top:1px solid var(--border);padding-top:1.25rem">
+                <div style="display:flex;align-items:flex-start;gap:1rem">
+                  <span aria-hidden="true" style="display:grid;place-items:center;width:2.5rem;height:2.5rem;flex-shrink:0;border-radius:2px;border:1px solid color-mix(in srgb, var(--primary) 30%, transparent);font-family:var(--font-display);font-size:.75rem;font-weight:600;color:var(--primary)">MG</span>
+                  <div style="min-width:0">
+                    <h4 style="font-size:1.125rem;line-height:1.25;font-weight:600;color:var(--foreground)">Miguel Gutiérrez Gaitán</h4>
+                    <p style="margin-top:.5rem;font-size:.875rem;line-height:1.375;color:var(--muted-foreground)">Pontificia Universidad Católica de Chile</p>
+                    <p style="margin-top:.5rem;font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Chile</p>
+                  </div>
+                </div>
+                <details style="margin-top:1rem">
+                  <summary style="display:inline-flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:500;color:var(--primary);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--primary) 40%, transparent);text-underline-offset:4px">Ver reseña</summary>
+                  <div style="margin-top:1rem;border-left:2px solid var(--border);padding-left:1rem">
+                    <p style="font-size:.875rem;line-height:1.65;color:var(--muted-foreground)">Profesor asistente del Departamento de Ingeniería Eléctrica de la Pontificia Universidad Católica de Chile desde 2024, y Senior Member del IEEE. Doctor por la Universidad de Oporto, magíster por el Politécnico de Turín e ingeniero civil electrónico por la PUCV. Colabora con el centro CISTER de Oporto y presidió el capítulo chileno de IEEE ComSoc.</p>
+                    <p style="margin-top:1rem;font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Línea de investigación</p>
+                    <p style="margin-top:.25rem;font-size:.875rem;color:var(--foreground)">Redes inalámbricas de tiempo real, IoT y localización</p>
+                    <a href="https://www.ing.uc.cl/academicos-e-investigadores/miguel-jose-gutierrez-gaitan/" target="_blank" rel="noopener noreferrer" style="margin-top:1rem;display:inline-block;font-size:.875rem;color:var(--primary);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--primary) 40%, transparent);text-underline-offset:4px">Perfil institucional</a>
+                  </div>
+                </details>
+              </article>
+
+              <article style="border-top:1px solid var(--border);padding-top:1.25rem">
+                <div style="display:flex;align-items:flex-start;gap:1rem">
+                  <span aria-hidden="true" style="display:grid;place-items:center;width:2.5rem;height:2.5rem;flex-shrink:0;border-radius:2px;border:1px solid color-mix(in srgb, var(--primary) 30%, transparent);font-family:var(--font-display);font-size:.75rem;font-weight:600;color:var(--primary)">KT</span>
+                  <div style="min-width:0">
+                    <h4 style="font-size:1.125rem;line-height:1.25;font-weight:600;color:var(--foreground)">Karel Toledo de la Garza</h4>
+                    <p style="margin-top:.5rem;font-size:.875rem;line-height:1.375;color:var(--muted-foreground)">Universidad de Santiago de Chile</p>
+                    <p style="margin-top:.5rem;font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Chile</p>
+                  </div>
+                </div>
+                <details style="margin-top:1rem">
+                  <summary style="display:inline-flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:500;color:var(--primary);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--primary) 40%, transparent);text-underline-offset:4px">Ver reseña</summary>
+                  <div style="margin-top:1rem;border-left:2px solid var(--border);padding-left:1rem">
+                    <p style="font-size:.875rem;line-height:1.65;color:var(--muted-foreground)">Profesor asistente del Departamento de Ingeniería Eléctrica de la Universidad de Santiago de Chile. Dirige un proyecto Fondecyt de Iniciación sobre redes inalámbricas adaptativas con drones autónomos como estaciones base móviles, con aplicación a ondas milimétricas en 5G y 6G.</p>
+                    <p style="margin-top:1rem;font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Línea de investigación</p>
+                    <p style="margin-top:.25rem;font-size:.875rem;color:var(--foreground)">Redes asistidas por drones y eficiencia energética</p>
+                    <a href="https://investigadores.anid.cl/en/public_search/researcher?id=34038" target="_blank" rel="noopener noreferrer" style="margin-top:1rem;display:inline-block;font-size:.875rem;color:var(--primary);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--primary) 40%, transparent);text-underline-offset:4px">Perfil institucional</a>
+                  </div>
+                </details>
+              </article>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="red" aria-labelledby="red-titulo" style="position:relative;border-top:1px solid var(--border);background:color-mix(in srgb, var(--surface) 40%, transparent);padding:7rem 2rem">
+      <div style="max-width:80rem;margin:0 auto">
+        <header style="max-width:48rem">
+          <p style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Red de colaboración</p>
+          <h2 id="red-titulo" style="margin-top:1rem;font-size:var(--text-section);font-weight:600;line-height:1.15">Instituciones vinculadas</h2>
+          <p style="margin-top:1.25rem;font-size:1.125rem;line-height:1.65;color:var(--muted-foreground)">El seminario articula grupos de investigación de Estados Unidos y Chile en torno a la Escuela de Ingeniería Eléctrica de la PUCV.</p>
+        </header>
+
+        <div style="margin-top:3.5rem">
+          <div style="max-width:64rem;margin:0 auto;display:grid;grid-template-columns:minmax(0,15rem) minmax(2.5rem,1fr) auto minmax(2.5rem,1fr) minmax(0,15rem)">
+            <div style="display:grid;grid-template-rows:1fr 1fr">
+              <div style="display:flex;align-items:center;padding:.75rem 0">
+                <div style="width:100%;border-radius:2px;border:1px solid var(--border);background:color-mix(in srgb, var(--surface) 90%, transparent);padding:.75rem 1rem">
+                  <p style="font-family:var(--font-display);font-size:.875rem;line-height:1.25;font-weight:600;color:var(--foreground)">Columbia University</p>
+                  <p style="margin-top:.25rem;font-size:.75rem;line-height:1.375;color:var(--muted-foreground)">Gil Zussman</p>
+                  <p style="margin-top:.375rem;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Estados Unidos</p>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;padding:.75rem 0">
+                <div style="width:100%;border-radius:2px;border:1px solid var(--border);background:color-mix(in srgb, var(--surface) 90%, transparent);padding:.75rem 1rem">
+                  <p style="font-family:var(--font-display);font-size:.875rem;line-height:1.25;font-weight:600;color:var(--foreground)">Nokia Bell Labs</p>
+                  <p style="margin-top:.25rem;font-size:.75rem;line-height:1.375;color:var(--muted-foreground)">Jinfeng Du · Reinaldo A. Valenzuela</p>
+                  <p style="margin-top:.375rem;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Estados Unidos</p>
+                </div>
+              </div>
+            </div>
+
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" aria-hidden="true" style="width:100%;height:100%">
+              <path d="M0 25 C 55 25, 45 50, 100 50" stroke="var(--border)" stroke-width="1.25" vector-effect="non-scaling-stroke"></path>
+              <path d="M0 25 C 55 25, 45 50, 100 50" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-dasharray:14px 226px;animation:recorrer 10s linear infinite;animation-delay:0s"></path>
+              <path d="M0 75 C 55 75, 45 50, 100 50" stroke="var(--border)" stroke-width="1.25" vector-effect="non-scaling-stroke"></path>
+              <path d="M0 75 C 55 75, 45 50, 100 50" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-dasharray:14px 226px;animation:recorrer 10s linear infinite;animation-delay:2.5s"></path>
+            </svg>
+
+            <div style="display:flex;align-items:center;justify-content:center">
+              <div style="display:flex;flex-direction:column;align-items:center;border-radius:2px;border:1px solid color-mix(in srgb, var(--primary) 40%, transparent);background:var(--surface);padding:1.25rem 1.5rem;text-align:center">
+                <span aria-hidden="true" style="display:grid;place-items:center;width:2.25rem;height:2.25rem;border-radius:9999px;border:1px solid color-mix(in srgb, var(--primary) 40%, transparent)">
+                  <span style="display:block;width:.375rem;height:.375rem;border-radius:9999px;background:var(--primary)"></span>
+                </span>
+                <p style="margin-top:.75rem;font-family:var(--font-display);font-size:1rem;line-height:1.25;font-weight:600;color:var(--foreground)">PUCV</p>
+                <p style="margin-top:.25rem;font-size:.75rem;line-height:1.375;color:var(--muted-foreground)">Escuela de Ingeniería Eléctrica</p>
+                <p style="margin-top:.5rem;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--primary)">Organiza</p>
+              </div>
+            </div>
+
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" aria-hidden="true" style="width:100%;height:100%">
+              <g transform="translate(100,0) scale(-1,1)">
+                <path d="M0 25 C 55 25, 45 50, 100 50" stroke="var(--border)" stroke-width="1.25" vector-effect="non-scaling-stroke"></path>
+                <path d="M0 25 C 55 25, 45 50, 100 50" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-dasharray:14px 226px;animation:recorrer 10s linear infinite;animation-delay:0.9s"></path>
+                <path d="M0 75 C 55 75, 45 50, 100 50" stroke="var(--border)" stroke-width="1.25" vector-effect="non-scaling-stroke"></path>
+                <path d="M0 75 C 55 75, 45 50, 100 50" stroke="var(--primary)" stroke-width="1.6" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-dasharray:14px 226px;animation:recorrer 10s linear infinite;animation-delay:3.4s"></path>
+              </g>
+            </svg>
+
+            <div style="display:grid;grid-template-rows:1fr 1fr">
+              <div style="display:flex;align-items:center;padding:.75rem 0">
+                <div style="width:100%;border-radius:2px;border:1px solid var(--border);background:color-mix(in srgb, var(--surface) 90%, transparent);padding:.75rem 1rem;text-align:right">
+                  <p style="font-family:var(--font-display);font-size:.875rem;line-height:1.25;font-weight:600;color:var(--foreground)">PUC de Chile</p>
+                  <p style="margin-top:.25rem;font-size:.75rem;line-height:1.375;color:var(--muted-foreground)">Miguel Gutiérrez Gaitán</p>
+                  <p style="margin-top:.375rem;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Chile</p>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;padding:.75rem 0">
+                <div style="width:100%;border-radius:2px;border:1px solid var(--border);background:color-mix(in srgb, var(--surface) 90%, transparent);padding:.75rem 1rem;text-align:right">
+                  <p style="font-family:var(--font-display);font-size:.875rem;line-height:1.25;font-weight:600;color:var(--foreground)">U. de Santiago</p>
+                  <p style="margin-top:.25rem;font-size:.75rem;line-height:1.375;color:var(--muted-foreground)">Karel Toledo de la Garza</p>
+                  <p style="margin-top:.375rem;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Chile</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sede" aria-labelledby="sede-titulo" style="position:relative;border-top:1px solid var(--border);padding:7rem 2rem">
+      <div style="max-width:80rem;margin:0 auto">
+        <header style="max-width:48rem">
+          <p style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Sede</p>
+          <h2 id="sede-titulo" style="margin-top:1rem;font-size:var(--text-section);font-weight:600;line-height:1.15">Auditorio de la Sede PUCV Santiago</h2>
+        </header>
+
+        <div style="margin-top:3rem;display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:4rem">
+          <div style="min-width:0">
+            <address style="display:flex;flex-direction:column;gap:.25rem;font-size:1.125rem;font-style:normal">
+              <p style="font-family:var(--font-display);font-size:1.125rem;font-weight:600;color:var(--foreground)">Auditorio de la Sede PUCV Santiago</p>
+              <p style="color:var(--muted-foreground)">Antonio Bellet 314</p>
+              <p style="color:var(--muted-foreground)">Providencia, Santiago</p>
+              <p style="color:var(--muted-foreground)">Chile</p>
+            </address>
+
+            <dl style="margin-top:2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;border-top:1px solid var(--border);padding-top:2rem">
+              <div style="min-width:0">
+                <dt style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Fechas</dt>
+                <dd style="margin-top:.5rem;font-size:1rem;color:var(--foreground)">21 y 22 de octubre de 2026</dd>
+              </div>
+              <div style="min-width:0">
+                <dt style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Consultas</dt>
+                <dd style="margin-top:.5rem;font-size:1rem"><a href="mailto:seminario.wireless@pucv.cl" style="color:var(--primary);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--primary) 40%, transparent);text-underline-offset:4px">seminario.wireless@pucv.cl</a></dd>
+              </div>
+            </dl>
+          </div>
+
+          <div style="min-width:0">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:2px">
+              <div style="display:flex;flex-direction:column;min-height:420px">
+                <div aria-hidden="true" style="position:relative;display:flex;flex:1;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid var(--border)">
+                  <div style="position:absolute;inset:0;background-image:linear-gradient(to right, var(--border) 1px, transparent 1px),linear-gradient(to bottom, var(--border) 1px, transparent 1px);background-size:72px 72px;opacity:.45;mask-image:radial-gradient(ellipse 85% 70% at 50% 30%, #000 20%, transparent 78%)"></div>
+                  <svg viewBox="0 0 48 48" fill="none" style="position:relative;width:3.5rem;height:3.5rem;color:var(--primary)">
+                    <g stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M24 42c0 0 13-12.2 13-21.7A13 13 0 1 0 11 20.3C11 29.8 24 42 24 42Z"></path>
+                    </g>
+                    <circle cx="24" cy="20" r="4.5" fill="currentColor"></circle>
+                  </svg>
+                </div>
+                <div style="background:var(--surface);padding:1.5rem;text-align:center">
+                  <p style="font-family:var(--font-display);font-size:1.125rem;font-weight:600;color:var(--foreground)">Antonio Bellet 314, Providencia</p>
+                  <p style="margin-top:.5rem;font-size:.875rem;color:var(--muted-foreground)">Santiago, Chile</p>
+                  <div style="margin-top:1.5rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.75rem">
+                    <button type="button" style="border-radius:4px;border:1px solid color-mix(in srgb, var(--primary) 40%, transparent);background:color-mix(in srgb, var(--primary) 8%, transparent);padding:.5rem 1.25rem;font-size:.875rem;font-weight:500;font-family:inherit;color:var(--primary);cursor:pointer" style-hover="background:color-mix(in srgb, var(--primary) 15%, transparent)">Cargar mapa interactivo</button>
+                    <a href="https://www.google.com/maps/search/?api=1&amp;query=Antonio+Bellet+314%2C+Providencia%2C+Santiago%2C+Chile" target="_blank" rel="noopener noreferrer" style="border-radius:4px;border:1px solid var(--border-control);padding:.5rem 1.25rem;font-size:.875rem;font-weight:500;color:var(--muted-foreground)" style-hover="border-color:color-mix(in srgb, var(--primary) 50%, transparent);color:var(--primary)">Abrir en Google Maps</a>
+                  </div>
+                  <p style="margin:1.5rem auto 0;max-width:20rem;font-size:.75rem;line-height:1.65;color:var(--muted-foreground)">Al cargar el mapa se solicita contenido a OpenStreetMap.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="organizacion" aria-labelledby="organizacion-titulo" style="position:relative;border-top:1px solid var(--border);padding:7rem 2rem">
+      <div style="max-width:80rem;margin:0 auto">
+        <header style="max-width:48rem">
+          <p style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">Organización</p>
+          <h2 id="organizacion-titulo" style="margin-top:1rem;font-size:var(--text-section);font-weight:600;line-height:1.15">Organización y financiamiento</h2>
+        </header>
+
+        <div style="margin-top:3.5rem;display:flex;flex-direction:column;gap:4rem">
+          <div>
+            <h3 style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground);display:flex;align-items:center;gap:1rem;font-weight:400">
+              <span>Organizan</span>
+              <span aria-hidden="true" style="height:1px;flex:1;background:var(--border)"></span>
+            </h3>
+            <ul style="margin-top:2rem;display:flex;flex-wrap:wrap;align-items:center;column-gap:2.5rem;row-gap:2rem">
+              <li><a href="https://www.pucv.cl" target="_blank" rel="noopener noreferrer" title="Pontificia Universidad Católica de Valparaíso" style="display:block;opacity:.7" style-hover="opacity:1"><img src="logos/pucv.svg" alt="Pontificia Universidad Católica de Valparaíso" style="height:3.5rem;width:auto;object-fit:contain" /></a></li>
+              <li><a href="https://www.eie.ucv.cl" target="_blank" rel="noopener noreferrer" title="Escuela de Ingeniería Eléctrica PUCV" style="display:block;opacity:.7" style-hover="opacity:1"><img src="logos/eie-pucv.svg" alt="Escuela de Ingeniería Eléctrica PUCV" style="height:3.5rem;width:auto;object-fit:contain" /></a></li>
+            </ul>
+            <ul style="margin-top:1.5rem;display:flex;flex-direction:column;gap:.25rem;font-size:.875rem;color:var(--muted-foreground)">
+              <li>Pontificia Universidad Católica de Valparaíso</li>
+              <li>Escuela de Ingeniería Eléctrica PUCV</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground);display:flex;align-items:center;gap:1rem;font-weight:400">
+              <span>Instituciones participantes y colaboradoras</span>
+              <span aria-hidden="true" style="height:1px;flex:1;background:var(--border)"></span>
+            </h3>
+            <ul style="margin-top:2rem;display:flex;flex-wrap:wrap;align-items:center;column-gap:2.5rem;row-gap:2rem">
+              <li><a href="https://www.uc.cl" target="_blank" rel="noopener noreferrer" title="Pontificia Universidad Católica de Chile" style="display:block;opacity:.7" style-hover="opacity:1"><img src="logos/uc.svg" alt="Pontificia Universidad Católica de Chile" style="height:2.75rem;width:auto;object-fit:contain" /></a></li>
+              <li><a href="https://www.usach.cl" target="_blank" rel="noopener noreferrer" title="Universidad de Santiago de Chile" style="display:block;opacity:.7" style-hover="opacity:1"><img src="logos/usach.svg" alt="Universidad de Santiago de Chile" style="height:2.75rem;width:auto;object-fit:contain" /></a></li>
+              <li><a href="https://www.bell-labs.com" target="_blank" rel="noopener noreferrer" title="Nokia Bell Labs" style="display:block;opacity:.7" style-hover="opacity:1"><img src="logos/nokia-bell-labs.svg" alt="Nokia Bell Labs" style="height:2.75rem;width:auto;object-fit:contain" /></a></li>
+              <li><a href="https://www.columbia.edu" target="_blank" rel="noopener noreferrer" title="Columbia University" style="display:block;opacity:.7" style-hover="opacity:1"><img src="logos/columbia.svg" alt="Columbia University" style="height:2.75rem;width:auto;object-fit:contain" /></a></li>
+            </ul>
+            <ul style="margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:.25rem;font-size:.875rem;color:var(--muted-foreground)">
+              <li>Pontificia Universidad Católica de Chile</li>
+              <li>Universidad de Santiago de Chile</li>
+              <li>Nokia Bell Labs</li>
+              <li>Columbia University</li>
+            </ul>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:2px;padding:2.5rem">
+            <h3 style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground);font-weight:400">Financia</h3>
+            <div style="margin-top:1.75rem;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:2.5rem">
+              <a href="https://www.anid.cl" target="_blank" rel="noopener noreferrer" title="Agencia Nacional de Investigación y Desarrollo" style="display:block;opacity:.8" style-hover="opacity:1">
+                <img src="logos/anid.svg" alt="Agencia Nacional de Investigación y Desarrollo" style="height:4rem;width:auto;object-fit:contain" />
+              </a>
+              <div style="min-width:0">
+                <p style="font-family:var(--font-display);font-size:1rem;font-weight:600;color:var(--foreground)">Agencia Nacional de Investigación y Desarrollo (ANID)</p>
+                <p style="margin-top:.5rem;font-size:.875rem;line-height:1.65;color:var(--muted-foreground)">Proyecto <span style="font-family:var(--font-mono);color:var(--primary)">FOVI250222</span>, <span style="font-style:italic">Detección inalámbrica en mmWave y sub-THz</span>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer style="position:relative;border-top:1px solid var(--border);background:color-mix(in srgb, var(--surface) 60%, transparent);padding:4rem 2rem">
+    <div style="max-width:80rem;margin:0 auto">
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:3rem">
+        <div style="min-width:0">
+          <p style="font-family:var(--font-display);font-size:1.125rem;line-height:1.375;font-weight:600;color:var(--foreground)">Beyond Connectivity: Wireless Sensing in mmWave and Sub-THz Bands</p>
+          <p style="margin-top:.75rem;max-width:28rem;font-size:.875rem;line-height:1.65;color:var(--muted-foreground)">International Seminar on Wireless Propagation, Sensing, and Future Communication Networks</p>
+          <p style="margin-top:1.5rem;font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground)">21–22 OCT 2026 · Santiago, Chile</p>
+        </div>
+
+        <div style="min-width:0">
+          <h2 style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground);font-weight:400">Contacto</h2>
+          <ul style="margin-top:1rem;display:flex;flex-direction:column;gap:.75rem;font-size:.875rem;color:var(--muted-foreground)">
+            <li><a href="mailto:seminario.wireless@pucv.cl" style="color:var(--primary);text-decoration:underline;text-decoration-color:color-mix(in srgb, var(--primary) 40%, transparent);text-underline-offset:4px">seminario.wireless@pucv.cl</a></li>
+            <li style="line-height:1.65">Escuela de Ingeniería Eléctrica, Pontificia Universidad Católica de Valparaíso</li>
+          </ul>
+        </div>
+
+        <div style="min-width:0">
+          <h2 style="font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-foreground);font-weight:400">Secciones</h2>
+          <ul style="margin-top:1rem;display:flex;flex-direction:column;gap:.625rem;font-size:.875rem">
+            <li><a href="#seminario" style="color:var(--muted-foreground)" style-hover="color:var(--primary)">El seminario</a></li>
+            <li><a href="#programa" style="color:var(--muted-foreground)" style-hover="color:var(--primary)">Programa</a></li>
+            <li><a href="#expositores" style="color:var(--muted-foreground)" style-hover="color:var(--primary)">Expositores</a></li>
+            <li><a href="#red" style="color:var(--muted-foreground)" style-hover="color:var(--primary)">Red</a></li>
+            <li><a href="#sede" style="color:var(--muted-foreground)" style-hover="color:var(--primary)">Sede</a></li>
+            <li><a href="#organizacion" style="color:var(--muted-foreground)" style-hover="color:var(--primary)">Organización</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="margin-top:3.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;border-top:1px solid var(--border);padding-top:2rem;font-size:.75rem;color:var(--muted-foreground)">
+        <p>© 2026 Pontificia Universidad Católica de Valparaíso · Escuela de Ingeniería Eléctrica PUCV</p>
+        <p style="font-family:var(--font-mono)">Financiado por ANID · Proyecto FOVI250222</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440},&quot;temaInicial&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;,&quot;system&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark' | 'system'&quot;,&quot;section&quot;:&quot;Apariencia&quot;},&quot;programaDemostrativo&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Contenido&quot;}}">
+const DIAS = [
+  {
+    date: '21 de octubre de 2026',
+    label: 'Primera jornada · Propagación y medición',
+    sessions: [
+      { time: '09:00', title: 'Acreditación y café de bienvenida' },
+      { time: '09:30', title: 'Apertura del seminario', speaker: 'Escuela de Ingeniería Eléctrica, PUCV' },
+      { time: '10:00', title: 'Modelado de canal en bandas milimétricas: de la medición al modelo', speaker: 'Reinaldo A. Valenzuela — Nokia Bell Labs', summary: 'Cómo se construye un modelo de canal a partir de campañas de medición, qué supuestos se introducen en cada paso y cuáles sobreviven al contraste con datos de despliegues reales.' },
+      { time: '11:00', title: 'Pausa' },
+      { time: '11:30', title: 'Campañas de medición de propagación: método y fuentes de error', speaker: 'Rodolfo Feick', summary: 'Diseño de una campaña de medición: elección de escenarios, calibración del equipo y las fuentes de error que más pesan en el resultado final.' },
+      { time: '12:30', title: 'Medición de propagación en sub-THz: qué cambia respecto de mmWave', speaker: 'Jinfeng Du — Nokia Bell Labs', summary: 'Qué deja de funcionar al subir de ondas milimétricas a sub-terahertz: presupuesto de enlace, penetración en materiales y exigencias sobre el instrumental.' },
+      { time: '13:30', title: 'Almuerzo' },
+      { time: '15:00', title: 'Mesa redonda: bancos de prueba abiertos para investigación en propagación', speaker: 'Expositores de la jornada' }
+    ]
+  },
+  {
+    date: '22 de octubre de 2026',
+    label: 'Segunda jornada · Detección y redes futuras',
+    sessions: [
+      { time: '09:30', title: 'Redes inalámbricas resilientes y el banco de pruebas COSMOS', speaker: 'Gil Zussman — Columbia University', summary: 'Arquitecturas de red que degradan de forma controlada ante fallos, y qué permite medir un banco de pruebas urbano abierto que un laboratorio no reproduce.' },
+      { time: '10:30', title: 'Detección y localización en redes de tiempo real', speaker: 'Miguel Gutiérrez Gaitán — Pontificia Universidad Católica de Chile', summary: 'Estimación de posición sobre infraestructura de comunicación existente, y las garantías temporales que exige llevarla a un entorno industrial.' },
+      { time: '11:30', title: 'Pausa' },
+      { time: '12:00', title: 'Estaciones base móviles: redes asistidas por drones en 5G y 6G', speaker: 'Karel Toledo de la Garza — Universidad de Santiago de Chile', summary: 'Drones como estaciones base que se reposicionan según la demanda, con las restricciones de energía y enlace que impone operar en banda milimétrica.' },
+      { time: '13:00', title: 'Almuerzo' },
+      { time: '14:30', title: 'Sesión de pósteres de estudiantes de posgrado' },
+      { time: '16:00', title: 'Discusión final: agenda de colaboración Chile — Estados Unidos', speaker: 'Todos los expositores' },
+      { time: '17:00', title: 'Cierre' }
+    ]
+  }
+];
+
+const TAB_BASE =
+  'width:100%;text-align:left;padding:.875rem 1rem;border-radius:2px;font-family:inherit;cursor:pointer;transition:border-color .2s ease, background-color .2s ease, color .2s ease;';
+
+const FILA_BASE =
+  'align-items:start;transition-property:opacity,transform;transition-duration:.55s;' +
+  'transition-timing-function:cubic-bezier(0.22,1,0.36,1);';
+
+class Component extends DCLogic {
+  /*
+   * `animando` arranca en `false` a propósito: las filas nacen VISIBLES.
+   *
+   * Es la misma regla que `global.css` aplica a `.reveal` —«sin JS el contenido
+   * queda visible por defecto»— y lo que exige RF-6.2. Solo cuando el guion ha
+   * montado de verdad se toma el control y se ocultan para animarlas: así una
+   * pestaña en segundo plano, o un cuadro que nunca llega, no dejan la agenda
+   * en blanco.
+   */
+  state = { pref: null, sistemaOscuro: false, jornada: 0, visibles: {}, abiertas: {}, alturas: {}, animando: false, esMovil: false };
+
+  /** El panel de la agenda. Se busca por id: el nodo persiste entre renders. */
+  panel() {
+    return document.getElementById('agenda-panel');
+  }
+
+  componentDidMount() {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    this.mq = mq;
+    this.setState({ sistemaOscuro: mq.matches });
+    this.onMq = () => this.setState({ sistemaOscuro: mq.matches });
+    mq.addEventListener('change', this.onMq);
+
+    /*
+     * Punto de quiebre de la agenda. Bajo 768px el panel deja de tener
+     * desplazamiento propio: en una pantalla estrecha un contenedor con scroll
+     * interno compite con el de la página y se vuelve imposible de manejar con
+     * el pulgar. Ahí la línea de tiempo fluye en el documento.
+     */
+    const angosta = window.matchMedia('(max-width: 767px)');
+    this.mqAncho = angosta;
+    this.setState({ esMovil: angosta.matches });
+    this.onAncho = () => this.setState({ esMovil: angosta.matches });
+    angosta.addEventListener('change', this.onAncho);
+
+    /*
+     * Escucha nativa sobre el panel en vez de `onScroll` en la plantilla: el
+     * nodo se conserva entre renders y así el cálculo no depende de que el
+     * atributo se vuelva a enlazar. En móvil el que desplaza es el documento.
+     */
+    const p = this.panel();
+    if (p) p.addEventListener('scroll', this.alDesplazar, { passive: true });
+    window.addEventListener('scroll', this.alDesplazar, { passive: true });
+
+    /*
+     * El montaje ya ocurre con el layout hecho, así que la primera medición es
+     * SÍNCRONA: no depende de ningún cuadro. Recién aquí se pasa a `animando`.
+     */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    this.setState({ animando: true }, () => this.observar());
+  }
+
+  componentWillUnmount() {
+    if (this.mq) this.mq.removeEventListener('change', this.onMq);
+    if (this.mqAncho) this.mqAncho.removeEventListener('change', this.onAncho);
+    const p = this.panel();
+    if (p) p.removeEventListener('scroll', this.alDesplazar);
+    window.removeEventListener('scroll', this.alDesplazar);
+  }
+
+  /*
+   * Un recálculo por cuadro, como máximo, venga de donde venga.
+   *
+   * Se programa desde `renderVals()` en vez de desde `componentDidUpdate`: así
+   * cualquier render —cambio de jornada incluido— recalcula DESPUÉS del pintado,
+   * que es lo único que garantiza medir las filas nuevas ya maquetadas. Medirlas
+   * antes las dejaba todas fuera del umbral y el panel quedaba en blanco.
+   */
+  revisar() {
+    if (this.pendienteCuadro) return;
+    this.pendienteCuadro = true;
+
+    let hecho = false;
+    const correr = () => {
+      if (hecho) return;
+      hecho = true;
+      this.pendienteCuadro = false;
+      const p = this.panel();
+      if (p && this.jornadaObservada !== this.state.jornada) p.scrollTop = 0;
+      this.observar();
+    };
+
+    // El `setTimeout` es el respaldo: en una pestaña en segundo plano el cuadro
+    // no llega nunca, y sin él el guardián quedaba enclavado en `true` para
+    // siempre —ninguna llamada posterior, ni la del scroll, volvía a entrar—.
+    requestAnimationFrame(correr);
+    setTimeout(correr, 120);
+  }
+
+  /*
+   * Aparición de cada sesión al entrar en el panel.
+   *
+   * Se mide contra el rectángulo del PANEL, no del viewport: la agenda tiene
+   * desplazamiento propio, así que la ventana no sabe nada de lo que entra y
+   * sale ahí dentro. Una vez revelada, una fila no vuelve a ocultarse.
+   */
+  observar() {
+    const raiz = this.panel();
+    if (!raiz) return;
+
+    const filas = [...raiz.querySelectorAll('[data-sesion]')];
+    if (!filas.length) return;
+    this.jornadaObservada = this.state.jornada;
+
+    /*
+     * El umbral es el borde inferior de lo que hace de ventana: el panel cuando
+     * desplaza él, y el viewport cuando la agenda fluye en la página (móvil).
+     */
+    const umbral = this.state.esMovil
+      ? window.innerHeight - 24
+      : raiz.getBoundingClientRect().bottom - 24;
+
+    const nuevas = {};
+    filas.forEach((f) => {
+      if (f.getBoundingClientRect().top < umbral) nuevas[f.dataset.sesion] = true;
+    });
+
+    const pendientes = Object.keys(nuevas).filter((k) => !this.state.visibles[k]);
+    if (pendientes.length) this.setState((st) => ({ visibles: { ...st.visibles, ...nuevas } }));
+  }
+
+  /*
+   * Abre o cierra un resumen midiendo su altura real justo antes de animar.
+   *
+   * Se mide en cada apertura y no una sola vez: el mismo texto ocupa distinto
+   * alto según el ancho de la tarjeta (móvil, giro de pantalla, zoom de fuente).
+   */
+  alternar(i) {
+    const cuerpo = document.getElementById('resumen-' + i);
+    const alto = cuerpo ? cuerpo.scrollHeight : 0;
+    this.setState((st) => ({
+      abiertas: { ...st.abiertas, [i]: !st.abiertas[i] },
+      alturas: alto ? { ...st.alturas, [i]: alto } : st.alturas
+    }));
+  }
+
+  /** Síncrono: son ocho filas, y así el scroll no depende de ningún cuadro. */
+  alDesplazar = () => this.observar();
+
+  pref() {
+    return this.state.pref ?? this.props.temaInicial ?? 'light';
+  }
+
+  etiqueta(activa) {
+    return activa
+      ? 'cursor:pointer;border-radius:2px;padding:.25rem .625rem;font-size:.6875rem;font-weight:500;background:var(--primary);color:var(--primary-foreground)'
+      : 'cursor:pointer;border-radius:2px;padding:.25rem .625rem;font-size:.6875rem;font-weight:500;color:var(--muted-foreground)';
+  }
+
+  renderVals() {
+    this.revisar();
+    const pref = this.pref();
+    const tema = pref === 'system' ? (this.state.sistemaOscuro ? 'dark' : 'light') : pref;
+    const demo = this.props.programaDemostrativo ?? false;
+    const activa = this.state.jornada;
+    const movil = this.state.esMovil;
+
+    return {
+      tema,
+      esClaro: pref === 'light',
+      esOscuro: pref === 'dark',
+      esSistema: pref === 'system',
+      estiloClaro: this.etiqueta(pref === 'light'),
+      estiloOscuro: this.etiqueta(pref === 'dark'),
+      estiloSistema: this.etiqueta(pref === 'system'),
+      ponerClaro: () => this.setState({ pref: 'light' }),
+      ponerOscuro: () => this.setState({ pref: 'dark' }),
+      ponerSistema: () => this.setState({ pref: 'system' }),
+
+      hayPrograma: demo,
+      sinPrograma: !demo,
+
+      /*
+       * Maquetación de la agenda según el ancho. En móvil: una sola columna, el
+       * selector de jornada pasa a fila horizontal, el panel suelta su scroll
+       * propio (y con él la máscara de desvanecido, que sin recorte no aporta) y
+       * la línea de tiempo se estrecha.
+       */
+      envolturaEstilo: movil
+        ? 'margin-top:2rem;display:grid;grid-template-columns:minmax(0,1fr);gap:2rem'
+        : 'margin-top:2.5rem;display:grid;grid-template-columns:minmax(0,17rem) minmax(0,1fr);gap:3.5rem;align-items:start',
+
+      barraEstilo: movil ? 'position:static' : 'position:sticky;top:6.5rem',
+
+      // Solo es un punto de tabulación cuando de verdad desplaza: un contenedor
+      // con scroll debe poder recorrerse con el teclado, uno sin scroll no.
+      panelTab: movil ? -1 : 0,
+
+      listaTabsEstilo: 'margin-top:1rem;display:flex;flex-direction:column;gap:.5rem',
+
+      horaEstilo:
+        'font-family:var(--font-mono);font-size:.8125rem;line-height:1.4;color:var(--primary);text-align:right;' +
+        (movil ? 'padding:1.05rem .5rem 0 0;' : 'padding:1.05rem 1rem 0 0;'),
+
+      panelEstilo: movil
+        ? 'padding:0'
+        : 'max-height:70vh;overflow-y:auto;overflow-x:hidden;overscroll-behavior:auto;padding:1rem 1.5rem 1rem 0;' +
+          'mask-image:linear-gradient(to bottom, transparent 0, #000 2rem, #000 calc(100% - 2rem), transparent 100%);' +
+          '-webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 2rem, #000 calc(100% - 2rem), transparent 100%)',
+
+      ejeEstilo:
+        'position:absolute;top:1.5rem;bottom:1.5rem;width:1px;background:var(--border);' +
+        (movil ? 'left:3.5rem;' : 'left:5.25rem;'),
+
+      // El aviso sobre el desplazamiento del panel solo tiene sentido si el
+      // panel desplaza. En móvil no hay nada que explicar.
+      mostrarNota: !movil,
+
+      jornadas: demo
+        ? DIAS.map((d, i) => ({
+            label: d.label,
+            date: d.date,
+            conteo: d.sessions.length + ' sesiones',
+            seleccionada: i === activa ? 'true' : 'false',
+            estiloTab:
+              TAB_BASE +
+              (i === activa
+                ? 'border:1px solid color-mix(in srgb, var(--primary) 45%, transparent);background:var(--surface);color:var(--foreground);'
+                : 'border:1px solid var(--border);background:transparent;color:var(--muted-foreground);'),
+            elegir: () => this.setState({ jornada: i, visibles: {}, abiertas: {} })
+          }))
+        : [],
+      sesiones: demo
+        ? DIAS[activa].sessions.map((s, i) => {
+            const visible = !this.state.animando || !!this.state.visibles[i];
+            const abierta = !!this.state.abiertas[i];
+            const charla = !!s.speaker;
+
+            return {
+              i,
+              time: s.time,
+              title: s.title,
+              speaker: s.speaker || '',
+              summary: s.summary || '',
+              tieneResumen: !!s.summary,
+              sinResumen: !s.summary,
+              abierta: abierta ? 'true' : 'false',
+              alternar: () => this.alternar(i),
+
+              filaEstilo:
+                FILA_BASE +
+                (movil
+                  ? 'display:grid;grid-template-columns:2.75rem 1.5rem minmax(0,1fr);'
+                  : 'display:grid;grid-template-columns:4.5rem 1.5rem minmax(0,1fr);') +
+                (visible ? 'opacity:1;transform:none;' : 'opacity:0;transform:translateY(14px);') +
+                'transition-delay:' + (i % 4) * 70 + 'ms;',
+
+              puntoEstilo:
+                'display:block;width:.5625rem;height:.5625rem;border-radius:9999px;margin:1.4rem auto 0;transition:background-color .3s ease, border-color .3s ease;' +
+                (charla
+                  ? 'background:var(--primary);border:1px solid var(--primary);'
+                  : 'background:var(--background);border:1px solid var(--border-control);'),
+
+              tarjetaEstilo:
+                'min-width:0;border-radius:2px;background:var(--surface);transition:border-color .25s ease;' +
+                (abierta
+                  ? 'border:1px solid color-mix(in srgb, var(--primary) 45%, transparent);'
+                  : 'border:1px solid var(--border);'),
+
+              chevronEstilo:
+                'display:grid;place-items:center;width:1.5rem;height:1.5rem;flex-shrink:0;color:var(--primary);transition:transform .3s var(--ease-out-soft);' +
+                (abierta ? 'transform:rotate(180deg);' : 'transform:rotate(0deg);'),
+
+              /*
+               * Altura en PÍXELES medidos, no `0fr↔1fr`.
+               *
+               * La interpolación de `fr` en una rejilla de altura indefinida deja
+               * la pista resuelta en 0px casi todo el recorrido: el clic parecía
+               * no hacer nada y el texto aparecía de golpe ~1,5s después.
+               */
+              resumenEstilo: abierta
+                ? 'max-height:' + (this.state.alturas[i] || 600) + 'px;opacity:1;'
+                : 'max-height:0px;opacity:0;'
+            };
+          })
+        : []
+    };
+  }
+}
+</script>
+</body>
+</html>

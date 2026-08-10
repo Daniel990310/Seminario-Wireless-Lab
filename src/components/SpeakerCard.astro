@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import type { Contenido } from '~/data/contenido';
 
 /** El expositor ya viene resuelto por idioma desde `contenido()`. */
@@ -43,37 +44,89 @@ const initials = speaker.name
   Lo que se pierde frente a un modal: no atrapa el foco ni oscurece el fondo.
   Para una reseña de tres líneas que no exige decisión, eso no hace falta.
 -->
-<article class="reveal border-t hairline pt-5" style={`transition-delay:${index * 70}ms`}>
-  <div class="flex items-start gap-4">
+<!--
+  RETRATO ARRIBA, NO AL LADO.
+
+  Antes el retrato era un cuadrado de 64 px junto al texto, y ese es el lenguaje visual de un
+  avatar de hilo de comentarios: dice «usuario», no «investigador invitado». Apilarlo y darle
+  ancho lo convierte en un retrato.
+
+  Lo que da prestigio aquí no es el tamaño sino el **aire y la jerarquía**: el retrato ocupa el
+  ancho de su columna hasta un tope, el nombre sube de tamaño y cada dato se separa del
+  siguiente. La sección sigue sin robarle protagonismo al hero porque no gana color ni peso
+  gráfico —ni fondo, ni sombra, ni borde alrededor de la foto—: solo espacio.
+
+  El tope de 13rem existe para eso. Sin él, en una columna de ~370 px el retrato saldría a ese
+  ancho y la sección se volvería una galería de retratos, que es exactamente lo que se pidió
+  evitar.
+-->
+<article class="reveal border-t hairline pt-6" style={`transition-delay:${index * 70}ms`}>
+  {/*
+    Retrato si lo hay; monograma si no. El monograma NO es un respaldo de emergencia: es el
+    estado por defecto que define RF-11.2, porque una foto solo se publica con autorización
+    expresa de la persona (RF-11.1) y «todavía no hay» es un caso normal.
+
+    `aria-hidden` en los dos: el nombre está en el `<h4>` inmediatamente debajo, así que
+    anunciar «Gil Zussman» dos veces seguidas solo estorba. Por eso el retrato lleva `alt=""`
+    y no el nombre —que sería la respuesta refleja y aquí es la equivocada.
+
+    `w-full` con `max-w-[13rem]`: el retrato acompaña al ancho de la columna en pantallas
+    estrechas y se detiene antes de dominar en las anchas.
+
+    MARCO CIRCULAR, y se comprobó antes de adoptarlo. Un círculo inscrito conserva el punto
+    medio de cada lado y se come las esquinas, así que una cabeza centrada sobrevive y una
+    descentrada no: no es una decisión que se pueda tomar razonando. Se aplicó la máscara a
+    los seis retratos y se miraron `[2026-08-09]`. Ninguna cabeza queda cortada, ni siquiera
+    la de Feick, que es la que más se acerca al borde superior. **Si entra un retrato nuevo,
+    hay que repetir esa comprobación**: el círculo perdona menos que el cuadrado.
+  */}
+  {speaker.foto ? (
+    <Image
+      src={speaker.foto}
+      width={416}
+      height={416}
+      alt=""
+      aria-hidden="true"
+      class="aspect-square w-full max-w-[13rem] rounded-full object-cover"
+      loading="lazy"
+      decoding="async"
+    />
+  ) : (
     <span
-      class="grid size-10 shrink-0 place-items-center rounded-surface border border-primary/30 font-display text-xs font-semibold text-primary"
+      class="grid aspect-square w-full max-w-[13rem] place-items-center rounded-full border border-primary/30 font-display text-2xl font-semibold text-primary"
       aria-hidden="true"
     >
       {initials}
     </span>
-    <div class="min-w-0">
-      <!--
-        `h4`, no `h3` (T6): el rótulo del grupo —«Expositores internacionales»— ya
-        es el `h3` de este bloque. Con ambos en `h3`, cada nombre se anunciaba como
-        hermano del rótulo en vez de como hijo, y el índice de encabezados de un
-        lector de pantalla quedaba plano.
-      -->
-      <h4 class="font-display text-lg leading-tight font-semibold text-foreground">
-        {speaker.name}
-      </h4>
-      <p
-        class:list={[
-          'mt-2 text-sm leading-snug text-muted-foreground',
-          speaker.affiliationPending && 'italic',
-        ]}
-      >
-        {speaker.affiliation}
-      </p>
-      {speaker.country && <p class="eyebrow mt-2 text-muted-foreground">{speaker.country}</p>}
-    </div>
+  )}
+
+  <div class="mt-6 min-w-0">
+    <!--
+      `h4`, no `h3` (T6): el rótulo del grupo —«Expositores internacionales»— ya
+      es el `h3` de este bloque. Con ambos en `h3`, cada nombre se anunciaba como
+      hermano del rótulo en vez de como hijo, y el índice de encabezados de un
+      lector de pantalla quedaba plano.
+    -->
+    <h4 class="font-display text-xl leading-tight font-semibold text-foreground">
+      {speaker.name}
+    </h4>
+    <p
+      class:list={[
+        'mt-2.5 text-sm leading-snug text-muted-foreground',
+        speaker.affiliationPending && 'italic',
+      ]}
+    >
+      {speaker.affiliation}
+    </p>
+    {speaker.country && <p class="eyebrow mt-2.5 text-muted-foreground">{speaker.country}</p>}
   </div>
 
-  <details class="group mt-4">
+  <!--
+    `desplegable-suave` da la apertura con transición en lugar del salto seco que hacía cambiar
+    de altura a la sección entera de golpe. Es contenido que se lee, no un control con el que
+    haya que interactuar de inmediato: esa es exactamente la condición que pide esa clase.
+  -->
+  <details class="desplegable-suave group mt-5">
     <summary
       class="inline-flex cursor-pointer list-none items-center gap-2 text-sm font-medium text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary [&::-webkit-details-marker]:hidden"
     >

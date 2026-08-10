@@ -1,3 +1,73 @@
+/*
+ * Los dos únicos logos ráster del proyecto se importan, no se referencian por ruta.
+ *
+ * PUCV no publica SVG de su escudo —el paquete `logos_pucv` de Normas Gráficas trae PNG—,
+ * así que son los dos únicos archivos que el optimizador de Astro puede mejorar. Importarlos
+ * desde `src/assets` es lo que le permite emitir formatos modernos y declarar las
+ * dimensiones intrínsecas. Los demás logos son SVG y siguen en `/public`, porque para
+ * vectores el optimizador no hace nada y el flujo de sustituir el archivo por su nombre es
+ * más útil.
+ */
+import pucvClaro from '~/assets/logos/pucv.png';
+import pucvOscuro from '~/assets/logos/pucv-oscuro.png';
+/*
+ * Submarca oficial de la Escuela de Ingeniería Eléctrica, del paquete `logos_submarca` de
+ * Normas Gráficas PUCV. Instalada el 2026-08-07.
+ *
+ * El rastreo del 2026-08-03 la dejó pendiente porque la descarga se cortó dos veces; se
+ * cortó una tercera y salió con reanudación por rangos. El paquete pesa **186,1 MB**, que es
+ * la razón de los cortes.
+ *
+ * Variante `AZUL` para fondo claro y `BLANCO` para fondo oscuro, que son las dos que el
+ * manual autoriza para cada fondo. No se recolorea ninguna (RF-10.4). El paquete de
+ * submarcas **sí** trae versión para fondo oscuro, a diferencia del paquete del escudo
+ * principal, que no la tiene y sigue pedida.
+ */
+import eieClaro from '~/assets/logos/eie-pucv.png';
+import eieOscuro from '~/assets/logos/eie-pucv-oscuro.png';
+/*
+ * Columbia. Autorización confirmada por Daniel el 2026-08-07; el detalle de quién autoriza
+ * qué está en `specs/002-rediseno-visual/marcas/README.md`.
+ *
+ * **OJO CON CUÁL ES.** Los archivos entregados son `CUSPS_logo_simple_RGB_*`, o sea la
+ * submarca de la **School of Professional Studies**, y el expositor de Columbia —Gil
+ * Zussman— es de Ingeniería Eléctrica, o sea SEAS. Es la escuela equivocada, del mismo tipo
+ * de error que un nombre institucional traducido a mano.
+ *
+ * Se instalan porque se pidieron, y **con estos nombres de archivo** precisamente para que
+ * sustituir el archivo por la marca correcta no obligue a tocar código: basta con
+ * reemplazar `columbia.png` y `columbia-oscuro.png` conservando el nombre. Originales
+ * archivados en `marcas/columbia/`.
+ *
+ * Variante `dkblue` para fondo claro y `white` para fondo oscuro, las dos que trae el
+ * paquete. No se recolorea ninguna (RF-10.4).
+ */
+import columbiaClaro from '~/assets/logos/columbia.png';
+import columbiaOscuro from '~/assets/logos/columbia-oscuro.png';
+import usachClaro from '~/assets/logos/usach.png';
+
+/*
+ * Retratos de los expositores, normalizados el 2026-08-09.
+ *
+ * Autorización: los entregó Daniel confirmando el permiso, que es lo que exige RF-11.1.
+ *
+ * El material llegaba dispar —cuatro cuadrados de entre 300 y 600 px, uno vertical de
+ * 3744×5120 y dos WebP— así que puestos tal cual las fichas mostrarían caras a distinta
+ * altura y a distinto tamaño. Se unificaron a **512×512 con recorte guiado por saliencia**,
+ * que en un retrato cae sobre la cara; no es detección facial, es una heurística, y por eso
+ * los seis recortes se revisaron a ojo antes de darlos por buenos: ninguna cabeza queda
+ * cortada. Un recorte centrado puro habría decapitado la foto vertical.
+ *
+ * OJO con el de Zussman: el original mide 260×260, así que al llevarlo a 512 se interpola y
+ * se ve más blando que los demás. Si aparece uno de mayor resolución, conviene cambiarlo.
+ */
+import fotoZussman from '~/assets/expositores/zussman.webp';
+import fotoDu from '~/assets/expositores/du.webp';
+import fotoValenzuela from '~/assets/expositores/valenzuela.webp';
+import fotoFeick from '~/assets/expositores/feick.webp';
+import fotoGutierrez from '~/assets/expositores/gutierrez.webp';
+import fotoToledo from '~/assets/expositores/toledo.webp';
+
 /**
  * Contenido que NO se traduce (T7).
  *
@@ -37,11 +107,52 @@ export const PROGRAMA_DEMOSTRATIVO = false;
 
 export type CodigoPais = 'US' | 'CL';
 
+/*
+ * Los logos aceptan dos formas, y la distinción tiene consecuencias.
+ *
+ * - `string` es una ruta dentro de `/public`: el archivo se sirve tal cual. Es lo correcto
+ *   para los SVG, porque el optimizador de imágenes de Astro no los procesa —los pasa sin
+ *   tocar— y porque el flujo documentado en `public/logos/README.md` consiste en sustituir
+ *   el archivo conservando el nombre, sin tocar código.
+ * - `ImageMetadata` es un archivo importado desde `src/assets`, y sirve para los **ráster**.
+ *   Ahí sí gana: `<Image />` emite formatos modernos y, sobre todo, **declara `width` y
+ *   `height`**, que es lo que evita que la fila de logos se recoloque al cargar.
+ *
+ * Con `h-10 w-auto` y sin dimensiones intrínsecas, el ancho es 0 hasta que la imagen llega
+ * y la fila salta. Ese era el defecto real que señalaba la barra de auditoría del servidor
+ * de desarrollo el 2026-08-06, no el peso.
+ */
+export type Logo = string | ImageMetadata;
+
 export interface Institucion {
   name: string;
   shortName: string;
-  /** Ruta del logo dentro de /public. Ver public/logos/README.md */
-  logo: string;
+  /** SVG: ruta en `/public`. Ráster: importado de `src/assets/logos`. Ver `Logo`. */
+  logo: Logo;
+  /**
+   * Variante autorizada para fondo oscuro (RF-10).
+   *
+   * Existe porque los logos oficiales vienen **en una variante por fondo**, y no
+   * se pueden recolorear por CSS: alterar el color de una marca va contra el
+   * manual de su dueño. Si falta, se usa `logo` en los dos temas, que es lo
+   * correcto para un marcador de posición monocromo.
+   */
+  logoOscuro?: Logo;
+  /**
+   * Corrección óptica del tamaño, 1 por omisión.
+   *
+   * `LogoWall` iguala el **área** de todas las marcas, que es lo que resuelve el problema
+   * grueso: a igual altura, Columbia ocupaba once veces más superficie que USACH. Pero área
+   * igual no es peso igual, porque la **densidad de tinta dentro de la caja** cambia de una
+   * marca a otra: el logo de la UC es un escudo pequeño sobre una línea de texto fina, casi
+   * todo aire, mientras que el de USACH llena su caja.
+   *
+   * Ningún cálculo sobre el `viewBox` puede ver eso —habría que medir los píxeles con tinta—
+   * así que este factor es **un juicio a ojo, y se declara como tal**. Se usa con moderación:
+   * si hiciera falta un valor lejos de 1, el problema es que la variante elegida del logo no
+   * es la adecuada para una pared horizontal.
+   */
+  escalaOptica?: number;
   url?: string;
 }
 
@@ -59,6 +170,15 @@ export interface ExpositorComun {
    * cualquier dato de la reseña sea comprobable en su fuente.
    */
   perfil?: string;
+  /**
+   * Retrato ya normalizado a cuadrado. **Opcional a propósito.**
+   *
+   * Sin foto, la ficha muestra el monograma de iniciales, que es un estado por defecto y no
+   * un hueco (RF-11.2). Esa vía tiene que seguir funcionando: una foto solo se publica con
+   * autorización expresa de la persona (RF-11.1), así que el caso «todavía no hay» es
+   * normal y no excepcional.
+   */
+  foto?: ImageMetadata;
 }
 
 export interface NodoRed {
@@ -112,6 +232,7 @@ export const comun = {
     international: [
       {
         id: 'zussman',
+        foto: fotoZussman,
         name: 'Gil Zussman',
         affiliation: 'Columbia University',
         country: 'US',
@@ -119,6 +240,7 @@ export const comun = {
       },
       {
         id: 'du',
+        foto: fotoDu,
         name: 'Jinfeng Du',
         affiliation: 'Nokia Bell Labs',
         country: 'US',
@@ -126,6 +248,7 @@ export const comun = {
       },
       {
         id: 'valenzuela',
+        foto: fotoValenzuela,
         name: 'Reinaldo A. Valenzuela',
         affiliation: 'Nokia Bell Labs',
         country: 'US',
@@ -142,12 +265,14 @@ export const comun = {
        */
       {
         id: 'feick',
+        foto: fotoFeick,
         name: 'Rodolfo Feick',
         affiliationPending: true,
         perfil: 'http://investigacion.electronica.usm.cl/~wcg/',
       },
       {
         id: 'gutierrez',
+        foto: fotoGutierrez,
         name: 'Miguel Gutiérrez Gaitán',
         affiliation: 'Pontificia Universidad Católica de Chile',
         country: 'CL',
@@ -155,6 +280,7 @@ export const comun = {
       },
       {
         id: 'toledo',
+        foto: fotoToledo,
         name: 'Karel Toledo de la Garza',
         affiliation: 'Universidad de Santiago de Chile',
         country: 'CL',
@@ -164,31 +290,73 @@ export const comun = {
   },
 
   organizers: [
+    /*
+     * Logo oficial, del paquete `logos_pucv` de Normas Gráficas de la Dirección
+     * de Comunicación Estratégica. Es PNG porque PUCV no publica SVG.
+     *
+     * La variante oscura se derivó de la monocromática oficial pasando la tinta
+     * a blanco, sin tocar forma ni alfa: el paquete no incluye una versión
+     * blanca sobre transparente y la tinta institucional da **2,62:1** sobre el
+     * fondo del tema oscuro `[medido]`, por debajo del umbral de objeto gráfico.
+     * Está pedida a Comunicación Estratégica (A13); cuando llegue, se sustituye
+     * el archivo y no hay que tocar código.
+     */
     {
       name: 'Pontificia Universidad Católica de Valparaíso',
       shortName: 'PUCV',
-      logo: '/logos/pucv.svg',
+      logo: pucvClaro,
+      logoOscuro: pucvOscuro,
       url: 'https://www.pucv.cl',
     },
     {
       name: 'Escuela de Ingeniería Eléctrica PUCV',
       shortName: 'EIE PUCV',
-      logo: '/logos/eie-pucv.svg',
+      logo: eieClaro,
+      logoOscuro: eieOscuro,
       url: 'https://www.eie.ucv.cl',
     },
   ],
 
   participants: [
+    /*
+     * UC: vectores oficiales del paquete de «Uso de la marca UC», instalados el 2026-08-09.
+     *
+     * Variante `LINEAL P2727` —el azul institucional de la UC— para fondo claro, y
+     * `LINEAL BLANCO` para oscuro. Se quedan en `/public` porque son SVG y el optimizador de
+     * Astro no procesa vectores.
+     *
+     * OJO al elegir el archivo: **la numeración no significa lo mismo entre variantes.** El
+     * `-04` azul tiene proporción 2,56 y el `-04` blanco 3,87; el blanco equivalente es el
+     * `-03`. Se eligieron por proporción para que la marca no cambie de forma al cambiar de
+     * tema, no por número.
+     */
     {
       name: 'Pontificia Universidad Católica de Chile',
       shortName: 'UC',
       logo: '/logos/uc.svg',
+      logoOscuro: '/logos/uc-oscuro.svg',
+      // Escudo pequeño sobre una línea de texto fina: su caja es casi toda aire.
+      escalaOptica: 1.28,
       url: 'https://www.uc.cl',
     },
+    /*
+     * USACH: PNG oficial, instalado el 2026-08-09.
+     *
+     * **Sin variante para fondo oscuro, y hace falta.** La tinta es negra pura —medido:
+     * rgb(0,0,0) sobre los píxeles opacos— así que sobre el fondo oscuro del sitio
+     * desaparece. No se puede resolver recoloreando: alterar el color de una marca va contra
+     * el manual de su dueño (RF-10.4). La variante blanca hay que sacarla del paquete de
+     * imagotipos de USACH, que publica varios ZIP.
+     *
+     * Mientras tanto se usa la negra en los dos temas, que es lo que hace `LogoWall` cuando
+     * falta `logoOscuro`, y en oscuro no se ve.
+     */
     {
       name: 'Universidad de Santiago de Chile',
       shortName: 'USACH',
-      logo: '/logos/usach.svg',
+      logo: usachClaro,
+      // Marca vertical y densa: el tope de 1,7 la deja dominando la fila.
+      escalaOptica: 0.82,
       url: 'https://www.usach.cl',
     },
     {
@@ -200,19 +368,47 @@ export const comun = {
     {
       name: 'Columbia University',
       shortName: 'Columbia',
-      logo: '/logos/columbia.svg',
+      logo: columbiaClaro,
+      logoOscuro: columbiaOscuro,
       url: 'https://www.columbia.edu',
     },
   ],
 
+  /*
+   * Reconocimiento del financiamiento (RNF-8). **No es cortesía: ANID lo exige**,
+   * y nombra los sitios web entre los productos donde aplica.
+   *
+   * Dos cosas que estaban mal antes del 2026-08-03 y que este bloque corrige:
+   *
+   * 1. **La marca obligatoria es el conjunto «Ministerio de Ciencia + ANID»**, no
+   *    la marca ANID sola. Los archivos son los oficiales del kit digital, en su
+   *    versión 2026, con variante para cada fondo.
+   * 2. **La mención tiene nomenclatura fija**: «Financiado por la Agencia Nacional
+   *    de Investigación y Desarrollo, ANID / Instrumento (concurso)». Por eso
+   *    `mencion` vive aquí y no en los archivos de idioma: es una fórmula
+   *    institucional en español, y traducirla la rompería.
+   *
+   * Fuente de las dos, en `specs/fuentes.md`: el documento «¿Cómo mencionar a
+   * ANID en productos de divulgación?» de su kit digital.
+   */
   funding: {
     agency: {
       name: 'Agencia Nacional de Investigación y Desarrollo',
       shortName: 'ANID',
-      logo: '/logos/anid.svg',
+      logo: '/logos/anid-minciencia.svg',
+      logoOscuro: '/logos/anid-minciencia-oscuro.svg',
       url: 'https://www.anid.cl',
     },
     project: { code: 'FOVI250222' },
+    /**
+     * Nombre oficial del concurso. `[verificado]` en la página del concurso en
+     * anid.cl; la correspondencia entre el código `FOVI25…` y la convocatoria
+     * 2025 es `[probable]` y **está pendiente de que la organización la
+     * confirme** (A11). Si el concurso fuera otro, se cambia esta línea.
+     */
+    concurso: 'Concurso de Fomento a la Vinculación Internacional para Instituciones de Investigación 2025',
+    /** La fórmula exacta que exige ANID. Se compone con `concurso`. */
+    mencion: 'Financiado por la Agencia Nacional de Investigación y Desarrollo, ANID',
   },
 
   contact: {
@@ -255,3 +451,4 @@ export const comun = {
 } as const;
 
 export type Comun = typeof comun;
+

@@ -4,6 +4,14 @@ node_modules/
 .DS_Store
 *.log
 
+# Entregas de diseño que llegan de fuera. Lo que del prototipo hay que conservar ya
+# está versionado en `specs/002-rediseno-visual/referencia/`, con su procedencia y sus
+# errores anotados. La copia suelta de la raíz no debe entrar al repositorio: incluye
+# `support.js`, que descarga React y Babel desde unpkg.com al abrirlo, y además
+# `astro check` la analiza y reporta avisos de un archivo que no es nuestro.
+Revisión de home en español/
+Revisión de home en español.zip
+
 # Secretos. `.mcp.json` está versionado a propósito, pero solo contiene la
 # REFERENCIA `${API_KEY_21ST}`, nunca el valor.
 #
@@ -20,3 +28,10 @@ node_modules/
 # máquina de Daniel también lo cubre el ignore global de git, pero eso NO viaja al
 # clon de otro entorno, así que la regla vive aquí.
 .claude/settings.local.json
+
+# Caché de bytecode de los scripts Python de las skills en `.claude/skills/`. En la
+# instalación del 2026-07-30 se versionaron dos `.pyc` por descuido: dependen de la
+# versión de Python de la máquina que ejecutó el script y quedan obsoletos en cuanto
+# el `.py` cambia, así que no significan nada en el clon de otro entorno.
+__pycache__/
+*.pyc

@@ -252,8 +252,15 @@ la primera vez.
 
 ### Qué cambió con la enmienda del 2026-07-30
 
-Todo el catálogo es React + Tailwind. Este repo ya tiene `@astrojs/react`,
-`react` y `react-dom`, así que un componente **entra** sin cambios de stack.
+Todo el catálogo es React + Tailwind. Este repo tiene `@astrojs/react`, `react` y
+`react-dom`, así que un componente **entra** sin cambios de stack.
+
+**Ojo con la cronología, porque este párrafo ya estuvo equivocado.** Cuando se escribió
+la enmienda era cierto por D6. Dejó de serlo el 2026-07-31, cuando se retiró React por no
+quedar ninguna isla, y el párrafo se quedó afirmando lo contrario durante seis días. Volvió
+a ser cierto el 2026-08-06 por D11, que reinstala React para Framer Motion. Antes de
+apoyarse en esta frase, comprobar `package.json`: es la única fuente que no se desactualiza
+sola.
 
 Antes de la enmienda, el peso era la objeción principal: `react` + `react-dom` cuestan
 **60,0 kB** gz `[medido]`, y cinco primitivas de Radix **36,2 kB** `[medido]`. Con los
@@ -384,7 +391,14 @@ ciclo completo de build y verificación.
 `get_inspiration` y `generate` aceptan un objeto `context` que reordena los
 resultados según el stack y las restricciones del proyecto. `[verificado]` el formato
 en la investigación del 2026-07-30 — se documenta a continuación para que cualquier
-entorno lo use sin inventarlo:
+entorno lo use sin inventarlo.
+
+**Este archivo es un espejo, y los espejos se desincronizan.** El 2026-08-06 se descubrió
+que declaraba `accent: #A16207` mientras `global.css` tenía `#8a5206`: llevaba semanas
+mintiendo, y una generación pedida con ese contexto habría vuelto con el acento equivocado.
+La fuente de verdad es siempre `src/styles/global.css`; `design.json` se actualiza **detrás**
+de él, nunca al revés. El bloque de abajo es el estado actual, con la paleta derivada de las
+tres tintas oficiales de la PUCV:
 
 ```json
 {
@@ -392,15 +406,21 @@ entorno lo use sin inventarlo:
   "name": "Seminario Wireless Lab",
   "tokens": {
     "colors": {
-      "primary": "#1E3A5F",
+      "primary": "#1A3A5D",
+      "primaryDark": "#9FB5CC",
       "secondary": "#475569",
       "background": "#F8FAFC",
+      "backgroundDark": "#0A1020",
       "surface": "#EFF3F8",
-      "accent": "#A16207"
+      "accent": "#705B47",
+      "accentDark": "#C6AF97",
+      "institutionalRed": "#954749",
+      "institutionalRedDark": "#D5A8A9"
     },
     "typography": {
       "fontFamily": "Atkinson Hyperlegible Next, sans-serif",
-      "headingFont": "Crimson Pro, serif"
+      "headingFont": "Crimson Pro, serif",
+      "monoFont": "JetBrains Mono, monospace"
     },
     "border": {
       "radius": "2px"

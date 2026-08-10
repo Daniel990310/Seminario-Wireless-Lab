@@ -7,8 +7,137 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-08-02** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
+Actualizado: **2026-08-09** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
 · Último commit de tarea: `49d78ed` (retirada de React y corrección del medidor)
+
+> **Hay un plan abierto: [002 · Rediseño visual y movimiento](specs/002-rediseno-visual/requirements.md).**
+> RF-9 está implementado y verificado, y desde el 2026-08-06 el plan creció hasta RF-21.
+> Qué pasó desde el 2026-08-03 y qué se descartó: **§9**. La sesión del 06 al 09: **§10**.
+
+## 11. El 2026-08-09, tarde: la fotografía de la sede entra como franja
+
+Se cerró la sesión de §10 con un commit —ya no hay nada colgando— y encima se hizo esto.
+
+**Lo que se buscaba**, en palabras de Daniel: «darle algo de vida a la página que está muy
+sobria». **Lo que se implementó** es RF-21: una franja fotográfica de la sede a sangre
+completa, encabezando el hero, y una barra que sabe si el titular del hero está a la vista.
+
+**El dato que decidió el diseño, y que conviene no volver a discutir:** la fotografía tiene
+negro puro y blanco puro en la misma imagen —rango de luminancia **0,000–1,000**—, así que
+ningún color de texto llega a 4,5:1 encima de ella. `1,17:1` el texto oscuro contra sus
+sombras, `1,18:1` el claro contra sus brillos `[medido: 2026-08-06]`. La consecuencia es
+dura y no tiene rodeo: **la foto no puede ir detrás de texto**, ni con velo ni con
+desenfoque, porque axe devuelve `incomplete` en cuanto hay una imagen en la pila de fondo y
+RNF-1.3 exige cero. Es la misma pared contra la que se estrelló la barra translúcida en T5,
+donde costó 11 nodos.
+
+Se propusieron y se descartaron cuatro composiciones antes de esta; están anotadas una a
+una en RF-21 para que nadie las vuelva a proponer. La cuarta —barra translúcida embebida en
+la foto— la pidió Daniel explícitamente y **es el único punto de su indicación que no se
+hizo**, por lo de arriba. Sí se hizo el resto del patrón: barra sin canto inferior mientras
+manda el hero, nombre del evento que **no** se muestra mientras el titular está a la vista
+—repetía lo mismo con letra pequeña a 40 px— y relevo con transición al desplazarse. La vía
+compatible para llegar al resto es A15: barra opaca **más estrecha que el viewport**,
+flotando sobre la foto. Opaca ⇒ fondo uniforme ⇒ contraste calculable.
+
+Dos regresiones que aparecieron por el camino y su causa real, porque las dos son trampas
+de geometría y no de color:
+
+1. **8 nodos indeterminados en móvil, en los dos botones del hero.** Los `path` de los
+   frentes de onda tienen rects hasta **102 px más altos** que su dibujo visible:
+   `overflow` recorta la pintura, no la geometría, y axe compara rects. Al bajar el
+   contenido, esos rects alcanzaron los botones. Se resolvió con `relative z-10` en la
+   columna de texto —orden de pintado, no espaciado—, que además garantiza lo que ya se
+   daba por hecho.
+2. **La franja flotaba bajo la cabecera.** Se midió la barra: 71,0 px a 1440 y 73,0 px a
+   768 y 390. El margen se fija en 4,375 rem, **por debajo del mínimo**, porque el error
+   contrario abre un hueco de fondo plano y se ve; el suyo esconde 1–3 px de fotografía y
+   no se ve.
+
+Verificado antes de publicar: los **seis** verificadores en verde, incluido `verify` con 0
+hallazgos y 0 indeterminados en las 8 corridas. Peso de primera carga 165,5 kB de 260.
+La franja añade **55 kB** de imagen en la variante de 1440, que `verify` no cuenta en
+RNF-2.2 —solo mide JS, CSS, HTML y tipografías— y por eso queda dicho aquí.
+
+## 10. Del 2026-08-06 al 09: identidad PUCV, marcas, retratos y cinco verificadores corregidos
+
+Sesión larga con Daniel en el PC. **Nada de esto está commiteado.** El detalle con sus
+criterios de aceptación está en `specs/002-rediseno-visual/requirements.md`, RF-12 a RF-19;
+aquí queda el hilo y, sobre todo, **lo que se aprendió por la vía costosa**.
+
+### Lo que se hizo
+
+| Frente | Resultado |
+| ------ | --------- |
+| **Paleta PUCV** | Las tres tintas oficiales —Pantone 2945 U, 1807 U, 873 U— extraídas del escudo del paquete `logos_pucv`. Toda la rampa, cromáticos y neutros, derivada de ellas. RF-14 |
+| **Dos bandas institucionales** | Barra y pie en azul PUCV con enlaces en oro, por redefinición de la capa semántica en un ámbito. RF-14.9 y RF-14.10 |
+| **Figura del hero** | Sangrado al borde derecho, malla de 1200 nodos como puntos con brillo, barrido como sector angular, física recalibrada, y el 09 una **sola retícula radial** para las tres series. RF-9.9, RF-9.15 a RF-9.19, D13 |
+| **Encabezados de sección** | Sin epígrafe donde repetía al `<h2>`; ritmo vertical asimétrico. RF-12 y RF-13 |
+| **Marcas** | PUCV, EIE, ANID, UC, USACH, Columbia y Nokia instaladas. Solo ráster se optimiza; la pared iguala **área**, no altura. RF-15 y RF-18 |
+| **Retratos** | Seis, unificados a 1:1 con margen sobre la cabeza, marco circular comprobado. RF-19 |
+| **Sección de red** | Retirada: repetía lo que ya dicen «Expositores» y «Organización». RF-16 |
+| **Mapa** | Pasa a cargarse al entrar en pantalla, no al pulsar, sin romper RNF-2.3 |
+
+### Cinco verificadores estaban mal, y eso es el hallazgo más útil de la sesión
+
+Ninguno se relajó para que pasara. En los cinco casos el verificador afirmaba algo distinto
+de lo que decía verificar, y **los cinco falsos negativos aparecieron al cambiar el diseño**,
+no antes. La lección general: *un verificador que fija un valor concreto en lugar de comprobar
+la propiedad que le importa caduca en silencio*.
+
+1. **`verify-interaccion` · RF-9.9** buscaba `createRadialGradient` en el texto fuente sin
+   excluir comentarios, y fallaba por el comentario que documenta la técnica descartada.
+2. **`verify-interaccion` · RF-6.2** exigía `>= 7` secciones; al retirar una, el número dejó de
+   cuadrar aunque el requisito —que existan sin JavaScript— siguiera cumpliéndose.
+3. **`verify-tema` · RF-4.4** comparaba el fondo con `rgb(248, 250, 252)` literal, así que
+   comprobaba un hexadecimal y no «sin JS queda en claro».
+4. **`verify-teclado` · T6** medía el anillo de foco contra el fondo del `body` siempre, y con
+   el pie en banda azul daba 1,03:1 con el foco perfectamente visible. Además medía el
+   contorno de elementos `sr-only` —invisibles— y trataba los fondos semitransparentes como
+   opacos.
+5. **RF-9.15** especificaba el percentil 95 del **intervalo entre cuadros**, que está
+   cuantizado al refresco: solo cuenta cuadros perdidos y no puede ver trabajo. Se optimizó el
+   bucle y el número no se movió una décima; al medir tiempo de guion apareció que era el
+   **2,8 % del reloj**. Se sustituyó el instrumento, no el umbral.
+
+### Trampas que volvieron a morder, y conviene no repetir
+
+- **`NaN` suelto en un bucle de `requestAnimationFrame`.** Un regex que no admitía exponente
+  negativo devolvía `NaN` al leer el ángulo del barrido; como toda comparación con `NaN` es
+  falsa, ni el descarte por banda ni la condición de parada lo frenaban. No se manifiesta como
+  error sino como pestaña caliente.
+- **Comentarios JSX en posición de atributo.** Rompen el build de Astro. Pasó dos veces.
+- **PowerShell 5.1 leyendo UTF-8 como ANSI.** `Get-Content` + `Set-Content -Encoding utf8`
+  duplicó la codificación de cada acento de `comun.ts`. Se reparó decodificando 1252 → UTF-8.
+  **Para editar archivos con acentos, no usar PowerShell.**
+- **Revisar un recorte a tamaño menor del que se publica.** La hoja de contacto a 220 px no
+  delató que la cabeza de Valenzuela estaba cortada; a tamaño de ficha sí.
+
+### Decisiones donde se dijo «no», y por qué
+
+- **El rojo institucional no se declara.** El único candidato era un aviso de advertencia, y
+  hacer del rojo de la universidad el color de «cuidado» convierte su tinta en señal de error.
+- **`EIE.svg` entregado a mano no se usó**: es un envoltorio SVG con un JPEG en base64 dentro,
+  sin transparencia y de 250×250. El del paquete oficial es 4236×1613 con variante blanca.
+- **Un recorte del halo de la malla se descartó**: ahorraba sobre un 2,8 % y hacía caer RF-9.11
+  de 3,8 % a 0,8 % de respuesta local.
+- **Reescribir los títulos de sección para «que aportaran algo» se descartó**: producía relleno
+  inventado para justificar un hueco. Si un elemento sobra, se quita. RF-13.5.
+
+### Lo que queda abierto
+
+- **Carrusel de fotos de la sede.** Pendiente de que lleguen las fotos. Es el sitio donde
+  **Motion y React** tendrían por fin uso: hoy sus 58,2 kB gz de runtime se emiten en `dist` y
+  **ningún HTML los referencia**. Antes de montarlo hay que decidir si avanza solo, porque WCAG
+  2.2.2 exige poder detener cualquier movimiento automático de más de cinco segundos.
+- **USACH desaparece en tema oscuro**: tinta negra sin variante blanca, y recolorear va contra
+  RF-10.4. Falta pedir el imagotipo blanco a `imagen@usach.cl`.
+- **Columbia está con la marca equivocada**: los archivos son `CUSPS`, la School of
+  Professional Studies, y Zussman es de SEAS. Sustituir el archivo conservando el nombre.
+- **El retrato de Zussman** es de 260×260 y se ve blando interpolado.
+- **RNF-8.1** sigue sin cumplir: la fórmula de ANID no lleva el instrumento en su posición.
+- **El anillo de foco en claro quedó en 3,62:1** contra el mínimo de 3. Es el primer umbral que
+  cae si el fondo claro se oscurece más.
 
 > **001 queda CERRADA el 2026-07-31, T1 a T13.** La revisión del flujo SDD encontró el
 > código en verde y el rastro documental atrasado. Se corrigió en dos tandas:
@@ -56,6 +185,103 @@ Actualizado: **2026-08-02** · Rama de trabajo: `claude/framework-app-profesiona
 >
 > **Sitio publicado (provisional, con `noindex`):**
 > <https://seminario-wireless-lab.danielcaignet99.workers.dev> · Ver §6c.
+
+## 9. El 2026-08-03: llegó un prototipo de rediseño y se abrió 002
+
+Apareció en la raíz un `Revisión de home en español.zip` **sin versionar y sin mención en
+ningún documento**. Por la regla de este archivo, eso significa que para el clon del
+móvil y para Antigravity el rediseño no existía. Ya está versionado en
+[`specs/002-rediseno-visual/referencia/`](specs/002-rediseno-visual/referencia/), con
+`PROCEDENCIA.md` al lado: qué es, qué confirma y **qué tres afirmaciones suyas son falsas
+en este repositorio**. El `.zip` de la raíz se puede borrar; ya no es la única copia.
+
+**Lo que el prototipo confirma:** usa los mismos tokens del sitio, los quince
+primitivos y la capa semántica completa. No propone identidad nueva, así que D4 y D5 no
+se reabren.
+
+**Lo que el prototipo NO aporta, y conviene saberlo antes de leerlo con esperanza:** su
+hero **es el hero actual**, animación por animación, con las mismas duraciones y los
+mismos catorce dispersores `[verificado]`. De los cinco pedidos del cliente (§5k) cubre
+uno y medio.
+
+**Lo que se descartó, con acuerdo de Daniel el 2026-08-03:** la estructura de la agenda
+del prototipo —acordeón que no abre sin JavaScript y panel con desplazamiento propio a
+`70vh`—. Son D7 y D8, y las tres razones están en `002/requirements.md`. Se conserva la
+idea de línea de tiempo vertical; la forma se resuelve dentro de 002.
+
+**Y una incongruencia nuestra, no del prototipo.** Mirar el hero con capturas destapó que
+la figura del hero está dibujada entre **1,27:1 y 1,49:1** en los dos temas, porque sus
+anillos y radiales usan `--border`, el token declarado «filete decorativo, sin umbral»
+`[medido]`. No incumple WCAG 1.4.11 —el `<desc>` del SVG lleva la información en texto—
+pero contradice a `Hero.astro`, que declara la figura contenido y le dio cinco columnas
+por eso. **Ningún verificador lo veía: axe mide texto, no trazos de SVG.** Queda como
+trampa nueva en `AGENTS.md`, medido en `specs/fuentes.md`, y con los otros cinco defectos
+del hero en
+[`002/baseline/hero-2026-08-03.md`](specs/002-rediseno-visual/baseline/hero-2026-08-03.md).
+
+### RF-9 rediseñado y verificado el 2026-08-04
+
+Daniel descartó dos implementaciones de RF-9: los arcos concéntricos se leían como
+geometría superpuesta y la estela continua parecía un pincel amarillo que dejaba una marca
+borrosa. La figura ahora responde como una **malla térmica flexible**. Sus 513 nodos
+guardan altura, velocidad y calor; cada uno tiene tensión baja y amortiguación ligeramente
+distintas. El puntero crea pliegues locales, el gradiente cambia de azul a ámbar según la
+energía y una normal aproximada modula la luz.
+
+Está en `src/components/SensingPersistence.astro`, con un único lienzo pasivo. Una ventana
+sinusoidal bidimensional apaga progresivamente el tercio exterior y las esquinas para que
+la retícula no termine en un cuadrado. Tras 2,8 s sin entrada, los campos numéricos se
+ponen explícitamente en cero y se vuelve a dibujar la misma malla neutra.
+
+Cifras después del cambio, con los **siete verificadores en verde** y `astro check` 0/0
+`[medido]`:
+
+| | Antes | Ahora |
+| - | ----- | ----- |
+| JavaScript comprimido | 1,4 kB | **3,9 kB** |
+| Primera carga comprimida | 152,5 kB | **155,6 kB** |
+| Nodos con contraste indeterminado | 0 | **0** en las 8 corridas |
+
+Lo importante de esa última fila: las dos capas **no** reprodujeron el problema de T5,
+porque viven dentro de la celda de la figura y no hay texto debajo.
+
+**Dos defectos que este cambio destapó, los dos ya corregidos y anotados como trampa en
+`AGENTS.md`:** Astro saca el `<script>` a un archivo si pasa de 4 kB —rompía T3— y el
+verificador de cadenas de RF-1.7 leía los operadores `>` y `<` de JavaScript como si
+fueran marcado.
+
+`verify:interaccion` ya mide RF-9: lienzo `aria-hidden` y sin puntero; alfa exterior
+`0,01` frente a `6,38` en el centro; respuesta cercana ~98 % y lejana ~1 %; cresta y valle
+simultáneos; firma del canvas idéntica antes y después; energía `0` y bucle detenido; nada
+inicializado en táctil ni con movimiento reducido; y ausencia de arcos o composición
+acumulativa. Se introdujeron marcas y geometría inválida a propósito y las comprobaciones
+fallaron, pruebas de sensibilidad registradas.
+
+### Marcas y fotografías, buscadas el 2026-08-03
+
+Daniel pidió buscar en línea los logos pendientes y «las mejores imágenes disponibles» de
+los expositores. Resultado, con fuente por marca en
+[`002/marcas/README.md`](specs/002-rediseno-visual/marcas/README.md):
+
+- **ANID resuelto y además obligatorio.** El kit digital es público y trae SVG para fondo
+  claro y oscuro. Y al leerlo apareció que **el sitio no cumple dos exigencias de la
+  agencia**: la fórmula de mención tiene nomenclatura fija, y el logo obligatorio es el
+  conjunto **Ministerio de Ciencia + ANID**, no la marca ANID sola. Es RNF-8.
+- **PUCV a medias.** El paquete oficial no trae variante blanca sobre transparente, medido
+  por luminancia: sobre el fondo oscuro no hay nada que instalar. Hay que pedirla (A13).
+- **UC, USACH, Columbia y Nokia Bell Labs: no se instalan.** Columbia exige permiso de su
+  Office of General Counsel y Nokia dice que el acceso a su sitio no concede derecho a usar
+  ninguna marca. Que el archivo sea descargable no es autorización (A12).
+- **Fotos de expositores: no se toman de la web.** Copyright del fotógrafo más derechos de
+  imagen del retratado. Se comprobó si había el caso fácil —Zussman tiene Wikipedia sin
+  foto— y no lo hay para ninguno. Se piden al expositor; el monograma queda como estado por
+  defecto (RF-11). Hay plantillas de correo listas en el README de `marcas/`.
+- **Y un hallazgo de implementación:** los logos oficiales vienen en una variante por fondo,
+  y `LogoWall` admite un solo archivo. Es RF-10, y por eso **nada se instaló todavía**:
+  poner solo la variante clara dejaría el tema oscuro peor que con el marcador actual.
+
+**Lo siguiente:** recoger la evaluación visual de Daniel sobre la versión líquida y, sin
+mezclar variables, abordar los otros defectos del hero documentados en la línea base.
 
 ## 0b. Primera sesión de Antigravity — 2026-07-30, noche
 

@@ -59,6 +59,9 @@ export function contenido(lang: Idioma) {
       affiliationPending: e.affiliationPending ?? false,
       country: pais(e.country),
       perfil: e.perfil,
+      // El retrato no se traduce, así que viaja tal cual desde `comun`. Sigue siendo
+      // opcional: sin él la ficha muestra el monograma (RF-11.2).
+      foto: e.foto,
       resena: ficha.resena,
       linea: ficha.linea,
     };
@@ -118,6 +121,12 @@ export function contenido(lang: Idioma) {
     funding: {
       agency: comun.funding.agency,
       project: { code: comun.funding.project.code, name: t.funding.projectName },
+      /*
+       * La fórmula de reconocimiento va armada aquí, no en el marcado: así el
+       * componente no puede recomponerla a su manera y la nomenclatura que exige
+       * ANID queda en un solo sitio (RNF-8.1). No se traduce, a propósito.
+       */
+      mencion: `${comun.funding.mencion} / ${comun.funding.concurso}`,
     },
 
     network: {

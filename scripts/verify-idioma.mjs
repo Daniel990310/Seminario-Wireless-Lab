@@ -286,15 +286,42 @@ for (const [idioma, page] of Object.entries(paginas)) {
    */
   const literal = /> *([A-ZÁÉÍÓÚÑa-záéíóúñ][^<>{}]*\s+[A-Za-zÁÉÍÓÚÑáéíóúñ][^<>{}]*?) *</g;
 
+  /*
+   * Las cadenas que un guion pinta en la página SÍ son texto, y el patrón de
+   * marcado no puede verlas. Se buscan aparte, en los bloques `<script>`: es la
+   * forma de quitar el `<script>` del análisis de marcado sin abrir un agujero.
+   */
+  const enGuion =
+    /\.(?:textContent|innerText|innerHTML)\s*=\s*(['"`])([^'"`]*[A-Za-zÁÉÍÓÚÑáéíóúñ]+\s+[A-Za-zÁÉÍÓÚÑáéíóúñ]+[^'"`]*)\1/g;
+
   const infractores = [];
   for (const archivo of await listar(join(RAIZ, 'src'))) {
     const codigo = await readFile(archivo, 'utf8');
-    // Fuera los comentarios HTML y el frontmatter, que no llegan a la página.
-    const marcado = codigo.replace(/^---[\s\S]*?^---/m, '').replace(/<!--[\s\S]*?-->/g, '');
+    const nombre = archivo.replace(RAIZ, '').replace(/\\/g, '/');
+
+    /*
+     * Fuera el frontmatter, los comentarios HTML y los bloques `<script>` y
+     * `<style>`, que no llegan a la página como texto.
+     *
+     * Los `<script>` hay que quitarlos o el patrón de marcado lee los operadores
+     * de comparación de JavaScript como si fueran nodos de texto: `d > radio &&
+     * otra` entra por `>` y sale por `<`, y sale un falso positivo. Pasó el
+     * 2026-08-03 con `SensingPersistence.astro`, cuyo guion compara ángulos.
+     */
+    const marcado = codigo
+      .replace(/^---[\s\S]*?^---/m, '')
+      .replace(/<!--[\s\S]*?-->/g, '')
+      .replace(/<script[\s\S]*?<\/script>/g, '')
+      .replace(/<style[\s\S]*?<\/style>/g, '');
+
     for (const m of marcado.matchAll(literal)) {
       const texto = m[1].trim();
       if (texto.length < 6) continue;
-      infractores.push(`${archivo.replace(RAIZ, '').replace(/\\/g, '/')}: «${texto.slice(0, 40)}»`);
+      infractores.push(`${nombre}: «${texto.slice(0, 40)}»`);
+    }
+
+    for (const m of codigo.matchAll(enGuion)) {
+      infractores.push(`${nombre}: «${m[2].slice(0, 40)}» escrito desde un guion`);
     }
   }
 

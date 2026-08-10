@@ -15,7 +15,16 @@
 import type { CodigoPais, DiaPrograma } from './comun';
 
 export interface SeccionEncabezado {
-  eyebrow: string;
+  /**
+   * Epígrafe. **Opcional a propósito, y la excepción es la regla.**
+   *
+   * Solo lo lleva la sección cuyo `title` NO nombra la sección. Hoy es una:
+   * `seminario`, cuyo título es una tesis y no una etiqueta. En las demás el epígrafe
+   * repetía el título en pequeño —«Sede» sobre «Auditorio de la Sede PUCV Santiago»— y
+   * se retiró el 2026-08-06. Antes de añadir uno nuevo, comprobar que dice algo que el
+   * `title` no diga.
+   */
+  eyebrow?: string;
   title: string;
   lead?: string;
 }
@@ -129,7 +138,6 @@ export interface ContenidoIdioma {
       seminario: SeccionEncabezado;
       programa: SeccionEncabezado;
       expositores: SeccionEncabezado;
-      red: SeccionEncabezado;
       sede: SeccionEncabezado;
       organizacion: SeccionEncabezado;
     };

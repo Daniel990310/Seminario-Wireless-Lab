@@ -1,0 +1,653 @@
+---
+/**
+ * Malla térmica polar del hero (RF-9).
+ *
+ * La geometría nace en el emisor y se expresa en radio y ángulo, como el
+ * instrumento que representa. El SVG dibuja la retícula neutra; este canvas
+ * solo añade las celdas y los tramos que tienen energía. Al volver a cero queda
+ * completamente transparente, sin textura acumulada.
+ *
+ * Rendimiento: 300 nodos, cinco lotes de trazo, ningún blur ni gradiente creado
+ * por nodo. La primera malla cartesiana hacía cientos de `stroke()` y
+ * `createRadialGradient()` en cada cuadro y bloqueaba el hilo principal.
+ */
+---
+
+<canvas data-sensing-malla aria-hidden="true"></canvas>
+
+<style>
+  [data-sensing-malla] {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  type RGB = [number, number, number];
+  type Punto = { x: number; y: number };
+
+  for (const lienzo of document.querySelectorAll<HTMLCanvasElement>('[data-sensing-malla]')) {
+    const contenedor = lienzo.parentElement;
+    const svg = contenedor?.querySelector<SVGSVGElement>('[data-figura]');
+    if (!contenedor || !svg) continue;
+    if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) continue;
+    if (!matchMedia('(hover: hover) and (pointer: fine)').matches) continue;
+
+    const ctx = lienzo.getContext('2d');
+    if (!ctx) continue;
+
+    const emisor = (svg.dataset.emisor ?? '148 322').split(/\s+/).map(Number);
+    const CENTRO = { x: emisor[0] || 148, y: emisor[1] || 322 };
+    const APERTURA = Number(svg.dataset.apertura) || 78;
+    const vb = (svg.getAttribute('viewBox') ?? '0 0 820 640').split(/\s+/).map(Number);
+    const VB_ANCHO = vb[2] || 820;
+    const VB_ALTO = vb[3] || 640;
+
+    /*
+     * Resolución ×4 respecto de la malla original de 25×12 = 300 nodos.
+     *
+     * 50×24 = 1200 nodos. Se puede porque el coste por cuadro no está en el número de
+     * nodos —son operaciones aritméticas sobre `Float32Array`— sino en el número de
+     * cambios de estilo y de llamadas de dibujo, y esas siguen siendo una por nivel de
+     * luminosidad, no una por nodo. El descarte por umbral hace el resto: en reposo no
+     * se dibuja nada, y con el puntero encima solo la zona activa entra en las rutas.
+     */
+    const ANGULOS = 50;
+    const RADIOS = 24;
+    const TOTAL = ANGULOS * RADIOS;
+    /*
+     * La serie radial de la malla **deriva de la del SVG**, no es independiente.
+     *
+     * Antes empezaba en 30 con paso 22,5 y no caía sobre ningún arco de la figura: el origen se
+     * veía desplazado respecto del radar y los arcos de las dos capas no casaban entre sí.
+     *
+     * Ahora arranca en el primer arco (78) y avanza a **un tercio del paso del SVG** (62/3), así
+     * que uno de cada tres nodos coincide exactamente con un frente de onda y con su anillo de
+     * rango. El radio máximo se calcula desde ahí para que el paso sea exacto y no un redondeo:
+     * 78 + 23 × 62/3 = 553,33.
+     *
+     * Empezar en 78 y no en 30 no rompe RF-9.14 —«el primer radio nace visualmente en el
+     * emisor»—: el resplandor del emisor llega a 96, así que la primera fila de nodos sigue
+     * naciendo dentro de él.
+     *
+     * Si `RADIO_PRIMERO` o `PASO_RADIAL` cambian en `PropagationFigure`, estos dos cambian.
+     */
+    const RADIO_MINIMO = 78;
+    const RADIO_MAXIMO = 78 + 23 * (62 / 3);
+    // Nueve niveles y no cinco: los puntos ya no tienen dirección ni longitud, así que
+    // toda la información la carga la luminosidad y los saltos se notaban.
+    const NIVELES = 9;
+    const NIVELES_RELLENO = 8;
+
+    const alturas = new Float32Array(TOTAL);
+    const velocidades = new Float32Array(TOTAL);
+    const calor = new Float32Array(TOTAL);
+    const siguientes = new Float32Array(TOTAL);
+    const tensiones = new Float32Array(TOTAL);
+    const atenuaciones = new Float32Array(TOTAL);
+    const mascaras = new Float32Array(TOTAL);
+    const baseX = new Float32Array(TOTAL);
+    const baseY = new Float32Array(TOTAL);
+    const puntoX = new Float32Array(TOTAL);
+    const puntoY = new Float32Array(TOTAL);
+
+    const indice = (angulo: number, radio: number) => radio * ANGULOS + angulo;
+    const limitar = (valor: number, minimo = 0, maximo = 1) =>
+      Math.max(minimo, Math.min(maximo, valor));
+
+    for (let radio = 0; radio < RADIOS; radio++) {
+      for (let angulo = 0; angulo < ANGULOS; angulo++) {
+        const i = indice(angulo, radio);
+        const semillaA = Math.sin((i + 1) * 12.9898) * 43758.5453;
+        const semillaB = Math.sin((i + 1) * 78.233) * 12345.6789;
+        tensiones[i] = 0.044 + (semillaA - Math.floor(semillaA)) * 0.016;
+        /*
+         * Amortiguamiento un 25 % más fuerte, por indicación de Daniel el 2026-08-06.
+         *
+         * `atenuaciones` es el multiplicador de velocidad por cuadro, así que el
+         * amortiguamiento es su COMPLEMENTO: subirlo un 25 % significa bajar el
+         * multiplicador, no subirlo. Antes 0,940…0,949 —amortiguamiento 0,060…0,051—;
+         * ahora 0,925…0,936, o sea 0,075…0,064. Ese es el 1,25× exacto sobre el
+         * complemento, y por eso los números no son redondos.
+         *
+         * Junto con el impulso 25 % mayor y el radio reducido, el efecto buscado es:
+         * menos área excitada, más recorrido vertical, y que se apague antes.
+         */
+        atenuaciones[i] = 0.925 + (semillaB - Math.floor(semillaB)) * 0.0113;
+
+        const u = angulo / (ANGULOS - 1);
+        const v = radio / (RADIOS - 1);
+        const angular = Math.pow(Math.sin(Math.PI * u), 1.45);
+        const exterior = Math.pow(Math.cos((Math.PI * 0.5 * v)), 1.35);
+        mascaras[i] = angular * exterior;
+      }
+    }
+
+    contenedor.dataset.sensingMode = 'polar-grid';
+    contenedor.dataset.sensingRunning = 'false';
+    contenedor.dataset.sensingEnergy = '0';
+    contenedor.dataset.sensingMin = '0';
+    contenedor.dataset.sensingMax = '0';
+
+    let primario!: RGB;
+    let caliente!: RGB;
+    let luzCaliente!: RGB;
+    let ganancia = 1;
+    let dpr = 1;
+    let ancho = 0;
+    let alto = 0;
+    let escala = 1;
+    let despX = 0;
+    let despY = 0;
+    let cuadro = 0;
+    let ultimoCuadro = 0;
+    let ultimoMovimiento = 0;
+    let enPantalla = true;
+    let punteroDentro = false;
+    /** Bucle vivo pero sin nada que integrar. Ver la nota de SUEÑO en `simular` (RF-9.15). */
+    let dormido = false;
+
+    /*
+     * RF-9.15 · el barrido excita la malla con el puntero quieto.
+     *
+     * El barrido es una animación CSS de 17 s sobre `.fig-sweep-group`, así que el
+     * JavaScript no conoce su fase. Se lee del transform computado y no de un reloj
+     * propio: `ease-in-out` no es lineal, y reimplementar la curva aquí garantizaría que
+     * la onda y la barra se separen con el tiempo. `atan2(b, a)` de la matriz da el
+     * ángulo exacto que el navegador está pintando, cueste lo que cueste la curva.
+     *
+     * Si el grupo no existe —o el navegador no devuelve una matriz— simplemente no hay
+     * excitación por barrido. Es degradación silenciosa a propósito: el efecto del
+     * puntero no depende de esto.
+     */
+    const grupoBarrido = svg.querySelector<SVGGElement>('.fig-sweep-group');
+
+    /*
+     * El número tiene que reconocerse COMPLETO, exponente negativo incluido.
+     *
+     * La primera versión usaba `-?[\d.e+]+`, que no admite el signo del exponente: un
+     * valor como `6.1e-17` —y aparece, porque es lo que devuelve la matriz cuando la
+     * rotación pasa cerca de 0° o 90°— se partía en `6.1e` y `17`, y `Number('6.1e')` es
+     * `NaN`. Ese `NaN` no se quedaba quieto: contaminaba las velocidades, y como toda
+     * comparación con `NaN` es falsa, ni el descarte por banda ni la condición de parada
+     * por energía baja lo frenaban. El bucle no paraba nunca y RF-9.10 fallaba con
+     * «energía NaN». Fallo intermitente, porque dependía del instante muestreado.
+     * `[medido: verify:interaccion, 2026-08-06]`
+     *
+     * De ahí el `Number.isFinite` final: si algún día vuelve a colarse un valor que no
+     * sea un número, esta función devuelve `null` y el barrido simplemente no excita la
+     * malla, en lugar de envenenar la simulación.
+     */
+    const anguloBarrido = () => {
+      if (!grupoBarrido) return null;
+      const matriz = getComputedStyle(grupoBarrido).transform;
+      if (!matriz || matriz === 'none') return null;
+      const n = matriz.match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/g)?.map(Number);
+      if (!n || n.length < 4) return null;
+      const grados = (Math.atan2(n[1]!, n[0]!) * 180) / Math.PI;
+      return Number.isFinite(grados) ? grados : null;
+    };
+
+    const rgba = ([r, g, b]: RGB, alfa: number) =>
+      `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${limitar(alfa)})`;
+    const mezclar = (a: RGB, b: RGB, t: number): RGB => [
+      a[0] + (b[0] - a[0]) * t,
+      a[1] + (b[1] - a[1]) * t,
+      a[2] + (b[2] - a[2]) * t,
+    ];
+
+    const leerColor = (token: string): RGB => {
+      const original = lienzo.style.color;
+      lienzo.style.color = `var(${token})`;
+      const canales = getComputedStyle(lienzo).color.match(/[\d.]+/g)?.map(Number);
+      lienzo.style.color = original;
+      if (!canales || canales.length < 3) throw new Error(`Token de color inválido: ${token}`);
+      return [canales[0]!, canales[1]!, canales[2]!];
+    };
+
+    const leerTema = () => {
+      primario = leerColor('--primary');
+      caliente = leerColor('--sensing-calor');
+      luzCaliente = leerColor('--sensing-luz');
+      ganancia = parseFloat(getComputedStyle(lienzo).getPropertyValue('--sensing-ganancia')) || 1;
+    };
+    leerTema();
+
+    const tono = (nivel: number) => {
+      const t = limitar(nivel);
+      return t < 0.72
+        ? mezclar(primario, caliente, t / 0.72)
+        : mezclar(caliente, luzCaliente, (t - 0.72) / 0.28);
+    };
+
+    const dibujar = () => {
+      ctx.clearRect(0, 0, ancho, alto);
+      const rutas = Array.from({ length: NIVELES }, () => new Path2D());
+      const usados = new Uint16Array(NIVELES);
+
+      /*
+       * Aquí vivía una capa de relleno por celda: un cuadrilátero por cada cuatro
+       * nodos, agrupado en ocho niveles de alfa. Se retira entera.
+       *
+       * El motivo es lo que se veía: los cuadriláteros de la frontera no se atenuaban,
+       * se cortaban, así que la zona activa aparecía como **una mancha gris con el
+       * borde escalonado** debajo de los puntos `[captura de Daniel, 2026-08-06]`. Un
+       * relleno de celda no puede tener borde suave sin desenfoque, y el desenfoque es
+       * justo lo que RF-9.9 prohíbe por coste.
+       *
+       * La consecuencia es que ahora **el punto es el único elemento**: se ilumina y
+       * crece con la energía. Y sale barato: quitar el relleno elimina el bucle más
+       * caro del cuadro, que es lo que paga la resolución ×4.
+       */
+
+      // Las únicas coordenadas que cambian por cuadro. La trigonometría queda fuera del
+      // bucle de animación: `baseX`/`baseY` se calculan solo al dimensionar.
+      for (let i = 0; i < TOTAL; i++) {
+        puntoX[i] = baseX[i]! + alturas[i]! * 7 * escala;
+        puntoY[i] = baseY[i]! - alturas[i]! * 25 * escala;
+      }
+
+      /*
+       * Los nodos se dibujan como PUNTOS, no como tramos entre vecinos.
+       *
+       * Un segmento tiene dirección y longitud, y al atenuarse esas dos cosas se
+       * pierden a distinto ritmo: el resultado se leía como chispas sueltas y rompía la
+       * lectura de flujo continuo. Un punto solo puede cambiar de luminosidad, así que
+       * no compite con el campo que hay debajo.
+       *
+       * No se usa `arc()`, y no es por gusto: RF-9.9 lo prohíbe porque cientos de arcos
+       * por cuadro bloqueaban el hilo principal, y con 1200 nodos sería cuatro veces
+       * peor. Con `lineCap = 'round'` un segmento de longitud despreciable **es** un
+       * círculo relleno, y sigue agrupado en los mismos `Path2D`: una llamada de trazo
+       * por nivel de luminosidad, no una por nodo.
+       */
+      const agregarPunto = (i: number) => {
+        const energia = limitar(Math.max(calor[i]!, Math.abs(alturas[i]!)));
+        const intensidad = energia * mascaras[i]!;
+        if (intensidad < 0.014) return;
+        const nivel = Math.min(NIVELES - 1, Math.floor(intensidad * NIVELES));
+        rutas[nivel]!.moveTo(puntoX[i]!, puntoY[i]!);
+        rutas[nivel]!.lineTo(puntoX[i]! + 0.01, puntoY[i]!);
+        usados[nivel]++;
+      };
+
+      for (let i = 0; i < TOTAL; i++) agregarPunto(i);
+
+      /*
+       * Brillo del punto con `shadowBlur`, autorizado por Daniel el 2026-08-06.
+       *
+       * RF-9.9 lo prohibía, y la prohibición tenía una razón real: la primera malla
+       * cartesiana ponía sombra y gradiente **por nodo**, cientos de veces por cuadro, y
+       * bloqueaba el hilo principal. Esa razón dejó de aplicar cuando los nodos pasaron
+       * a agruparse en `Path2D` por nivel de luminosidad: aquí la sombra se fija nueve
+       * veces por cuadro, una por nivel, y el trazo agrupado la aplica a todos los
+       * puntos de ese nivel de una vez. Son 9 operaciones, no 1200.
+       *
+       * El coste real está medido y anotado en el verificador; no se da por supuesto.
+       *
+       * `globalCompositeOperation` se queda en su valor por omisión. Con `lighter` los
+       * halos vecinos se sumarían y reaparecería la mancha que se acaba de quitar.
+       */
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      for (let nivel = 0; nivel < NIVELES; nivel++) {
+        if (!usados[nivel]) continue;
+        const intensidad = (nivel + 1) / NIVELES;
+        const color = tono(intensidad);
+        ctx.strokeStyle = rgba(color, (0.42 + intensidad * 0.58) * ganancia);
+        // `lineWidth` es el DIÁMETRO del punto, y es el que crece con la energía. Tope
+        // deliberado: al cuadruplicar la resolución el paso entre nodos se partió a la
+        // mitad, y por encima de ~4 px los núcleos se tocan y reaparece una malla de
+        // líneas, que es justo lo que se quería quitar. El halo sí puede pasarse de ese
+        // ancho, porque es difuso y no dibuja contorno.
+        ctx.lineWidth = (1.1 + intensidad * 2.9) * dpr;
+        /*
+         * El halo va en TODOS los niveles, y hubo un intento de recortarlo que se descartó.
+         *
+         * El 2026-08-06 se probó aplicarlo solo desde el nivel medio hacia arriba, con la
+         * idea de que en los niveles bajos el punto es casi invisible y su desenfoque no se
+         * percibe. Costó una regresión real: RF-9.11 —«la respuesta inicial es local»— pasó
+         * de **3,8 % a 0,8 %** de cambio cercano y falló, porque el impulso inicial bajo el
+         * puntero nace en los niveles bajos y sin halo apenas pinta píxeles.
+         *
+         * Y no compraba nada: medido con los contadores de CDP, el tiempo de guion con el
+         * puntero en movimiento es de **113 ms sobre 4029 ms, un 2,8 % del reloj**. El
+         * JavaScript de la malla no es el cuello de botella, así que recortar dibujo aquí
+         * degradaba el efecto para ahorrar algo que no se nota.
+         */
+        ctx.shadowColor = rgba(color, limitar(0.75 * intensidad * ganancia));
+        ctx.shadowBlur = (2.5 + intensidad * 10) * dpr;
+        ctx.stroke(rutas[nivel]!);
+      }
+      // Se apaga siempre al salir: el contexto es persistente entre cuadros y una sombra
+      // olvidada se aplicaría a cualquier dibujo que se añada después.
+      ctx.shadowBlur = 0;
+      ctx.shadowColor = 'transparent';
+    };
+
+    const reiniciar = () => {
+      alturas.fill(0);
+      velocidades.fill(0);
+      calor.fill(0);
+      siguientes.fill(0);
+      contenedor.dataset.sensingEnergy = '0';
+      contenedor.dataset.sensingMin = '0';
+      contenedor.dataset.sensingMax = '0';
+      contenedor.dataset.sensingRunning = 'false';
+      ultimoCuadro = 0;
+      ctx.clearRect(0, 0, ancho, alto);
+    };
+
+    const dimensionar = () => {
+      const caja = contenedor.getBoundingClientRect();
+      if (!caja.width || !caja.height) return;
+      // El lienzo no contiene texto; 1,25× conserva el detalle del calor y
+      // reduce hasta un 31 % los píxeles frente al límite anterior de 1,5×.
+      dpr = Math.min(devicePixelRatio || 1, 1.25);
+      ancho = lienzo.width = Math.round(caja.width * dpr);
+      alto = lienzo.height = Math.round(caja.height * dpr);
+      /*
+       * Esta transformación **replica** el `preserveAspectRatio` del SVG hermano, que
+       * es `xMinYMid slice`. Si allí cambia, aquí también: si las dos no coinciden, la
+       * malla de calor deja de caer sobre la retícula y se ve desplazada.
+       *
+       * `slice` cubre, así que la escala es el máximo y no el mínimo. `xMin` ancla el
+       * borde izquierdo —de ahí el desplazamiento horizontal nulo— y `YMid` centra en
+       * vertical.
+       */
+      escala = Math.max(ancho / VB_ANCHO, alto / VB_ALTO);
+      despX = 0;
+      despY = (alto - VB_ALTO * escala) * 0.5;
+      for (let radio = 0; radio < RADIOS; radio++) {
+        for (let angulo = 0; angulo < ANGULOS; angulo++) {
+          const i = indice(angulo, radio);
+          const u = angulo / (ANGULOS - 1);
+          const v = radio / (RADIOS - 1);
+          const theta = ((-APERTURA + u * APERTURA * 2) * Math.PI) / 180;
+          const rango = RADIO_MINIMO + v * (RADIO_MAXIMO - RADIO_MINIMO);
+          baseX[i] = despX + (CENTRO.x + Math.cos(theta) * rango) * escala;
+          baseY[i] = despY + (CENTRO.y + Math.sin(theta) * rango) * escala;
+        }
+      }
+      reiniciar();
+    };
+
+    const simular = (tiempo: number) => {
+      cuadro = 0;
+      // RF-9.15: mientras el puntero esté sobre la figura —quieto o no— el barrido
+      // alimenta la malla al cruzar. Va antes de integrar, para que el impulso de este
+      // cuadro entre en la misma física que el del puntero.
+      let excitadoPorBarrido = false;
+      if (punteroDentro && enPantalla) {
+        const grados = anguloBarrido();
+        if (grados !== null) excitadoPorBarrido = perturbarBarrido(grados);
+      }
+      /*
+       * SUEÑO. Con el puntero quieto sobre la figura el bucle no puede detenerse —RF-9.15
+       * necesita que el barrido lo encuentre vivo cuando vuelva— pero tampoco tiene nada que
+       * integrar: el barrido tarda 17 s en dar la vuelta y la onda se apaga en dos o tres.
+       * Integrar 1200 nodos a 60 fps para no pintar nada era coste puro, y una de las causas
+       * del incumplimiento de RF-9.15.
+       *
+       * Dormido, el cuadro cuesta una lectura del ángulo del barrido y nada más. Se despierta
+       * en el instante en que el barrido entra en la banda del puntero, o con el primer
+       * `pointermove`, que llama a `arrancar()` por su cuenta.
+       */
+      if (dormido && !excitadoPorBarrido) {
+        cuadro = requestAnimationFrame(simular);
+        return;
+      }
+      dormido = false;
+      const dt = ultimoCuadro ? limitar((tiempo - ultimoCuadro) / 16.67, 0.5, 1.7) : 1;
+      ultimoCuadro = tiempo;
+      let energiaMaxima = 0;
+      let alturaMinima = Number.POSITIVE_INFINITY;
+      let alturaMaxima = Number.NEGATIVE_INFINITY;
+
+      for (let radio = 0; radio < RADIOS; radio++) {
+        for (let angulo = 0; angulo < ANGULOS; angulo++) {
+          const i = indice(angulo, radio);
+          const centro = alturas[i]!;
+          const angularA = alturas[indice(Math.max(0, angulo - 1), radio)]!;
+          const angularB = alturas[indice(Math.min(ANGULOS - 1, angulo + 1), radio)]!;
+          const radialA = alturas[indice(angulo, Math.max(0, radio - 1))]!;
+          const radialB = alturas[indice(angulo, Math.min(RADIOS - 1, radio + 1))]!;
+          const laplaciano = (angularA + angularB + radialA + radialB) * 0.25 - centro;
+          const velocidad = limitar(
+            (velocidades[i]! + (laplaciano * tensiones[i]! - centro * 0.018) * dt) *
+              Math.pow(atenuaciones[i]!, dt),
+            -0.5,
+            0.5,
+          );
+          velocidades[i] = velocidad;
+          siguientes[i] = limitar(centro + velocidad * dt, -0.58, 0.58);
+          calor[i] = calor[i]! * Math.pow(0.96, dt);
+          alturaMinima = Math.min(alturaMinima, siguientes[i]!);
+          alturaMaxima = Math.max(alturaMaxima, siguientes[i]!);
+          energiaMaxima = Math.max(energiaMaxima, Math.abs(siguientes[i]!), Math.abs(velocidad), calor[i]!);
+        }
+      }
+      alturas.set(siguientes);
+      contenedor.dataset.sensingEnergy = energiaMaxima.toFixed(4);
+      contenedor.dataset.sensingMin = alturaMinima.toFixed(4);
+      contenedor.dataset.sensingMax = alturaMaxima.toFixed(4);
+      dibujar();
+
+      /*
+       * Parada. El orden de las condiciones importa y cada una responde a un requisito.
+       *
+       * `!enPantalla` va primero y no admite excepción: RF-9.6 exige que el bucle se
+       * detenga cuando la figura sale del viewport o la pestaña se oculta, y eso pesa más
+       * que RF-9.15.
+       *
+       * Las otras dos —inactividad e inanición de energía— solo aplican cuando el puntero
+       * NO está sobre la figura. Con el puntero encima el barrido alimenta la malla, así
+       * que la energía no baja del umbral y el temporizador de 2300 ms no debe cortar
+       * nada: cortar ahí es precisamente el defecto que RF-9.15 arregla.
+       *
+       * Y al salir el puntero, `punteroDentro` vuelve a false, las dos condiciones
+       * vuelven a aplicar y todo regresa a la malla neutra exacta que verifica RF-9.10.
+       */
+      if (!enPantalla) {
+        reiniciar();
+        return;
+      }
+      /*
+       * Cortocircuito de seguridad. Si la energía deja de ser un número finito, la
+       * simulación está corrupta y no se recupera sola: toda comparación con `NaN` es
+       * falsa, así que ninguna condición de parada la frenaría y el bucle quedaría
+       * girando para siempre con la malla envenenada. Es lo que ocurrió el 2026-08-06 con
+       * el ángulo del barrido mal parseado. La causa está arreglada en su origen; esto
+       * queda como red, porque un `NaN` suelto en un bucle de `requestAnimationFrame` es
+       * un fallo que no se manifiesta como error sino como pestaña caliente.
+       */
+      if (!Number.isFinite(energiaMaxima)) {
+        reiniciar();
+        return;
+      }
+      if (!punteroDentro && (tiempo - ultimoMovimiento > 2300 || energiaMaxima < 0.0015)) {
+        reiniciar();
+        return;
+      }
+      /*
+       * Con el puntero dentro y la energía agotada, se duerme en lugar de seguir integrando.
+       *
+       * Se limpia una única vez —no en cada cuadro— para que el lienzo quede transparente y
+       * la firma de píxeles vuelva a la neutra, que es lo que compara RF-9.10. No se usa
+       * `reiniciar()` porque ese además pone `sensingRunning` en `false`, y aquí el bucle sí
+       * sigue vivo: dormido no es detenido. `ultimoCuadro` se pone a cero para que el primer
+       * cuadro al despertar no arrastre un `dt` de varios segundos.
+       */
+      if (punteroDentro && energiaMaxima < 0.0015) {
+        alturas.fill(0);
+        velocidades.fill(0);
+        calor.fill(0);
+        siguientes.fill(0);
+        contenedor.dataset.sensingEnergy = '0';
+        contenedor.dataset.sensingMin = '0';
+        contenedor.dataset.sensingMax = '0';
+        ctx.clearRect(0, 0, ancho, alto);
+        ultimoCuadro = 0;
+        dormido = true;
+      }
+      contenedor.dataset.sensingRunning = 'true';
+      cuadro = requestAnimationFrame(simular);
+    };
+
+    const arrancar = () => {
+      if (!cuadro && enPantalla) {
+        contenedor.dataset.sensingRunning = 'true';
+        cuadro = requestAnimationFrame(simular);
+      }
+    };
+
+    const perturbar = (x: number, y: number, rapidez: number, factor = 1) => {
+      /*
+       * Radio de interacción ajustado (factor 0,7× por indicación del usuario): 16 → 11,2 y
+       * término por rapidez 0,167 → 0,1169.
+       */
+      const radioInfluencia = 11.2 * escala + rapidez * escala * 0.1169;
+      for (let radio = 0; radio < RADIOS; radio++) {
+        for (let angulo = 0; angulo < ANGULOS; angulo++) {
+          const i = indice(angulo, radio);
+          const distancia2 = (baseX[i]! - x) ** 2 + (baseY[i]! - y) ** 2;
+          const influencia = Math.exp(-distancia2 / (2 * radioInfluencia * radioInfluencia));
+          if (influencia < 0.018) continue;
+          // Impulso ajustado por factor 1,2× (0,2125 → 0,255 y 0,004375 → 0,00525). Es la amplitud de
+          // la oscilación que nace bajo el puntero, no la rigidez del medio —esa vive en
+          // `tensiones` y fija la frecuencia, que no se toca.
+          velocidades[i] = limitar(
+            velocidades[i]! + influencia * (0.255 + rapidez * 0.00525) * factor,
+            -0.5,
+            0.5,
+          );
+          calor[i] = Math.max(
+            calor[i]!,
+            limitar(influencia * (0.86 + rapidez * 0.012) * factor),
+          );
+        }
+      }
+    };
+
+    /*
+     * Excitación por el paso del barrido (RF-9.15), **solo en la posición del puntero**.
+     *
+     * La primera versión excitaba una banda angular completa: todos los radios de ese
+     * ángulo. El resultado era que el barrido iba dejando una línea radial encendida a lo
+     * largo de todo su recorrido —una estela— en lugar de una onda. Corregido por
+     * indicación de Daniel el 2026-08-06.
+     *
+     * Ahora el barrido es un DISPARADOR, no una fuente extendida: cuando su borde de
+     * ataque cruza el ángulo donde está el puntero, se llama a la misma `perturbar()` que
+     * usa el ratón, en el mismo sitio y con el mismo radio. La onda nace donde está el
+     * puntero y se propaga por el medio; fuera de ese instante no se inyecta nada.
+     *
+     * El factor 0,45 es el compromiso: se tiene que notar que el instrumento está vivo
+     * sin que compita con el gesto deliberado de mover el ratón.
+     */
+    const BANDA_BARRIDO = 5;
+    let punteroX = 0;
+    let punteroY = 0;
+
+    // Ángulo de un punto del lienzo respecto del emisor, en grados y en la misma
+    // convención que usa el barrido: se deshace la transformación del `viewBox`.
+    const anguloDesdeEmisor = (x: number, y: number) => {
+      const vbx = (x - despX) / escala - CENTRO.x;
+      const vby = (y - despY) / escala - CENTRO.y;
+      return (Math.atan2(vby, vbx) * 180) / Math.PI;
+    };
+
+    const perturbarBarrido = (grados: number) => {
+      const desvio = Math.abs(grados - anguloDesdeEmisor(punteroX, punteroY));
+      // Devuelve si excitó algo: es lo que despierta al bucle cuando está dormido (RF-9.15).
+      /*
+       * `Number.isFinite` y no `desvio > BANDA`, y el orden importa.
+       *
+       * Toda comparación con `NaN` es falsa, así que un `desvio` que no fuera número
+       * pasaba el filtro `desvio > BANDA_BARRIDO` en lugar de ser descartado por él, y
+       * entraba en la física. Comprobar primero que es un número finito es la única forma
+       * de que este descarte cubra el caso que se quiere descartar.
+       *
+       * `escala` puede ser 0 antes del primer `dimensionar()`, y ahí la conversión de
+       * coordenadas divide por cero: otra vía por la que llegaría un valor no finito.
+       */
+      if (!Number.isFinite(desvio) || desvio > BANDA_BARRIDO) return false;
+      perturbar(punteroX, punteroY, 0, 0.45 * (1 - desvio / BANDA_BARRIDO));
+      return true;
+    };
+
+    let anterior: (Punto & { tiempo: number }) | null = null;
+    contenedor.addEventListener('pointermove', (evento) => {
+      if (evento.pointerType !== 'mouse') return;
+      const caja = contenedor.getBoundingClientRect();
+      const x = (evento.clientX - caja.left) * dpr;
+      const y = (evento.clientY - caja.top) * dpr;
+      const ahora = performance.now();
+      const rapidez = anterior
+        ? limitar(
+            (Math.hypot(x - anterior.x, y - anterior.y) / Math.max(8, ahora - anterior.tiempo)) * 16,
+            0,
+            28,
+          )
+        : 0;
+      punteroDentro = true;
+      // Se guarda la última posición conocida: es la que usa el barrido cuando el puntero
+      // se queda quieto y ya no llegan más eventos (RF-9.15).
+      punteroX = x;
+      punteroY = y;
+      perturbar(x, y, rapidez);
+      anterior = { x, y, tiempo: ahora };
+      ultimoMovimiento = ahora;
+      arrancar();
+    });
+    /*
+     * `pointerenter` además de `pointermove`: si el puntero entra y se queda inmóvil
+     * —el caso que RF-9.15 quiere cubrir— puede no llegar ningún `pointermove`, y sin
+     * esto el barrido nunca empezaría a excitar la malla.
+     */
+    contenedor.addEventListener('pointerenter', (evento) => {
+      if (evento.pointerType !== 'mouse') return;
+      // La posición se toma aquí también: si el puntero entra y se queda inmóvil no llega
+      // ningún `pointermove`, y sin esto el barrido dispararía en la posición anterior o
+      // en el origen del lienzo.
+      const caja = contenedor.getBoundingClientRect();
+      punteroX = (evento.clientX - caja.left) * dpr;
+      punteroY = (evento.clientY - caja.top) * dpr;
+      punteroDentro = true;
+      ultimoMovimiento = performance.now();
+      arrancar();
+    });
+    contenedor.addEventListener('pointerleave', () => {
+      anterior = null;
+      punteroDentro = false;
+      ultimoMovimiento = performance.now();
+    });
+
+    new ResizeObserver(dimensionar).observe(contenedor);
+    new IntersectionObserver((entradas) => {
+      enPantalla = entradas[0]?.isIntersecting ?? true;
+      if (!enPantalla) {
+        if (cuadro) cancelAnimationFrame(cuadro);
+        cuadro = 0;
+        reiniciar();
+      }
+    }).observe(contenedor);
+    new MutationObserver(() => {
+      leerTema();
+      if (cuadro) dibujar();
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (cuadro) cancelAnimationFrame(cuadro);
+        cuadro = 0;
+        reiniciar();
+      }
+    });
+
+    dimensionar();
+  }
+</script>

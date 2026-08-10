@@ -155,9 +155,17 @@ const eventSchema = {
     <link rel="alternate" hreflang="x-default" href={xDefault} />
     {isPreview && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <!-- Se declara por tema para que la barra del navegador móvil acompañe. -->
-    <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0a1020" media="(prefers-color-scheme: dark)" />
+    <!--
+      Se declara por tema para que la barra del navegador móvil acompañe.
+
+      Estos dos valores son copias de `--slate-50` y `--ink-900` de `global.css`, y no hay
+      forma de evitarlo: `<meta>` no admite `var()`. Es el único sitio del proyecto donde un
+      color de la paleta se repite a pelo, así que **al cambiar esos dos primitivos hay que
+      cambiarlos aquí**. Se actualizaron el 2026-08-06 al teñir la rampa con el azul PUCV;
+      antes decían `#f8fafc` y `#0a1020`.
+    -->
+    <meta name="theme-color" content="#e9f0fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#03101f" media="(prefers-color-scheme: dark)" />
     <meta name="generator" content={Astro.generator} />
 
     <meta property="og:type" content="website" />

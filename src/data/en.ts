@@ -131,7 +131,6 @@ export const en = {
     { href: '#seminario', label: 'The seminar' },
     { href: '#programa', label: 'Programme' },
     { href: '#expositores', label: 'Speakers' },
-    { href: '#red', label: 'Network' },
     { href: '#sede', label: 'Venue' },
     { href: '#organizacion', label: 'Organisation' },
   ],
@@ -162,7 +161,7 @@ export const en = {
       verExpositores: 'Speakers',
       figuraTitulo: 'Wireless sensing in mmWave and sub-THz bands',
       figuraDescripcion:
-        'Schematic view of a radio emitter whose wavefronts propagate across a polar range grid, reach an object and return as a point cloud reconstructed from the reflections.',
+        'Schematic view of a radio emitter whose wavefronts propagate across a polar range grid that changes relief and intensity when interacting.',
     },
 
     secciones: {
@@ -170,26 +169,22 @@ export const en = {
         eyebrow: 'The seminar',
         title: 'Communication and sensing over the same infrastructure',
       },
+      /*
+       * Mismo criterio que en `es.ts`, del que esto es el espejo: el epígrafe sobrevive
+       * solo donde el `<h2>` no nombra la sección, y eso deja únicamente `seminario`.
+       * La nota larga con el razonamiento está allí y no se duplica aquí a propósito.
+       */
       programa: {
-        eyebrow: 'Programme',
         title: 'Sessions on 21 and 22 October',
       },
       expositores: {
-        eyebrow: 'Speakers',
         title: 'Participating researchers',
         lead: 'Specialists in propagation, wireless sensing and next-generation network architectures.',
       },
-      red: {
-        eyebrow: 'Collaboration network',
-        title: 'Participating institutions',
-        lead: 'The seminar brings together research groups from the United States and Chile around the School of Electrical Engineering at PUCV.',
-      },
       sede: {
-        eyebrow: 'Venue',
         title: 'Auditorium, PUCV Santiago Campus',
       },
       organizacion: {
-        eyebrow: 'Organisation',
         title: 'Organisation and funding',
       },
     },

@@ -194,13 +194,89 @@ for (const tema of ['light', 'dark']) {
       const el = document.activeElement;
       if (!el || el === document.body) return null;
       const s = getComputedStyle(el);
+      /*
+       * El fondo con el que hay que comparar es el que está DETRÁS del anillo, no el del
+       * `body`.
+       *
+       * Antes esto era `getComputedStyle(document.body).backgroundColor` fijo, y valía
+       * mientras todo lo enfocable estaba sobre el fondo de página. Dejó de valer el
+       * 2026-08-06, cuando el pie pasó a ser una banda de azul institucional: el anillo
+       * `#e4edfd`, que sobre su banda da 9,87:1, se comparaba contra el papel claro y daba
+       * **1,03:1**. Falso negativo con el foco perfectamente visible.
+       *
+       * Se empieza por el PADRE y no por el elemento: el anillo se dibuja por fuera del
+       * borde, así que lo que lo rodea es el fondo del contenedor. Un botón con fondo
+       * propio no es el telón de su propio anillo.
+       *
+       * Los fondos semitransparentes se **componen**, no se toman al pie de la letra. Este
+       * proyecto usa `bg-surface/40`, `bg-accent/8` y `bg-primary/8` por todas partes, y
+       * quedarse con los tres primeros canales de un `rgba(...,0.08)` equivale a tratar un
+       * velo del 8 % como una capa opaca: eso daba **1,81:1** en el enlace «Solicitar aviso
+       * de publicación», que sobre su fondo real contrasta de sobra. Se acumulan las capas
+       * hasta la primera opaca y se componen de abajo hacia arriba.
+       */
+      const fondoDetras = (desde) => {
+        const capas = [];
+        let base = null;
+        for (let n = desde; n instanceof Element; n = n.parentElement) {
+          const canales = getComputedStyle(n).backgroundColor.match(/[\d.]+/g)?.map(Number);
+          if (!canales || canales.length < 3) continue;
+          const alfa = canales.length >= 4 ? canales[3] : 1;
+          if (alfa <= 0.01) continue;
+          if (alfa >= 0.999) {
+            base = canales.slice(0, 3);
+            break;
+          }
+          capas.push({ rgb: canales.slice(0, 3), alfa });
+        }
+        if (!base) {
+          const cuerpo = getComputedStyle(document.body).backgroundColor.match(/[\d.]+/g)?.map(Number);
+          base = cuerpo?.slice(0, 3) ?? [255, 255, 255];
+        }
+        for (let i = capas.length - 1; i >= 0; i--) {
+          const { rgb, alfa } = capas[i];
+          base = base.map((c, j) => rgb[j] * alfa + c * (1 - alfa));
+        }
+        return `rgb(${base.map((c) => Math.round(c)).join(', ')})`;
+      };
+      /*
+       * Si el elemento enfocado es invisible, el indicador que ve el usuario es el de su
+       * etiqueta, no el suyo.
+       *
+       * Los radios del selector de tema son `sr-only` —1×1 px y recortados— y el foco se
+       * dibuja sobre el `<label>` que los envuelve, con
+       * `has-focus-visible:outline-2 outline-offset-2 outline-ring`. Medir el contorno del
+       * input daba **1,00:1**, porque su anillo y el fondo de la etiqueta seleccionada son
+       * el mismo color; y era un falso negativo, porque ese contorno no se ve.
+       *
+       * Se sube al primer ancestro que sí dibuje un anillo y se mide ese. Esto no relaja la
+       * comprobación: la endurece, porque pasa a medir el indicador real en lugar de uno que
+       * nadie percibe.
+       */
+      const esInvisible = (n) => {
+        const r = n.getBoundingClientRect();
+        return r.width <= 1 || r.height <= 1;
+      };
+      let medido = el;
+      if (esInvisible(el)) {
+        for (let n = el.parentElement; n instanceof Element; n = n.parentElement) {
+          const cs = getComputedStyle(n);
+          if ((parseFloat(cs.outlineWidth) || 0) >= 2 && cs.outlineStyle !== 'none') {
+            medido = n;
+            break;
+          }
+        }
+      }
+      const sm = getComputedStyle(medido);
       return {
-        etiqueta: `${el.tagName.toLowerCase()}${el.type === 'radio' ? '[radio]' : ''} «${(el.textContent ?? '').trim().slice(0, 18)}» .${(el.getAttribute('class') ?? '').split(' ')[0]}`,
+        etiqueta:
+          `${el.tagName.toLowerCase()}${el.type === 'radio' ? '[radio]' : ''} «${(el.textContent ?? '').trim().slice(0, 18)}» .${(el.getAttribute('class') ?? '').split(' ')[0]}` +
+          (medido === el ? '' : ` → anillo en <${medido.tagName.toLowerCase()}>`),
         visible: el.matches(':focus-visible'),
-        ancho: parseFloat(s.outlineWidth) || 0,
-        estilo: s.outlineStyle,
-        color: s.outlineColor,
-        fondo: getComputedStyle(document.body).backgroundColor,
+        ancho: parseFloat(sm.outlineWidth) || 0,
+        estilo: sm.outlineStyle,
+        color: sm.outlineColor,
+        fondo: fondoDetras(medido.parentElement),
       };
     });
     if (m) muestras.push(m);

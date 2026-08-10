@@ -122,6 +122,30 @@ pulso con guiones sobre un SVG estirado, diseñar en espacio de pantalla y despl
 **un período exacto** por ciclo, que es lo único que empalma el bucle a cualquier
 escala. Comprobado midiendo, no leyendo la especificación.
 
+**Astro saca el `<script>` a un archivo si pasa de 4 kB.** El proyecto presumía de que
+«Astro 5 renderiza cada `<script>` tal como se declara»; es verdad **solo por debajo del
+umbral de inlinado de Vite**, 4 kB por omisión. El guion de `SensingPersistence` lo pasó,
+salió como `_astro/….js` y rompió el criterio de T3 «el navegador no pide ningún .js».
+Se resolvió subiendo `vite.build.assetsInlineLimit` a 12 kB, con el razonamiento y el
+techo en `astro.config.mjs`. **No usar `is:inline` para esto**: ese modo no transforma
+TypeScript `[verificado]`. Y ojo con subir el límite más de lo necesario: la hoja de
+estilos usa el mismo umbral y debe seguir siendo un archivo aparte.
+
+**El verificador de cadenas leía JavaScript como si fuera marcado.** RF-1.7 buscaba texto
+entre `>` y `<` sobre el archivo entero, así que una comparación como `d > radio && otra`
+entraba por el `>` y salía por el `<`: falso positivo. Ya se excluyen `<script>` y
+`<style>`, y para no abrir un agujero se añadió una comprobación aparte de cadenas
+asignadas a `textContent`/`innerHTML` desde un guion. Probado en los dos sentidos.
+
+**Ningún verificador mide los trazos de un SVG.** axe evalúa contraste de **texto**, así
+que una figura puede estar dibujada a 1,3:1 con los siete verificadores en verde. Es lo
+que pasa hoy con `PropagationFigure`: los anillos de rango y las radiales usan `--border`
+—«filete decorativo, sin umbral»— y quedan entre **1,27:1 y 1,49:1** en los dos temas
+`[medido: specs/002-rediseno-visual/baseline/hero-2026-08-03.md]`. No incumple WCAG
+1.4.11 porque el `<desc>` del SVG lleva la información en texto, pero contradice al
+propio `Hero.astro`, que declara la figura «contenido ilustrativo, no decoración». Al
+juzgar una figura, medir sus capas, no solo pasar `verify`.
+
 **Un elemento en `display: none` no ejecuta animaciones.** Al contar animaciones hay
 que filtrar por elementos representados (`getClientRects().length`). Sin filtrar,
 una vista alternativa oculta por punto de quiebre cuenta como animación que falta:
@@ -158,6 +182,8 @@ ese entorno Playwright resuelve el suyo.
 | D3 | Registro de asistentes: previsto en la especificación, no implementado |
 | D4 | Swiss Modernism 2.0 más minimalismo; Crimson Pro y Atkinson Hyperlegible Next |
 | D5 | Dos temas con selector: claro por omisión, oscuro y «según el sistema» |
+| D7 | **Se descarta la estructura de agenda del prototipo de rediseño** (2026-08-03): acordeón que no abre sin JavaScript y panel con desplazamiento propio a `70vh`. Se conserva la idea de línea de tiempo vertical. Detalle y los tres motivos en [`specs/002-rediseno-visual/requirements.md`](specs/002-rediseno-visual/requirements.md) |
+| D8 | **Las tipografías siguen auto-hospedadas.** El prototipo las carga desde `fonts.googleapis.com`; ese `<helmet>` no se porta (RNF-2.3) |
 | D6 | **Se adopta shadcn/ui sobre Radix.** El cliente busca un sitio interactivo. **No se materializó en ningún componente**: las 5 interacciones de RF-6 se resolvieron con HTML nativo, porque RF-6.2 exige que el contenido exista sin JavaScript. El 2026-07-31, por instrucción de Daniel, **se retiró React y la base de shadcn** —`@astrojs/react`, `react`, `react-dom`, `clsx`, `tailwind-merge`, `components.json`, `src/lib/utils.ts`—: nada de eso lo usaba ningún componente y la integración emitía 59,5 kB de runtime huérfano en cada build. **Reinstalarlo es un comando** si aparece un componente que lo justifique; el candidato natural es el registro de asistentes (RF-3). Ver la enmienda de RF-6 y `design.md` §6.6 |
 
 ## Ya evaluado y descartado
@@ -171,6 +197,9 @@ No volver a proponer esto sin un argumento nuevo. El detalle está en
 | **tailkits-ui** | Cero soporte de modo oscuro en 30 archivos, sin `sr-only`, `alt="Logo"` genérico, y categorías de landing de producto |
 | **Componentes decorativos de Magic UI** | `MagicCard`, `BorderBeam`, `AuroraText`, `Marquee`, `Particles`: efectos de interfaz, no del tema del seminario |
 | **Motion (`motion/react`)** | 35 kB por un único efecto que CSS resuelve con `stroke-dashoffset` |
+| **Panel de agenda con desplazamiento propio** (`max-height: 70vh`) | Scroll dentro del scroll de la página. El prototipo que lo propuso lo desactiva bajo 768 px y le añade un párrafo explicando al usuario cómo funciona; y una altura fija en `vh` es lo peor para el zoom de texto al 200 % (WCAG 1.4.4), que ya costó dos defectos en T6 |
+| **Acordeón con `max-height` medido en el DOM** | No abre sin JavaScript: incumple RF-6.2. `<details>` nativo hace lo mismo a 0 kB y ya está en uso |
+| **Cargar las tipografías desde `fonts.googleapis.com`** | Petición a terceros en la carga inicial (RNF-2.3). Están auto-hospedadas |
 | **Subir un presupuesto sin acuerdo del cliente** | El presupuesto disciplina al código. Cambiarlo es una decisión del cliente, registrada como decisión cerrada (así se hizo con D6) |
 
 **Sobre los logos institucionales:** los de PUCV, ANID, Columbia University, Nokia
