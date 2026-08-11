@@ -12,7 +12,6 @@ import SiteHeader from '~/components/SiteHeader.astro';
 import Hero from '~/components/Hero.astro';
 import Section from '~/components/Section.astro';
 import SpeakerCard from '~/components/SpeakerCard.astro';
-import CollaborationNetwork from '~/components/CollaborationNetwork.astro';
 import ProgramPending from '~/components/ProgramPending.astro';
 import ProgramaJornadas from '~/components/ProgramaJornadas.astro';
 import LogoWall from '~/components/LogoWall.astro';
@@ -33,6 +32,13 @@ const hasProgram = program.days.length > 0;
   <SiteHeader c={c} />
 
   <main>
+    <!--
+      Aquí estuvo `FranjaSede` unas horas, entre `main` y el hero. Se movió **dentro
+      de la barra** el 2026-08-09, en `SiteHeader.astro`: lo que Daniel pedía es que
+      la barra arranque alta con la fotografía y se contraiga al pasar de sección, no
+      que la foto sea una banda independiente. Queda anotado para que nadie la
+      devuelva aquí sin leer RF-21.
+    -->
     <Hero c={c} />
 
     <!-- El seminario -->
@@ -64,12 +70,18 @@ const hasProgram = program.days.length > 0;
       </div>
     </Section>
 
-    <!-- Programa -->
+    <!--
+      Programa.
+
+      Sin `lead`. Era `${c.dates.label} · ${venue.name}` y producía la tercera repetición
+      de la misma sección: el epígrafe decía «Programa», el título dice las fechas, y
+      este subtítulo las repetía y encima añadía la sede, que tiene su propia sección y
+      ya aparece en el hero. Retirado el epígrafe, el título ya declara las fechas y el
+      subtítulo no tenía nada que añadir. `[2026-08-06]`
+    -->
     <Section
       id="programa"
-      eyebrow={ui.secciones.programa.eyebrow}
       title={ui.secciones.programa.title}
-      lead={`${c.dates.label} · ${venue.name}`}
       tinted
     >
       <div class="mt-12">
@@ -104,17 +116,16 @@ const hasProgram = program.days.length > 0;
     <!-- Expositores -->
     <Section
       id="expositores"
-      eyebrow={ui.secciones.expositores.eyebrow}
       title={ui.secciones.expositores.title}
       lead={ui.secciones.expositores.lead}
     >
-      <div class="mt-14 space-y-14">
+      <div class="mt-14 space-y-20">
         <div>
           <h3 class="reveal eyebrow flex items-center gap-4 text-muted-foreground">
             <span>{ui.expositores.internacionales}</span>
             <span class="h-px flex-1 bg-border" aria-hidden="true"></span>
           </h3>
-          <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="mt-10 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
             {
               speakers.international.map((speaker, index) => (
                 <SpeakerCard speaker={speaker} index={index} ui={ui} />
@@ -128,7 +139,7 @@ const hasProgram = program.days.length > 0;
             <span>{ui.expositores.nacionales}</span>
             <span class="h-px flex-1 bg-border" aria-hidden="true"></span>
           </h3>
-          <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="mt-10 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
             {
               speakers.national.map((speaker, index) => (
                 <SpeakerCard speaker={speaker} index={index} ui={ui} />
@@ -140,25 +151,23 @@ const hasProgram = program.days.length > 0;
     </Section>
 
     <!-- Red de colaboración: topología del seminario -->
-    <Section
-      id="red"
-      eyebrow={ui.secciones.red.eyebrow}
-      title={ui.secciones.red.title}
-      lead={ui.secciones.red.lead}
-      tinted
-    >
-      <!--
-        Sin `client:visible`: desde T3 la red es Astro puro y no se hidrata. Antes
-        era una isla de React porque `AnimatedBeam` medía la posición de cada nodo
-        en el DOM; ahora la geometría está fijada por construcción.
-      -->
-      <div class="reveal mt-14">
-        <CollaborationNetwork c={c} />
-      </div>
-    </Section>
+    <!--
+      Aquí vivía la sección «Instituciones vinculadas» —el diagrama de red de T3— y se
+      retiró el 2026-08-07 por decisión de Daniel.
+
+      El motivo es de información, no de forma: el diagrama mostraba cada institución con su
+      expositor y su país, y **las tres cosas ya están en «Expositores»**; y marcaba a la PUCV
+      como organizadora, que **ya está en «Organización»**. No aportaba un dato que no
+      estuviera dos veces más abajo. Un diagrama que solo reordena lo que ya se dijo pesa
+      —era la sección más compleja del sitio— y no informa.
+
+      Lo que se retiró con ella: `CollaborationNetwork.astro`, la entrada «Red» de la
+      navegación en los dos idiomas, y `scripts/verify-red.mjs`, que verificaba T3 y quedó sin
+      objeto. El detalle está en `specs/002-rediseno-visual/requirements.md`, RF-16.
+    -->
 
     <!-- Sede -->
-    <Section id="sede" eyebrow={ui.secciones.sede.eyebrow} title={ui.secciones.sede.title}>
+    <Section id="sede" title={ui.secciones.sede.title}>
       <!-- `items-start`, no `items-center`: centrar dejaba un vacío grande sobre la dirección. -->
       <div class="mt-12 grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-16">
         <!--
@@ -206,7 +215,6 @@ const hasProgram = program.days.length > 0;
     <!-- Organización, instituciones y financiamiento -->
     <Section
       id="organizacion"
-      eyebrow={ui.secciones.organizacion.eyebrow}
       title={ui.secciones.organizacion.title}
     >
       <div class="mt-14 space-y-16">
@@ -215,12 +223,20 @@ const hasProgram = program.days.length > 0;
             <span>{ui.organizacion.organizan}</span>
             <span class="h-px flex-1 bg-border" aria-hidden="true"></span>
           </h3>
+          <!--
+            Sin lista de nombres bajo los logos, retirada el 2026-08-07.
+
+            Existía mientras los logos eran marcadores de posición que solo decían «LOGO
+            PENDIENTE»: entonces el nombre tenía que estar escrito. Con las marcas oficiales
+            instaladas, el nombre **ya está dentro de la marca**, así que la lista lo repetía
+            en pequeño. Y peor: se disponía en columnas cuyo orden no coincidía con el de los
+            logos, así que el nombre no quedaba ni debajo de su propio logo.
+
+            No se pierde para una ayuda técnica: cada logo lleva `alt={institution.name}`.
+          -->
           <div class="mt-8">
             <LogoWall institutions={organizers} size="lg" />
           </div>
-          <ul class="mt-6 space-y-1 text-sm text-muted-foreground">
-            {organizers.map((organizer) => <li>{organizer.name}</li>)}
-          </ul>
         </div>
 
         <div>
@@ -228,12 +244,10 @@ const hasProgram = program.days.length > 0;
             <span>{ui.organizacion.participantes}</span>
             <span class="h-px flex-1 bg-border" aria-hidden="true"></span>
           </h3>
+          <!-- Sin lista de nombres, por lo mismo que arriba. -->
           <div class="mt-8">
             <LogoWall institutions={participants} />
           </div>
-          <ul class="mt-6 grid gap-1 text-sm text-muted-foreground sm:grid-cols-2">
-            {participants.map((participant) => <li>{participant.name}</li>)}
-          </ul>
         </div>
 
         <!-- Financiamiento: obligatorio dar crédito a ANID y al proyecto FOVI -->
@@ -247,20 +261,43 @@ const hasProgram = program.days.length > 0;
               class="block opacity-80 transition-opacity hover:opacity-100"
               title={funding.agency.name}
             >
+              {/* Una variante por fondo, como en `LogoWall` y por lo mismo (RF-10). */}
               <img
                 src={funding.agency.logo}
                 alt={funding.agency.name}
-                class="h-14 w-auto object-contain sm:h-16"
+                class:list={[
+                  'h-16 w-auto object-contain sm:h-20',
+                  funding.agency.logoOscuro && 'dark:hidden',
+                ]}
                 loading="lazy"
                 decoding="async"
               />
+              {funding.agency.logoOscuro && (
+                <img
+                  src={funding.agency.logoOscuro}
+                  alt={funding.agency.name}
+                  class="hidden h-16 w-auto object-contain sm:h-20 dark:block"
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
             </a>
             <div class="min-w-0">
+              {/*
+                Esta frase es la nomenclatura que ANID exige, no una redacción
+                nuestra (RNF-8.1), y por eso llega armada desde `contenido.ts` y no
+                se traduce: la fórmula es institucional y en español.
+              */}
               <p class="font-display text-base font-semibold text-foreground">
-                {funding.agency.name} ({funding.agency.shortName})
+                {funding.mencion}
               </p>
               <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {ui.organizacion.proyecto}
+                {/*
+                  El espacio va explícito: Astro descarta el texto que solo tiene
+                  espacios entre una expresión y una etiqueta, y salía
+                  «ProyectoFOVI250222» pegado. Se vio en la captura, no en el código.
+                */}
+                {ui.organizacion.proyecto}{' '}
                 <span class="font-mono text-primary">{funding.project.code}</span>,
                 <span class="italic"> {funding.project.name}</span>.
               </p>

@@ -17,12 +17,27 @@ const { id, eyebrow, title, lead, class: className = '', tinted = false } = Astr
   `aria-labelledby` apunta al encabezado de la propia sección (RNF-1.4): sin él
   las siete secciones no se anuncian como regiones navegables y la navegación
   por regiones de un lector de pantalla queda inservible.
+
+  Ritmo vertical asimétrico, por indicación de Daniel el 2026-08-06: había demasiado
+  aire antes del primer texto de cada sección. Era `py-20 sm:py-28` —5rem y 7rem
+  iguales arriba y abajo—; ahora el relleno superior baja a 3rem y 4rem y el inferior
+  se queda igual.
+
+  La asimetría es deliberada y no un descuido: un encabezado pertenece a lo que va
+  DEBAJO, así que acercarlo al filete que abre su sección y dejar el aire mayor al
+  cerrarla agrupa cada bloque con su propio título en vez de dejar los títulos
+  flotando a media distancia entre dos secciones. Los cuatro valores siguen siendo
+  múltiplos de la unidad base de 8 px de T5.
+
+  No afecta a los saltos de ancla: la holgura bajo la barra fija la da
+  `scroll-padding-top: 5rem` en `global.css`, que es independiente de este relleno.
+  `[verificado: verify:teclado y verify:interaccion, 2026-08-06]`
 -->
 <section
   id={id}
   aria-labelledby={title ? `${id}-titulo` : undefined}
   class:list={[
-    'relative border-t hairline px-5 py-20 sm:px-8 sm:py-28',
+    'relative border-t hairline px-5 pt-12 pb-20 sm:px-8 sm:pt-16 sm:pb-28',
     tinted && 'bg-surface/40',
     className,
   ]}

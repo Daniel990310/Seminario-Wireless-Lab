@@ -74,10 +74,39 @@ const check = (nombre, ok, detalle = '') =>
     .catch(() => 'sin evaluar');
   const secciones = await page.locator('section').count();
   const enlaces = await page.locator('a[href^="#"]').count();
+  /*
+   * Se comprueba el REQUISITO, no un hexadecimal.
+   *
+   * Antes esto era `fondo === 'rgb(248, 250, 252)'`, y por tanto no verificaba «sin JS
+   * queda en claro» sino «el fondo es exactamente este color». Falló el 2026-08-06 al
+   * teñir la rampa de neutros con el azul de la PUCV, con el tema claro aplicado
+   * correctamente: un falso negativo que apuntaba al archivo equivocado.
+   *
+   * Ahora se comprueban las dos cosas que el requisito realmente dice, y ninguna depende
+   * del valor concreto: (a) el fondo del body es el token `--background`, no un color
+   * accidental —se resuelve con un elemento sonda, la misma técnica que usa
+   * `SensingPersistence` para leer la capa semántica—; y (b) ese fondo es CLARO, medido
+   * por luminancia relativa, que es lo que distingue el tema claro del oscuro.
+   */
+  const diagnostico = await page.evaluate(() => {
+    const sonda = document.createElement('div');
+    sonda.style.backgroundColor = 'var(--background)';
+    document.body.appendChild(sonda);
+    const declarado = getComputedStyle(sonda).backgroundColor;
+    sonda.remove();
+    const canales = getComputedStyle(document.body).backgroundColor.match(/[\d.]+/g)?.map(Number) ?? [];
+    const lineal = canales
+      .slice(0, 3)
+      .map((c) => c / 255)
+      .map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+    const luminancia =
+      lineal.length === 3 ? 0.2126 * lineal[0] + 0.7152 * lineal[1] + 0.0722 * lineal[2] : -1;
+    return { declarado, luminancia };
+  });
   check(
     'RF-4.4 · sin JS queda en claro',
-    fondo === 'rgb(248, 250, 252)',
-    `fondo ${fondo}`,
+    fondo === diagnostico.declarado && diagnostico.luminancia > 0.5,
+    `fondo ${fondo} = --background, luminancia ${diagnostico.luminancia.toFixed(3)}`,
   );
   check('RF-4.4 · contenido presente sin JS', secciones >= 6 && enlaces > 0, `${secciones} secciones, ${enlaces} anclas`);
   await ctx.close();

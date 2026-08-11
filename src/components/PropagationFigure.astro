@@ -3,9 +3,9 @@
  * Gráfica principal del seminario.
  *
  * Figura vectorial propia que representa detección inalámbrica en mmWave y
- * sub-THz: un emisor sobre una retícula polar de radar, frentes de onda que
- * se propagan, un objeto dispersor y la nube de puntos reconstruida a partir
- * de las reflexiones. Es SVG puro, por lo que escala sin pérdida, pesa unos
+ * sub-THz: un emisor sobre una retícula polar de radar y frentes de onda que
+ * se propagan. La malla térmica interactiva comparte este mismo centro. Es SVG
+ * puro, por lo que escala sin pérdida, pesa unos
  * pocos kB y no depende de imágenes de stock.
  */
 
@@ -18,16 +18,48 @@ interface Props {
 
 const { class: className = '', titulo, descripcion } = Astro.props;
 
-// El SVG usa `preserveAspectRatio="xMidYMid meet"` en lugar de `slice`: el hero
-// es mucho más alto que la proporción del lienzo, y recortar dejaba el
-// resplandor del emisor cortado en el borde del contenedor, lo que producía una
-// costura vertical visible.
+/*
+ * Encaje: `xMinYMid slice`.
+ *
+ * Antes era `xMidYMid meet`, y la nota decía que `slice` cortaba el resplandor del
+ * emisor y dejaba una costura vertical. Era cierto **con `xMid`**: al centrar, el
+ * recorte se reparte entre los dos lados y se come el emisor, que está al 18 % del
+ * ancho. Con `xMin` el borde izquierdo queda anclado, el emisor y su resplandor
+ * —centro en x=148, radio 96, o sea x=52…244— quedan enteros, y el recorte cae
+ * entero del lado derecho, que es exactamente hacia donde se quiere sangrar.
+ *
+ * `meet` era además la causa del aire sobrante: en una celda alta y estrecha
+ * escalaba por el lado corto y dejaba franjas vacías arriba y abajo.
+ *
+ * OJO: `SensingPersistence` replica esta transformación para alinear la malla con la
+ * retícula. Si esto cambia, hay que cambiar `dimensionar()` allí.
+ */
 const SOURCE = { x: 148, y: 322 };
+
+/*
+ * ═══ UNA SOLA RETÍCULA RADIAL PARA TODA LA FIGURA ═══
+ *
+ * Antes había **tres series distintas y ninguna coincidía con otra**: los frentes de onda en
+ * 78 + k·62, los anillos de rango en 72 + k·62 —desfasados 6 unidades, que no es una decisión
+ * sino un descuido— y la malla interactiva en 30 + k·22,5, que no caía sobre ninguna. El
+ * resultado se veía como un origen desplazado y unos arcos que no casaban con nada.
+ *
+ * Ahora las tres derivan de estas dos constantes. Los anillos y los frentes comparten
+ * exactamente los mismos radios, y la malla usa un tercio del paso, de modo que **uno de cada
+ * tres nodos cae sobre un arco**. Es lo que hace que las dos capas se lean como el mismo
+ * instrumento y no como dos dibujos superpuestos.
+ *
+ * OJO: `SensingPersistence` replica esta serie. Si `PASO_RADIAL` o `RADIO_PRIMERO` cambian
+ * aquí, hay que cambiar allí `RADIO_MINIMO` y `RADIO_MAXIMO`, que están calculados desde
+ * estos mismos números.
+ */
+const RADIO_PRIMERO = 78;
+const PASO_RADIAL = 62;
 
 // Frentes de onda: arcos concéntricos que se atenúan con la distancia,
 // siguiendo la caída de potencia con el rango.
 const wavefronts = Array.from({ length: 9 }, (_, i) => {
-  const radius = 78 + i * 62;
+  const radius = RADIO_PRIMERO + i * PASO_RADIAL;
   return {
     radius,
     opacity: +(0.66 - i * 0.055).toFixed(3),
@@ -35,62 +67,83 @@ const wavefronts = Array.from({ length: 9 }, (_, i) => {
   };
 });
 
-// Retícula polar de referencia (anillos de rango).
-const rangeRings = [110, 250, 390, 530];
-
-// Dispersores: puntos detectados por el radar. La nube reconstruye el
-// contorno del objeto a partir de los ecos.
-const rawScatterers = [
-  { x: 556, y: 196, r: 3.4, o: 0.95 },
-  { x: 592, y: 222, r: 2.6, o: 0.8 },
-  { x: 618, y: 254, r: 3.1, o: 0.9 },
-  { x: 574, y: 262, r: 2.1, o: 0.62 },
-  { x: 634, y: 296, r: 2.8, o: 0.85 },
-  { x: 600, y: 318, r: 2.0, o: 0.58 },
-  { x: 640, y: 344, r: 3.3, o: 0.92 },
-  { x: 596, y: 372, r: 2.3, o: 0.7 },
-  { x: 622, y: 400, r: 2.7, o: 0.8 },
-  { x: 566, y: 418, r: 2.0, o: 0.55 },
-  { x: 588, y: 448, r: 3.0, o: 0.88 },
-  { x: 544, y: 350, r: 1.8, o: 0.45 },
-  { x: 660, y: 232, r: 1.9, o: 0.5 },
-  { x: 668, y: 388, r: 2.2, o: 0.6 },
-];
-
+// Retícula polar de referencia. Los anillos se dividen en tramos para que la
+// apertura pierda opacidad de forma gradual: una máscara rectangular volvería
+// a introducir el borde artificial que se descartó en RF-9.12.
+const APERTURA = 78;
+const ANGULOS_RETICULA = 19;
+// Los anillos comparten los radios de los frentes de onda, no una serie propia desfasada 6
+// unidades como antes: así el anillo de referencia y el frente que lo cruza son el mismo radio.
+const rangeRings = Array.from({ length: 8 }, (_, k) => RADIO_PRIMERO + k * PASO_RADIAL);
+const angulos = Array.from(
+  { length: ANGULOS_RETICULA },
+  (_, i) => -APERTURA + i * ((APERTURA * 2) / (ANGULOS_RETICULA - 1)),
+);
+const polar = (radio: number, grados: number) => ({
+  x: SOURCE.x + Math.cos((grados * Math.PI) / 180) * radio,
+  y: SOURCE.y + Math.sin((grados * Math.PI) / 180) * radio,
+});
+const mascaraAngular = (u: number) => Math.pow(Math.sin(Math.PI * u), 1.45);
+const tramosRango = rangeRings.flatMap((radio, indiceRadio) =>
+  angulos.slice(0, -1).map((inicio, indiceAngulo) => {
+    const fin = angulos[indiceAngulo + 1]!;
+    const a = polar(radio, inicio);
+    const b = polar(radio, fin);
+    const u = (indiceAngulo + 0.5) / (ANGULOS_RETICULA - 1);
+    const exterior = Math.pow(Math.cos((Math.PI * 0.5 * indiceRadio) / rangeRings.length), 1.35);
+    return {
+      d: `M ${a.x} ${a.y} A ${radio} ${radio} 0 0 1 ${b.x} ${b.y}`,
+      opacity: +(mascaraAngular(u) * exterior * 0.34).toFixed(3),
+    };
+  }),
+);
 /*
- * Orden de iluminación de los ecos.
+ * Estela del barrido, como sector angular y no como rectángulo.
  *
- * En un radar el eco de cada dispersor llega con un retardo proporcional a su
- * distancia de ida y vuelta (t = 2d/c). Aquí se calcula la distancia real de
- * cada punto al emisor y se convierte en `animation-delay`, de modo que la nube
- * se ilumina del dispersor más cercano al más lejano en vez de parpadear al
- * azar. Es la razón por la que el movimiento se lee como una medición y no
- * como un efecto decorativo.
+ * Un `rect` de altura constante girando alrededor del emisor **no** se lee como un
+ * barrido: se lee como una varilla apoyada encima, y en claro además salía beige
+ * `[capturas, 2026-08-06]`. Un barrido real es un sector cuyo ancho crece con el
+ * radio. Se construye como una escalera de sectores finos con opacidad decreciente:
+ * el borde de ataque es el más intenso y la cola llega a cero. No hace falta ningún
+ * gradiente angular, que SVG no tiene sin recurrir a máscaras.
  */
-const ECHO_CYCLE = 4.8; // segundos que tarda el barrido completo de rango
+// El radio se queda **por dentro** del anillo exterior de la retícula (506): con 548
+// el sector sobresalía del instrumento y quedaba flotando sobre fondo vacío.
+const RADIO_BARRIDO = 498;
+const ESTELA_GRADOS = 34;
+const ESTELA_TRAMOS = 17;
+const estela = Array.from({ length: ESTELA_TRAMOS }, (_, i) => {
+  const desde = -(i + 1) * (ESTELA_GRADOS / ESTELA_TRAMOS);
+  const hasta = -i * (ESTELA_GRADOS / ESTELA_TRAMOS);
+  const a = polar(RADIO_BARRIDO, desde);
+  const b = polar(RADIO_BARRIDO, hasta);
+  // Caída cuadrática: la cola se apaga rápido, como la persistencia de un tubo.
+  const caida = Math.pow(1 - i / ESTELA_TRAMOS, 2);
+  return {
+    d: `M ${SOURCE.x} ${SOURCE.y} L ${a.x} ${a.y} A ${RADIO_BARRIDO} ${RADIO_BARRIDO} 0 0 1 ${b.x} ${b.y} Z`,
+    // El barrido es el elemento menos significativo de la figura: no puede ser el más
+    // visible. A 0,13 se leía como un triángulo beige macizo sobre el fondo claro.
+    opacity: +(caida * 0.06).toFixed(4),
+  };
+});
 
-const distances = rawScatterers.map((s) => Math.hypot(s.x - SOURCE.x, s.y - SOURCE.y));
-const minDistance = Math.min(...distances);
-const maxDistance = Math.max(...distances);
-const span = maxDistance - minDistance || 1;
-
-const scatterers = rawScatterers.map((s, i) => ({
-  ...s,
-  // Retardo normalizado al rango observado, en segundos.
-  echoDelay: +(((distances[i]! - minDistance) / span) * ECHO_CYCLE * 0.72).toFixed(2),
-}));
-
-// Trayectos directos emisor → dispersor principal (líneas de visión).
-const rays = [
-  { x: 556, y: 196 },
-  { x: 618, y: 254 },
-  { x: 640, y: 344 },
-  { x: 622, y: 400 },
-  { x: 588, y: 448 },
-];
+const radiales = angulos.map((angulo, i) => {
+  // 560 y no 548: la fila más externa de la malla llega a 553,33 —78 + 23 × 62/3— y una radial
+  // que se queda corta deja los últimos nodos flotando sin retícula debajo.
+  const extremo = polar(560, angulo);
+  return {
+    x2: extremo.x,
+    y2: extremo.y,
+    opacity: +(mascaraAngular(i / (ANGULOS_RETICULA - 1)) * 0.26).toFixed(3),
+  };
+});
 
 ---
 
+<!--
+  Los `data-*` no son decoración: la capa de detección (`SensingPersistence`) lee
+  de aquí el emisor y la apertura para construir la misma geometría polar.
+-->
 <svg
   class={`propagation-figure ${className}`}
   viewBox="0 0 820 640"
@@ -98,7 +151,10 @@ const rays = [
   xmlns="http://www.w3.org/2000/svg"
   role="img"
   aria-labelledby="fig-title fig-desc"
-  preserveAspectRatio="xMidYMid meet"
+  preserveAspectRatio="xMinYMid slice"
+  data-figura
+  data-emisor={`${SOURCE.x} ${SOURCE.y}`}
+  data-apertura={APERTURA}
 >
   <title id="fig-title">{titulo}</title>
   <desc id="fig-desc">{descripcion}</desc>
@@ -110,25 +166,17 @@ const rays = [
       <stop offset="100%" stop-color="var(--primary)" stop-opacity="0" />
     </radialGradient>
 
+    <!--
+      El frente de onda **cambia de color con el rango**, y eso significa algo: el
+      recurso sale como comunicación (`--primary`, el color de la red en toda la
+      página) y vuelve como información sensada (`--accent`). Es la tesis de ISAC
+      dicha en dos colores, sin añadir ni un trazo de geometría nueva —que es lo
+      que D10 descartó cuando se retiraron el objeto reconstruido y sus rayos.
+    -->
     <linearGradient id="fig-wave" x1="0" y1="0" x2="1" y2="0.4">
       <stop offset="0%" stop-color="var(--primary)" />
-      <stop offset="100%" stop-color="var(--primary)" stop-opacity="0.35" />
-    </linearGradient>
-
-    <linearGradient id="fig-ray" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="var(--primary)" stop-opacity="0" />
-      <stop offset="45%" stop-color="var(--primary)" stop-opacity="0.3" />
-      <stop offset="100%" stop-color="var(--primary)" stop-opacity="0.55" />
-    </linearGradient>
-
-    <linearGradient id="fig-sweep" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.45" />
-      <stop offset="100%" stop-color="var(--primary)" stop-opacity="0" />
-    </linearGradient>
-
-    <linearGradient id="fig-object" x1="0" y1="0" x2="0.6" y2="1">
-      <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.09" />
-      <stop offset="100%" stop-color="var(--primary)" stop-opacity="0.02" />
+      <stop offset="62%" stop-color="var(--primary)" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.55" />
     </linearGradient>
 
     <filter id="fig-soft" x="-60%" y="-60%" width="220%" height="220%">
@@ -142,41 +190,32 @@ const rays = [
   </defs>
 
   <g clip-path="url(#fig-clip)">
-    <!-- Anillos de rango -->
-    <g stroke="var(--border)" stroke-opacity="0.9" stroke-dasharray="2 7">
-      {rangeRings.map((r) => <circle cx={SOURCE.x} cy={SOURCE.y} r={r} />)}
+    <!--
+      Anillos de rango segmentados: desaparecen hacia los cuatro bordes del sector.
+
+      El trazo es `--primary`, no `--border`. `--border` es por definición el filete
+      decorativo tenue —slate-300 en claro, 1,3:1 sobre el fondo— y con él la
+      retícula polar quedaba invisible en tema claro `[medido: 2026-08-06, captura]`
+      mientras se leía bien en oscuro: el mismo código daba dos calidades. La
+      retícula de un instrumento de medida no es un filete de tarjeta. Las opacidades
+      bajan de 0,9/0,7 a 0,34/0,26 para compensar los 10,99:1 de `--primary` y que el
+      tema oscuro no se sature.
+    -->
+    <g stroke="var(--primary)" stroke-dasharray="2 7" stroke-linecap="round">
+      {tramosRango.map((tramo) => <path d={tramo.d} stroke-opacity={tramo.opacity} />)}
     </g>
 
     <!-- Radiales del diagrama polar -->
-    <g stroke="var(--border)" stroke-opacity="0.7">
-      {
-        Array.from({ length: 13 }, (_, i) => {
-          const angle = (-75 + i * 12.5) * (Math.PI / 180);
-          return (
-            <line
-              x1={SOURCE.x}
-              y1={SOURCE.y}
-              x2={SOURCE.x + Math.cos(angle) * 560}
-              y2={SOURCE.y + Math.sin(angle) * 560}
-            />
-          );
-        })
-      }
-    </g>
-
-    <!-- Objeto dispersor: contorno abstracto reconstruido -->
-    <path
-      d="M540 186 L664 224 L682 330 L648 424 L560 462 L528 356 Z"
-      fill="url(#fig-object)"
-      stroke="var(--border)"
-      stroke-opacity="1"
-      stroke-width="1.2"
-      stroke-dasharray="6 6"
-    />
-
-    <!-- Trayectos emisor → dispersores -->
-    <g stroke="url(#fig-ray)" stroke-width="1.1">
-      {rays.map((p) => <line x1={SOURCE.x} y1={SOURCE.y} x2={p.x} y2={p.y} />)}
+    <g stroke="var(--primary)" stroke-linecap="round">
+      {radiales.map((radial) => (
+        <line
+          x1={SOURCE.x}
+          y1={SOURCE.y}
+          x2={radial.x2}
+          y2={radial.y2}
+          stroke-opacity={radial.opacity}
+        />
+      ))}
     </g>
 
     <!-- Frentes de onda -->
@@ -198,28 +237,26 @@ const rays = [
       }
     </g>
 
-    <!-- Barrido de radar -->
-    <g class="fig-sweep-group">
-      <rect
-        class="fig-sweep"
-        x={SOURCE.x}
-        y={SOURCE.y - 1.5}
-        width="560"
-        height="3"
-        fill="url(#fig-sweep)"
-      />
-    </g>
+    <!--
+      Barrido de radar: dos bandas, no una.
 
-    <!-- Nube de ecos: se ilumina por orden de distancia al emisor -->
-    <g class="fig-points" fill="var(--primary)">
-      {
-        scatterers.map((s) => (
-          <g class="fig-point" style={`--echo-delay:${s.echoDelay}s`}>
-            <circle cx={s.x} cy={s.y} r={s.r * 3.2} fill="var(--primary)" fill-opacity={s.o * 0.1} />
-            <circle cx={s.x} cy={s.y} r={s.r} fill-opacity={s.o} />
-          </g>
-        ))
-      }
+      Una sola recta de 3 px congelada se leía como un trazo perdido cruzando el
+      abanico en lugar de un barrido `[capturas, 2026-08-06]`. La banda ancha y muy
+      tenue va detrás y hace de estela; la fina va delante y marca el frente. Van en
+      `--accent` porque el barrido es el acto de **sensar**, no de transmitir.
+    -->
+    <g class="fig-sweep-group">
+      {estela.map((tramo) => <path d={tramo.d} fill="var(--accent)" fill-opacity={tramo.opacity} />)}
+      <!-- Borde de ataque: la única línea nítida del barrido. -->
+      <line
+        x1={SOURCE.x}
+        y1={SOURCE.y}
+        x2={polar(RADIO_BARRIDO, 0).x}
+        y2={polar(RADIO_BARRIDO, 0).y}
+        stroke="var(--accent)"
+        stroke-opacity="0.42"
+        stroke-width="1.2"
+      />
     </g>
 
     <!-- Emisor -->
@@ -235,6 +272,24 @@ const rays = [
     width: 100%;
     height: 100%;
     display: block;
+
+    /*
+     * Sin esto aparece un globo flotante con el texto del `<title>` al dejar el puntero
+     * sobre la figura, como el nombre de un archivo en el escritorio. Los navegadores
+     * tratan el `<title>` de un SVG igual que el atributo `title` de HTML.
+     *
+     * No se puede quitar el `<title>`: es el que da el nombre accesible por
+     * `aria-labelledby="fig-title fig-desc"`, y RF-9.3 exige que la figura siga descrita
+     * sin JavaScript. `pointer-events: none` resuelve el conflicto sin tocar la
+     * accesibilidad, porque el árbol de accesibilidad no depende del reparto de eventos:
+     * el globo desaparece y el nombre accesible se conserva intacto.
+     *
+     * Tampoco rompe el efecto del puntero. Los escuchas de `pointermove` viven en el
+     * contenedor, que es el PADRE de este SVG, así que al no ser blanco el SVG el blanco
+     * pasa a ser el contenedor y el evento llega igual. Es la misma razón por la que el
+     * lienzo de `SensingPersistence` ya era pasivo (RF-9.2).
+     */
+    pointer-events: none;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -262,39 +317,37 @@ const rays = [
       animation: fig-sweep 17s ease-in-out infinite;
     }
 
+    /*
+     * La opacidad va en el mismo ciclo que el giro, y no es adorno: la retícula se
+     * desvanece hacia los bordes de la apertura por RF-9.12, así que en los extremos
+     * del recorrido el sector quedaba flotando sobre fondo vacío. Se apaga donde no
+     * hay instrumento debajo. Las dos propiedades se interpolan por separado, de modo
+     * que declarar la opacidad al 25 % y al 75 % no altera el giro.
+     *
+     * Sin animación —`prefers-reduced-motion: reduce`— el grupo se queda en su estado
+     * base: 0° y opacidad 1, o sea apuntando al centro del abanico, que es
+     * exactamente donde tiene sentido que se detenga.
+     */
     @keyframes fig-sweep {
       0% {
         transform: rotate(-74deg);
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
       }
       50% {
         transform: rotate(74deg);
+        opacity: 0;
+      }
+      75% {
+        opacity: 1;
       }
       100% {
         transform: rotate(-74deg);
+        opacity: 0;
       }
     }
 
-    /*
-     * Retorno del eco. El retardo de cada punto lo fija la distancia real al
-     * emisor (ver `echoDelay` en el frontmatter), así que la nube se ilumina de
-     * cerca a lejos, como el barrido de rango de un receptor.
-     */
-    .fig-point {
-      animation: fig-echo 4.8s ease-out infinite;
-      animation-delay: var(--echo-delay);
-    }
-
-    @keyframes fig-echo {
-      0% {
-        opacity: 0.28;
-      }
-      6% {
-        opacity: 1;
-      }
-      38%,
-      100% {
-        opacity: 0.28;
-      }
-    }
   }
 </style>

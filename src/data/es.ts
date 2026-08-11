@@ -131,7 +131,6 @@ export const es = {
     { href: '#seminario', label: 'El seminario' },
     { href: '#programa', label: 'Programa' },
     { href: '#expositores', label: 'Expositores' },
-    { href: '#red', label: 'Red' },
     { href: '#sede', label: 'Sede' },
     { href: '#organizacion', label: 'Organización' },
   ],
@@ -162,7 +161,7 @@ export const es = {
       verExpositores: 'Expositores',
       figuraTitulo: 'Detección inalámbrica en bandas mmWave y sub-THz',
       figuraDescripcion:
-        'Representación esquemática de un emisor de radio cuyos frentes de onda se propagan sobre una retícula polar de rango, alcanzan un objeto y regresan como una nube de puntos reconstruida a partir de las reflexiones.',
+        'Representación esquemática de un emisor de radio cuyos frentes de onda se propagan sobre una retícula polar de rango que cambia de relieve e intensidad al interactuar.',
     },
 
     secciones: {
@@ -170,26 +169,42 @@ export const es = {
         eyebrow: 'El seminario',
         title: 'Comunicación y detección sobre la misma infraestructura',
       },
+      /*
+       * Cinco secciones NO llevan epígrafe, y es una decisión, no un olvido.
+       *
+       * Un epígrafe tiene que codificar algo verdadero del contenido; si solo lo
+       * decora, sobra. Aquí decía «Expositores» sobre un título que ya decía
+       * «Investigadores participantes», «Sede» sobre «Auditorio de la Sede PUCV
+       * Santiago» y «Organización» sobre «Organización y financiamiento»: la misma
+       * palabra dos veces, en dos tamaños.
+       *
+       * La regla es: **el epígrafe sobrevive solo donde el `<h2>` no nombra la
+       * sección.** Eso deja exactamente uno, `seminario`, cuyo título es una tesis
+       * —«Comunicación y detección sobre la misma infraestructura»— y no una etiqueta;
+       * ahí el epígrafe sí hace trabajo, porque dice en qué sección estás mientras el
+       * título argumenta.
+       *
+       * El `<h2>` no se puede quitar en su lugar: es el nombre accesible de la región
+       * por `aria-labelledby` y sin él las secciones dejan de anunciarse como regiones
+       * navegables (RNF-1.4). Y la orientación no se pierde: la etiqueta de cada
+       * sección sigue estando en la barra de navegación, marcada con
+       * `aria-current="location"` (RF-6.1).
+       *
+       * Intento anterior descartado el 2026-08-06: reescribir los cinco títulos para
+       * que «aportaran algo». Producía texto de relleno inventado para justificar un
+       * hueco, que es peor que la repetición.
+       */
       programa: {
-        eyebrow: 'Programa',
         title: 'Jornadas del 21 y 22 de octubre',
       },
       expositores: {
-        eyebrow: 'Expositores',
         title: 'Investigadores participantes',
         lead: 'Especialistas en propagación, detección inalámbrica y arquitecturas de redes de próxima generación.',
       },
-      red: {
-        eyebrow: 'Red de colaboración',
-        title: 'Instituciones vinculadas',
-        lead: 'El seminario articula grupos de investigación de Estados Unidos y Chile en torno a la Escuela de Ingeniería Eléctrica de la PUCV.',
-      },
       sede: {
-        eyebrow: 'Sede',
         title: 'Auditorio de la Sede PUCV Santiago',
       },
       organizacion: {
-        eyebrow: 'Organización',
         title: 'Organización y financiamiento',
       },
     },

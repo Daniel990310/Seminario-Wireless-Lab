@@ -12,6 +12,9 @@ condición medible.
 | [`001-mejora-calidad/requirements.md`](001-mejora-calidad/requirements.md) | Qué debe cumplirse, con criterios verificables |
 | [`001-mejora-calidad/design.md`](001-mejora-calidad/design.md) | Cómo se construye y por qué, frente a alternativas |
 | [`001-mejora-calidad/tasks.md`](001-mejora-calidad/tasks.md) | Orden de ejecución y comprobación de cada tarea |
+| [`002-rediseno-visual/requirements.md`](002-rediseno-visual/requirements.md) | Plan abierto: rediseño visual y movimiento. **En especificación, sin requisitos acordados** |
+| [`002-rediseno-visual/baseline/hero-2026-08-03.md`](002-rediseno-visual/baseline/hero-2026-08-03.md) | Línea base del hero, con capturas y los seis defectos medidos |
+| [`002-rediseno-visual/referencia/`](002-rediseno-visual/referencia/) | El prototipo de rediseño que llegó de fuera, y qué de él no se sigue |
 | [`baseline/auditoria-2026-07-29.md`](baseline/auditoria-2026-07-29.md) | Medición previa: la referencia contra la que se compara |
 | [`fuentes.md`](fuentes.md) | **Registro de procedencia**: de dónde sale cada cifra |
 | [`habilidades.md`](habilidades.md) | Qué skills usar, cuándo y con qué precauciones |
@@ -123,6 +126,7 @@ no se confunda con algo comprobado.
 | Especificación | Estado |
 | -------------- | ------ |
 | [001 — Mejora de calidad](001-mejora-calidad/) | **Cerrada el 2026-07-31: T1 a T13.** Siete verificadores en verde sobre `dist/` y uno más contra el sitio publicado. Solo quedan pendientes de terceros (A3–A7). |
+| [002 — Rediseño visual y movimiento](002-rediseno-visual/) | **Abierta el 2026-08-03, en especificación.** Línea base del hero medida; D7 y D8 cerradas; A8 bloquea. **Sin requisitos acordados, así que sin código.** |
 
 Últimas cifras, medidas el 2026-07-31 sobre el commit `8f4bdfc` con
 `npm run build && npm run verify:todo` `[medido]`:

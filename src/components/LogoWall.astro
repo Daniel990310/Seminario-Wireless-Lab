@@ -1,27 +1,107 @@
 ---
-import type { Institucion } from '~/data/comun';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { Image } from 'astro:assets';
+import type { Institucion, Logo } from '~/data/comun';
 
 interface Props {
   institutions: readonly Institucion[];
-  /** Altura del logo. Los patrocinadores principales se muestran mayores. */
+  /** Escala del bloque. Los patrocinadores principales se muestran mayores. */
   size?: 'md' | 'lg';
 }
 
 const { institutions, size = 'md' } = Astro.props;
 
-const heights = {
-  md: 'h-10 sm:h-11',
-  lg: 'h-12 sm:h-14',
-} as const;
+/*
+ * Un SVG llega como ruta de `/public`; un ráster llega importado, como objeto.
+ *
+ * La distinción no es un detalle de tipos: `<Image />` **solo** puede optimizar lo segundo,
+ * y para un SVG no haría nada porque el optimizador los pasa sin tocar. Se ramifica aquí en
+ * lugar de en los datos para que `comun.ts` siga describiendo qué logo es cada cual, y no
+ * cómo se dibuja.
+ */
+const esRaster = (logo: Logo): logo is ImageMetadata => typeof logo !== 'string';
+
+/*
+ * ═══ POR QUÉ NO SE ALINEAN POR ALTURA ═══
+ *
+ * Antes todos los logos compartían altura (`h-10 w-auto`) y la sección se veía descompuesta.
+ * La causa es que **la altura es el normalizador equivocado cuando las proporciones difieren
+ * tanto**: Columbia es 7,7 veces más ancho que alto y USACH es más alto que ancho (0,71). A
+ * igual altura, Columbia ocupa **once veces más superficie** que USACH, así que uno grita y
+ * el otro desaparece.
+ *
+ * Lo que iguala el peso visual de un conjunto de marcas no es la altura ni la anchura: es el
+ * **área**. Para que todas ocupen la misma superficie manteniendo su proporción:
+ *
+ *     área = alto × ancho = alto × (alto × proporción)  ⇒  alto = √(área / proporción)
+ *
+ * Se expresa relativo a una proporción de referencia —2,2, la típica de un logo horizontal
+ * con escudo y texto— para que un logo de esa forma conserve exactamente la altura base y el
+ * ajuste solo actúe sobre los extremos.
+ *
+ * Se acota entre 0,72× y 1,7×: sin tope, un logo muy apaisado se volvería una línea
+ * ilegible y uno vertical rompería el ritmo de la fila. Es un compromiso deliberado entre
+ * área constante y legibilidad, no un cálculo puro.
+ */
+const PROPORCION_REFERENCIA = 2.2;
+const ALTURA_BASE = { md: 56, lg: 72 } as const;
+
+/** Proporción ancho/alto de una marca, venga como ráster importado o como SVG de `/public`. */
+const proporcionDe = (logo: Logo): number => {
+  if (esRaster(logo)) return logo.width / logo.height;
+  /*
+   * Para un SVG hay que leer el `viewBox` del archivo. Se hace aquí, en el frontmatter, que
+   * corre **en el build**: no llega ni un byte de esto al navegador. Si el archivo no
+   * declara `viewBox` se cae a la proporción de referencia, que deja ese logo con la altura
+   * base en lugar de romper la página.
+   */
+  try {
+    const ruta = fileURLToPath(new URL(`../../public${logo}`, import.meta.url));
+    const svg = readFileSync(ruta, 'utf8');
+    const vb = svg.match(/viewBox="([\d.\-\s]+)"/)?.[1]?.trim().split(/\s+/).map(Number);
+    if (vb && vb.length === 4 && vb[2] && vb[3]) return vb[2] / vb[3];
+    const ancho = Number(svg.match(/\swidth="([\d.]+)"/)?.[1]);
+    const alto = Number(svg.match(/\sheight="([\d.]+)"/)?.[1]);
+    if (ancho && alto) return ancho / alto;
+  } catch {
+    /* Archivo ausente o ilegible: se usa la referencia. */
+  }
+  return PROPORCION_REFERENCIA;
+};
+
+const alturaDe = (logo: Logo, escalaOptica = 1): number => {
+  const factor = Math.sqrt(PROPORCION_REFERENCIA / proporcionDe(logo));
+  // El acotado se aplica al factor calculado; la corrección óptica va **después**, porque es
+  // un juicio deliberado sobre la marca concreta y no debe quedar recortado por el tope.
+  return Math.round(ALTURA_BASE[size] * Math.min(1.7, Math.max(0.72, factor)) * escalaOptica);
+};
+
+/*
+ * Altura a la que se EMITE el ráster, que no es la altura a la que se pinta.
+ *
+ * Sin fijarla, `<Image />` emite el tamaño intrínseco del original, y la submarca de la EIE
+ * viene a 4236×1613 px. Se emite al doble de la mayor altura posible —72 px de base por el
+ * tope de 1,7— para que se vea nítido en pantallas de densidad 2×.
+ */
+const ALTURA_EMITIDA = Math.round(ALTURA_BASE.lg * 1.7 * 2);
 ---
 
-<ul class="flex flex-wrap items-center gap-x-10 gap-y-8">
+<!--
+  `items-center` y no `items-baseline`: con alturas distintas por logo, alinear por la línea
+  base dejaría las marcas apaisadas flotando sobre las verticales.
+-->
+<ul class="flex flex-wrap items-center gap-x-12 gap-y-10">
   {
     institutions.map((institution, index) => {
       const Tag = institution.url ? 'a' : 'div';
       const linkProps = institution.url
         ? { href: institution.url, target: '_blank', rel: 'noopener noreferrer' }
         : {};
+      const alto = alturaDe(institution.logo, institution.escalaOptica);
+      const altoOscuro = institution.logoOscuro
+        ? alturaDe(institution.logoOscuro, institution.escalaOptica)
+        : alto;
 
       return (
         <li class="reveal" style={`transition-delay:${index * 60}ms`}>
@@ -30,13 +110,60 @@ const heights = {
             class="block opacity-70 transition-all duration-300 hover:opacity-100 focus-visible:opacity-100"
             title={institution.name}
           >
-            <img
-              src={institution.logo}
-              alt={institution.name}
-              class:list={[heights[size], 'w-auto object-contain']}
-              loading="lazy"
-              decoding="async"
-            />
+            {/*
+              Dos archivos y no un recoloreado por CSS (RF-10.4): cambiar el color
+              de una marca va contra el manual de su dueño. Cada tema muestra la
+              variante que ese manual autoriza para su fondo.
+
+              La altura va en `style` y no en una clase de utilidad porque se calcula
+              por marca: Tailwind no puede generar una clase para un valor que solo
+              existe en el build.
+
+              La oculta no se descarga mientras no se vea: `loading="lazy"` sobre
+              un elemento sin caja de diseño no llega a entrar en el viewport. Al
+              cambiar de tema se pide entonces, una vez.
+            */}
+            {esRaster(institution.logo) ? (
+              <Image
+                src={institution.logo}
+                height={ALTURA_EMITIDA}
+                alt={institution.name}
+                style={`height:${alto}px`}
+                class:list={['w-auto object-contain', institution.logoOscuro && 'dark:hidden']}
+                loading="lazy"
+                decoding="async"
+              />
+            ) : (
+              <img
+                src={institution.logo}
+                alt={institution.name}
+                style={`height:${alto}px`}
+                class:list={['w-auto object-contain', institution.logoOscuro && 'dark:hidden']}
+                loading="lazy"
+                decoding="async"
+              />
+            )}
+            {institution.logoOscuro &&
+              (esRaster(institution.logoOscuro) ? (
+                <Image
+                  src={institution.logoOscuro}
+                  height={ALTURA_EMITIDA}
+                  alt={institution.name}
+                  style={`height:${altoOscuro}px`}
+                  class="hidden w-auto object-contain dark:block"
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                <img
+                  src={institution.logoOscuro}
+                  alt={institution.name}
+                  style={`height:${altoOscuro}px`}
+                  class="hidden w-auto object-contain dark:block"
+                  loading="lazy"
+                  decoding="async"
+                />
+              ))}
           </Tag>
         </li>
       );

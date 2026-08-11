@@ -1,6 +1,15 @@
 ---
 import ThemeSelector from './ThemeSelector.astro';
 import LanguageSelector from './LanguageSelector.astro';
+import FranjaSede from './FranjaSede.astro';
+/*
+ * Recorte de la fotografía de la sede (RF-21): el nivel de calle —árboles, sello,
+ * columnas, entrada—, que es la parte reconocible y la que tiene gente. Se cortó ya
+ * apaisado, a la proporción de la banda, en lugar de recortar por CSS el original
+ * vertical de 2000×2125: así el navegador no descarga los píxeles que la franja nunca
+ * muestra. Ahorro medido: de 126 kB a 55 kB en la variante de 1440.
+ */
+import sedeAcceso from '~/assets/fondos/sede-acceso.webp';
 import type { Contenido } from '~/data/contenido';
 import type { Idioma } from '~/data/contenido';
 
@@ -22,9 +31,43 @@ const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asun
   había los degradados del hero. Un color plano lo resuelve de raíz y, de paso,
   elimina el script que sincronizaba la barra con el desplazamiento.
 -->
+<!--
+  La barra es una banda de azul institucional PUCV, igual que el pie, por indicación de
+  Daniel el 2026-08-06.
+
+  Como en el pie, no cambia ni una clase de color aquí dentro: `superficie-institucional`
+  redefine la capa semántica en este subárbol y todo lo que hay debajo —los seis enlaces, el
+  selector de tema, el de idioma, el botón de contacto y el panel del menú móvil— sigue
+  escrito con los mismos tokens. Ver la nota de esa clase en `global.css`.
+
+  Se midieron los doce casos antes de aplicarlo, porque esta superficie tiene anidamiento y
+  velos que hay que **componer** para medir, no tomar al pie de la letra `[medido: 2026-08-06]`:
+    enlace de nav 6,89:1 · activo en oro 5,55:1 · título 9,87:1
+    contacto (oro sobre oro al 8 % sobre banda) 4,86:1
+    chip de tema seleccionado, azul sobre oro 5,55:1
+    panel móvil: texto 8,38:1 · oro 4,71:1 · sobre hover al 10 % 7,19:1
+    borde de control 3,95:1 · anillo de foco 9,87:1
+  El que más margen consumía era el contacto, y por eso su color es el oro y no el azul.
+
+  Se retira `bg-background`, que aquí resolvería al azul de la banda por el ámbito, y se deja
+  explícito el fondo de la clase. `border-b border-border` se queda: la barra es fija y el
+  filete marca su canto cuando el contenido pasa por debajo.
+-->
+<!--
+  Estado inicial, en línea y síncrono a propósito.
+  Se marca «el titular del hero está a la vista» antes de que pinte el navegador,
+  porque el módulo de abajo se difiere y sin esto el nombre del evento asomaría en la
+  barra durante unos milisegundos justo para desaparecer. El observador corrige el
+  valor en cuanto arranca, así que si este script no corriera —o el visitante entrara
+  por un enlace profundo— el nombre queda visible, que es el estado seguro.
+-->
+<script is:inline>
+  document.documentElement.dataset.heroVisible = 'si';
+</script>
+
 <header
   id="site-header"
-  class="fixed inset-x-0 top-0 z-40 border-b border-border bg-background"
+  class="superficie-institucional barra-sitio fixed inset-x-0 top-0 z-40 border-b border-border"
 >
   <!--
     `flex-wrap` para el zoom de texto (WCAG 1.4.4, T6). Los `media query` de
@@ -34,14 +77,23 @@ const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asun
     derecha. Envolviendo, la barra crece hacia abajo en vez de salirse.
   -->
   <nav class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-4 sm:px-8">
-    <a href="#top" class="flex items-center gap-3">
+    <!--
+      El nombre del evento aparece **al dejar atrás el titular del hero**, por
+      indicación de Daniel el 2026-08-09: mientras el titular está a la vista, la
+      barra repetía lo mismo con letra pequeña a 40 px de distancia.
+
+      El nombre accesible del enlace no se mueve de sitio: va en `aria-label`, así
+      que quien navega con lector de pantalla lo tiene siempre, se vea o no. El
+      bloque de texto queda `aria-hidden` para no anunciarlo dos veces.
+    -->
+    <a href="#top" class="flex items-center gap-3" aria-label={c.tituloCorto}>
       <span
         class="grid size-8 shrink-0 place-items-center rounded-full border border-primary/40 bg-primary/8"
         aria-hidden="true"
       >
         <span class="block size-1.5 rounded-full bg-primary"></span>
       </span>
-      <span class="leading-tight">
+      <span class="marca-texto leading-tight" aria-hidden="true">
         <!-- Título oficial abreviado, en inglés en ambos idiomas (RF-1.2). -->
         <span class="block font-display text-sm font-semibold text-foreground">{c.tituloCorto}</span>
         <span class="eyebrow block text-[0.6rem] text-muted-foreground">
@@ -81,9 +133,16 @@ const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asun
         <ThemeSelector group="tema-barra" c={c} />
       </div>
 
+      <!--
+        Borde a plena intensidad, no `/40`. Medido el 2026-08-06: al 40 % daba **1,32:1**
+        contra su propio fondo, así que el botón se leía como texto suelto en lugar de como
+        control. WCAG 1.4.11 pide 3:1 al límite que identifica un componente; con el borde
+        entero son 5,55:1. axe no lo detecta porque no evalúa nada que no sea texto, y por eso
+        hizo falta medirlo aparte.
+      -->
       <a
         href={mailto}
-        class="hidden rounded-control border border-primary/40 bg-primary/8 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/15 sm:block"
+        class="hidden rounded-control border border-primary bg-primary/8 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/15 sm:block"
       >
         {c.ui.contacto}
       </a>
@@ -146,6 +205,19 @@ const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asun
       </details>
     </div>
   </nav>
+
+  <!--
+    La franja vive **dentro** de la barra, no debajo, por indicación de Daniel el
+    2026-08-09: al cargar la barra es alta y lleva la fotografía; al pasar de sección
+    se contrae a la altura de siempre y aparece el nombre del evento.
+
+    Va después del `<nav>` y no detrás de él a propósito. Detrás sería la barra
+    translúcida sobre la foto, y sobre esta fotografía ningún color de texto llega a
+    4,5:1 (RF-21). Debajo, la fila de navegación conserva su color plano —contraste
+    calculable, 0 nodos indeterminados— y la foto sigue formando parte de la misma
+    banda. Es lo que se pedía, por el único camino que cumple.
+  -->
+  <FranjaSede imagen={sedeAcceso} encuadre="50% 50%" />
 </header>
 
 <script>
@@ -218,4 +290,79 @@ const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asun
       if (event.key === 'Escape') menu.open = false;
     });
   }
+
+  /*
+   * Barra consciente del hero.
+   *
+   * Un `IntersectionObserver` sobre el titular del hero y nada más: ni escucha de
+   * `scroll` ni medición de posición en cada cuadro. El navegador ya sabe cuándo un
+   * elemento entra y sale del área visible, y preguntárselo cuesta un callback por
+   * cruce en vez de uno por píxel desplazado.
+   *
+   * `rootMargin` superior negativo del alto de la barra: sin él el titular seguiría
+   * contando como visible mientras pasa por detrás de la barra opaca, que es
+   * justamente cuando ya no se ve.
+   */
+  const titular = document.getElementById('top-titulo');
+
+  if (titular) {
+    const observador = new IntersectionObserver(
+      ([entrada]) => {
+        document.documentElement.dataset.heroVisible = entrada.isIntersecting ? 'si' : 'no';
+      },
+      { rootMargin: '-76px 0px 0px 0px', threshold: 0 },
+    );
+    observador.observe(titular);
+  }
 </script>
+
+<style>
+  /*
+   * Relevo entre el titular del hero y el nombre en la barra.
+   *
+   * El estado por omisión —sin el atributo, sin JavaScript— es **visible**: la
+   * misma regla que sigue `.reveal`. Solo se oculta cuando alguien afirma que el
+   * titular está a la vista.
+   *
+   * `visibility` además de `opacity`, y `transition-behavior: allow-discrete` para
+   * que la propiedad discreta también se interpole: con solo `opacity: 0` el texto
+   * seguiría ocupando su sitio en el árbol de pintado, y axe evalúa el contraste de
+   * lo que está pintado aunque sea invisible —11 nodos indeterminados costó averiguar
+   * eso cuando la barra era translúcida, ver la nota de arriba—.
+   */
+  :root[data-hero-visible='si'] .marca-texto {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-0.375rem);
+  }
+
+  .marca-texto {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .marca-texto {
+      transition:
+        opacity 260ms var(--ease-out-soft, ease-out),
+        transform 260ms var(--ease-out-soft, ease-out),
+        visibility 260ms allow-discrete;
+    }
+  }
+
+  /*
+   * Mientras el hero manda, la barra no dibuja su canto inferior: nace de la
+   * fotografía que va justo debajo y las dos se leen como un mismo bloque. El filete
+   * vuelve cuando el contenido empieza a pasar por detrás, que es para lo que existe.
+   */
+  :root[data-hero-visible='si'] .barra-sitio {
+    border-bottom-color: transparent;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .barra-sitio {
+      transition: border-bottom-color 260ms var(--ease-out-soft, ease-out);
+    }
+  }
+</style>

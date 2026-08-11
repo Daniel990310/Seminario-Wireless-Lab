@@ -15,7 +15,11 @@ const AQUI = fileURLToPath(new URL('.', import.meta.url));
 const VERIFICADORES = [
   { guion: 'verify.mjs', nombre: 'Accesibilidad y peso', autoridad: true },
   { guion: 'verify-tema.mjs', nombre: 'Selector de tema (RF-4)' },
-  { guion: 'verify-red.mjs', nombre: 'Red de colaboración (T3)' },
+  /*
+   * Aquí estaba `verify-red.mjs`, que verificaba T3 —el diagrama de red—. Se retiró el
+   * 2026-08-07 junto con la sección que comprobaba: quedó sin objeto, no relajado. Ver RF-16
+   * en `specs/002-rediseno-visual/requirements.md`.
+   */
   { guion: 'verify-teclado.mjs', nombre: 'Semántica, foco y teclado (T6)' },
   { guion: 'verify-idioma.mjs', nombre: 'Sitio bilingüe (RF-1)' },
   { guion: 'verify-seo.mjs', nombre: 'SEO y metadatos (RNF-3)' },

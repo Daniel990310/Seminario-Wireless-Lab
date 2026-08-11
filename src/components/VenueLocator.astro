@@ -71,10 +71,17 @@ const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&laye
       <p class="mt-2 text-sm text-muted-foreground">{venue.city}, {venue.country}</p>
 
       <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <!--
+          Borde a plena intensidad, no `/40`, por la misma razón que el botón de contacto de
+          la barra: al 40 % medía **2,66:1 en tema claro y 1,09:1 en oscuro** contra su propio
+          fondo `[medido: 2026-08-06]`, por debajo del 3:1 que WCAG 1.4.11 pide al límite de
+          un control. Este es el botón que carga el mapa, así que parecer texto suelto es
+          peor aquí que en cualquier otro sitio: es la acción principal de la sección.
+        -->
         <button
           type="button"
           data-locator-load
-          class="rounded-control border border-primary/40 bg-primary/8 px-5 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/15"
+          class="rounded-control border border-primary bg-primary/8 px-5 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/15"
         >
           {ui.sede.cargarMapa}
         </button>
@@ -96,7 +103,23 @@ const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&laye
 </div>
 
 <script>
-  // Inserta el iframe solo al pulsar el botón, y solo una vez.
+  /*
+   * El mapa se inserta AL ENTRAR LA SECCIÓN EN PANTALLA, y también al pulsar el botón.
+   *
+   * Daniel pidió el 2026-08-09 que el mapa se vea siempre, no tras un clic. Hacerlo cargando
+   * el iframe con la página **rompería RNF-2.3**, que exige que no haya ninguna petición a
+   * dominios de terceros en la carga inicial —y RNF-2.2 lo da por hecho: fija el presupuesto
+   * «sin contar el mapa que se carga a petición»—. Además enviaría la visita a Google, con sus
+   * cookies, antes de que nadie llegue siquiera a la sección de la sede.
+   *
+   * Cargarlo al hacerse visible da lo que se pidió sin romper nada: quien llega a la sede ve
+   * el mapa ya puesto, y quien nunca baja hasta ahí no le manda nada a Google. En la carga
+   * inicial no se pide un solo byte a terceros, que es literalmente lo que dice el requisito.
+   *
+   * El botón se conserva como camino alternativo: si `IntersectionObserver` no existe o el
+   * observador no llega a disparar, el bloque sigue siendo utilizable en lugar de quedarse en
+   * un panel muerto.
+   */
   for (const locator of document.querySelectorAll<HTMLElement>('[data-venue-locator]')) {
     const button = locator.querySelector<HTMLButtonElement>('[data-locator-load]');
     const panel = locator.querySelector<HTMLElement>('[data-locator-panel]');
@@ -104,18 +127,36 @@ const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${BBOX}&laye
 
     if (!button || !panel || !embed) continue;
 
-    button.addEventListener(
-      'click',
-      () => {
-        const iframe = document.createElement('iframe');
-        iframe.src = embed;
-        iframe.title = embedTitle ?? 'Mapa de la sede';
-        iframe.loading = 'lazy';
-        iframe.referrerPolicy = 'no-referrer-when-downgrade';
-        iframe.className = 'relative block h-[320px] w-full border-0 sm:h-[420px]';
-        panel.replaceWith(iframe);
-      },
-      { once: true },
-    );
+    let insertado = false;
+    const insertar = () => {
+      if (insertado) return;
+      insertado = true;
+      const iframe = document.createElement('iframe');
+      iframe.src = embed;
+      iframe.title = embedTitle ?? 'Mapa de la sede';
+      iframe.loading = 'lazy';
+      iframe.referrerPolicy = 'no-referrer-when-downgrade';
+      iframe.className = 'relative block h-[320px] w-full border-0 sm:h-[420px]';
+      panel.replaceWith(iframe);
+    };
+
+    button.addEventListener('click', insertar, { once: true });
+
+    /*
+     * `rootMargin` de 200 px: empieza a cargar un poco antes de que el bloque asome, para que
+     * al llegar el mapa ya esté, y no se vea el panel cambiando por el iframe delante de la
+     * cara. Sigue sin pedir nada mientras la sección esté lejos.
+     */
+    if ('IntersectionObserver' in window) {
+      const observador = new IntersectionObserver(
+        (entradas) => {
+          if (!entradas.some((e) => e.isIntersecting)) return;
+          observador.disconnect();
+          insertar();
+        },
+        { rootMargin: '200px' },
+      );
+      observador.observe(locator);
+    }
   }
 </script>

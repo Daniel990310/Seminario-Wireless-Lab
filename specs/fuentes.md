@@ -187,6 +187,63 @@ lista** —que tras ordenar es `/en/`— sin decirlo, cuando RNF-2.1 habla de pe
 idioma». Ahora se miden las dos, el presupuesto se juzga contra la más pesada y el
 informe imprime la cifra de cada una. Hoy coinciden: 152,5 kB las dos.
 
+### Contraste de las capas de PropagationFigure, 2026-08-03
+
+Línea base del plan 002. Ninguna de estas cifras la produce un verificador: **axe evalúa
+contraste de texto y no mira los trazos de un SVG**, así que la figura del hero llevaba
+desde T5 dibujada por debajo del umbral de objeto gráfico con los siete verificadores en
+verde.
+
+| Capa | Token × opacidad | Claro | Oscuro |
+| ---- | ---------------- | ----- | ------ |
+| Anillos de rango | `--border` × 0,9 | 1,36:1 | 1,49:1 |
+| Radiales del diagrama polar | `--border` × 0,7 | 1,27:1 | 1,49:1 |
+| Contorno del objeto dispersor | `--border` × 1,0 | 1,42:1 | 1,49:1 |
+| Primer frente de onda | `--primary` × 0,66 | 4,14:1 | 4,51:1 |
+| Noveno frente de onda | `--primary` × 0,22 | 1,49:1 | 1,53:1 |
+
+Cómo se obtuvieron: se compone el color de cada capa sobre el fondo de su tema con la
+opacidad que aplica el componente, y se calcula la razón de luminancias de WCAG. Los
+valores de entrada son los tokens de `global.css`; las opacidades salen de
+`PropagationFigure.astro`.
+
+```bash
+node -e "
+const L=h=>{const c=[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255).map(v=>v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4));return 0.2126*c[0]+0.7152*c[1]+0.0722*c[2]};
+const R=(a,b)=>{const x=L(a),y=L(b);return ((Math.max(x,y)+0.05)/(Math.min(x,y)+0.05)).toFixed(2)};
+const mix=(f,b,a)=>{const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));const F=p(f),B=p(b);return '#'+F.map((v,i)=>Math.round(v*a+B[i]*(1-a)).toString(16).padStart(2,'0')).join('')};
+console.log('anillos claro', R(mix('#cbd5e1','#f8fafc',0.9),'#f8fafc'));
+console.log('anillos oscuro', R(mix('#263349','#0a1020',0.9),'#0a1020'));
+"
+```
+
+**No es un incumplimiento de WCAG 1.4.11** (ver «Hechos externos»), pero contradice al
+propio `Hero.astro`, que declara la figura «contenido ilustrativo, no decoración de
+fondo» y por eso le dio cinco columnas del hero en T5. La captura que lo destapó está en
+`specs/002-rediseno-visual/baseline/`.
+
+### Peso después de RF-9, la capa de detección del hero
+
+Actualizado el 2026-08-04 tras sustituir los arcos por el surco líquido, con
+`npm run build && npm run verify:todo`, siete verificadores en verde
+`[medido]`:
+
+| Cifra | Antes | Después | Techo |
+| ----- | ----- | ------- | ----- |
+| JavaScript comprimido | 1,4 kB | **3,9 kB** | 115 kB |
+| Primera carga comprimida | 152,5 kB | **155,6 kB** | 260 kB |
+| Nodos con contraste indeterminado | 0 | **0** (8 corridas) | 0 |
+
+`verify:interaccion` registró además alfa media **0,01** en la banda exterior frente a
+**6,38** en el centro; cambio cercano al puntero de **97,7 %** frente a **1,2 %** en la
+zona lejana; y alturas simultáneas de **−0,041 a 0,290**, evidencia de valle y cresta
+`[medido]`. La firma neutra `2354568967` cambió durante la interacción y volvió exactamente
+a `2354568967`; energía `0` y `data-sensing-running=false` al terminar.
+
+**Inlinar el guion no cambia el peso**: 155,6 kB con archivo aparte y con el guion dentro
+del HTML. Son los mismos bytes en otro sitio. Lo que cambia es que el navegador no pide
+ningún `.js`, que es lo que verifica T3.
+
 ### Repositorios evaluados
 
 | Cifra | Valor | Cómo se obtuvo |
@@ -273,6 +330,18 @@ Dos discrepancias que conviene tener presentes:
 | Netlify permite proyectos comerciales en el plan gratuito, sin revender el hosting | [Netlify Support](https://answers.netlify.com/t/can-we-use-netlify-free-plan-for-commercial-purposes/41545) | 2026-07-29 |
 | Cloudflare Pages: para un subdominio con DNS externo basta un CNAME; el dominio raíz exige mover los nameservers | [Custom domains](https://developers.cloudflare.com/pages/configuration/custom-domains/) | 2026-07-29 |
 | Un dominio `.cl` en NIC Chile cuesta del orden de $9.990 CLP + IVA al año | [NIC Chile — tarifas](https://www.nic.cl/dominios/tarifas.html) | 2026-07-29 |
+| **ANID exige una nomenclatura fija para la mención de financiamiento** —«Financiado por la Agencia Nacional de Investigación y Desarrollo, ANID / Instrumento (concurso)»— y **el logo conjunto «Ministerio de Ciencia + ANID»**, no la marca ANID sola. Los **sitios web** están nombrados entre los productos en los que aplica | [Kit digital ANID](https://anid.cl/media-kit/) → «¿Cómo mencionar a ANID en productos de divulgación?» y [`Logos.zip`](https://s3.amazonaws.com/documentos.anid.cl/documentos-y-servicios/kit-digital/Logos.zip) | 2026-08-03 |
+| **Columbia University exige que las partes externas pidan permiso** a la Office of General Counsel o a Columbia Licensing para usar sus marcas | [Guidelines for Use of Columbia Marks](https://cufo.columbia.edu/content/guidelines-use-columbia-marks) · [Visual Identity](https://visualidentity.columbia.edu/) | 2026-08-03 |
+| **Nokia: el acceso a su sitio no concede licencia ni derecho a usar ninguna marca sin consentimiento escrito previo** | [Nokia — Terms of use](https://www.nokia.com/notices/terms/) | 2026-08-03 |
+| **El paquete oficial de logos de la PUCV no incluye variante blanca sobre transparente**: monocromo y color son de tinta oscura, y `calado` es un bloque relleno al 99 % del lienzo `[medido: luminancia de los píxeles con tinta]` | [Normas Gráficas PUCV](https://www.pucv.cl/uuaa/direccion-de-comunicacion-estrategica/normas-graficas-pucv) | 2026-08-03 |
+| **No existe fotografía con licencia libre de los expositores**: Gil Zussman tiene artículo en Wikipedia **sin** imagen, y ninguno de los seis aparece retratado en Wikimedia Commons | [Gil Zussman — Wikipedia](https://en.wikipedia.org/wiki/Gil_Zussman) | 2026-08-03 |
+| **Una superficie de agua interactiva puede modelarse como un campo de alturas perturbado por el puntero**: el ejemplo oficial de Three.js pide hacer clic y mover el mouse para alterar el agua | [Three.js — webgl gpgpu water](https://threejs.org/examples/webgl_gpgpu_water.html) | 2026-08-04 |
+| **Una retícula de desplazamiento puede conservar estado en un campo numérico y relajarlo progresivamente hacia cero**. El tutorial usa `GPUComputationRenderer`; aquí se adoptó el principio, no Three.js ni el RGB shift, y se resolvió con 513 nodos en Canvas 2D para no añadir dependencias | [Codrops — Grid Displacement Texture with GPGPU and Shaders](https://tympanus.net/codrops/2024/08/27/grid-displacement-texture-with-rgb-shift-using-three-js-gpgpu-and-shaders/) | 2026-08-04 |
+| **La persistencia de fósforo de un PPI de radar es ámbar, y su brillo es la intensidad de la señal recibida**: «the light intensity, typically orange in colour, was governed by the instantaneous strength of the received radar signal». Es el argumento por el que el rastro del hero no es rojo | [radartutorial.eu — PPI-scope](https://www.radartutorial.eu/12.scopes/sc16.en.html) | 2026-08-03 |
+| **Una rampa de color que salta de tono (el arcoíris de *jet*) no es perceptualmente uniforme y falla para el ~8 % de hombres con deficiencia rojo-verde**; matplotlib la abandonó como predeterminada por eso. La alternativa correcta para intensidad es una rampa de luminancia, y la familia azul→amarillo (*cividis*) está diseñada para ser segura ante daltonismo | [Turbo, an improved rainbow colormap (Google Research)](https://research.google/blog/turbo-an-improved-rainbow-colormap-for-visualization/) · [CMasher, arXiv:2003.01069](https://arxiv.org/pdf/2003.01069) | 2026-08-03 |
+| **WCAG 2.2.2 solo aplica al movimiento que empieza solo, dura más de 5 s y se presenta en paralelo con otro contenido**, y entre sus técnicas suficientes no figura `prefers-reduced-motion`: son controles de pausa o detención. Por eso un efecto que arranca con el puntero queda fuera del criterio, y tres bucles infinitos no | [W3C — Understanding SC 2.2.2 Pause, Stop, Hide](https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html) | 2026-08-03 |
+| **`is:inline` de Astro no transforma TypeScript ni resuelve importaciones**, y duplica el código por cada instancia del componente. Astro compila y agrupa los `<script>` por omisión desde v0.26 | [Astro — directives reference](https://docs.astro.build/en/reference/directives-reference/) · [client-side scripts](https://docs.astro.build/en/guides/client-side-scripts/) | 2026-08-03 |
+| **WCAG 1.4.11 exige 3:1 solo a «las partes de gráficos necesarias para entender el contenido»**, y exceptúa expresamente el gráfico con fin estético que no hace falta ver para entender el contenido, y aquel cuya información «está disponible en otra forma» | [W3C — Understanding SC 1.4.11 Non-text Contrast](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html) | 2026-08-03 |
 
 ### Observación de estilo, no medición
 

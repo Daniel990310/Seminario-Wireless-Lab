@@ -1,24 +1,32 @@
 {
   "version": "1.0",
   "name": "Seminario Wireless Lab",
+  "fuenteDeVerdad": "src/styles/global.css — capa 1 (primitivos) y capa 2 (semántica). Este archivo es un espejo para las herramientas de 21st; si discrepan, manda global.css.",
+  "procedenciaDelColor": "Tres tintas oficiales de la PUCV — Pantone 2945 U azul, 1807 U rojo, 873 U oro — extraídas del escudo del paquete logos_pucv. Los valores de abajo son los derivados por umbral de contraste, no las tintas crudas: las crudas no alcanzan WCAG sobre estos fondos. Detalle y ratios medidos en el encabezado de global.css.",
   "tokens": {
     "colors": {
-      "primary": "#1E3A5F",
+      "primary": "#1A3A5D",
+      "primaryDark": "#9FB5CC",
       "secondary": "#475569",
       "background": "#F8FAFC",
+      "backgroundDark": "#0A1020",
       "surface": "#EFF3F8",
-      "accent": "#A16207"
+      "accent": "#705B47",
+      "accentDark": "#C6AF97",
+      "institutionalRed": "#954749",
+      "institutionalRedDark": "#D5A8A9"
     },
     "typography": {
       "fontFamily": "Atkinson Hyperlegible Next, sans-serif",
-      "headingFont": "Crimson Pro, serif"
+      "headingFont": "Crimson Pro, serif",
+      "monoFont": "JetBrains Mono, monospace"
     },
     "border": {
       "radius": "2px"
     }
   },
   "rules": {
-    "iconLibrary": "lucide-react",
-    "allowInlineStyles": false
+    "allowInlineStyles": false,
+    "colorsFromSemanticLayerOnly": true
   }
 }

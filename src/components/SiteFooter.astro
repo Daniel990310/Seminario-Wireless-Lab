@@ -10,7 +10,19 @@ const { c } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-<footer class="relative border-t hairline bg-surface/60 px-5 py-16 sm:px-8">
+<!--
+  El pie es una banda de azul institucional PUCV, por indicación de Daniel el 2026-08-06.
+
+  No hay ni una clase de color cambiada dentro: `superficie-institucional` redefine la capa
+  semántica en este subárbol, así que `text-foreground`, `text-muted-foreground` y
+  `text-primary` siguen escritos igual y resuelven a los valores medidos para fondo azul.
+  Ver la nota de esa clase en `global.css`.
+
+  Se retira `bg-surface/60`, que era una superficie translúcida sobre el fondo de página, y
+  también el `border-t`: una banda de color no necesita filete para separarse —lo hace con
+  10,13:1 sobre el fondo claro—, y el filete heredado quedaba como una línea suelta.
+-->
+<footer class="superficie-institucional relative px-5 py-16 sm:px-8">
   <div class="mx-auto max-w-7xl">
     <div class="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr]">
       <div class="min-w-0">
@@ -59,8 +71,17 @@ const year = new Date().getFullYear();
     >
       <!-- Los nombres institucionales no se traducen: ver `src/data/comun.ts`. -->
       <p>© {year} {c.organizers[0].name} · {c.organizers[1].name}</p>
+      <!--
+        El espacio antes del código va explícito con `{' '}`, y no es cosmético: un salto de
+        línea entre dos expresiones se colapsa a nada, así que la versión anterior imprimía
+        «ProyectoFOVI250222» pegado. Se vio al capturar el pie sobre la banda azul el
+        2026-08-06; llevaba ahí desde antes.
+
+        La redacción de la mención sigue sin cumplir RNF-8.1 —falta el instrumento en la
+        posición que ANID exige— y eso es otro asunto, pendiente con la agencia.
+      -->
       <p class="font-mono">
-        {c.ui.pie.financiadoPor} {c.funding.agency.shortName} · {c.ui.pie.proyecto}
+        {c.ui.pie.financiadoPor} {c.funding.agency.shortName} · {c.ui.pie.proyecto}{' '}
         {c.funding.project.code}
       </p>
     </div>

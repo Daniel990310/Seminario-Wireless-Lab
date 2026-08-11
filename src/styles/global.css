@@ -30,30 +30,160 @@
    CAPA 1 · PRIMITIVOS
    Valores crudos. No cambian con el tema y no generan utilidades.
    ═══════════════════════════════════════════════════════════════════════ */
+/*
+ * PROCEDENCIA DEL COLOR — las tres tintas oficiales de la PUCV.
+ *
+ * El Manual de Normas Gráficas PUCV 2023 declara la marca en tres Pantone: **2945 U
+ * (azul), 1807 U (rojo) y 873 U (oro)**. Los valores sRGB no se tomaron de una página web
+ * ni se estimaron desde el Pantone: se **extrajeron del escudo oficial** del paquete
+ * `logos_pucv`, ya versionado en `specs/002-rediseno-visual/marcas/pucv-color-h.png`.
+ * `[medido: 2026-08-06, sharp, píxeles opacos]`
+ *
+ *   azul  #28598D  59,5 % del escudo a color · y 100 % de la versión monocroma
+ *   rojo  #AB5153  20,6 %
+ *   oro   #B1906F   5,8 %
+ *
+ * POR QUÉ LOS PRIMITIVOS NO SON ESAS TINTAS TAL CUAL.
+ *
+ * Son tintas de imprenta de claridad media, y como color de texto degradan el contraste:
+ * el azul da 2,62:1 sobre el fondo oscuro y el oro **2,83:1 sobre el fondo claro**, que no
+ * alcanza ni el 3:1 de objeto gráfico. `[medido]` Meterlas crudas en un token de texto
+ * habría roto RNF-1.1 sin avisar.
+ *
+ * Lo que se hace en su lugar: **el tono es el de la PUCV y la claridad la fija el umbral.**
+ * Cada primitivo se derivó por bisección, mezclando la tinta hacia negro o hacia blanco
+ * —lo que conserva el tono y solo mueve la claridad— hasta alcanzar el ratio que este
+ * archivo ya tenía documentado. Ningún ratio baja respecto de la paleta anterior.
+ *
+ * Los fondos NO se tocan a propósito: `--slate-50` y `--ink-900` son el otro término de
+ * todas estas mediciones, y moverlos invalidaría las catorce de una vez.
+ *
+ * Nota sobre el oro: Pantone 873 es una tinta **metálica**, y una metálica llevada a sRGB
+ * plano siempre queda apagada. De ahí que el derivado sea un pardo grisáceo y no el ámbar
+ * saturado anterior. Es fidelidad a la marca, no un error de cálculo.
+ */
 :root {
-  /* Navy institucional */
-  --navy-900: #0f172a;
-  --navy-700: #1e3a5f;
-  --navy-300: #8fb6df;
+  /*
+   * Geometría de la barra del sitio (RF-21). Vive aquí, y no en los dos componentes,
+   * porque son dos medidas que **tienen** que coincidir: la barra es `fixed`, así que
+   * el hero reserva su sitio con relleno, y si los números se separan aparece un hueco
+   * o el titular se esconde debajo de la fotografía.
+   *
+   * `--alto-barra` es medido, no estimado: la fila de navegación mide 71,0 px a 1440 y
+   * 73,0 px a 768 y 390 `[medido: 2026-08-09]`. Se toma el mayor, porque quedarse corto
+   * aquí sí se ve.
+   *
+   * `--alto-franja` es el valor original × 0,65, por indicación de Daniel el
+   * 2026-08-09. Se deja la multiplicación a la vista en lugar de tres números ya
+   * resueltos: así se sigue viendo de dónde salió el `clamp` y qué se le aplicó.
+   */
+  --alto-franja: calc(clamp(9rem, 21vw, 16rem) * 0.65);
+  --alto-barra: 4.5625rem;
 
-  /* Dorado: el único acento del sistema */
-  --gold-700: #8a5206;
-  --gold-400: #e0a94a;
+  /* Azul PUCV · Pantone 2945 U · derivado de #28598D */
+  --navy-900: #0b1827; /* 17,09:1 sobre fondo claro — antes 17,06:1 */
+  --navy-700: #1a3a5d; /* 11,11:1 sobre fondo claro — antes 10,99:1 */
+  --navy-300: #9fb5cc; /*  8,99:1 sobre fondo oscuro — antes 8,96:1 */
 
-  /* Neutros fríos para el tema claro */
-  --slate-50: #f8fafc;
-  --slate-100: #eff3f8;
-  --slate-300: #cbd5e1;
-  --slate-500: #6b7c91;
-  --slate-600: #475569;
+  /*
+   * Oro PUCV · Pantone 873 U · interpretación digital de #B1906F.
+   *
+   * NO es la tinta reproducida al pie de la letra, y es deliberado. Pantone 873 es una
+   * tinta **metálica**: su carácter viene de reflejar luz, no de su cromaticidad, así que
+   * llevada a sRGB plano queda parda. El derivado fiel era `#705b47`, y en pantalla los
+   * frentes de onda de la figura dejaban de distinguirse del azul `[capturas, 2026-08-06]`.
+   *
+   * Se sube el croma separando los canales respecto de su media **manteniendo la luminancia
+   * constante**, de modo que el ratio no se mueve por este cambio: el color se satura, no se
+   * aclara. Es la lectura habitual de una metálica en pantalla.
+   */
+  --gold-700: #845223; /*  5,70:1 sobre fondo claro */
+  --gold-400: #dbaa77; /*  9,14:1 sobre fondo oscuro */
 
-  /* Neutros para el tema oscuro */
-  --ink-900: #0a1020;
-  --ink-800: #131b2e;
-  --ink-700: #263349;
-  --steel-400: #9ba9bf;
-  --steel-500: #647490;
-  --steel-100: #e8edf5;
+  /*
+   * AQUÍ NO HAY ROJO, Y ES UNA DECISIÓN.
+   *
+   * Pantone 1807 U es la segunda tinta del escudo —20,6 % del área— así que se derivó y se
+   * midió el 2026-08-06: **`#954749` da 6,13:1 sobre el fondo claro y `#d5a8a9` da 9,03:1
+   * sobre el oscuro.** Reponerlo es añadir estas dos líneas; los valores están aquí para
+   * que nadie tenga que recalcularlos.
+   *
+   * No se declara porque **no hay ningún elemento que deba ser rojo**, y el único candidato
+   * que existía era el peor posible: el aviso `role="note"` de sesiones de demostración, o
+   * sea una advertencia. Hacer del rojo institucional el color de «cuidado» convierte la
+   * tinta de la universidad en señal de error, que es lo contrario de lo que hace una
+   * marca. Declarar un color para justificar que existe es la misma clase de relleno que
+   * escribir un título para justificar un hueco.
+   *
+   * Cuándo sí tendría sentido: en una llamada a la acción institucional —el botón de
+   * contacto— donde azul y rojo son la pareja del escudo y ninguno significa «error».
+   */
+
+  /*
+   * NEUTROS TEÑIDOS CON EL TONO DE LA PUCV.
+   *
+   * Aquí está el cambio que de verdad se ve, y el motivo de que el primer intento del
+   * 2026-08-06 fuera invisible: se habían cambiado solo los tokens cromáticos —navy y
+   * oro—, que en esta página aparecen en trazos finos de texto y filetes. `[medido]` el
+   * resultado fue **0,7 % de píxeles con cambio perceptible y 4/255 de diferencia máxima**
+   * en una sección de contenido. El fondo, las superficies, los filetes y el texto
+   * secundario son estos neutros, y son el 95 % de los píxeles. Sin teñirlos, la identidad
+   * no cambia.
+   *
+   * Además, los valores anteriores eran slate y zinc de catálogo: no tenían nada de PUCV.
+   *
+   * CÓMO SE TIÑERON SIN ROMPER NINGUNA MEDICIÓN.
+   *
+   * El contraste WCAG depende **únicamente de la luminancia relativa**. Así que cada
+   * neutro se mezcló hacia el azul de marca #28598D y después se reescaló en RGB lineal
+   * hasta recuperar su luminancia original —el escalado uniforme en lineal conserva la
+   * cromaticidad, de modo que el tono conseguido no se pierde—. Con la luminancia intacta,
+   * las catorce parejas documentadas mantienen su ratio por construcción y no por suerte.
+   * `[medido: 2026-08-06, las catorce recalculadas]`
+   *
+   * El tinte es mayor en las superficies grandes, que es donde se percibe, y menor en los
+   * textos, que teñidos en exceso dejan de leerse como neutros con carácter y se leen como
+   * azules.
+   *
+   * LÍMITE QUE HAY QUE CONOCER: el fondo claro solo admite un 13 % de tinte. Por encima de
+   * eso, recuperar la luminancia de un color casi blanco saturaría un canal. Para un fondo
+   * claro visiblemente azulado habría que **aceptar una bajada de luminancia** y volver a
+   * medir las catorce parejas; hay margen sobre los mínimos de WCAG, pero no sobre los
+   * ratios que este proyecto se fijó, así que es una decisión y no un ajuste.
+   */
+
+  /*
+   * SEGUNDA PASADA: se abandona la luminancia constante, porque el resultado era invisible.
+   *
+   * La pasada anterior teñía cada neutro conservando su luminancia relativa, y así ningún
+   * ratio se movía. Cumplió la promesa y falló el objetivo: conservar la luminancia de un
+   * color casi blanco no deja sitio para croma, el fondo claro topaba en 13 % de tinte, y
+   * el cambio real fue de **3 unidades sobre 255** `[medido]`. Daniel lo dijo tres veces:
+   * la página seguía igual. Tenía razón.
+   *
+   * Ahora el color se fija por intención y se mide después. El fondo claro se mueve
+   * **15/255**, cinco veces más. El precio, autorizado explícitamente: los ratios de texto
+   * en tema claro bajan respecto de los que el proyecto se había fijado —17,06 → 15,59 el
+   * principal, 10,99 → 10,13 el primario— y siguen muy por encima del 4,5:1 de WCAG.
+   * `[medido: 2026-08-06, las veinte parejas recalculadas]`
+   *
+   * El tema oscuro no pierde nada: todos sus ratios suben ligeramente.
+   */
+
+  /* Neutros del tema claro · papel azul institucional */
+  --slate-50: #e9f0fa; /* fondo */
+  --slate-100: #d3e0f2; /* superficie · se profundizó para separarla del fondo */
+  --slate-300: #b6c9e3; /* filete decorativo */
+  --slate-500: #54719a; /* borde de control · 4,35:1 */
+  --slate-600: #3b5372; /* texto secundario · 6,87:1 */
+
+  /* Neutros del tema oscuro · azul institucional profundo */
+  --ink-900: #03101f; /* fondo */
+  --ink-800: #0a1c31; /* superficie */
+  --ink-700: #1e3a5c; /* filete decorativo */
+  --steel-400: #95a9ca; /* texto secundario · 8,02:1 */
+  --steel-500: #5c749a; /* borde de control · 4,03:1 */
+  --steel-100: #e4edfd; /* texto principal · 16,24:1 */
 
   --pure-white: #ffffff;
 }
@@ -148,11 +278,52 @@
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/*
+ * Rampa de intensidad de la capa de detección del hero (RF-9).
+ *
+ * Deriva de la capa semántica, no de los primitivos: así cada tema aporta el par
+ * que ya tiene medido, y un componente sigue sin poder leer un primitivo.
+ *
+ *   frío  = señal débil, la onda que va  → --primary
+ *   calor = eco fuerte, la medición que vuelve → --accent
+ *
+ * Es la rampa azul→amarillo de *cividis*, segura ante daltonismo. No se usa una
+ * rampa que salte de tono (el arcoíris de *jet*) porque no es perceptualmente
+ * uniforme y falla para el ~8 % de hombres con deficiencia rojo-verde.
+ */
+:root {
+  --sensing-frio: var(--primary);
+  --sensing-calor: var(--accent);
+  --sensing-luz: var(--gold-400);
+
+  /*
+   * Ganancia del canal cálido, por tema. No es un ajuste a ojo: el mismo alfa
+   * sobre `#f8fafc` se lava y sobre `#0a1020` se lee. Medido mirando las dos
+   * capturas, y separado en un token para que se vea que es una compensación de
+   * fondo y no un número mágico dentro del componente. El canal frío no la
+   * necesita: `--primary` da 10,99:1 sobre el fondo claro.
+   */
+  --sensing-ganancia: 1.9;
+}
+
+:root[data-theme='dark'] {
+  --sensing-ganancia: 1;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 5rem;
     -webkit-tap-highlight-color: transparent;
+    /*
+     * Permite animar tamaños HACIA `auto`, que es lo que necesita la apertura suave de los
+     * `<details>` —ver la nota de `::details-content` en la capa de componentes—. Sin esto
+     * habría que fijar una altura en píxeles, y D7 ya descartó ese camino: una altura medida
+     * en el DOM no sobrevive al zoom de texto al 200 % que exige WCAG 1.4.4.
+     *
+     * Es progresivo: donde no se soporta, se ignora y el desplegable abre sin transición.
+     */
+    interpolate-size: allow-keywords;
   }
 
   body {
@@ -202,6 +373,100 @@
 }
 
 @layer components {
+  /*
+   * Banda de azul institucional PUCV.
+   *
+   * QUÉ HACE: **redefine la capa semántica dentro de un ámbito.** Los componentes que
+   * viven aquí no cambian ni una clase de utilidad —siguen diciendo `text-foreground` y
+   * `text-muted-foreground`— y esos tokens resuelven a valores calculados para fondo azul.
+   * Es exactamente lo que dice la capa 2 sobre cómo se cambia de tema: sustituir el bloque
+   * de tokens, no recorrer los componentes con condicionales.
+   *
+   * FUNCIONA GRACIAS A `@theme inline`. Las utilidades que Tailwind genera apuntan a
+   * `var(--background)` en lugar de a un valor congelado, así que redefinir el token aquí
+   * cambia `bg-background`, `text-foreground` y compañía dentro de este subárbol. Con un
+   * `@theme` normal no funcionaría; ver la nota de ese bloque.
+   *
+   * POR QUÉ EL MISMO AZUL EN LOS DOS TEMAS: el color institucional no depende de la
+   * preferencia del visitante. Sobre el fondo claro la banda separa 10,13:1 y sobre el
+   * oscuro 1,65:1 —menos, pero por encima del 1,11:1 con que hoy se distingue una
+   * superficie del fondo, así que sigue leyéndose como banda—. `[medido: 2026-08-06]`
+   *
+   * Todos los valores medidos sobre `#1a3a5d`:
+   *   --foreground        #e4edfd   9,87:1
+   *   --muted-foreground  #b8c9de   6,89:1
+   *   --primary           #dbaa77   5,55:1   (el oro de la marca: azul + oro es la PUCV)
+   *   --border-control    #8ea6c4   4,65:1
+   *
+   * OJO con `--border-control`: `--steel-500` daba **2,45:1**, por debajo del 3:1 que
+   * WCAG 1.4.11 exige al límite de un control. Por eso aquí es un valor propio y no el
+   * heredado.
+   */
+  .superficie-institucional {
+    --background: var(--navy-700);
+    --surface: #21456b;
+    --foreground: #e4edfd;
+    --muted-foreground: #b8c9de;
+    --primary: var(--gold-400);
+    --primary-foreground: var(--navy-700);
+    --accent: var(--gold-400);
+    --accent-foreground: var(--navy-700);
+    --border: #33598a;
+    --border-control: #8ea6c4;
+    --ring: #e4edfd;
+
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+
+  /*
+   * Apertura suave de los `<details>`, **sin una línea de JavaScript**.
+   *
+   * El problema: un `<details>` nativo pasa de cerrado a abierto de golpe, y la sección entera
+   * da un salto porque su altura cambia en un solo cuadro. Es lo que se veía en las reseñas de
+   * los expositores.
+   *
+   * Se resuelve con `::details-content`, el pseudoelemento que envuelve lo desplegable, más
+   * dos piezas que hacen falta juntas:
+   *
+   * - `interpolate-size: allow-keywords` en la raíz, que permite animar HACIA `auto`. Sin él
+   *   habría que fijar una altura en píxeles, que es exactamente lo que D7 descartó de la
+   *   agenda del prototipo: `max-height` medido en el DOM no sobrevive al zoom de texto.
+   * - `transition-behavior: allow-discrete`, porque `content-visibility` es una propiedad
+   *   discreta y sin esto el contenido aparecería de golpe al principio de la transición.
+   *
+   * POR QUÉ NO CON JAVASCRIPT: RF-6.2 exige que el contenido siga accesible sin él, y este es
+   * el patrón que el proyecto ya eligió por eso mismo. Donde el navegador no soporta
+   * `::details-content` —Firefox hoy— el desplegable sigue funcionando, solo que sin
+   * transición. Degradar a «abre igual pero seco» es aceptable; degradar a «no abre» no lo
+   * sería.
+   *
+   * Va dentro de `prefers-reduced-motion: no-preference` porque es movimiento, y RNF-1
+   * exige que no quede ninguno activo cuando se pide reducirlo.
+   *
+   * POR CLASE Y NO POR ETIQUETA, y esto costó una regresión: la primera versión usaba
+   * `details::details-content` a secas y **el foco dejó de entrar en el menú móvil**, que
+   * también es un `<details>`. La causa es `content-visibility`: mantiene el contenido inerte
+   * mientras dura la transición, y en un contenido desplegable eso es un detalle estético,
+   * pero en un control de navegación es una trampa de teclado. `verify:teclado` lo cazó.
+   *
+   * Regla que queda: esta clase es para contenido que se lee, nunca para un control con el
+   * que hay que interactuar de inmediato.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    .desplegable-suave::details-content {
+      block-size: 0;
+      overflow: hidden;
+      transition:
+        block-size 320ms var(--ease-out-soft, ease-out),
+        content-visibility 320ms allow-discrete;
+    }
+
+    .desplegable-suave[open]::details-content {
+      block-size: auto;
+    }
+  }
+
   /* Etiqueta monoespaciada para metadatos técnicos (kicker de sección). */
   .eyebrow {
     font-family: var(--font-mono);
