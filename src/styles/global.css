@@ -72,8 +72,12 @@
    * `--alto-barra` es medido, no estimado: la fila de navegación mide 71,0 px a 1440 y
    * 73,0 px a 768 y 390 `[medido: 2026-08-09]`. Se toma el mayor, porque quedarse corto
    * aquí sí se ve.
+   *
+   * `--alto-franja` es el valor original × 0,65, por indicación de Daniel el
+   * 2026-08-09. Se deja la multiplicación a la vista en lugar de tres números ya
+   * resueltos: así se sigue viendo de dónde salió el `clamp` y qué se le aplicó.
    */
-  --alto-franja: clamp(9rem, 21vw, 16rem);
+  --alto-franja: calc(clamp(9rem, 21vw, 16rem) * 0.65);
   --alto-barra: 4.5625rem;
 
   /* Azul PUCV · Pantone 2945 U · derivado de #28598D */

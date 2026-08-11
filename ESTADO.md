@@ -28,8 +28,16 @@ Se cerró la sesión de §10 con un commit —ya no hay nada colgando— y encim
 
 **Lo que se buscaba**, en palabras de Daniel: «darle algo de vida a la página que está muy
 sobria». **Lo que se implementó** es RF-21: la fotografía de la sede va **dentro de la barra
-del sitio**. Al cargar, la barra mide **327 px** y lleva la franja, sin el nombre del evento;
-al pasar de sección se contrae a **71 px** y aparece el nombre `[medido: 2026-08-09]`.
+del sitio**. Al cargar la barra mide **237 px** y lleva la franja, sin el nombre del evento;
+la franja se **cierra encadenada al arrastre** —empieza en el primer píxel de scroll— y la
+barra aterriza en **71 px**, donde aparece el nombre `[medido: 2026-08-09]`.
+
+Lo que hace el encadenado es `animation-timeline: scroll(root block)`, **sin una línea de
+JavaScript** y sin escuchar `scroll`, que es la escucha que obliga a leer geometría en cada
+cuadro. Trampa medida: **el atajo `animation` no sirve**, porque al omitir la duración la
+restablece a `0s` y con duración cero la línea de tiempo no se aplica —la franja se quedaba
+a 166 px a cualquier desplazamiento—. Hay que usar longhands con `animation-duration: auto`.
+Firefox, Safari y quien pide movimiento reducido caen al respaldo por umbral, que ya existía.
 
 **El dato que decidió el diseño, y que conviene no volver a discutir:** la fotografía tiene
 negro puro y blanco puro en la misma imagen —rango de luminancia **0,000–1,000**—, así que

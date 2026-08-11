@@ -81,14 +81,64 @@ const { imagen, encuadre = '50% 50%' } = Astro.props;
   }
 
   /*
-   * La contracción.
+   * La contracción, atada al arrastre y no a un umbral.
    *
-   * Se anima `height` y no `max-height` porque el valor de partida ya es una longitud
-   * resuelta, así que no hace falta el truco de `max-height` para animar desde `auto`.
+   * Es una animación conducida por el desplazamiento: la franja empieza a cerrarse en
+   * el primer píxel de scroll y su altura es función de cuánto se ha arrastrado, así
+   * que se puede parar a medio camino y volver atrás. `animation-timeline: scroll()`
+   * lo hace **sin una sola línea de JavaScript** y sin escuchar `scroll`, que es la
+   * escucha que obliga a leer geometría en cada cuadro.
    *
-   * `content-visibility` con `allow-discrete` retira además la imagen del árbol de
-   * pintado al terminar: contraída a 0 con `overflow: hidden` seguiría pintándose y
-   * recortándose en cada cuadro para nada.
+   * `animation-range` termina en `--alto-franja`: la franja está cerrada justo cuando
+   * se ha arrastrado su propia altura. Atarlo a la altura y no a un número fijo es lo
+   * que hace que se sienta igual en un móvil y en un monitor ancho, donde el `clamp`
+   * da alturas distintas.
+   *
+   * `both` importa: sin él la franja volvería a su altura declarada al salir del
+   * rango, es decir se reabriría al seguir bajando.
+   */
+  @keyframes franja-contraer {
+    to {
+      height: 0;
+    }
+  }
+
+  /*
+   * Longhands y no el atajo `animation`, y esto costó una medición en falso: el atajo
+   * **restablece `animation-duration` a `0s`** cuando se omite, y con duración cero la
+   * línea de tiempo no llega a aplicarse. La franja se quedaba a 166 px a cualquier
+   * desplazamiento `[medido: 2026-08-09]`. Para una animación conducida por
+   * desplazamiento la duración tiene que ser `auto`, que es lo que hace que el
+   * progreso lo marque el rango y no un reloj.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+   @supports (animation-timeline: scroll()) {
+    .franja-sede {
+      animation-name: franja-contraer;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(root block);
+      animation-range-start: 0;
+      animation-range-end: var(--alto-franja);
+    }
+   }
+  }
+
+  /*
+   * Respaldo, y sirve para dos casos a la vez:
+   *
+   *   - Navegadores sin animaciones conducidas por desplazamiento (hoy Firefox y
+   *     Safari). Ahí no hay progreso continuo que leer sin escuchar `scroll`.
+   *   - Quien pide movimiento reducido. La franja sigue cerrándose, pero de una vez,
+   *     y no encadenada al arrastre.
+   *
+   * En los dos casos se cae al umbral que ya existe para el nombre del evento: la
+   * franja se cierra al dejar atrás el titular del hero. Es menos fino, no está roto.
+   *
+   * No hace falta aislarlo con `@supports not`: donde la animación sí corre, gana en la
+   * cascada —el origen de animación pesa más que una declaración normal de autor— y al
+   * terminar con `both` la altura se queda en 0, que es lo mismo que dice esta regla.
    */
   :root[data-hero-visible='no'] .franja-sede {
     height: 0;
@@ -108,22 +158,22 @@ const { imagen, encuadre = '50% 50%' } = Astro.props;
    * fotografía hasta media pantalla. Mientras está abierto, la franja se recoge.
    */
   header:has([data-mobile-menu][open]) .franja-sede {
-    height: 0;
+    /* `!important` porque compite con la animación conducida por desplazamiento, y
+       aquí la prioridad es que el menú abierto no empuje la foto a media pantalla. */
+    height: 0 !important;
     content-visibility: hidden;
   }
 
   /*
-   * En oscuro el velo sube mucho más de lo que sugiere la aritmética. Con 24 % la
-   * franja salía indistinguible de la versión clara `[captura, 2026-08-09]`: una
-   * fachada blanca al sol de mediodía sobre un fondo de luminancia 0,006 se lee
-   * como un agujero de luz, no como parte de la página. La saturación baja un
-   * punto por la misma razón: el cielo saturado competía con el único acento
-   * cromático que tiene el tema oscuro.
+   * El velo ya no depende del tema, y eso es una consecuencia de haber metido la franja
+   * dentro de la barra: `superficie-institucional` redefine `--background` al azul PUCV
+   * en todo este subárbol, y ese azul es el mismo en los dos temas. Antes la franja
+   * estaba en `main` y el velo tomaba el fondo de la página, que sí cambia; de ahí la
+   * corrección de 18 % a 48 % que hubo que hacer para el tema oscuro y que aquí sobra.
+   *
+   * La saturación sí se baja en oscuro: el cielo saturado competía con el único acento
+   * cromático que tiene ese tema.
    */
-  :root[data-theme='dark'] .franja-sede {
-    --velo: 48%;
-  }
-
   :root[data-theme='dark'] .franja-sede__imagen {
     filter: saturate(0.88);
   }
@@ -147,16 +197,22 @@ const { imagen, encuadre = '50% 50%' } = Astro.props;
   }
 
   /*
-   * El degradado arranca a media banda y no antes: si empieza arriba se come el
-   * cielo y la franja pierde la mitad de lo que tiene que mostrar. `oklab` para
-   * que el tramo intermedio no vire a gris sucio, que es lo que hace la
-   * interpolación en sRGB entre un azul saturado y un azul muy oscuro.
+   * El degradado va **arriba**, por indicación de Daniel el 2026-08-09.
+   *
+   * Y arriba tiene más sentido que abajo desde que la franja está dentro de la barra:
+   * lo que hay encima es la fila de navegación en azul PUCV, y `--background` resuelve
+   * a ese mismo azul en este subárbol. O sea que la fotografía **nace de la barra** en
+   * lugar de empezar con un canto. Abajo el canto sí es duro, contra el hero, y ahí es
+   * donde se quiere: marca dónde acaba la barra.
+   *
+   * `oklab` para que el tramo intermedio no vire a gris sucio, que es lo que hace la
+   * interpolación en sRGB entre el azul del cielo y el azul de la barra.
    */
   .franja-sede__desvanecido {
     background-image: linear-gradient(
-      to bottom,
-      transparent 42%,
-      color-mix(in oklab, var(--background) 55%, transparent) 74%,
+      to top,
+      transparent 46%,
+      color-mix(in oklab, var(--background) 55%, transparent) 76%,
       var(--background) 100%
     );
   }
