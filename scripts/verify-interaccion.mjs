@@ -456,6 +456,40 @@ const check = (nombre, ok, detalle = '') => resultados.push({ nombre, ok, detall
       `altura ${minimo.toFixed(3)} … ${maximo.toFixed(3)}`,
     );
 
+    /*
+     * RF-9.15b · el puntero DESPIERTA la malla dormida.
+     *
+     * Esta comprobación existe porque faltaba y por eso un fallo grave pasó desapercibido.
+     * RF-9.15 verificaba que el **barrido** despierta la malla, y de ahí se dio por hecho
+     * que el puntero también. No lo hacía: `arrancar()` solo miraba si el bucle corría, y
+     * con el bucle vivo pero dormido no limpiaba `dormido`, así que la perturbación se
+     * escribía en `velocidades` y `simular()` se saltaba la integración **hasta que el
+     * barrido cruzaba la banda del puntero: hasta 17 segundos**. Daniel lo reprodujo el
+     * 2026-08-09: «paso el mouse por la figura y no pasa nada».
+     *
+     * Se mide la secuencia completa, que es la que fallaba: encender, esperar a que se
+     * duerma con el puntero DENTRO, y volver a mover sin salir.
+     */
+    const cajaCampo = await campo.boundingBox();
+    const dentro = (fx, fy) =>
+      page.mouse.move(cajaCampo.x + cajaCampo.width * fx, cajaCampo.y + cajaCampo.height * fy);
+    await dentro(0.35, 0.5);
+    await dentro(0.4, 0.48);
+    await page.waitForTimeout(400);
+    const encendida = await firma();
+    // Quieto dentro el tiempo suficiente para que la onda se apague y el bucle duerma.
+    await page.waitForTimeout(6000);
+    const dormida = await firma();
+    await dentro(0.5, 0.55);
+    await dentro(0.55, 0.52);
+    await page.waitForTimeout(500);
+    const despertada = await firma();
+    check(
+      'RF-9.15b · el puntero despierta la malla dormida',
+      dormida.hash === antes.hash && despertada.hash !== antes.hash,
+      `encendida ${encendida.hash} → dormida ${dormida.hash} → despertada ${despertada.hash}`,
+    );
+
     await page.mouse.move(2, 2);
     await page.waitForTimeout(3300);
     const despues = await firma();

@@ -334,6 +334,44 @@ sobre ninguna de las dos.
 | RF-20.4 | Las líneas radiales llegan a 560 y no a 548, para cubrir la fila más externa de la malla. Una radial corta deja los últimos nodos flotando sin retícula debajo | inspección |
 | RF-20.5 | **El acoplamiento queda declarado en los dos archivos.** `SensingPersistence` replica la serie del SVG; si cambian las constantes en uno, hay que cambiarlas en el otro | comentarios cruzados |
 
+## RF-9.15b · El puntero despierta la malla dormida
+
+Origen: Daniel, 2026-08-09. «Cargo el enlace, hago scroll con 2 dedos en mi notebook,
+paso el mouse por la figura y no pasa nada; tengo que hacer clic en algún sitio o
+recargar la página para que empiece a trabajar la interacción.»
+
+**Era un fallo real, y el comentario del código lo negaba.** El bucle duerme cuando la
+malla se asienta con el puntero encima (RF-9.15), y el comentario del sueño afirmaba que
+se despierta «con el primer `pointermove`, que llama a `arrancar()` por su cuenta». No
+era cierto: `arrancar()` solo comprobaba si el bucle estaba corriendo, y con el bucle
+vivo pero dormido no limpiaba `dormido`. La perturbación del puntero **sí** se escribía
+en `velocidades` —`perturbar()` corre antes—, pero `simular()` se saltaba la integración
+cuadro tras cuadro, así que la energía quedaba guardada sin integrar **hasta que el
+barrido cruzaba la banda del puntero: hasta 17 segundos**. Ni salir y volver a entrar lo
+arreglaba, porque `pointerenter` llama al mismo `arrancar()`.
+
+Secuencia medida antes de la corrección `[medido: 2026-08-09]`:
+
+| Paso | Nodos pintados |
+| ---- | -------------- |
+| Entrar y mover | 2466 |
+| 6 s quieto dentro (duerme) | 0 |
+| Volver a mover, sin salir | **0** |
+| Salir y volver a entrar | **0** |
+
+Después: 2834 → 0 → **2181** → **2168**, y sigue volviendo a 0 al salir.
+
+| - | Criterio | Cómo se comprueba |
+| - | -------- | ----------------- |
+| RF-9.15b.1 | `arrancar()` limpia `dormido`. Despertar es parte de arrancar, no un efecto secundario del barrido | inspección |
+| RF-9.15b.2 | Se mide **la secuencia completa**: encender, dormir con el puntero dentro, y volver a mover sin salir. La firma tiene que volver a diferir de la neutra | `verify:interaccion` |
+| RF-9.15b.3 | RF-9.10 sigue en pie: al salir, la malla vuelve **exactamente** a la firma neutra, energía 0 y bucle detenido | `verify:interaccion` |
+
+**Por qué el verificador no lo veía, que es la parte que importa:** RF-9.15 comprobaba
+que **el barrido** despierta la malla, y de ahí se dio por hecho que el puntero también.
+Es el mismo error de forma que RF-9.8 aprobando una figura inerte: la comprobación medía
+un camino y se leía como si cubriera los dos.
+
 ## RF-9.8 reformulado · El dedo excita la malla sin competir con el desplazamiento
 
 Origen: Daniel, 2026-08-09. «No funciona con el dedo.»

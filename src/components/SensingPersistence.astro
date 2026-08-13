@@ -511,7 +511,27 @@
       cuadro = requestAnimationFrame(simular);
     };
 
+    /*
+     * Arrancar incluye DESPERTAR, y esa línea es la corrección de un fallo que Daniel
+     * reprodujo el 2026-08-09: «paso el mouse por la figura y no pasa nada, tengo que
+     * hacer clic en algún sitio o recargar la página».
+     *
+     * El comentario del sueño, más arriba, afirmaba que la malla se despierta «con el
+     * primer `pointermove`, que llama a `arrancar()` por su cuenta». No era cierto:
+     * `arrancar()` solo comprobaba si el bucle estaba corriendo, y con el bucle vivo pero
+     * dormido no hacía nada. La perturbación del puntero sí se escribía en `velocidades`
+     * —`perturbar()` corre antes—, pero `simular()` se saltaba la integración cuadro tras
+     * cuadro, así que **la energía quedaba guardada sin integrar hasta que el barrido
+     * cruzaba la banda del puntero: hasta 17 segundos**. Ni salir y volver a entrar lo
+     * arreglaba, porque `pointerenter` llama al mismo `arrancar()`.
+     *
+     * Medido antes de la corrección: entrar y mover pintaba 2466 nodos; a los 6 s de
+     * quietud, 0; y al volver a mover, **0 otra vez** `[medido: 2026-08-09]`. Es un fallo
+     * que el verificador no veía porque RF-9.15 comprobaba que el barrido despierta la
+     * malla, no que el puntero la despierte.
+     */
     const arrancar = () => {
+      dormido = false;
       if (!cuadro && enPantalla) {
         contenedor.dataset.sensingRunning = 'true';
         cuadro = requestAnimationFrame(simular);
