@@ -521,18 +521,119 @@ const check = (nombre, ok, detalle = '') => resultados.push({ nombre, ok, detall
   });
   const tactil = await ctxTactil.newPage();
   await tactil.goto(BASE, { waitUntil: 'networkidle' });
+
+  const RUTA_MALLA = fileURLToPath(
+    new URL('../src/components/SensingPersistence.astro', import.meta.url),
+  );
+  const leerFuenteMalla = () => readFile(RUTA_MALLA, 'utf8');
+  /*
+   * `touch-action: none` en la figura o en el lienzo bloquearía el desplazamiento sin
+   * necesidad de `preventDefault`, y con un gesto sintético no se notaría. Se mira el
+   * valor calculado, no la hoja de estilos, porque puede llegar heredado.
+   */
+  const bloqueaTouchAction = () =>
+    tactil.evaluate(() => {
+      const lienzo = document.querySelector('canvas[data-sensing-malla]');
+      return [lienzo, lienzo?.parentElement].some(
+        (n) => n && /none|pan-x$|pinch-zoom$/.test(getComputedStyle(n).touchAction),
+      );
+    });
+
+  /*
+   * RF-9.8 cambió de forma el 2026-08-09, por indicación de Daniel: antes exigía que en
+   * táctil **no se inicializara nada**, y eso dejaba la figura muerta al dedo. Ahora
+   * exige las dos cosas a la vez, que es lo difícil: que el dedo excite la malla y que
+   * la página siga deslizándose.
+   *
+   * Se comprueba con un gesto real, no leyendo el código: se arrastra el dedo sobre la
+   * figura y se mira si la malla se pintó **y** si la página se desplazó. Un `touchmove`
+   * no pasivo, o un `touch-action: none`, harían fallar la segunda mitad.
+   */
   const modosTactiles = await tactil.locator('[data-sensing-mode]').count();
   check(
-    'RF-9.8 · táctil no compite con el desplazamiento',
-    modosTactiles === 0 && (await tactil.locator('[data-figura]').count()) === 1,
+    'RF-9.8 · el efecto se inicializa en táctil',
+    modosTactiles === 1 && (await tactil.locator('[data-figura]').count()) === 1,
     `${modosTactiles} efectos inicializados`,
+  );
+
+  const gesto = await tactil.evaluate(async () => {
+    const lienzo = document.querySelector('canvas[data-sensing-malla]');
+    const ctx = lienzo?.getContext('2d');
+    /*
+     * La figura tiene que estar EN PANTALLA antes del gesto. En móvil queda bajo el
+     * pliegue, y el `IntersectionObserver` del efecto apaga el bucle cuando la figura no
+     * se ve: sin este desplazamiento el gesto llega a un efecto dormido y la primera
+     * versión de esta comprobación medía 0 → 0 nodos culpando al código correcto.
+     */
+    lienzo.parentElement.scrollIntoView({ block: 'center' });
+    await new Promise((r) => setTimeout(r, 250));
+    const caja = lienzo.parentElement.getBoundingClientRect();
+    const pintados = () => {
+      if (!ctx) return 0;
+      const d = ctx.getImageData(0, 0, lienzo.width, lienzo.height).data;
+      let n = 0;
+      for (let i = 3; i < d.length; i += 4) if (d[i] > 0) n++;
+      return n;
+    };
+    const antes = pintados();
+    const destino = lienzo.parentElement;
+    const toque = (x, y) =>
+      new Touch({ identifier: 1, target: destino, clientX: x, clientY: y });
+    const emitir = (tipo, x, y) =>
+      destino.dispatchEvent(
+        new TouchEvent(tipo, {
+          bubbles: true,
+          cancelable: tipo !== 'touchcancel',
+          touches: tipo === 'touchend' ? [] : [toque(x, y)],
+        }),
+      );
+    const x0 = caja.x + caja.width * 0.3;
+    const y0 = caja.y + caja.height * 0.55;
+    emitir('touchstart', x0, y0);
+    for (let i = 1; i <= 10; i++) {
+      emitir('touchmove', x0 + i * (caja.width * 0.03), y0 - i * (caja.height * 0.02));
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+    await new Promise((r) => setTimeout(r, 120));
+    const despues = pintados();
+    emitir('touchend', 0, 0);
+    // El desplazamiento se comprueba aparte: si algún día se llamara a `preventDefault`,
+    // el gesto sintético no lo revelaría, así que se desplaza de verdad y se mira si movió.
+    const antesY = window.scrollY;
+    window.scrollBy(0, 200);
+    await new Promise((r) => setTimeout(r, 200));
+    return { antes, despues, desplazo: window.scrollY > antesY };
+  });
+
+  check(
+    'RF-9.8 · el dedo excita la malla',
+    gesto.despues > gesto.antes,
+    `${gesto.antes} → ${gesto.despues} nodos pintados`,
+  );
+  /*
+   * Sin comentarios antes de buscar `preventDefault`, y esto ya pasó una vez en este
+   * mismo archivo con `createRadialGradient` en RF-9.9: la primera versión de esta
+   * comprobación fallaba porque encontraba la palabra **en el comentario que explica que
+   * no se usa**. Documentar por qué algo no se hace es justamente lo que se quiere que
+   * siga pasando; lo que no puede volver es la llamada.
+   */
+  const codigoMalla = (await leerFuenteMalla())
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/^[ \t]*\/\/.*$/gm, ' ');
+
+  check(
+    'RF-9.8 · nadie bloquea el gesto táctil',
+    !/preventDefault/.test(codigoMalla) && !(await bloqueaTouchAction()),
+    'sin preventDefault y sin touch-action que atrape el gesto',
+  );
+  check(
+    'RF-9.8 · táctil no compite con el desplazamiento',
+    gesto.desplazo,
+    'la página se desplaza tras el gesto',
   );
   await ctxTactil.close();
 
-  const fuente = await readFile(
-    fileURLToPath(new URL('../src/components/SensingPersistence.astro', import.meta.url)),
-    'utf8',
-  );
+  const fuente = await leerFuenteMalla();
   /*
    * Las técnicas prohibidas hay que buscarlas en el CÓDIGO, no en la prosa.
    *

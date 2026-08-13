@@ -35,7 +35,20 @@
     const svg = contenedor?.querySelector<SVGSVGElement>('[data-figura]');
     if (!contenedor || !svg) continue;
     if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) continue;
-    if (!matchMedia('(hover: hover) and (pointer: fine)').matches) continue;
+    /*
+     * Aquí había un segundo filtro, `(hover: hover) and (pointer: fine)`, y era el que
+     * dejaba la figura muerta en cualquier pantalla táctil: descartaba el efecto antes
+     * de inicializar nada. Se retira el 2026-08-09 por indicación de Daniel —«no
+     * funciona con el dedo»—.
+     *
+     * Lo que motivaba el filtro sigue en pie y se resuelve de otra forma, más abajo: el
+     * efecto **no puede competir con el desplazamiento** (RF-9.8). Con eventos de
+     * puntero eso es inevitable, porque el navegador emite `pointercancel` en cuanto el
+     * gesto se convierte en scroll y deja de mandar coordenadas. Con `touchmove` en modo
+     * pasivo, no: los eventos siguen llegando durante el desplazamiento, y como nunca se
+     * llama a `preventDefault()` ni se toca `touch-action`, la página se desliza igual.
+     * El dedo enciende la malla por donde pasa mientras la página sigue su camino.
+     */
 
     const ctx = lienzo.getContext('2d');
     if (!ctx) continue;
@@ -626,6 +639,80 @@
       punteroDentro = false;
       ultimoMovimiento = performance.now();
     });
+
+    /*
+     * Táctil (RF-9.8).
+     *
+     * `touchstart` y `touchmove` en lugar de los eventos de puntero, y **pasivos**. Las
+     * dos decisiones tienen el mismo motivo: no competir con el desplazamiento.
+     *
+     *   - Pasivos: al declararlo, el navegador sabe que este código no va a llamar a
+     *     `preventDefault()` y no necesita esperar a que termine para decidir si desliza.
+     *     No hay forma de bloquear el scroll ni por descuido.
+     *   - `touch*` y no `pointer*`: los eventos de puntero se **cancelan** en cuanto el
+     *     gesto pasa a ser scroll —llega `pointercancel` y no vuelve a haber
+     *     coordenadas—, así que la malla se apagaría justo al empezar a deslizar. Los
+     *     táctiles siguen llegando.
+     *
+     * No se toca `touch-action`. La página se desliza exactamente igual que antes; lo que
+     * cambia es que el dedo, de paso, enciende la malla por donde pasa.
+     */
+    let anteriorTacto: (Punto & { tiempo: number }) | null = null;
+
+    const desdeTacto = (toque: Touch) => {
+      const caja = contenedor.getBoundingClientRect();
+      const x = (toque.clientX - caja.left) * dpr;
+      const y = (toque.clientY - caja.top) * dpr;
+      // Fuera de la caja no se excita nada: durante un desplazamiento largo el dedo sale
+      // de la figura pero los eventos siguen llegando a este elemento.
+      if (
+        toque.clientX < caja.left ||
+        toque.clientX > caja.right ||
+        toque.clientY < caja.top ||
+        toque.clientY > caja.bottom
+      ) {
+        punteroDentro = false;
+        anteriorTacto = null;
+        return;
+      }
+      const ahora = performance.now();
+      const rapidez = anteriorTacto
+        ? limitar(
+            (Math.hypot(x - anteriorTacto.x, y - anteriorTacto.y) /
+              Math.max(8, ahora - anteriorTacto.tiempo)) *
+              16,
+            0,
+            28,
+          )
+        : 0;
+      punteroDentro = true;
+      punteroX = x;
+      punteroY = y;
+      perturbar(x, y, rapidez);
+      anteriorTacto = { x, y, tiempo: ahora };
+      ultimoMovimiento = ahora;
+      arrancar();
+    };
+
+    const atenderTacto = (evento: TouchEvent) => {
+      const toque = evento.touches[0];
+      if (toque) desdeTacto(toque);
+    };
+
+    contenedor.addEventListener('touchstart', atenderTacto, { passive: true });
+    contenedor.addEventListener('touchmove', atenderTacto, { passive: true });
+
+    for (const nombre of ['touchend', 'touchcancel'] as const) {
+      contenedor.addEventListener(
+        nombre,
+        () => {
+          anteriorTacto = null;
+          punteroDentro = false;
+          ultimoMovimiento = performance.now();
+        },
+        { passive: true },
+      );
+    }
 
     new ResizeObserver(dimensionar).observe(contenedor);
     new IntersectionObserver((entradas) => {

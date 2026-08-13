@@ -334,6 +334,37 @@ sobre ninguna de las dos.
 | RF-20.4 | Las líneas radiales llegan a 560 y no a 548, para cubrir la fila más externa de la malla. Una radial corta deja los últimos nodos flotando sin retícula debajo | inspección |
 | RF-20.5 | **El acoplamiento queda declarado en los dos archivos.** `SensingPersistence` replica la serie del SVG; si cambian las constantes en uno, hay que cambiarlas en el otro | comentarios cruzados |
 
+## RF-9.8 reformulado · El dedo excita la malla sin competir con el desplazamiento
+
+Origen: Daniel, 2026-08-09. «No funciona con el dedo.»
+
+**Y tenía razón: no funcionaba en absoluto.** El efecto se descartaba antes de
+inicializar nada, en una sola línea —`if (!matchMedia('(hover: hover) and (pointer:
+fine)').matches) continue;`—, así que en cualquier pantalla táctil la figura quedaba
+muerta. RF-9.8 decía «táctil no compite con el desplazamiento» y su comprobación exigía
+**0 efectos inicializados**: el verificador aprobaba en verde una figura inerte.
+
+Lo que motivaba el filtro sigue vigente y ahora se resuelve de otra forma.
+
+| - | Criterio | Cómo se comprueba |
+| - | -------- | ----------------- |
+| RF-9.8.1 | El efecto **se inicializa** en táctil | `1 efecto inicializado` en contexto `hasTouch` |
+| RF-9.8.2 | **El dedo excita la malla.** Gesto real, no lectura de código | `0 → 4952` nodos pintados tras arrastrar el dedo `[medido: 2026-08-09]` |
+| RF-9.8.3 | **La página sigue desplazándose** tras el gesto | `window.scrollY` aumenta |
+| RF-9.8.4 | Ni `preventDefault` en el código —comentarios aparte— ni `touch-action` que atrape el gesto, medido sobre el **valor calculado** porque puede llegar heredado | `verify:interaccion` |
+| RF-9.8.5 | Se usan `touchstart`/`touchmove` **pasivos** y no eventos de puntero. Los de puntero se **cancelan** en cuanto el gesto pasa a ser scroll —llega `pointercancel` y no hay más coordenadas—, así que la malla se apagaría justo al empezar a deslizar | inspección |
+
+**Dos trampas medidas mientras se escribía la comprobación**, las dos del mismo tipo —el
+verificador culpando al código correcto—:
+
+1. La primera versión medía `0 → 0` nodos. La causa no era el código: en móvil la figura
+   queda bajo el pliegue y el `IntersectionObserver` del efecto apaga el bucle cuando no
+   se ve. La comprobación tiene que traer la figura a pantalla antes del gesto.
+2. La comprobación de `preventDefault` fallaba porque encontraba la palabra **en el
+   comentario que explica que no se usa**. Es exactamente lo que ya había pasado en este
+   archivo con `createRadialGradient` en RF-9.9. Hay que quitar comentarios antes de
+   buscar.
+
 ## RF-21 · Franja fotográfica de la sede, y barra consciente del hero
 
 Origen: Daniel, 2026-08-09. «La cuestión es darle algo de vida a la página que está
