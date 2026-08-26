@@ -19,14 +19,24 @@ repositorio, así que **si no está escrito aquí, no ocurrió**.
 git fetch origin && git status -sb   # ¿parto del estado que creo?
 npm install
 npm run build        # genera dist/
-npm run verify:todo  # los siete verificadores en cadena
+npm run verify:todo  # los seis verificadores en cadena
 npm run check        # tipos
 ```
 
-Los siete cubren accesibilidad y peso (`verify`, la autoridad), tema, red, teclado,
-idioma, SEO e interacción; la tabla con qué mide cada uno está en
-[`specs/README.md`](specs/README.md). Hay un octavo, `npm run verify:publicado -- <url>`,
+Los seis cubren accesibilidad y peso (`verify`, la autoridad), tema, teclado, idioma,
+SEO e interacción; la tabla con qué mide cada uno está en
+[`specs/README.md`](specs/README.md). Hay un séptimo, `npm run verify:publicado -- <url>`,
 que comprueba el **sitio en vivo** y queda fuera de la cadena porque depende de la red.
+
+**Eran siete hasta el 2026-08-07**, cuando `verify:red` se retiró junto con la sección
+que comprobaba (RF-16): quedó sin objeto, no relajado. Estos documentos siguieron
+diciendo «siete» —y listando un guion inexistente en el bloque de arranque— hasta el
+2026-08-25.
+
+**No correr nada en paralelo con `verify:todo`.** Con `npm run check` a la vez, la cadena
+falló en `verify:tema` y sola quedó en verde `[medido: 2026-08-25]`. Varias comprobaciones
+dependen de tiempos de carga, y bajo contención de CPU dan falsos negativos. Un fallo hay
+que reproducirlo aislado antes de creérselo.
 
 **Nunca reescribir historia ya publicada en la rama de trabajo** (`push --force`,
 rebase de commits empujados). Hay clones en varios entornos y se rompen todos.
@@ -107,6 +117,36 @@ la del ancestro que recorta, no a ojo.
 que una comprobación protege algo, hay que romper deliberadamente lo que vigila y
 verla fallar. Una comprobación que nunca ha fallado no se ha probado.
 
+**Un `>=` puede ocultar dos errores que se compensan.** `verify:teclado` comprobaba
+«alcanzados `>=` enfocables» y daba **35 de 34**: pasaba con un elemento de margen. Debajo
+había dos defectos de signo contrario `[medido: 2026-08-25]` —contaba los tres radios del
+selector de tema como tres paradas de Tab, cuando un grupo de radios es **una**; y excluía
+por `width > 0` a los enlaces que envuelven una imagen diferida, que miden 0 de ancho hasta
+que la imagen llega—. Se destaparon al cambiar la pared de logos, no antes. **Cuando una
+comprobación cuenta cosas, la relación correcta es la igualdad**, y la identidad de cada
+elemento no puede depender de su posición: el recorrido desplaza la página, así que un
+elemento que se mueve sale como «no alcanzado» y su gemelo como «alcanzado de más». Ahora
+cada enfocable se sella con un atributo antes de recorrer y el informe dice **cuál** falta.
+
+**`getComputedStyle` devuelve el `display` del elemento, no el del ancestro que lo
+esconde.** El `<summary>` del menú móvil vive dentro de un contenedor `lg:hidden`: a
+1440 px no se dibuja ni se puede enfocar, pero su propio `display` sigue siendo
+`list-item`. Lo que dice si algo está representado en la página es **tener cajas**,
+`getClientRects().length`. Es la misma trampa ya registrada para el conteo de animaciones.
+
+**Un verificador intermitente es peor que uno que falla.** «El foco se ve en todo el
+recorrido» daba verde o rojo en la misma corrida: el mapa se carga al entrar en pantalla,
+el propio recorrido con Tab desplaza la página, y el `<iframe>` existía o no según el
+momento. Y el hallazgo no era real —al enfocar un `<iframe>` el foco entra en el documento
+embebido, cuyo indicador **ninguna hoja de estilos nuestra puede pintar**—. Se excluye
+`iframe` con el motivo escrito; el botón «Cargar mapa», que sí gobernamos, sigue medido.
+
+**El texto dentro de un SVG no lo mide nadie.** Al reponer los marcadores de logo el
+2026-08-25 se recuperaron del historial los SVG originales y **no se reinstalaron**: traían
+los colores escritos a mano de la paleta anterior a la identidad PUCV y sobre el fondo claro
+de hoy no llegan a 4,5:1. Puestos en HTML con la capa semántica, el aspecto es el mismo y
+`verify` **sí** los mide. Es la misma familia que los trazos de `PropagationFigure`.
+
 **Solo cuenta como peso lo que la página referencia.** `@astrojs/react` emite su
 runtime de cliente aunque no quede ninguna isla que hidratar. Tras T3 no queda
 ninguna, así que `client.*.js` se genera pero **ningún archivo de `dist` lo
@@ -138,7 +178,7 @@ entraba por el `>` y salía por el `<`: falso positivo. Ya se excluyen `<script>
 asignadas a `textContent`/`innerHTML` desde un guion. Probado en los dos sentidos.
 
 **Ningún verificador mide los trazos de un SVG.** axe evalúa contraste de **texto**, así
-que una figura puede estar dibujada a 1,3:1 con los siete verificadores en verde. Es lo
+que una figura puede estar dibujada a 1,3:1 con todos los verificadores en verde. Es lo
 que pasa hoy con `PropagationFigure`: los anillos de rango y las radiales usan `--border`
 —«filete decorativo, sin umbral»— y quedan entre **1,27:1 y 1,49:1** en los dos temas
 `[medido: specs/002-rediseno-visual/baseline/hero-2026-08-03.md]`. No incumple WCAG
@@ -202,11 +242,26 @@ No volver a proponer esto sin un argumento nuevo. El detalle está en
 | **Cargar las tipografías desde `fonts.googleapis.com`** | Petición a terceros en la carga inicial (RNF-2.3). Están auto-hospedadas |
 | **Subir un presupuesto sin acuerdo del cliente** | El presupuesto disciplina al código. Cambiarlo es una decisión del cliente, registrada como decisión cerrada (así se hizo con D6) |
 
-**Sobre los logos institucionales:** los de PUCV, ANID, Columbia University, Nokia
-Bell Labs, PUC y USACH son marcas de terceros. **No se generan ni se aproximan con
-ninguna herramienta**, aunque los skills instalados sean capaces de hacerlo. Los
-archivos de `public/logos/` son marcadores de posición deliberados hasta que las
-instituciones entreguen los oficiales.
+**Sobre los logos institucionales**, tres reglas, y la tercera se aprendió tarde:
+
+1. **No se generan ni se aproximan con ninguna herramienta**, aunque los skills
+   instalados sean capaces de hacerlo.
+2. **No se extraen de una página renderizada.** Se toman del paquete que publica su
+   dueño, o no se toman.
+3. **No se publican sin autorización de su titular.** El 2026-08-25, al preparar los
+   correos que la pedían, se midió qué mostraba la URL publicada: mostraba las cuatro
+   marcas de terceros —UC, USACH, Nokia Bell Labs y Columbia— y el borrador a Columbia
+   decía «no las hemos publicado» `[medido]`. En dos de los cuatro casos el titular ya
+   había dicho **por escrito** que su uso exige consentimiento previo. Volvieron a
+   marcador de posición. **Que el cliente asuma la responsabilidad cubre el riesgo de
+   quien la asume; no convierte a nadie en dueño de una marca ajena.**
+
+Nombrar a una institución **sí** se puede: es un hecho, no uso de marca. Por eso el
+marcador lleva el nombre escrito. El estado de cada trámite está en
+[`specs/gestion/correos-instituciones.md`](specs/gestion/correos-instituciones.md).
+
+Hoy están instaladas PUCV, EIE y el conjunto **Ministerio de Ciencia + ANID**: las dos
+primeras son marcas del cliente, y la tercera **es obligatoria** por RNF-8.
 
 ## Servidores MCP: cuál sirve para qué
 

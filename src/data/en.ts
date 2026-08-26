@@ -221,6 +221,8 @@ export const en = {
       participantes: 'Participating and collaborating institutions',
       financia: 'Funded by',
       proyecto: 'Project',
+      /** Ver la nota de `es.ts`: es texto visible, así que no puede vivir en el componente. */
+      logoPendiente: 'LOGO PENDING',
     },
 
     pie: {

@@ -235,7 +235,11 @@ const hasProgram = program.days.length > 0;
             No se pierde para una ayuda técnica: cada logo lleva `alt={institution.name}`.
           -->
           <div class="mt-8">
-            <LogoWall institutions={organizers} size="lg" />
+            <LogoWall
+              institutions={organizers}
+              size="lg"
+              etiquetaPendiente={ui.organizacion.logoPendiente}
+            />
           </div>
         </div>
 
@@ -246,7 +250,10 @@ const hasProgram = program.days.length > 0;
           </h3>
           <!-- Sin lista de nombres, por lo mismo que arriba. -->
           <div class="mt-8">
-            <LogoWall institutions={participants} />
+            <LogoWall
+              institutions={participants}
+              etiquetaPendiente={ui.organizacion.logoPendiente}
+            />
           </div>
         </div>
 

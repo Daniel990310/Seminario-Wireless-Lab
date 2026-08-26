@@ -2,7 +2,7 @@
 
 Generado por `npm run verify`. **No editar a mano**: se sobrescribe en cada corrida.
 
-**Fecha:** 2026-08-13 · **Commit:** `3fa3c05`
+**Fecha:** 2026-08-26 · **Commit:** `7115b61`
 **Resultado:** todos los presupuestos cumplidos
 
 Método: axe-core sobre el build servido localmente, en 1440×900 y 390×844,
@@ -41,7 +41,7 @@ el desglose por corrida más abajo.
 | JavaScript total (RNF-2.1) | 4.3 kB |
 | Tipografías | 122.6 kB |
 | HTML (incluye los scripts en línea) | 31.4 kB |
-| CSS en hojas enlazadas | 12.0 kB |
+| CSS en hojas enlazadas | 12.1 kB |
 | Imágenes SVG | 56.8 kB |
 | **Primera carga** | **166.0 kB** |
 

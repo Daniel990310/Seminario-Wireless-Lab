@@ -241,6 +241,13 @@ export const es = {
       participantes: 'Instituciones participantes y colaboradoras',
       financia: 'Financia',
       proyecto: 'Proyecto',
+      /*
+       * Leyenda del marcador de posición de una marca cuyo titular todavía no autorizó
+       * su uso. Vive aquí, y no en `LogoWall.astro`, porque **es texto visible**: escrita
+       * en el componente la detectó `verify:idioma` como cadena sin traducir, que es
+       * exactamente para lo que existe esa comprobación.
+       */
+      logoPendiente: 'LOGO PENDIENTE',
     },
 
     pie: {

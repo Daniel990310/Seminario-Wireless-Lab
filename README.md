@@ -62,11 +62,10 @@ cadena y resume.
 | -------------------------- | -------------------------------------------------------------------- |
 | `npm run verify`           | **La autoridad.** axe-core en 2 anchos × 2 temas × 2 idiomas, y peso   |
 | `npm run verify:tema`      | Los 17 criterios de RF-4 que axe no puede evaluar                     |
-| `npm run verify:red`       | Los 7 criterios de T3 sobre la red de colaboración                    |
-| `npm run verify:teclado`   | Foco visible, recorrido por teclado y zoom de texto al 200 % (T6)     |
+| `npm run verify:teclado`   | Los 12 criterios de T6: foco visible, recorrido por teclado y zoom al 200 % |
 | `npm run verify:idioma`    | Los 19 criterios de RF-1, incluidos **textos sin traducir**           |
 | `npm run verify:seo`       | Los 22 criterios de RNF-3: imágenes para compartir y metadatos        |
-| `npm run verify:interaccion` | Los 9 criterios de RF-6: contenido íntegro sin JavaScript y sección activa |
+| `npm run verify:interaccion` | Los 33 criterios de RF-6 y RF-9: contenido íntegro sin JavaScript, sección activa y la malla del hero |
 
 Y uno que **no** entra en la cadena, porque depende de la red y de un servicio externo:
 

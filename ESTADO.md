@@ -7,20 +7,147 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-08-09** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
-· Último commit de tarea: `5998723` (identidad PUCV, marcas, retratos y franja de la sede)
+Actualizado: **2026-08-25** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
 
-> **El árbol está limpio y el sitio está publicado.** La sesión de §10 y §11 se
-> commiteó y se empujó a `origin/claude/framework-app-profesional-n4wa0t`, y se
-> desplegó a Workers el 2026-08-09 (versión `4cca071f`):
-> <https://seminario-wireless-lab.danielcaignet99.workers.dev>
-> `verify:publicado` en verde contra esa URL, con `noindex` porque el dominio es
-> provisional. **Recordar `SITE_URL` al construir para desplegar**, o el canónico
-> apunta a un dominio que no existe: ver el aviso de `wrangler.jsonc`.
+> ⚠️ **EL SITIO PUBLICADO VA POR DETRÁS DEL REPOSITORIO.**
+> <https://seminario-wireless-lab.danielcaignet99.workers.dev> sigue sirviendo la versión
+> `4cca071f` del 2026-08-09, que **muestra las cuatro marcas de terceros sin autorización**.
+> El repositorio ya no. Hasta que se redespliegue, **ese enlace no se manda a ninguna
+> institución**: ver §12. Desplegar es `npx wrangler deploy` **con `SITE_URL` definida** al
+> construir, o el canónico apunta a un dominio que no existe (aviso en `wrangler.jsonc`).
 
 > **Hay un plan abierto: [002 · Rediseño visual y movimiento](specs/002-rediseno-visual/requirements.md).**
 > RF-9 está implementado y verificado, y desde el 2026-08-06 el plan creció hasta RF-21.
 > Qué pasó desde el 2026-08-03 y qué se descartó: **§9**. La sesión del 06 al 09: **§10**.
+> **Lo que ahora tiene fecha tope es el programa**: sin `program.days` no se puede invitar a
+> una autoridad de ANID, y ese trámite vence a mediados de septiembre (§12).
+
+## 12. El 2026-08-25: los logos vuelven a marcador, y dos verificadores estaban mal
+
+Sesión de gestión que terminó en código. **Lo que la disparó fue preparar los correos que
+piden autorización de marca**, y lo que encontró fue que el sitio ya las usaba.
+
+### Lo primero, porque es lo que más costaba de ver
+
+**Este archivo llevaba 16 días desactualizado y se contradecía.** Decía «último commit de
+tarea `5998723`» con `HEAD` en `7115b61`, tres commits más allá, y §10 seguía afirmando
+«Nada de esto está commiteado» cuando ya lo estaba. Los dos commits del 2026-08-13 —RF-9.8
+reformulado y RF-9.15b— **no tienen relato aquí**: están en `requirements.md` y en el
+historial, y esta sección es lo único que lo repara.
+
+Y una cifra que estaba mal en todos los documentos: **son seis verificadores, no siete.**
+`verify:red` se retiró el 2026-08-07 con la sección que medía. `AGENTS.md`, `specs/README.md`
+y este archivo decían «siete», y el bloque de comandos de arranque listaba un guion
+inexistente: cualquier entorno que empezara por ahí partía de una premisa falsa.
+
+### Las cuatro marcas de terceros estaban publicadas sin permiso
+
+Medido sobre la URL en vivo `[medido: 2026-08-25]`: `/logos/uc.svg`, `/logos/uc-oscuro.svg`,
+`/logos/nokia-bell-labs.svg`, `columbia*.webp` y `usach*.webp`. Y el borrador del correo a
+Columbia decía «*we have not published them*».
+
+Por instrucción de Daniel vuelven a **marcador de posición**: caja de trazo discontinuo con
+el nombre y `LOGO PENDIENTE`, igual que antes del 2026-08-09. **Los archivos no se borran**;
+reponer una marca autorizada es volver a poner su `import` y su línea `logo:`.
+
+Tres defectos que el mismo cambio resuelve, y que conviene no perder de vista:
+
+1. **Columbia estaba con la marca equivocada**: `CUSPS`, la School of Professional Studies,
+   cuando Zussman es de SEAS.
+2. **USACH desaparecía en tema oscuro**: tinta negra pura sobre `#0a1020`.
+3. En dos de los cuatro casos —Columbia y Nokia— **el titular ya había dicho por escrito**
+   que su uso exige consentimiento previo.
+
+**No se reinstalaron los SVG de marcador que había antes**, aunque estaban en el historial.
+Traen los colores escritos a mano de la paleta anterior a la identidad PUCV y sobre el fondo
+claro de hoy no llegan a 4,5:1 — **y ningún verificador lo habría visto**, porque axe mide
+texto del documento y no texto dentro de un SVG. En HTML con la capa semántica el aspecto es
+el mismo y `verify` sí lo mide.
+
+### Dos verificadores afirmaban algo distinto de lo que decían verificar
+
+Ninguno se relajó. Es el mismo patrón que ya había aparecido cinco veces (§10).
+
+1. **`verify:teclado` · el recorrido llega a todo.** Pasaba **por suerte**: comprobado
+   volviendo al árbol anterior, daba «35 alcanzados de **34**», o sea colaba por un `>=`.
+   Debajo había dos errores de signo contrario que se compensaban: contaba los tres radios
+   del selector de tema como tres paradas de Tab —un grupo de radios es **una**, y el
+   recorrido con flechas ya lo mide `verify:tema`—, y excluía por `width > 0` a los enlaces
+   que envuelven una imagen diferida, que miden 0 de ancho hasta que la imagen llega. Al
+   corregirlo apareció un tercero: el `<summary>` del menú móvil se contaba a 1440 px, porque
+   `getComputedStyle` devuelve el `display` **del elemento** y no el del ancestro `lg:hidden`
+   que lo esconde. Ahora cada enfocable **se sella con un atributo** antes de recorrer, la
+   comparación es una igualdad y el informe dice **cuál** falta. Prueba de sensibilidad
+   hecha: con `tabindex="-1"` en un marcador, falla nombrando los cuatro.
+2. **`verify:teclado` · el foco se ve en todo el recorrido.** Era **intermitente**: «sin
+   anillo: iframe» según la corrida. El mapa se carga al entrar en pantalla y el propio
+   recorrido con Tab desplaza la página. El hallazgo no era real —el indicador de un iframe
+   es del documento embebido y ninguna hoja nuestra puede pintarlo—, así que se excluye
+   `iframe` con el motivo escrito. Tres corridas seguidas en verde.
+
+Y una trampa de medición nueva, del entorno: **no correr nada en paralelo con
+`verify:todo`.** Con `npm run check` a la vez la cadena falló en `verify:tema`, y sola quedó
+en verde.
+
+### La documentación de ANID que mandó el cliente
+
+Cuatro PDF, revisados íntegros en
+[`specs/gestion/anid-normas-2026.md`](specs/gestion/anid-normas-2026.md). **El más accionable
+no es el manual de marca: es el protocolo de eventos**, que el repositorio no conocía.
+
+- Hay una **minuta obligatoria**, y es **la vía formal para pedir los logos**.
+- Invitar a una autoridad de ANID exige **15 días hábiles**, firma del rector o director, y
+  **adjuntar el programa**. El seminario es el 21–22 de octubre: la fecha tope cae a
+  mediados de septiembre de 2026. **`program.days` vacío pasa a bloquear un trámite**, no
+  solo una sección del sitio.
+- Del manual: los logos no gubernamentales van **a la izquierda de ANID** con el mismo peso
+  visual —la maqueta actual los pone en otra sección, y **se consulta antes de tocarla**—;
+  la versión **pluma** no está prevista para pantalla y es la única blanca del kit; queda
+  **estrictamente prohibido generar rostros con IA**, lo que cierra un atajo que nadie había
+  prohibido para los retratos y para el carrusel de la sede.
+- Corrección de registro: `marcas/README.md` decía que la variante clara instalada es la
+  «pluma» de tinta única. **No lo es** — lleva `#1b6ab1` y `#e73c48`, o sea la **color**, que
+  para fondo claro es la correcta `[medido]`.
+
+### Accesos y dominio
+
+- **GitHub:** `gh` autenticado como `Daniel990310`, dueño del repositorio. Sin PR abierto.
+- **Cloudflare:** el token OAuth del disco **estaba vencido** y el `refresh_token` lo renovó
+  solo. Cuenta `ad6ad6434f0de8b33a85a93af92f7a39`, con `workers_scripts (write)`.
+  **`wrangler` no es dependencia del proyecto**: baja por `npx` en cada uso, y el `$schema`
+  de `wrangler.jsonc` apunta a un archivo que no existe.
+- **Dominio PUCV:** trámite levantado en
+  [`specs/gestion/dsic-subdominio-pucv.md`](specs/gestion/dsic-subdominio-pucv.md). Es el
+  **F-180, gratuito**, no el F-170 de hosting, que cuesta UF 0,5 y no hace falta. Lo firma
+  una autoridad de la PUCV, no un proveedor. **Duda abierta que el correo plantea de frente:**
+  el anexo del F-180 está escrito para sitios alojados en la PUCV y no dice si la DSIC crea
+  un `CNAME` hacia infraestructura externa.
+- **`astro dev` se demoniza en Astro 7**: arranca en segundo plano y el comando termina. Se
+  maneja con `astro dev status | logs | stop`. Ver el comando «terminado» no significa que el
+  servidor se haya caído.
+
+### Cifras tras el cambio `[medido: 2026-08-25]`
+
+`astro check` 0 errores / 0 avisos. **Los seis verificadores en verde, 110 criterios.**
+Revisado a ojo en los dos temas y los dos anchos, sin desbordes a 390 px.
+
+| | Valor | Límite |
+| - | ----- | ------ |
+| RNF-2.1 · JavaScript | 4,3 kB | 115 |
+| RNF-2.2 · Primera carga | 167,4 kB | 260 |
+| RNF-2.6 · Tipografías | 122,6 kB | 125 |
+
+Sigue emitiéndose `_astro/client.*.js`, **59,5 kB que ningún HTML referencia**: es el peso
+latente de D11, y RF-6.4 le sigue apuntando mientras no exista una isla real.
+
+### Lo que queda sin versionar, dicho aquí para que no vuelva a ser un misterio
+
+- **`beyond-connectivity-seminario-pucv.html`**, artifact de claude.ai del 2026-08-22.
+  Daniel confirmó que es **una prueba vieja** y que se ignora. Añadido a `.gitignore`, como
+  ya se hizo con el prototipo de agosto.
+- **`.agents/` (8,5 MB, 231 archivos) y `.codex/config.toml`**: configuración de otras
+  herramientas, no del sitio. Se dejan fuera del repositorio a propósito. Versionarlas es
+  una decisión de Daniel, no un efecto secundario de este commit.
 
 ## 11. El 2026-08-09, tarde: la fotografía de la sede entra como franja
 
@@ -483,6 +610,12 @@ inventarle un techo.
 T5 y T6 los cerraron, y desde entonces `npm run verify` termina en 0: comprobado el
 2026-07-31 sobre `8f4bdfc` con `npm run verify:todo`, exit 0. Cualquier fallo a partir
 de aquí es una regresión.
+
+> ⚠️ **Esta tabla quedó atrás: hoy son SEIS.** `verify:red` se retiró el 2026-08-07 con la
+> sección que medía (RF-16). Se conserva la fila para que se entienda qué cubría, porque
+> media docena de documentos siguieron citándola. La lista vigente está en
+> [`specs/README.md`](specs/README.md), y el resto de las cifras de esta sección son las de
+> julio: las actuales están en §12.
 
 Hay siete verificadores, y `npm run verify:todo` los corre en cadena:
 

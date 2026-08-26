@@ -12,6 +12,13 @@ node_modules/
 Revisión de home en español/
 Revisión de home en español.zip
 
+# Artifact de claude.ai del 2026-08-22, 608 kB. Daniel confirmó el 2026-08-25 que es una
+# **prueba vieja** y que se ignora. Se anota en `.gitignore` y no simplemente se borra
+# porque un archivo suelto y sin mención en ningún documento es exactamente lo que este
+# proyecto ya sufrió con el prototipo de agosto: para el clon de otro entorno, no existe.
+# Su rastro queda en `ESTADO.md` §12.
+beyond-connectivity-seminario-pucv.html
+
 # Secretos. `.mcp.json` está versionado a propósito, pero solo contiene la
 # REFERENCIA `${API_KEY_21ST}`, nunca el valor.
 #

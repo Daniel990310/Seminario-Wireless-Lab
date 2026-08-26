@@ -123,10 +123,36 @@ for (const tema of ['light', 'dark']) {
     content: '*, *::before, *::after { transition: none !important; animation: none !important; }',
   });
 
-  // Cuántos elementos deberían poder recibir el foco.
+  /*
+   * ═══ CUÁNTOS ELEMENTOS DEBEN ALCANZARSE, Y CÓMO SE IDENTIFICAN ═══
+   *
+   * Reescrito el 2026-08-25. Antes este criterio **pasaba por suerte**: dos errores de
+   * signo contrario se compensaban, y al cambiar la pared de logos dejaron de hacerlo.
+   * Los dos, medidos `[medido: 2026-08-25]`:
+   *
+   * 1. **Contaba los tres radios del selector de tema como tres paradas de Tab.** Un
+   *    grupo de radios es **una sola** parada: Tab entra al marcado y las flechas
+   *    recorren el resto. Eso no es un defecto que haya que detectar, es la conducta
+   *    nativa, y el recorrido con flechas ya lo comprueba `verify:tema` en RF-4.5. Así
+   *    que sobraban 2.
+   * 2. **No contaba dos enlaces que sí eran alcanzables.** El filtro pedía `r.width > 0`,
+   *    y un `<a class="block">` que envuelve una imagen `loading="lazy"` bajo el pliegue
+   *    tiene ancho 0 hasta que la imagen llega. Faltaban 2.
+   *
+   * Y la identidad de cada parada **iba por coordenadas**, así que un elemento que se
+   * mueve entre la lista y el recorrido —cualquiera, porque el recorrido desplaza la
+   * página— salía como «no alcanzado» y su gemelo como «alcanzado de más». El enlace de
+   * salto, que está fuera de pantalla y aparece al recibir el foco, fallaba siempre.
+   *
+   * Ahora cada enfocable se **sella con un atributo** antes de recorrer. La identidad es
+   * exacta y no depende de la posición, con lo que la cuenta pasa a ser una igualdad
+   * comprobable y el informe puede decir *cuál* falta. Sellar no altera la maquetación:
+   * es un `data-*`, no afecta a estilos ni a tamaños.
+   */
   const enfocables = await page.evaluate(() => {
     const sel = 'a[href], button, summary, input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])';
-    return [...document.querySelectorAll(sel)].filter((el) => {
+    const grupos = new Set();
+    const lista = [...document.querySelectorAll(sel)].filter((el) => {
       /*
        * Fuera lo que está dentro de un `<details>` cerrado —el panel del menú
        * móvil, las reseñas de los expositores—: ese contenido no está expuesto,
@@ -136,12 +162,42 @@ for (const tema of ['light', 'dark']) {
       const detalle = el.closest('details');
       if (detalle && !detalle.open && el.tagName !== 'SUMMARY') return false;
 
-      const r = el.getBoundingClientRect();
-      const s = getComputedStyle(el);
-      // Los radios del selector de tema están ocultos a la vista pero son
-      // enfocables por diseño: el rótulo los representa.
-      return s.visibility !== 'hidden' && s.display !== 'none' && (r.width > 0 || el.type === 'radio');
-    }).length;
+      if (getComputedStyle(el).visibility === 'hidden') return false;
+
+      /*
+       * Un grupo de radios cuenta UNA vez, y la parada es el que está marcado. Los
+       * radios del selector de tema están ocultos a la vista y los representa su
+       * rótulo, así que no se les puede exigir caja.
+       */
+      if (el.type === 'radio') {
+        if (!el.checked) return false;
+        const clave = `radio:${el.name}`;
+        if (grupos.has(clave)) return false;
+        grupos.add(clave);
+        return true;
+      }
+
+      /*
+       * ¿Está REPRESENTADO? `getClientRects().length`, y no `display !== 'none'`.
+       *
+       * La diferencia costó un falso negativo: `getComputedStyle` devuelve el `display`
+       * **del elemento**, no el del ancestro que lo esconde. El `<summary>` del menú
+       * móvil vive dentro de un contenedor `lg:hidden`, así que a 1440 px no se dibuja ni
+       * se puede enfocar —Tab lo salta, y hace bien—, pero su propio `display` sigue
+       * siendo `list-item` y se contaba como parada que falta.
+       *
+       * Es la misma trampa que ya está registrada en `AGENTS.md` para el conteo de
+       * animaciones: lo que dice si un elemento existe en la página es tener cajas.
+       *
+       * Y **no se exige ancho**: un enlace que envuelve una imagen diferida mide 0 de
+       * ancho hasta que la imagen llega, y aun así tiene caja y es alcanzable con Tab.
+       * Exigir `width > 0` fue el otro error que compensaba a este.
+       */
+      return el.getClientRects().length > 0;
+    });
+
+    lista.forEach((el, i) => el.setAttribute('data-t6-parada', String(i)));
+    return lista.length;
   });
 
   // Recorrido real con Tab. El tope evita un bucle si algo atrapa el foco.
@@ -154,14 +210,14 @@ for (const tema of ['light', 'dark']) {
     const marca = await page.evaluate(() => {
       const el = document.activeElement;
       if (!el || el === document.body) return null;
-      const r = el.getBoundingClientRect();
       /*
-       * La marca incluye las DOS coordenadas. Con solo `top`, varios controles
-       * idénticos en la misma fila —los seis «Ver reseña» de los expositores,
-       * por ejemplo— producían la misma marca, el bucle la tomaba por una vuelta
-       * al principio y cortaba el recorrido a la mitad.
+       * Los elementos sellados se identifican por su sello. Los que no lo llevan —un
+       * radio no marcado, al que las flechas sí llegan— se identifican aparte para que
+       * no cuenten como parada de Tab ni corten el recorrido antes de tiempo.
        */
-      return `${el.tagName}|${el.getAttribute('href') ?? el.getAttribute('value') ?? el.textContent?.trim().slice(0, 20)}|${Math.round(r.top)}x${Math.round(r.left)}`;
+      const sello = el.getAttribute('data-t6-parada');
+      if (sello !== null) return `parada:${sello}`;
+      return `fuera:${el.tagName}|${el.getAttribute('name') ?? ''}|${el.getAttribute('value') ?? ''}`;
     });
     if (!marca) {
       sinFoco++;
@@ -172,10 +228,21 @@ for (const tema of ['light', 'dark']) {
     visitados.add(marca);
   }
 
+  const paradas = [...visitados].filter((m) => m.startsWith('parada:'));
+  const faltan = await page.evaluate(
+    (alcanzadas) =>
+      [...document.querySelectorAll('[data-t6-parada]')]
+        .filter((el) => !alcanzadas.includes(`parada:${el.getAttribute('data-t6-parada')}`))
+        .map((el) => `${el.tagName} «${(el.textContent ?? '').trim().slice(0, 24)}»`),
+    paradas,
+  );
+
   check(
     `T6 · el recorrido por teclado llega a todo (${tema})`,
-    visitados.size >= enfocables,
-    `${visitados.size} alcanzados de ${enfocables} enfocables`,
+    paradas.length === enfocables,
+    faltan.length
+      ? `${paradas.length} de ${enfocables}; sin alcanzar: ${faltan.join(', ')}`
+      : `${paradas.length} de ${enfocables} enfocables`,
   );
 
   /*
@@ -185,6 +252,22 @@ for (const tema of ['light', 'dark']) {
    * Se mide recorriendo con Tab de verdad, no llamando a `el.focus()`: el foco
    * programático no siempre activa `:focus-visible` —el navegador distingue si
    * la interacción vino del teclado— y medirlo así daba fallos que no existen.
+   *
+   * ═══ POR QUÉ SE EXCLUYE `<iframe>`, Y POR QUÉ ESO NO ES RELAJAR LA COMPROBACIÓN ═══
+   *
+   * Añadido el 2026-08-25, tras un fallo **intermitente**: «sin anillo: iframe». El mapa de
+   * OpenStreetMap se carga al entrar en pantalla, y el propio recorrido con Tab desplaza la
+   * página, así que el `<iframe>` existía o no según cuándo terminara de cargar. La misma
+   * corrida daba verde o rojo, que es lo peor que puede hacer un verificador.
+   *
+   * Y el hallazgo no era real. Al enfocar un `<iframe>` el foco entra en el **documento
+   * embebido**: el indicador es responsabilidad de ese documento, no del nuestro, y no hay
+   * CSS de esta página que pueda pintarlo. Exigirle anillo a un iframe sería exigir algo
+   * que el sitio no puede cumplir de ninguna manera.
+   *
+   * Lo que **sí** sigue comprobado, y es lo que importa: el botón «Cargar mapa» —el control
+   * que este sitio sí gobierna— pasa por el recorrido y por la medición de contraste como
+   * cualquier otro. La cobertura no baja; deja de medirse lo que no es nuestro.
    */
   await page.evaluate(() => document.body.focus());
   const muestras = [];
@@ -193,6 +276,7 @@ for (const tema of ['light', 'dark']) {
     const m = await page.evaluate(() => {
       const el = document.activeElement;
       if (!el || el === document.body) return null;
+      if (el.tagName === 'IFRAME') return null;
       const s = getComputedStyle(el);
       /*
        * El fondo con el que hay que comparar es el que está DETRÁS del anillo, no el del
