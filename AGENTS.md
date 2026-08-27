@@ -9,11 +9,19 @@ regla existe porque su ausencia ya causó un problema concreto.
 
 ## Lo primero
 
-**Leer [`ESTADO.md`](ESTADO.md).** Dice en qué punto quedó el trabajo, qué tarea
-está en curso y con qué reglas conviven los distintos entornos desde los que se
-desarrolla este proyecto (Claude Code en navegador, móvil y PC, y Antigravity).
-Ninguno de ellos ve la conversación de los otros: lo único compartido es el
-repositorio, así que **si no está escrito aquí, no ocurrió**.
+**Leer [`ESTADO.md`](ESTADO.md), y en concreto su bloque «EMPIEZA AQUÍ»**, que está
+arriba del todo y es lo único imprescindible para retomar: qué quedó a medio hacer, qué
+acción está pendiente y qué no se toca sin respuesta de un tercero. El resto de ese
+archivo es historia.
+
+Dice también con qué reglas conviven los distintos entornos desde los que se desarrolla
+este proyecto (Claude Code en navegador, móvil y PC, y Antigravity). Ninguno de ellos ve
+la conversación de los otros: lo único compartido es el repositorio, así que **si no está
+escrito aquí, no ocurrió**.
+
+⚠️ **Al 2026-08-27 hay una acción pendiente que bloquea el trabajo de gestión: el sitio
+publicado va por detrás del repositorio y muestra cuatro marcas sin autorización.** No se
+manda ese enlace a ninguna institución hasta redesplegar. Detalle en «EMPIEZA AQUÍ» §1.
 
 ```bash
 git fetch origin && git status -sb   # ¿parto del estado que creo?
@@ -33,10 +41,28 @@ que comprobaba (RF-16): quedó sin objeto, no relajado. Estos documentos siguier
 diciendo «siete» —y listando un guion inexistente en el bloque de arranque— hasta el
 2026-08-25.
 
-**No correr nada en paralelo con `verify:todo`.** Con `npm run check` a la vez, la cadena
-falló en `verify:tema` y sola quedó en verde `[medido: 2026-08-25]`. Varias comprobaciones
-dependen de tiempos de carga, y bajo contención de CPU dan falsos negativos. Un fallo hay
-que reproducirlo aislado antes de creérselo.
+**Un fallo de la cadena se reproduce aislado antes de creérselo.** Pasó dos veces el
+2026-08-25: `verify:todo` terminó en 1 señalando `verify:tema`, y `verify:tema` a solas dio
+exit 0 con sus 17 criterios en verde.
+
+La causa **no es del sitio ni de la comprobación, y tampoco es contención de CPU**, que fue
+la primera explicación y era una conjetura. Al leer la traza completa aparece la firma real
+`[medido]`:
+
+```
+page.goto: net::ERR_NO_BUFFER_SPACE at http://127.0.0.1:53728/
+    at scripts/verify-tema.mjs:126
+```
+
+Es **agotamiento de sockets de Windows**: cada verificador levanta su propio servidor y su
+propio Chromium, y tras muchas corridas seguidas en la misma sesión —siete cadenas, más
+capturas y diagnósticos— los puertos efímeros no alcanzan. `netstat` mostraba 62 conexiones
+en `TIME_WAIT`.
+
+Cómo se distingue de una regresión de verdad, que es lo que importa: **un criterio que
+incumple imprime su línea con `✗`**; esto **aborta el proceso** y no imprime ninguna, así
+que en el resumen aparece el verificador en rojo sin ningún criterio fallado debajo. Si al
+mirar el detalle no hay línea `✗`, buscar `ERR_` en la salida antes de tocar código.
 
 **Nunca reescribir historia ya publicada en la rama de trabajo** (`push --force`,
 rebase de commits empujados). Hay clones en varios entornos y se rompen todos.

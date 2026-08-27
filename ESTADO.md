@@ -7,20 +7,189 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-08-25** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
+Actualizado: **2026-08-27** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
+· Último commit: `52d9f5e` (los logos de terceros vuelven a marcador; dos verificadores
+corregidos). Rama sincronizada con `origin`, árbol limpio.
 
-> ⚠️ **EL SITIO PUBLICADO VA POR DETRÁS DEL REPOSITORIO.**
-> <https://seminario-wireless-lab.danielcaignet99.workers.dev> sigue sirviendo la versión
-> `4cca071f` del 2026-08-09, que **muestra las cuatro marcas de terceros sin autorización**.
-> El repositorio ya no. Hasta que se redespliegue, **ese enlace no se manda a ninguna
-> institución**: ver §12. Desplegar es `npx wrangler deploy` **con `SITE_URL` definida** al
-> construir, o el canónico apunta a un dominio que no existe (aviso en `wrangler.jsonc`).
+---
+
+# EMPIEZA AQUÍ · traspaso del 2026-08-27
+
+Lo que sigue es lo único que hay que leer para retomar. El detalle de cómo se llegó
+aquí está en **§12**; el resto del archivo es historia y no hace falta para arrancar.
+
+## 1. Lo primero, y bloquea todo lo demás: hay que desplegar
+
+⚠️ **EL SITIO PUBLICADO VA POR DETRÁS DEL REPOSITORIO, y la diferencia importa.**
+
+<https://seminario-wireless-lab.danielcaignet99.workers.dev> sigue sirviendo la versión
+`4cca071f` del 2026-08-09, que **muestra las cuatro marcas de terceros sin autorización de
+su titular** (UC, USACH, Nokia Bell Labs y Columbia). El repositorio ya no las muestra
+desde `52d9f5e`, pero **desplegar quedó sin hacer**: Daniel no dio la orden en esa sesión.
+
+**Consecuencia práctica, y es la razón por la que esto va primero:** hasta que se
+redespliegue, **ese enlace no se manda a ninguna institución**. Cuatro de los siete correos
+redactados piden autorización para usar una marca, y el enlace del propio correo enseñaría
+el uso ya hecho. A Columbia el correo le dice literalmente «*we have not published them*».
+
+```bash
+git fetch origin && git status -sb   # ¿parto de 52d9f5e?
+npm ci
+npm run build                        # ← con SITE_URL definida, ver abajo
+npm run verify:todo                  # los SEIS, no siete
+npx wrangler deploy
+```
+
+**`SITE_URL` no es opcional.** `CF_PAGES_URL` solo existe en Cloudflare Pages, no en
+Workers; sin `SITE_URL` el canónico, el sitemap y las imágenes para compartir apuntan al
+respaldo `PRODUCTION_SITE`, que es un dominio que todavía no existe, y el `noindex`
+provisional se desactiva creyendo estar en producción. El aviso está en `wrangler.jsonc`.
+Mientras el dominio sea el de `workers.dev`, el valor es esa misma URL.
+
+Después de desplegar: `npm run verify:publicado -- <url>` y **comprobar a ojo que la
+sección «Organización y financiamiento» ya no muestra los cuatro logos**.
+
+## 2. Los accesos funcionan, comprobado el 2026-08-25
+
+- **GitHub:** `gh` autenticado como `Daniel990310`, dueño del repositorio, scope `repo`,
+  credential helper `manager`. Sin PR abierto. `main` va **1 commit atrás** de la rama.
+- **Cloudflare:** el token OAuth del disco **estaba vencido** y el `refresh_token` lo renovó
+  solo, sin intervención. Cuenta `ad6ad6434f0de8b33a85a93af92f7a39`, correo
+  `danielcaignet99@gmail.com`, con `workers_scripts (write)`.
+- **Dos avisos sobre wrangler:** **no es dependencia del proyecto** —baja por `npx` en cada
+  uso, hoy 4.125.0— y el `$schema` de `wrangler.jsonc` apunta a
+  `node_modules/wrangler/config-schema.json`, **que no existe**, así que ese archivo no se
+  valida en el editor.
+- **Servidor local:** `npm run dev` → <http://localhost:4321>. **En Astro 7 `astro dev` se
+  demoniza**: arranca en segundo plano y el comando termina con código 0. Ver «terminado» NO
+  significa que se haya caído. Se maneja con `astro dev status | logs | stop`.
+
+## 3. Los correos: están escritos, y el orden importa
+
+Los siete están listos para copiar en
+[`specs/gestion/correos-instituciones.md`](specs/gestion/correos-instituciones.md).
+
+**Tanda 1 — se puede mandar ya, no depende del despliegue:**
+
+1. **DSIC (F-180)**, el primero de todos aunque parezca el menos urgente: fija el dominio
+   definitivo, y con la solicitud puesta los demás correos pueden decir «la dirección
+   definitiva será `beyondconnectivity.pucv.cl`» y el enlace no se vuelve obsoleto en tres
+   semanas. **Lo firma una autoridad de la PUCV**, no un proveedor externo: la sección A
+   pide «responsable ante la PUCV» y la E exige firma. Empezar por conseguir esa firma.
+2. **ANID.** Su respuesta condiciona el sitio, no solo el trámite: el nombre exacto del
+   concurso está en la mención visible (A11) y la regla de convivencia de logos puede
+   obligar a recomponer la maqueta (A16). Y no puede decir «no»: su logo es obligatorio.
+3. **PUCV Comunicación Estratégica** y **EIE**. Cero riesgo, es el cliente. De ahí salen la
+   variante oscura del escudo (A13) y el manual vigente.
+
+**Tanda 2 — solo después de desplegar. Por tiempo de respuesta, el más lento primero:**
+
+4. **Columbia** y **Nokia**, el mismo día. Son las lentas: Office of General Counsel y un
+   equipo global de marca. **Sus direcciones siguen sin confirmar**: `cufo.columbia.edu` y
+   `anid.cl` devolvieron **403** el 2026-08-25 y no se inventaron. Hay que copiarlas de la
+   página del titular.
+5. **USACH.** Mayor riesgo declarado —autoriza o rechaza sitios web explícitamente— pero
+   responde una dirección chilena. Es la única de la que además hace falta un archivo: la
+   variante blanca, porque su tinta es negro puro y desaparece sobre `#0a1020`.
+6. **UC.** Misma estructura, sin exigencia explícita. Probablemente la primera en contestar.
+
+## 4. Una fecha tope real, a mediados de septiembre de 2026
+
+El protocolo de eventos de ANID exige, para invitar a una autoridad de la Agencia:
+**15 días hábiles de anticipación**, invitación **firmada por el rector o el director**, y
+**adjuntar el programa de la actividad**. El seminario es el **21–22 de octubre de 2026**.
+
+**Por lo tanto `program.days` vacío ya no es una sección incompleta del sitio: bloquea un
+trámite con fecha.** Eso cambia la prioridad de lo que quedaba del plan 002 — la línea de
+tiempo del programa no es la siguiente tarea por ser la más vistosa, lo es porque vence.
+
+Faltan tres datos para llenar la minuta de ANID: **horarios de inicio y cierre por
+jornada**, **proyección de asistentes** y **si el seminario es gratuito**.
+
+## 5. Lo que NO se toca sin respuesta de ANID
+
+Dos hallazgos del manual 2026 quedaron **deliberadamente sin resolver**, y la tentación va a
+ser arreglarlos por criterio propio. No:
+
+- **RNF-8.4** · los logos no gubernamentales van «a la izquierda de ANID» con el mismo peso
+  visual. Hoy las universidades van en una sección y ANID en un bloque propio más abajo. La
+  regla está escrita para una fila horizontal y **no contempla la disposición vertical**.
+  Recomponer la maqueta sin saber si hacía falta sería inventarse un requisito.
+- **RNF-8.5** · la versión **pluma** que usa el tema oscuro no está prevista para pantalla,
+  y **es el único archivo blanco que trae el kit**. No hay entre qué elegir.
+
+Las dos están preguntadas en el correo a ANID. Es la decisión abierta **A16**.
+
+## 6. Qué queda en el plan 002, y con qué
+
+De los cinco pedidos del cliente (§5k) siguen **sin especificar** los puntos 1, 2, 3 y 5:
+fotos en las fichas, línea de tiempo vertical, enlace sesión→expositor y transiciones entre
+vistas. El punto 5 es el único uso real que tendrían los **59,5 kB de React y Motion** que
+hoy `dist` emite sin que ningún HTML los referencie (D11, y RF-6.4 le sigue apuntando).
+
+Defectos concretos abiertos: USACH sin variante blanca, Columbia con la marca de otra
+facultad (`CUSPS` en vez de SEAS), retrato de Zussman a 260×260, y el anillo de foco en
+tema claro a **3,62:1** contra el mínimo de 3 — es el primer umbral que cae si el fondo
+claro se oscurece más.
+
+**Y una restricción nueva que gobierna las fotos que falten:** el manual de ANID prohíbe
+**estrictamente** generar rostros con IA, y descarta filtros de postproducción que alteren
+la escena y fotografías compuestas artificialmente (RNF-8.6). Aplica a los seis retratos y
+al carrusel de la sede. Cierra un atajo que hasta ahora nadie había prohibido por escrito.
+
+## 7. Referencia que mandó el tutor, ya evaluada
+
+<https://isstt2026.org/> — sitio **post-evento** hecho en WordPress con Elementor.
+
+**Descartado, y Daniel ya lo había intuido:** seis grupos de navegación con desplegables y
+unas 25 páginas va contra **D1** (una sola página con anclas), y su propia navegación
+aparece duplicada en el marcado. Tampoco se copia que **el programa esté detrás de un
+login** ni que **no tenga versión en español** pese a ser un evento en Chile: en las dos
+cosas este sitio va por delante.
+
+**Rescatable**, por valor:
+
+| Idea | Por qué encaja |
+| ---- | -------------- |
+| **Franja de fechas clave** | Lo mejor de su portada. Este sitio **no tiene ninguna fecha** aparte de las del seminario: ni envío de resúmenes ni inscripción. Es donde vive RF-3, el registro, aún sin implementar |
+| **Cuenta atrás** | Señal de vida, y significa algo del dominio (filtro de D12). **Calculada en el build**, «faltan N días», a 0 kB y sin chocar con WCAG 2.2.2, que exige poder detener lo que se actualiza solo |
+| **Información práctica de viaje** | Visa, alojamiento, cómo llegar. Hay **cuatro expositores extranjeros** y el sitio no dice nada. Es redacción, no tecnología |
+| **Galería de la sede** | Es el carrusel ya previsto, esperando fotos |
+
+## 8. Reglas de esta sesión que conviene no volver a aprender
+
+- **Son SEIS verificadores, no siete.** `verify:red` se retiró el 2026-08-07 con la sección
+  que medía. Media docena de documentos decían «siete» y el bloque de comandos de arranque
+  listaba un guion inexistente; corregido en `52d9f5e`.
+- **Un fallo de `verify:todo` se reproduce aislado antes de creérselo.** Pasó dos veces:
+  la cadena señaló `verify:tema` y a solas dio exit 0 con sus 17 criterios en verde. La
+  causa no es del sitio ni de la comprobación: es **`net::ERR_NO_BUFFER_SPACE` en
+  `page.goto`**, agotamiento de sockets de Windows tras muchas corridas de Playwright en la
+  misma sesión `[medido]`. **Cómo distinguirlo de una regresión:** un criterio que incumple
+  imprime su línea con `✗`; esto aborta el proceso y no imprime ninguna, así que el
+  verificador sale en rojo sin ningún criterio fallado debajo. Buscar `ERR_` antes de tocar
+  código. Está en `AGENTS.md` con la traza.
+- **`.agents/` (8,5 MB) y `.codex/config.toml`** están sin versionar y sin ignorar, a
+  propósito: es configuración de otras herramientas. Versionarlas es decisión de Daniel.
+- **`beyond-connectivity-seminario-pucv.html`** era una prueba vieja de claude.ai. Está en
+  `.gitignore`. No es la dirección de diseño del proyecto.
+
+## 9. Estado medido al cerrar, sobre `52d9f5e` `[medido: 2026-08-25]`
+
+`astro check` **0 errores / 0 avisos**. **Los seis verificadores en verde, 110 criterios.**
+Revisado a ojo en los dos temas y los dos anchos, sin desbordes a 390 px.
+
+| Presupuesto | Valor | Límite |
+| ----------- | ----- | ------ |
+| RNF-2.1 · JavaScript | 4,3 kB | 115 |
+| RNF-2.2 · Primera carga | 167,4 kB | 260 |
+| RNF-2.6 · Tipografías | 122,6 kB | 125 — **2,4 kB de margen** |
+
+---
 
 > **Hay un plan abierto: [002 · Rediseño visual y movimiento](specs/002-rediseno-visual/requirements.md).**
-> RF-9 está implementado y verificado, y desde el 2026-08-06 el plan creció hasta RF-21.
+> RF-9 está implementado y verificado, y desde el 2026-08-06 el plan creció hasta RF-22.
 > Qué pasó desde el 2026-08-03 y qué se descartó: **§9**. La sesión del 06 al 09: **§10**.
-> **Lo que ahora tiene fecha tope es el programa**: sin `program.days` no se puede invitar a
-> una autoridad de ANID, y ese trámite vence a mediados de septiembre (§12).
 
 ## 12. El 2026-08-25: los logos vuelven a marcador, y dos verificadores estaban mal
 
