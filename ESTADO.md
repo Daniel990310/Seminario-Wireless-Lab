@@ -8,8 +8,8 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 > **Si no está escrito en el repositorio, no ocurrió.**
 
 Actualizado: **2026-08-27** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
-· Último commit: `52d9f5e` (los logos de terceros vuelven a marcador; dos verificadores
-corregidos). Rama sincronizada con `origin`, árbol limpio.
+· Sitio desplegado el **2026-08-27**, versión `c5149c53`, **ya sin las marcas sin
+autorización**. Rama sincronizada con `origin`.
 
 ---
 
@@ -18,36 +18,60 @@ corregidos). Rama sincronizada con `origin`, árbol limpio.
 Lo que sigue es lo único que hay que leer para retomar. El detalle de cómo se llegó
 aquí está en **§12**; el resto del archivo es historia y no hace falta para arrancar.
 
-## 1. Lo primero, y bloquea todo lo demás: hay que desplegar
+## 1. Desplegado el 2026-08-27. El enlace ya se puede mandar
 
-⚠️ **EL SITIO PUBLICADO VA POR DETRÁS DEL REPOSITORIO, y la diferencia importa.**
+✅ <https://seminario-wireless-lab.danielcaignet99.workers.dev> sirve la versión
+**`c5149c53`**, sin las cuatro marcas de terceros. Comprobado sobre la URL en vivo, no
+sobre el build `[medido: 2026-08-27]`:
 
-<https://seminario-wireless-lab.danielcaignet99.workers.dev> sigue sirviendo la versión
-`4cca071f` del 2026-08-09, que **muestra las cuatro marcas de terceros sin autorización de
-su titular** (UC, USACH, Nokia Bell Labs y Columbia). El repositorio ya no las muestra
-desde `52d9f5e`, pero **desplegar quedó sin hacer**: Daniel no dio la orden en esa sesión.
+- La página solo referencia **PUCV, EIE y el conjunto Ministerio de Ciencia + ANID**.
+- Los marcadores aparecen en los dos idiomas.
+- `/logos/uc.svg`, `/logos/uc-oscuro.svg`, `/logos/nokia-bell-labs.svg` y
+  `/logos/README.md` devuelven **404**.
+- `verify:publicado` en verde, 20 criterios, con `noindex` porque el dominio sigue siendo
+  provisional.
 
-**Consecuencia práctica, y es la razón por la que esto va primero:** hasta que se
-redespliegue, **ese enlace no se manda a ninguna institución**. Cuatro de los siete correos
-redactados piden autorización para usar una marca, y el enlace del propio correo enseñaría
-el uso ya hecho. A Columbia el correo le dice literalmente «*we have not published them*».
+**Con esto se desbloquea la tanda 2 de correos** (§3).
+
+### Lo que apareció justo antes de desplegar, y hay que no volver a olvidar
+
+Retirar una marca de la maqueta **no basta**. `public/` se copia verbatim a `dist/`, así
+que los archivos de UC y de Nokia seguían alojados: `https://…/logos/uc.svg` habría
+respondido 200 sin que ninguna página lo enlazara. **Alojar no es mostrar, pero sigue
+siendo publicar.** Se detectó mirando `dist/logos/`, no razonando sobre el HTML.
+
+Están archivados en
+[`specs/002-rediseno-visual/marcas/pendientes-de-autorizacion/`](specs/002-rediseno-visual/marcas/pendientes-de-autorizacion/),
+con cómo reponerlos. El de Nokia **era el único ejemplar**: se movió, no se borró.
+
+Los ráster —Columbia y USACH— no tenían el problema: viven en `src/assets/` y Astro solo
+los emite si alguien los importa.
+
+Y en la misma revisión: **`public/logos/README.md` se servía en `/logos/README.md` con
+200** — documentación interna, con rutas y con qué instituciones no han autorizado su
+marca, publicada en el sitio de la Universidad. Movida a `specs/`. **Nada que no sea el
+sitio va en `public/`.**
+
+### Cómo se vuelve a desplegar
 
 ```bash
-git fetch origin && git status -sb   # ¿parto de 52d9f5e?
+git fetch origin && git status -sb
 npm ci
-npm run build                        # ← con SITE_URL definida, ver abajo
+$env:SITE_URL = "https://seminario-wireless-lab.danielcaignet99.workers.dev"
+npm run build
 npm run verify:todo                  # los SEIS, no siete
 npx wrangler deploy
+npm run verify:publicado -- https://seminario-wireless-lab.danielcaignet99.workers.dev
 ```
 
 **`SITE_URL` no es opcional.** `CF_PAGES_URL` solo existe en Cloudflare Pages, no en
-Workers; sin `SITE_URL` el canónico, el sitemap y las imágenes para compartir apuntan al
-respaldo `PRODUCTION_SITE`, que es un dominio que todavía no existe, y el `noindex`
-provisional se desactiva creyendo estar en producción. El aviso está en `wrangler.jsonc`.
-Mientras el dominio sea el de `workers.dev`, el valor es esa misma URL.
+Workers; sin ella el canónico, el sitemap y las imágenes para compartir apuntan al respaldo
+`PRODUCTION_SITE` —un dominio que todavía no existe— y el `noindex` provisional se
+desactiva creyendo estar en producción. El aviso está en `wrangler.jsonc`.
 
-Después de desplegar: `npm run verify:publicado -- <url>` y **comprobar a ojo que la
-sección «Organización y financiamiento» ya no muestra los cuatro logos**.
+**Y antes de desplegar se mira `dist/`**, no lo que referencia el HTML: son dos preguntas
+distintas, y confundirlas es lo que dejó dos marcas alojadas. Para volver atrás,
+`npx wrangler rollback`.
 
 ## 2. Los accesos funcionan, comprobado el 2026-08-25
 

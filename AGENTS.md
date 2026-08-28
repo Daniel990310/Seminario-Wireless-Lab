@@ -19,9 +19,9 @@ este proyecto (Claude Code en navegador, móvil y PC, y Antigravity). Ninguno de
 la conversación de los otros: lo único compartido es el repositorio, así que **si no está
 escrito aquí, no ocurrió**.
 
-⚠️ **Al 2026-08-27 hay una acción pendiente que bloquea el trabajo de gestión: el sitio
-publicado va por detrás del repositorio y muestra cuatro marcas sin autorización.** No se
-manda ese enlace a ninguna institución hasta redesplegar. Detalle en «EMPIEZA AQUÍ» §1.
+✅ **Al 2026-08-27 el sitio publicado está al día** (versión `c5149c53`) y ya no muestra
+ninguna marca sin autorización, así que **el enlace se puede mandar a las instituciones**.
+Cómo se comprobó, y las dos trampas que aparecieron al desplegar, en «EMPIEZA AQUÍ» §1.
 
 ```bash
 git fetch origin && git status -sb   # ¿parto del estado que creo?
@@ -166,6 +166,17 @@ el propio recorrido con Tab desplaza la página, y el `<iframe>` existía o no s
 momento. Y el hallazgo no era real —al enfocar un `<iframe>` el foco entra en el documento
 embebido, cuyo indicador **ninguna hoja de estilos nuestra puede pintar**—. Se excluye
 `iframe` con el motivo escrito; el botón «Cargar mapa», que sí gobernamos, sigue medido.
+
+**Lo que se publica es `dist/`, no lo que el HTML referencia.** Son dos preguntas
+distintas y confundirlas dejó dos marcas sin autorización alojadas en el sitio. `public/`
+se copia **verbatim** a `dist/`: tras retirar UC y Nokia de la maqueta el 2026-08-25, sus
+archivos seguían en `public/logos/` y `https://…/logos/uc.svg` habría respondido **200** sin
+que ninguna página lo enlazara `[medido: 2026-08-27]`. Alojar no es mostrar, pero sigue
+siendo publicar. Los ráster no tenían el problema: viven en `src/assets/` y Astro **solo
+los emite si alguien los importa**. En la misma revisión apareció que `public/logos/README.md`
+se servía en `/logos/README.md` con 200 — documentación interna, con rutas y con qué
+instituciones no han autorizado su marca, en el sitio de la Universidad. **Nada que no sea
+el sitio va en `public/`, y antes de desplegar se mira `dist/`.**
 
 **El texto dentro de un SVG no lo mide nadie.** Al reponer los marcadores de logo el
 2026-08-25 se recuperaron del historial los SVG originales y **no se reinstalaron**: traían
