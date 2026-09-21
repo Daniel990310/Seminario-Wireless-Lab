@@ -4,6 +4,13 @@ node_modules/
 .DS_Store
 *.log
 
+# Credenciales de operación (Cloudflare, Hostinger). Se declaran aquí ANTES de que
+# exista ningún archivo: un token commiteado no se arregla borrándolo en el commit
+# siguiente, porque queda en el historial y hay clones en varios entornos.
+.env
+.env.local
+.env.*.local
+
 # Entregas de diseño que llegan de fuera. Lo que del prototipo hay que conservar ya
 # está versionado en `specs/002-rediseno-visual/referencia/`, con su procedencia y sus
 # errores anotados. La copia suelta de la raíz no debe entrar al repositorio: incluye
