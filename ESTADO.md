@@ -9,8 +9,8 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 Actualizado: **2026-09-21** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
 · Último despliegue: **2026-08-27**, versión `c5149c53`, sin marcas sin autorización.
-· **Dominio comprado: `bcsensing.org`. El repositorio ya apunta ahí; falta el panel y
-desplegar.**
+· **Dominio `bcsensing.org`: zona creada en Cloudflare (`pending`). Falta delegar los
+nameservers en Hostinger — bloqueado por el token. Ver «EMPIEZA AQUÍ».**
 
 ---
 
@@ -43,52 +43,97 @@ Todo verificado con `verify:todo` en verde y `astro check` sin errores ni advert
 - Los dos criterios nuevos pasaron **prueba de sensibilidad**: rotos a mano, fallan
   (`2 CRITERIOS FALLAN` y `3 CRITERIOS FALLAN` respectivamente) `[medido]`.
 
-### ⏸ Interrumpido aquí: Daniel reinicia Claude Code para cargar el MCP de Cloudflare
+### ✅ Resuelto: el MCP de Cloudflare carga y responde
+
+Tras el reinicio, el servidor que responde es **`cloudflare-api`** (el añadido a mano);
+el homónimo del plugin quedó `⊘ Disabled for this project`, así que **no hay duplicado
+activo** y no hace falta borrar nada. Verificado con `claude mcp list` `[medido: 2026-09-21]`.
+
+Está autorizado contra la cuenta correcta: `accountId` = `ad6ad6434f0de8b33a85a93af92f7a39`
+(`Danielcaignet99@gmail.com`), la misma a la que responde `wrangler whoami` y donde vive
+el Worker `seminario-wireless-lab` `[medido]`.
+
+### ⚠️ La API de Hostinger cargada es SOLO la de VPS
+
+El plugin de Hostinger publica **siete** servidores MCP distintos —`hostinger-hosting`,
+`hostinger-domains`, `hostinger-dns`, `hostinger-ecommerce`, `hostinger-reach`,
+`hostinger-billing`, `hostinger-vps`—. En esta sesión cargó **únicamente
+`hostinger-vps`**, cuyas ~100 herramientas son todas `VPS_*`.
+
+`updateDomainNameserversV1` vive en `hostinger-domains`, que **no está cargado**. Habilitarlo
+cuesta otro reinicio. Se descartó por eso: se llama a la API REST directamente desde
+`scripts/hostinger-nameservers.mjs`.
+
+**El token de Hostinger hereda todos los permisos del usuario, el VPS de Demeter incluido.**
+Va en `.env.local` (ignorado), con **fecha de expiración corta**, y se rota el mismo día.
+
+### Estado medido del dominio antes de tocarlo
+
+Contenido completo de la zona en el DNS de Hostinger `[medido: 2026-09-21,
+`nslookup ... orbit.dns-parking.com`]`:
+
+```
+A     bcsensing.org  → 2.57.91.91                                  (parking)
+TXT   bcsensing.org  → v=spf1 include:_spf.reach.hostinger.com ~all
+NS    orbit.dns-parking.com / horizon.dns-parking.com
+```
+
+**No hay MX.** No hay correo que romper al delegar: lo único que se pierde es la página
+de parking, que es justo lo que se reemplaza. Esta comprobación no estaba en el plan y
+es la que decide si la migración de NS es segura o corta el correo del cliente.
+
+### ✅ Paso 2 hecho: zona creada en Cloudflare
+
+```
+zona   bcsensing.org
+id     d19fd380d4814d99efcaace07281d18d
+plan   Free Website
+estado pending  (sin efecto hasta que el registrador delegue)
+```
+
+| | |
+|---|---|
+| **Nameservers de Cloudflare** (los que hay que poner en Hostinger) | `jobs.ns.cloudflare.com` · `nataly.ns.cloudflare.com` |
+| **Nameservers de reversión** (los actuales, de Hostinger) | `orbit.dns-parking.com` · `horizon.dns-parking.com` |
+
+La zona nació **sin ningún registro DNS**: Cloudflare no importó el A del parking
+`[medido]`. Es lo deseado — el dominio personalizado del Worker creará el suyo.
+
+### ✅ `wrangler` instalado y fijado
+
+`wrangler@4.136.1` en `devDependencies`, no vía `npx` a la última, para que el despliegue
+sea reproducible entre entornos. `npm run build` en verde, 4 páginas, exit 0 `[medido]`.
+
+Confirmado lo que ya decía este archivo: el OAuth de `wrangler` tiene `zone (read)` y
+**ningún** `dns_records`. Por eso **el dominio personalizado se cuelga por la API del MCP,
+no con `wrangler`**.
+
+### ⏸ Bloqueado aquí: falta el token de Hostinger en `.env.local`
 
 **Este es el punto exacto donde se retoma.** Nada de lo de abajo está hecho.
 
-El cableado del dominio necesita crear una zona y registros DNS, y eso **no lo cubre
-ninguna credencial disponible**: el OAuth de `wrangler` de este PC tiene `zone (read)` y
-**no tiene `dns_records`** en absoluto `[medido: 2026-09-21, `wrangler whoami`]`. Los
-plugins de Cloudflare instalados —`bindings`, `builds`, `observability`, `docs`— tampoco
-gestionan zonas ni DNS.
-
-Sí lo cubre el servidor **«Code Mode API»** de Cloudflare, `https://mcp.cloudflare.com/mcp`,
-que expone la API completa (2.500+ endpoints, DNS incluido) con `search()` y `execute()`.
-Estaba ya registrado como `plugin:cloudflare:cloudflare-api` pero sin autenticar, y sus
-herramientas no se expusieron en la sesión. Se añadió además a mano:
-
-```bash
-claude mcp add --transport http cloudflare-api https://mcp.cloudflare.com/mcp
-```
-
-**Quedan dos entradas idénticas** —la del plugin y la añadida a mano, en
-`C:\Users\danie\.claude.json`—. En cuanto se confirme cuál responde, sobra una:
-`claude mcp remove cloudflare-api`.
-
-**Un MCP añadido a mitad de sesión no carga hasta reiniciar Claude Code.** Por eso el
-reinicio. Al volver:
-
-1. Lanzar el flujo de autorización del MCP y aprobarlo en el navegador **con la cuenta
-   `danielcaignet99@gmail.com`**, que es donde vive el Worker. Con otra cuenta, la zona
-   se crea en el sitio equivocado y el dominio personalizado no se podrá colgar.
-2. **Falta el token de Hostinger**, y ese no tiene OAuth. Va en `.env.local` (ya
-   ignorado) como `HOSTINGER_API_TOKEN=…`. Hereda **todos** los permisos del usuario que
-   lo crea —VPS de Demeter incluido—, así que **se rota el mismo día**.
-
 ### Lo que falta hacer, en orden
 
-1. Anotar los nameservers actuales del dominio **antes de tocarlos**, para poder revertir.
-2. Cloudflare: crear la zona `bcsensing.org` y leer sus nameservers.
-3. Hostinger: `updateDomainNameserversV1` (`domain`, `ns1`, `ns2`) hacia esos dos.
-4. Esperar la activación de la zona. **No es inmediato** y no se puede acelerar: Cloudflare
+1. ~~Anotar los nameservers actuales antes de tocarlos~~ **hecho**, arriba.
+2. ~~Cloudflare: crear la zona y leer sus nameservers~~ **hecho**, arriba.
+3. Token de Hostinger en `.env.local` como `HOSTINGER_API_TOKEN=…`, con expiración corta.
+   Se crea en hPanel → cuenta → API.
+4. Comprobar el token **sin escribir nada**:
+   `node scripts/hostinger-nameservers.mjs leer bcsensing.org`
+5. Delegar:
+   `node scripts/hostinger-nameservers.mjs poner bcsensing.org jobs.ns.cloudflare.com nataly.ns.cloudflare.com --confirmo`
+   Sin `--confirmo` el script se niega y explica qué destruye. **Reversión**: el mismo
+   comando con `orbit.dns-parking.com horizon.dns-parking.com`.
+6. Esperar la activación de la zona. **No es inmediato y no se puede acelerar**: Cloudflare
    no activa hasta ver la delegación propagada, y el dominio se registró el 2026-09-21, así
-   que el registro puede tardar horas en aceptar el cambio de NS.
-5. Colgar el dominio personalizado del Worker `seminario-wireless-lab`.
-6. Desplegar con `SITE_URL="https://bcsensing.org"` (abajo) y
+   que el registro puede tardar horas en aceptar el cambio de NS. Comprobar con
+   `nslookup -type=NS bcsensing.org 8.8.8.8` y el estado de la zona en Cloudflare.
+7. Colgar el dominio personalizado del Worker `seminario-wireless-lab`.
+8. Desplegar con `SITE_URL="https://bcsensing.org"` (abajo) y
    `npm run verify:publicado -- https://bcsensing.org`.
+9. **Rotar o revocar el token de Hostinger el mismo día.**
 
-**El orden de 5 y 6 no se invierte.** Desplegar con `SITE_URL=https://bcsensing.org`
+**El orden de 7 y 8 no se invierte.** Desplegar con `SITE_URL=https://bcsensing.org`
 antes de que el dominio resuelva deja `workers.dev` sirviendo un sitio **sin `noindex`**
 y con `robots.txt` en `Allow`, canonizando a un dominio que no responde: rastreable y
 apuntando al vacío. Mientras el dominio no esté cableado, cualquier despliegue va con la
@@ -97,7 +142,8 @@ URL de `workers.dev`.
 `bcsensing.com` **no se compró** (decisión del 2026-09-21), así que no hay redirección
 301 que configurar.
 
-Hasta que esto corra, el sitio publicado **sigue siendo el de agosto, con `noindex`**.
+Hasta que esto corra, el sitio publicado **sigue siendo el de agosto** (`c5149c53`,
+2026-08-28, confirmado con `wrangler deployments list` `[medido]`), **con `noindex`**.
 
 ### Lo que queda abierto y necesita un dato del cliente
 
@@ -114,8 +160,9 @@ npx wrangler deploy
 npm run verify:publicado -- https://bcsensing.org
 ```
 
-`wrangler` **no está instalado** en el proyecto: `npx wrangler whoami` falla por paquete
-ausente `[medido: 2026-09-21]`. Hay que instalarlo antes de desplegar.
+`wrangler` ya está instalado y fijado: `wrangler@4.136.1` en `devDependencies`
+`[medido: 2026-09-21]`. No se usa `npx wrangler` a secas porque eso descarga la última
+versión publicada y el despliegue deja de ser el mismo entre entornos.
 
 ---
 
