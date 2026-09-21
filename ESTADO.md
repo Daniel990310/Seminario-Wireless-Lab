@@ -43,17 +43,61 @@ Todo verificado con `verify:todo` en verde y `astro check` sin errores ni advert
 - Los dos criterios nuevos pasaron **prueba de sensibilidad**: rotos a mano, fallan
   (`2 CRITERIOS FALLAN` y `3 CRITERIOS FALLAN` respectivamente) `[medido]`.
 
-### Lo que falta, y no lo puede hacer un agente
+### ⏸ Interrumpido aquí: Daniel reinicia Claude Code para cargar el MCP de Cloudflare
 
-1. **Panel** (ver README §Dominio propio): añadir el dominio a Cloudflare → apuntar los
-   nameservers desde Hostinger → colgar el dominio personalizado del Worker.
-   **Trampa:** el dominio tiene que estar en la **misma cuenta de Cloudflare que el
-   Worker**, o el paso 3 no ofrece el dominio y no hay mensaje que lo explique.
-2. **Desplegar** con `SITE_URL="https://bcsensing.org"` (abajo).
-3. **Verificar en vivo**: `npm run verify:publicado -- https://bcsensing.org`. Hasta que
-   eso corra, el sitio publicado **sigue siendo el de agosto, con `noindex`**.
-4. Si se registró `bcsensing.com`: Redirect Rule 301 hacia `bcsensing.org`. No servir
-   contenido en dos dominios.
+**Este es el punto exacto donde se retoma.** Nada de lo de abajo está hecho.
+
+El cableado del dominio necesita crear una zona y registros DNS, y eso **no lo cubre
+ninguna credencial disponible**: el OAuth de `wrangler` de este PC tiene `zone (read)` y
+**no tiene `dns_records`** en absoluto `[medido: 2026-09-21, `wrangler whoami`]`. Los
+plugins de Cloudflare instalados —`bindings`, `builds`, `observability`, `docs`— tampoco
+gestionan zonas ni DNS.
+
+Sí lo cubre el servidor **«Code Mode API»** de Cloudflare, `https://mcp.cloudflare.com/mcp`,
+que expone la API completa (2.500+ endpoints, DNS incluido) con `search()` y `execute()`.
+Estaba ya registrado como `plugin:cloudflare:cloudflare-api` pero sin autenticar, y sus
+herramientas no se expusieron en la sesión. Se añadió además a mano:
+
+```bash
+claude mcp add --transport http cloudflare-api https://mcp.cloudflare.com/mcp
+```
+
+**Quedan dos entradas idénticas** —la del plugin y la añadida a mano, en
+`C:\Users\danie\.claude.json`—. En cuanto se confirme cuál responde, sobra una:
+`claude mcp remove cloudflare-api`.
+
+**Un MCP añadido a mitad de sesión no carga hasta reiniciar Claude Code.** Por eso el
+reinicio. Al volver:
+
+1. Lanzar el flujo de autorización del MCP y aprobarlo en el navegador **con la cuenta
+   `danielcaignet99@gmail.com`**, que es donde vive el Worker. Con otra cuenta, la zona
+   se crea en el sitio equivocado y el dominio personalizado no se podrá colgar.
+2. **Falta el token de Hostinger**, y ese no tiene OAuth. Va en `.env.local` (ya
+   ignorado) como `HOSTINGER_API_TOKEN=…`. Hereda **todos** los permisos del usuario que
+   lo crea —VPS de Demeter incluido—, así que **se rota el mismo día**.
+
+### Lo que falta hacer, en orden
+
+1. Anotar los nameservers actuales del dominio **antes de tocarlos**, para poder revertir.
+2. Cloudflare: crear la zona `bcsensing.org` y leer sus nameservers.
+3. Hostinger: `updateDomainNameserversV1` (`domain`, `ns1`, `ns2`) hacia esos dos.
+4. Esperar la activación de la zona. **No es inmediato** y no se puede acelerar: Cloudflare
+   no activa hasta ver la delegación propagada, y el dominio se registró el 2026-09-21, así
+   que el registro puede tardar horas en aceptar el cambio de NS.
+5. Colgar el dominio personalizado del Worker `seminario-wireless-lab`.
+6. Desplegar con `SITE_URL="https://bcsensing.org"` (abajo) y
+   `npm run verify:publicado -- https://bcsensing.org`.
+
+**El orden de 5 y 6 no se invierte.** Desplegar con `SITE_URL=https://bcsensing.org`
+antes de que el dominio resuelva deja `workers.dev` sirviendo un sitio **sin `noindex`**
+y con `robots.txt` en `Allow`, canonizando a un dominio que no responde: rastreable y
+apuntando al vacío. Mientras el dominio no esté cableado, cualquier despliegue va con la
+URL de `workers.dev`.
+
+`bcsensing.com` **no se compró** (decisión del 2026-09-21), así que no hay redirección
+301 que configurar.
+
+Hasta que esto corra, el sitio publicado **sigue siendo el de agosto, con `noindex`**.
 
 ### Lo que queda abierto y necesita un dato del cliente
 
