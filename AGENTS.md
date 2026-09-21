@@ -370,6 +370,21 @@ entonces y se escribe el motivo.
 
 Rama de trabajo: `claude/framework-app-profesional-n4wa0t`.
 
+**Si un `push` devuelve 403, no es falta de permisos: es la cuenta equivocada.** En el
+PC hay dos cuentas de GitHub en `gh` y la activa suele ser `danielcaignet-dataseed`, que
+se usa en otros proyectos; **este repositorio es de `Daniel990310`**. Resuelto el
+2026-09-21 con un ayudante de credenciales **local al repositorio**, que pide el token de
+esa cuenta concreta sin cambiar la cuenta activa del sistema:
+
+```bash
+git config --local --replace-all credential.helper ""
+git config --local --add credential.helper '!f() { echo username=Daniel990310; echo password=$(gh auth token --user Daniel990310); }; f'
+```
+
+Se prefiere a `gh auth switch` porque eso es estado global: cambiarlo para empujar aquí
+rompe cualquier trabajo simultáneo en los otros repositorios. El token **no queda escrito
+en `.git/config`**; se pide al llavero en cada invocación.
+
 Los mensajes de commit explican **por qué** se hizo el cambio y qué se descartó,
 no solo qué archivos se tocaron. Si una medición cambió, el mensaje incluye el
 número antes y después.
