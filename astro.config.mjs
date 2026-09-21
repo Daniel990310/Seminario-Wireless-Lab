@@ -7,15 +7,30 @@ import tailwindcss from '@tailwindcss/vite';
 /*
  * Dominio del sitio.
  *
- * `site` define las URLs absolutas del sitemap, del enlace canÃ³nico y de las
+ * `site` define las URLs absolutas del sitemap, del enlace canónico y de las
  * etiquetas Open Graph. Se resuelve desde el entorno para que un despliegue de
- * previsualizaciÃ³n se anuncie con su propia URL en lugar de apuntar a un
- * dominio que todavÃ­a no existe.
+ * previsualización se anuncie con su propia URL en lugar de apuntar al dominio
+ * de producción.
  *
- * Cuando el dominio institucional estÃ© listo, basta con definir SITE_URL en el
- * panel del hosting (o cambiar PRODUCTION_SITE aquÃ­ abajo).
+ * Desde el 2026-09-21 esto es un dominio comprado y en uso, no una previsión:
+ * la DTI de la PUCV no respondió por el subdominio institucional y el cliente
+ * registró `bcsensing.org` —«BC» por *Beyond Connectivity*, el título corto—.
+ * Ver A6 en `specs/001-mejora-calidad/requirements.md`. Si el subdominio PUCV
+ * llega más adelante, redirige **hacia aquí**: mover el canónico después de que
+ * el sitio esté indexado cuesta más que sostener la redirección.
  */
-export const PRODUCTION_SITE = 'https://seminario-wireless.pucv.cl';
+export const PRODUCTION_SITE = 'https://bcsensing.org';
+
+/*
+ * El host de producción, derivado y no escrito a mano.
+ *
+ * RNF-7.4 prohíbe que nada quede atado a un dominio concreto, y hasta hoy había
+ * **dos** copias literales de `seminario-wireless.pucv.cl` —en `BaseLayout.astro`
+ * y en `verify-seo.mjs`— que decidían si el sitio se indexa. Con dos literales, un
+ * cambio de dominio que olvide uno deja el sitio publicado con `noindex` para
+ * siempre, y el verificador aprobándolo. Ambos importan ahora esta constante.
+ */
+export const PRODUCTION_HOST = new URL(PRODUCTION_SITE).host;
 
 const sitioDeclarado =
   process.env.SITE_URL || // AnulaciÃ³n manual
@@ -86,9 +101,11 @@ export default defineConfig({
     // `i18n` en el sitemap emite las alternativas por idioma en cada URL (RF-1.8).
     sitemap({
       i18n: { defaultLocale: 'es', locales: { es: 'es', en: 'en' } },
-      // `/og/` son los lienzos de los que se capturan las imÃ¡genes para
-      // compartir: no son pÃ¡ginas para visitar y no deben indexarse.
-      filter: (pagina) => !pagina.includes('/og/'),
+      // `/og/` son los lienzos de los que se capturan las imágenes para
+      // compartir: no son páginas para visitar y no deben indexarse. Y
+      // `/robots.txt` es un endpoint, no una página: listarlo en el sitemap sería
+      // pedirle al buscador que indexe el archivo que le da las instrucciones.
+      filter: (pagina) => !pagina.includes('/og/') && !pagina.endsWith('/robots.txt'),
     }),
   ],
   /*

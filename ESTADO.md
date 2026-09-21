@@ -7,13 +7,75 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-08-27** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
-· Sitio desplegado el **2026-08-27**, versión `c5149c53`, **ya sin las marcas sin
-autorización**. Rama sincronizada con `origin`.
+Actualizado: **2026-09-21** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
+· Último despliegue: **2026-08-27**, versión `c5149c53`, sin marcas sin autorización.
+· **Dominio comprado: `bcsensing.org`. El repositorio ya apunta ahí; falta el panel y
+desplegar.**
 
 ---
 
-# EMPIEZA AQUÍ · traspaso del 2026-08-27
+# EMPIEZA AQUÍ · traspaso del 2026-09-21
+
+## El dominio dejó de ser una previsión
+
+El cliente compró **`bcsensing.org`** en Hostinger el 2026-09-21, ante la falta de
+respuesta de la DTI de la PUCV por el subdominio institucional. A6 queda resuelta por
+la vía alternativa. Si el subdominio llega después, **redirige hacia `bcsensing.org`**,
+no al revés.
+
+### Lo que ya está hecho en el repositorio
+
+Todo verificado con `verify:todo` en verde y `astro check` sin errores ni advertencias
+`[medido: 2026-09-21]`.
+
+- `PRODUCTION_SITE` es `https://bcsensing.org`.
+- **Se eliminaron las dos copias literales del host de producción**, que incumplían
+  RNF-7.4: `BaseLayout.astro` y `verify-seo.mjs` ahora importan `PRODUCTION_HOST`,
+  derivado de `PRODUCTION_SITE`. Con dos literales, un cambio de dominio que olvidara
+  uno dejaba el sitio publicado con `noindex` permanente **y el verificador
+  aprobándolo**. Era el defecto que la propia regla nombra.
+- **Nuevo `/robots.txt` generado en el build** (`src/pages/robots.txt.ts`, RNF-3.5). En
+  producción permite el rastreo y anuncia el sitemap; con URL provisional, `Disallow: /`.
+  No va en `public/` a propósito: ese directorio se copia verbatim y el archivo
+  anunciaría el sitemap de producción desde cualquier previsualización.
+- **`url` e `image` en el JSON-LD** (RNF-3.6). Sin `image`, Google no construye el
+  resultado enriquecido de evento.
+- Los dos criterios nuevos pasaron **prueba de sensibilidad**: rotos a mano, fallan
+  (`2 CRITERIOS FALLAN` y `3 CRITERIOS FALLAN` respectivamente) `[medido]`.
+
+### Lo que falta, y no lo puede hacer un agente
+
+1. **Panel** (ver README §Dominio propio): añadir el dominio a Cloudflare → apuntar los
+   nameservers desde Hostinger → colgar el dominio personalizado del Worker.
+   **Trampa:** el dominio tiene que estar en la **misma cuenta de Cloudflare que el
+   Worker**, o el paso 3 no ofrece el dominio y no hay mensaje que lo explique.
+2. **Desplegar** con `SITE_URL="https://bcsensing.org"` (abajo).
+3. **Verificar en vivo**: `npm run verify:publicado -- https://bcsensing.org`. Hasta que
+   eso corra, el sitio publicado **sigue siendo el de agosto, con `noindex`**.
+4. Si se registró `bcsensing.com`: Redirect Rule 301 hacia `bcsensing.org`. No servir
+   contenido en dos dominios.
+
+### Lo que queda abierto y necesita un dato del cliente
+
+**`offers` / `isAccessibleForFree` en el JSON-LD.** Si la asistencia es gratuita,
+declararlo habilita el distintivo «Gratis» en el resultado de evento de Google. **No se
+implementó porque nadie ha confirmado si el seminario tiene costo**, y la regla de
+procedencia prohíbe inventarlo. Es un campo cuando se sepa.
+
+```powershell
+$env:SITE_URL = "https://bcsensing.org"
+npm run build
+npm run verify:todo
+npx wrangler deploy
+npm run verify:publicado -- https://bcsensing.org
+```
+
+`wrangler` **no está instalado** en el proyecto: `npx wrangler whoami` falla por paquete
+ausente `[medido: 2026-09-21]`. Hay que instalarlo antes de desplegar.
+
+---
+
+# Traspaso anterior · 2026-08-27
 
 Lo que sigue es lo único que hay que leer para retomar. El detalle de cómo se llegó
 aquí está en **§12**; el resto del archivo es historia y no hace falta para arrancar.

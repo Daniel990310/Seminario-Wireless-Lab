@@ -349,6 +349,22 @@ interactivas de T10— sin que el peso sea por sí solo el argumento para rechaz
 3. Enlace canónico correcto por idioma, y `noindex` mientras el sitio esté en una
    URL provisional.
 4. Descripción y título propios por idioma, sin texto duplicado entre versiones.
+5. **El sitio sirve un `/robots.txt` generado a partir de la URL del build**, no un
+   archivo estático. En producción declara la ubicación del sitemap; mientras la URL
+   sea provisional prohíbe todo el rastreo.
+
+   > Añadido el 2026-09-21, al comprar el dominio propio. Un `robots.txt` escrito a
+   > mano en `public/` se copiaría **verbatim** a cualquier despliegue y anunciaría el
+   > sitemap de producción desde una URL de previsualización. Es la misma familia del
+   > fallo de `SITE_URL` de RNF-7.2: un archivo que no sabe dónde está publicado.
+   > `<link rel="sitemap">` en el `<head>` **no sustituye** a esto: los rastreadores no
+   > lo usan para descubrir el sitemap.
+6. Los datos estructurados declaran `url` e `image` propios de cada idioma.
+
+   > Añadido el 2026-09-21. `schema.org/Event` los lista como recomendados y el
+   > resultado enriquecido de evento de Google no se construye sin `image`. Las dos
+   > piezas ya existen en la página —el enlace canónico y la imagen para compartir—,
+   > así que es exponerlas en el JSON-LD, no producir nada nuevo.
 
 ### RNF-4 · Privacidad
 
@@ -427,7 +443,7 @@ estilos.
 | A3 | Afiliación de Rodolfo Feick | Se publica con «por confirmar» |
 | A4 | Correo institucional de contacto | Queda un valor de ejemplo |
 | A5 | Logos oficiales | Se publica con marcadores de posición |
-| A6 | Subdominio definitivo | El sitio vive en la URL de Cloudflare Pages con `noindex` |
+| A6 | ~~Subdominio definitivo~~ | **Resuelta el 2026-09-21 por la vía alternativa**: ante la demora de la DTI, el cliente compró **`bcsensing.org`** («BC» por *Beyond Connectivity*, el título corto). Es el dominio canónico y el que va impreso. Si el subdominio PUCV llega después, redirige 301 hacia aquí, no al revés: cambiar el canónico una vez indexado cuesta más que mantener la redirección |
 | A7 | Traducción al inglés de los textos largos | Se puede lanzar primero en español con la estructura bilingüe ya lista |
 
 ## Trazabilidad

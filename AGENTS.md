@@ -382,5 +382,16 @@ bloqueantes (A3–A7) en `requirements.md`:
 - Afiliación de Rodolfo Feick, hoy «por confirmar»
 - Correo institucional real (`seminario.wireless@pucv.cl` es un ejemplo)
 - Logos oficiales: los 7 de `public/logos/` son marcadores de posición
-- Subdominio definitivo, a confirmar con la DTI de la PUCV
+- ~~Subdominio definitivo~~ **Resuelto el 2026-09-21**: el cliente compró
+  **`bcsensing.org`** ante la demora de la DTI. El repositorio ya apunta ahí; falta
+  configurar el panel y desplegar. Ver «EMPIEZA AQUÍ» de `ESTADO.md`
+- Si el seminario tiene costo o es gratuito: hace falta para `offers` en el JSON-LD
 - Traducción al inglés de los textos largos
+
+**El host de producción no se escribe a mano en ningún archivo.** Sale de
+`PRODUCTION_HOST`, que `astro.config.mjs` deriva de `PRODUCTION_SITE`. Lo importan
+`BaseLayout.astro`, `src/pages/robots.txt.ts` y `scripts/verify-seo.mjs`. Hasta el
+2026-09-21 había **dos** literales del dominio viejo decidiendo si el sitio se indexa:
+olvidar uno al cambiar de dominio dejaba el sitio con `noindex` permanente y el
+verificador en verde. Es justo el defecto que RNF-7.4 prohíbe, dentro del propio
+verificador.

@@ -235,50 +235,38 @@ avances sin alterar la versión que ya se envió a revisión.
 
 ### Dominio propio
 
-Cloudflare Pages no cobra por dominios propios ni por el certificado TLS, y
-admite varios por proyecto. Lo que hay que tener es control del dominio.
+**El dominio es `bcsensing.org`**, comprado por el cliente el **2026-09-21** en
+Hostinger. «BC» viene de *Beyond Connectivity*, el título corto del seminario.
 
-**Opción recomendada: un subdominio de `pucv.cl`** (por ejemplo
-`seminario-wireless.pucv.cl`). No tiene costo, aporta la credibilidad del
-dominio institucional y **no exige mover el DNS de `pucv.cl` a Cloudflare**: la
-DTI solo agrega un registro CNAME.
+Por qué no es el subdominio de `pucv.cl` que este documento recomendaba antes: la
+DTI no respondió a la solicitud y el calendario del seminario no admitía seguir
+esperando. Queda registrado en A6 de `requirements.md`. **Si el subdominio
+institucional llega más adelante, redirige 301 hacia `bcsensing.org`, no al
+revés** — mover el canónico con el sitio ya indexado cuesta más que sostener una
+redirección.
 
-El orden importa, y equivocarlo es la causa habitual de un error 522:
+Pasos en el panel, en este orden. Equivocarlo es la causa habitual de un 522:
 
-1. Primero, en el proyecto de Pages: **Custom domains → Set up a custom
-   domain**, e ingresar el subdominio.
-2. Después, pedir a la DTI de la PUCV que cree el CNAME.
+1. **Cloudflare → Add a site**, con el dominio. Entrega dos nameservers.
+2. **Hostinger → DNS/Nameservers**: reemplazar por esos dos. El dominio queda
+   comprado en Hostinger y gestionado en Cloudflare.
+3. **Cloudflare → Workers → `seminario-wireless-lab` → Domains & Routes → Add
+   custom domain.** El certificado TLS lo emite Cloudflare solo.
 
-Texto listo para enviar a la DTI:
+El dominio **tiene que estar en la misma cuenta de Cloudflare que el Worker**. En
+otra cuenta, el paso 3 no ofrece el dominio y no hay mensaje que lo explique.
 
-```
-Solicito crear un registro DNS para el sitio del seminario internacional
-"Beyond Connectivity" (proyecto ANID FOVI250222), organizado por la Escuela
-de Ingeniería Eléctrica.
+Se apuntan los nameservers en vez de un CNAME porque se usa el dominio raíz, y un
+CNAME no puede vivir en la raíz de la zona.
 
-Tipo:   CNAME
-Nombre: seminario-wireless
-Valor:  <nombre-del-proyecto>.pages.dev
-TTL:    automático o 3600
+Si además se registró `bcsensing.com`: **no sirve contenido**. Se añade también a
+Cloudflare y se resuelve con una *Redirect Rule* 301 hacia `https://bcsensing.org/$1`.
+Servir el mismo sitio en dos dominios es contenido duplicado, y dejarlo aparcado en
+la página del registrador publica anuncios bajo el nombre del seminario.
 
-El sitio está alojado en Cloudflare Pages. El certificado TLS lo emite
-Cloudflare automáticamente; no se requiere ninguna acción adicional.
-```
-
-**Alternativa: dominio propio.** Un `.cl` en NIC Chile cuesta del orden de
-$9.990 CLP + IVA al año, con descuentos por períodos de varios años. Detalle a
-considerar: para usar el dominio raíz (`beyondconnectivity.cl`) hay que apuntar
-los nameservers del dominio a Cloudflare, porque un CNAME no puede vivir en la
-raíz de la zona. Con un subdominio (`www.` o cualquier otro) basta el CNAME
-desde cualquier proveedor de DNS.
-
-**Mientras tanto:** la URL `<nombre-del-proyecto>.pages.dev` funciona desde el
-primer despliegue y sirve perfectamente para la revisión con la contraparte.
-
-Al pasar al dominio definitivo, actualizar `PRODUCTION_SITE` en
-`astro.config.mjs` (o definir `SITE_URL` en el panel). El `noindex` de las URLs
-provisionales desaparece solo. Ojo: `seminario-wireless.pucv.cl` es un nombre
-supuesto; hay que confirmarlo con la DTI antes de darlo por definitivo.
+**Vigencia.** El registro es por un año. La auto-renovación se mantiene encendida
+mientras circule material impreso con la URL: un dominio caducado lo puede
+registrar cualquiera, y esta dirección va en afiches y probablemente en citas.
 
 ### Dominio y URLs absolutas
 
@@ -287,19 +275,25 @@ supuesto; hay que confirmarlo con la DTI antes de darlo por definitivo.
 1. `SITE_URL` — anulación manual.
 2. `CF_PAGES_URL` — la define Cloudflare Pages.
 3. `DEPLOY_PRIME_URL` / `URL` — las define Netlify.
-4. `PRODUCTION_SITE` como respaldo (`https://seminario-wireless.pucv.cl`).
+4. `PRODUCTION_SITE` como respaldo (`https://bcsensing.org`).
 
-De ahí salen el enlace canónico, el sitemap y las URLs de Open Graph. Gracias a
-esto un despliegue de previsualización se anuncia con su propia URL en lugar de
-apuntar a un dominio que todavía no existe.
+De ahí salen el enlace canónico, el sitemap, las URLs de Open Graph, los campos
+`url` e `image` del JSON-LD y el `/robots.txt`. Gracias a esto un despliegue de
+previsualización se anuncia con su propia URL en lugar de apuntar al dominio de
+producción.
 
-Mientras el sitio no esté en el dominio institucional, emite
-`<meta name="robots" content="noindex, nofollow">` para que la copia de revisión
-no compita con el dominio definitivo por el mismo contenido. Al publicar en el
-dominio real, ese `noindex` desaparece solo.
+Mientras el sitio no esté en `bcsensing.org`, emite
+`<meta name="robots" content="noindex, nofollow">` **y** un `/robots.txt` con
+`Disallow: /`, para que la copia de revisión no compita con el dominio definitivo
+por el mismo contenido. Al publicar en el dominio real, las dos señales cambian
+solas y el `robots.txt` pasa a anunciar el sitemap.
 
-**Cuando el dominio esté listo:** apuntar el DNS al hosting y actualizar
-`PRODUCTION_SITE` en `astro.config.mjs` (o definir `SITE_URL` en el panel).
+**El host de producción no se escribe a mano en ninguna parte.** Sale de
+`PRODUCTION_HOST`, derivado de `PRODUCTION_SITE` y exportado por
+`astro.config.mjs`; lo importan `BaseLayout.astro`, `src/pages/robots.txt.ts` y
+`scripts/verify-seo.mjs`. Antes había dos literales del dominio viejo, y un cambio
+de dominio que olvidara uno dejaba el sitio publicado con `noindex` permanente y
+el verificador dándolo por bueno (RNF-7.4).
 
 ### Por qué Cloudflare Pages
 
