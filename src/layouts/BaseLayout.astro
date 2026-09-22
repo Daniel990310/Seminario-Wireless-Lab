@@ -105,6 +105,11 @@ const eventSchema = {
     priceCurrency: seminar.acceso.moneda,
     availability: 'https://schema.org/InStock',
     /*
+     * Opcional y no crítica para Google; se declara porque el dato existe. Ver la nota
+     * de `comun.acceso.validoDesde`.
+     */
+    validFrom: seminar.acceso.validoDesde,
+    /*
      * La URL de la oferta es la página del seminario, no una de inscripción: RF-3
      * —registro de asistentes— está fuera de alcance y no existe tal página.
      */

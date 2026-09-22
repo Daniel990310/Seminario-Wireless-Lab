@@ -86,8 +86,33 @@ const VIEWPORTS = [
   { nombre: 'movil', width: 390, height: 844 },
 ];
 
-/** Reglas de WCAG 2.1 AA. Las buenas prácticas se informan pero no bloquean. */
-const REGLAS_WCAG = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
+/*
+ * Reglas de WCAG 2.1 AA **más las buenas prácticas de axe**.
+ *
+ * El comentario que había aquí decía que las buenas prácticas «se informan pero no
+ * bloquean». **No era cierto**: `runOnly` las excluía, así que ni se ejecutaban. Y ese
+ * hueco costó un defecto real.
+ *
+ * Hasta el 2026-09-22 el enlace «Saltar al contenido» —el PRIMER elemento interactivo
+ * de la página— apuntaba a `#contenido`, un ancla que no existía en ninguna parte.
+ * Quien navega con teclado pulsaba Tab y Enter y no iba a ningún sitio. Este
+ * verificador daba **0 violaciones**, porque la regla `skip-link` de axe está
+ * etiquetada `best-practice` y no `wcag*`. Lo destapó Lighthouse, no nosotros.
+ *
+ * Medido sobre el sitio publicado antes de arreglarlo `[2026-09-22]`:
+ *
+ *   solo wcag*        → 0 violaciones
+ *   + best-practice   → skip-link [moderate] · region [moderate]
+ *
+ * `region` aparecía arrastrada por lo mismo: axe solo exime al enlace de salto de
+ * estar dentro de un landmark si su destino existe.
+ *
+ * Con el ancla puesta, las tres páginas dan **0 violaciones** con el juego ampliado
+ * `[medido]`, así que ampliarlo no cuesta nada y cierra el punto ciego. Si algún día
+ * una regla de `best-practice` resulta inaceptable, se excluye **esa** por nombre y se
+ * escribe por qué; no se vuelve a apagar la categoría entera.
+ */
+const REGLAS_WCAG = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'];
 
 // ---------------------------------------------------------------------------
 // Servidor estático mínimo

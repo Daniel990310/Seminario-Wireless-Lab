@@ -473,6 +473,26 @@ estilos.
 
 1. La auditoría de accesibilidad y el presupuesto de peso se ejecutan con un
    comando del proyecto, no con scripts ad hoc externos.
+
+   > **La auditoría corre WCAG 2.1 AA *más* las buenas prácticas de axe**, desde el
+   > 2026-09-22. Antes `runOnly` excluía `best-practice`, con un comentario que decía
+   > que esas reglas «se informan pero no bloquean» —y **ni siquiera se ejecutaban**—.
+   >
+   > Ese hueco costó un defecto real. El enlace «Saltar al contenido», el **primer
+   > elemento interactivo de la página**, apuntaba a `#contenido`, un ancla que no
+   > existía en ninguna parte: con teclado se pulsaba Tab y Enter y no se iba a ningún
+   > sitio. Este verificador daba 0 violaciones porque la regla `skip-link` de axe está
+   > etiquetada `best-practice`. **Lo destapó Lighthouse, no nosotros.**
+   >
+   > Medido sobre el sitio publicado antes de arreglarlo: con solo `wcag*`, 0
+   > violaciones; con `best-practice`, `skip-link` y `region` `[medido]`. La segunda
+   > venía arrastrada: axe solo exime al enlace de salto de estar dentro de un landmark
+   > si su destino existe.
+   >
+   > Con el ancla puesta, las tres páginas dan 0 violaciones con el juego ampliado, así
+   > que ampliarlo no costó nada. Si alguna regla de `best-practice` resulta
+   > inaceptable, se excluye **esa** por nombre y se escribe por qué; no se vuelve a
+   > apagar la categoría entera.
 2. La verificación falla con código de salida distinto de cero al incumplirse un
    presupuesto, de modo que sirva en integración continua.
 3. Los resultados quedan registrados en `verification.md` con fecha y commit.

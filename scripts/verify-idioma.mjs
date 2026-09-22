@@ -269,9 +269,27 @@ for (const [idioma, page] of Object.entries(paginas)) {
 // 7. Cero cadenas escritas en los componentes (RF-1.7)
 // ---------------------------------------------------------------------------
 {
+  /*
+   * `src/dev/` queda FUERA del análisis, y conviene justificarlo porque es la única
+   * exención de RF-1.7 que existe.
+   *
+   * Ahí vive el panel de ajuste visual de `/ajustar`, que `astro.config.mjs` inyecta
+   * **solo bajo `astro dev`**: no hay ninguna integración que lo emita en `build`, y
+   * `dist/` no contiene ni la ruta ni el guion `[medido: 2026-09-22]`. RF-1.7 existe
+   * para que el SITIO sea traducible; una herramienta que ninguna persona visitante
+   * puede alcanzar no lo es, y traducir sus rótulos no le serviría a nadie.
+   *
+   * La exención es por **directorio y no por archivo** a propósito: si fuera por
+   * archivo, el siguiente panel entraría sin que nadie decidiera nada. Y se apoya en
+   * una condición comprobable —que `src/dev/` no llegue a `dist/`—, no en una promesa.
+   * Si algún día algo de ahí se publica, esta exención deja de ser válida.
+   */
+  const FUERA_DE_ALCANCE = ['dev'];
+
   const listar = async (dir) => {
     const salida = [];
     for (const entrada of await readdir(dir, { withFileTypes: true })) {
+      if (entrada.isDirectory() && FUERA_DE_ALCANCE.includes(entrada.name)) continue;
       const ruta = join(dir, entrada.name);
       if (entrada.isDirectory()) salida.push(...(await listar(ruta)));
       else if (entrada.name.endsWith('.astro')) salida.push(ruta);

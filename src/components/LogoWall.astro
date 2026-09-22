@@ -1,6 +1,6 @@
 ---
 import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { Image } from 'astro:assets';
 import type { Institucion, Logo } from '~/data/comun';
 
@@ -62,19 +62,37 @@ const proporcionDe = (logo: Logo): number => {
    * base en lugar de romper la página.
    */
   try {
-    const ruta = fileURLToPath(new URL(`../../public${logo}`, import.meta.url));
+    /*
+     * Desde `process.cwd()` y NO desde `import.meta.url`: en el build Astro compila
+     * este componente a `dist/.prerender/chunks/`, así que `import.meta.url` apunta
+     * ahí y `../../public` resolvía a `dist/public`. Este camino **nunca llegó a
+     * ejecutarse bien**; el `catch` devolvía la proporción de reserva en silencio y
+     * cualquier logo SVG habría salido con la altura equivocada sin avisar. Estaba
+     * dormido porque hoy ningún SVG pasa por este componente
+     * `[medido: 2026-09-22, en el gemelo de PaginaSeminario]`.
+     */
+    const ruta = join(process.cwd(), 'public', logo.replace(/^\//, ''));
     const svg = readFileSync(ruta, 'utf8');
     const vb = svg.match(/viewBox="([\d.\-\s]+)"/)?.[1]?.trim().split(/\s+/).map(Number);
     if (vb && vb.length === 4 && vb[2] && vb[3]) return vb[2] / vb[3];
     const ancho = Number(svg.match(/\swidth="([\d.]+)"/)?.[1]);
     const alto = Number(svg.match(/\sheight="([\d.]+)"/)?.[1]);
     if (ancho && alto) return ancho / alto;
-  } catch {
-    /* Archivo ausente o ilegible: se usa la referencia. */
+  } catch (e) {
+    // Ruidoso a propósito: el silencio es lo que mantuvo el defecto escondido.
+    console.warn(`[logos] no se pudo leer ${logo}, se usa la proporción de referencia: ${e instanceof Error ? e.message : e}`);
   }
   return PROPORCION_REFERENCIA;
 };
 
+/*
+ * `proporcionDe` se usa además para emitir `width`/`height` en los `<img>` de SVG.
+ *
+ * Sin esos atributos el navegador no puede reservar el hueco antes de descargar el
+ * archivo, los logos empujan el contenido al cargar y Lighthouse marca
+ * `unsized-images` `[medido: 2026-09-22]`. Los ráster no tenían el problema porque
+ * `<Image />` ya los emite dimensionados.
+ */
 const alturaDe = (logo: Logo, escalaOptica = 1): number => {
   const factor = Math.sqrt(PROPORCION_REFERENCIA / proporcionDe(logo));
   // El acotado se aplica al factor calculado; la corrección óptica va **después**, porque es
@@ -198,6 +216,8 @@ const ALTO_MARCADOR = { md: 56, lg: 72 } as const;
               <img
                 src={institution.logo}
                 alt={institution.name}
+                width={Math.round(alto * proporcionDe(institution.logo))}
+                height={alto}
                 style={`height:${alto}px`}
                 class:list={['w-auto object-contain', institution.logoOscuro && 'dark:hidden']}
                 loading="lazy"
@@ -219,6 +239,8 @@ const ALTO_MARCADOR = { md: 56, lg: 72 } as const;
                 <img
                   src={institution.logoOscuro}
                   alt={institution.name}
+                  width={Math.round(altoOscuro * proporcionDe(institution.logoOscuro))}
+                  height={altoOscuro}
                   style={`height:${altoOscuro}px`}
                   class="hidden w-auto object-contain dark:block"
                   loading="lazy"

@@ -18,6 +18,8 @@ import LogoWall from '~/components/LogoWall.astro';
 import VenueLocator from '~/components/VenueLocator.astro';
 import SiteFooter from '~/components/SiteFooter.astro';
 import { contenido, type Idioma } from '~/data/contenido';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 interface Props {
   lang: Idioma;
@@ -25,13 +27,68 @@ interface Props {
 
 const c = contenido(Astro.props.lang);
 const { program, speakers, topics, venue, organizers, participants, funding, about, ui } = c;
+
+/*
+ * Dimensiones intrínsecas de un SVG de `/public`, leídas de su `viewBox` en el build.
+ *
+ * Se emiten como `width`/`height` en el `<img>` del logo de la agencia. La altura real
+ * la fija el CSS (`h-16 sm:h-20`), así que estos números **no** dictan el tamaño: solo
+ * le dan al navegador la proporción para reservar el hueco antes de descargar el
+ * archivo. Sin ellos, Lighthouse marca `unsized-images` `[medido: 2026-09-22]`.
+ *
+ * El impacto real es pequeño y conviene decirlo: el CLS medido ya era 0 en escritorio y
+ * 0,017 en móvil, muy dentro del umbral «bueno» de 0,1, porque las clases de altura ya
+ * reservaban el alto. Lo que faltaba reservar era el ancho.
+ *
+ * Si el archivo no declara `viewBox`, se devuelve `undefined` y el `<img>` sale sin los
+ * atributos, exactamente como antes: un logo sin medidas es preferible a uno deformado.
+ */
+const medidasSvg = (ruta: string): { width: number; height: number } | undefined => {
+  try {
+    /*
+     * La ruta se resuelve desde `process.cwd()` y NO desde `import.meta.url`.
+     *
+     * En el build, Astro compila este componente a `dist/.prerender/chunks/*.mjs`, así
+     * que `import.meta.url` apunta ahí y `../../public` resolvía a `dist/public`, que
+     * no existe. El `catch` se lo tragaba y los logos salían sin medidas sin que nadie
+     * viera un error `[medido: 2026-09-22, instrumentando el catch]`. `astro dev` y
+     * `astro build` corren ambos desde la raíz del proyecto.
+     */
+    const svg = readFileSync(join(process.cwd(), 'public', ruta.replace(/^\//, '')), 'utf8');
+    const vb = svg.match(/viewBox="([\d.\-\s]+)"/)?.[1]?.trim().split(/\s+/).map(Number);
+    if (vb?.length === 4 && vb[2] && vb[3]) return { width: Math.round(vb[2]), height: Math.round(vb[3]) };
+    console.warn(`[logos] ${ruta} no declara viewBox: sale sin width/height.`);
+  } catch (e) {
+    // Ruidoso a propósito: el silencio de antes es lo que escondió el defecto.
+    console.warn(`[logos] no se pudo leer ${ruta}: ${e instanceof Error ? e.message : e}`);
+  }
+  return undefined;
+};
+
+const medidasAgencia = typeof funding.agency.logo === 'string' ? medidasSvg(funding.agency.logo) : undefined;
+const medidasAgenciaOscuro =
+  typeof funding.agency.logoOscuro === 'string' ? medidasSvg(funding.agency.logoOscuro) : undefined;
+
 const hasProgram = program.days.length > 0;
 ---
 
 <BaseLayout c={c}>
   <SiteHeader c={c} />
 
-  <main>
+  <!--
+    `id="contenido"` es el destino del enlace de salto de `BaseLayout` (RNF-1).
+
+    **Faltaba, y el enlace apuntaba a un ancla inexistente** hasta el 2026-09-22: quien
+    navega con teclado pulsaba Tab —es el PRIMER elemento interactivo de la página— y
+    Enter, y no iba a ninguna parte. Lo destapó Lighthouse, no nuestro verificador, y
+    el motivo está explicado en `scripts/verify.mjs`.
+
+    `tabindex="-1"` no es decorativo: sin él, varios navegadores mueven el
+    desplazamiento pero **no el foco**, así que el siguiente Tab vuelve a la barra de
+    navegación y la persona queda atrapada en el bucle del que el enlace servía para
+    escapar. No lo hace enfocable con Tab; solo permite recibir el foco por programa.
+  -->
+  <main id="contenido" tabindex="-1">
     <!--
       Aquí estuvo `FranjaSede` unas horas, entre `main` y el hero. Se movió **dentro
       de la barra** el 2026-08-09, en `SiteHeader.astro`: lo que Daniel pedía es que
@@ -272,6 +329,8 @@ const hasProgram = program.days.length > 0;
               <img
                 src={funding.agency.logo}
                 alt={funding.agency.name}
+                width={medidasAgencia?.width}
+                height={medidasAgencia?.height}
                 class:list={[
                   'h-16 w-auto object-contain sm:h-20',
                   funding.agency.logoOscuro && 'dark:hidden',
@@ -283,6 +342,8 @@ const hasProgram = program.days.length > 0;
                 <img
                   src={funding.agency.logoOscuro}
                   alt={funding.agency.name}
+                  width={medidasAgenciaOscuro?.width}
+                  height={medidasAgenciaOscuro?.height}
                   class="hidden h-16 w-auto object-contain sm:h-20 dark:block"
                   loading="lazy"
                   decoding="async"
