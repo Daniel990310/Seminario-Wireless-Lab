@@ -73,11 +73,30 @@
    * 73,0 px a 768 y 390 `[medido: 2026-08-09]`. Se toma el mayor, porque quedarse corto
    * aquí sí se ve.
    *
-   * `--alto-franja` es el valor original × 0,65, por indicación de Daniel el
-   * 2026-08-09. Se deja la multiplicación a la vista en lugar de tres números ya
-   * resueltos: así se sigue viendo de dónde salió el `clamp` y qué se le aplicó.
+   * `--alto-franja` **es una relación, no un `clamp`**, desde el 2026-09-22.
+   *
+   * Aquí hubo `calc(clamp(9rem, 21vw, 16rem) * 0.65)` desde el 2026-08-09. El
+   * problema que tenía, medido antes de cambiarlo: la relación de la banda solo se
+   * mantenía entre 686 y 1219 px de ancho. Por debajo la altura se topaba en
+   * 93,6 px y por encima en 166,4 px, así que la banda iba de 4,17:1 a 15,39:1 —y
+   * como la fotografía se ajusta con `object-fit: cover`, eso significa que **cada
+   * pantalla veía un recorte distinto** de la misma imagen `[medido: 2026-09-22]`.
+   *
+   * Con una relación, el recorte es el mismo en toda pantalla, que es lo que pidió
+   * Daniel el 2026-09-22 tras probarlo en el panel de `/ajustar`. El número es la
+   * relación del archivo instalado (2752 × 391 px), así que la banda muestra el
+   * recorte entero y `object-fit: cover` no vuelve a cortar nada.
+   *
+   * El precio, y hay que tenerlo delante antes de tocar este número: la altura pasa
+   * a ser proporcional al ancho **sin tope por ningún lado**. A 390 px la banda mide
+   * 55 px y a 2560 px mide 364 px. Es la consecuencia inevitable de que el recorte
+   * no cambie: relación constante y altura acotada son incompatibles.
+   *
+   * Se expresa como altura y no con `aspect-ratio` porque la contracción al
+   * desplazarse anima `height`, y animar desde `auto` no se comporta igual en todos
+   * los navegadores.
    */
-  --alto-franja: calc(clamp(9rem, 21vw, 16rem) * 0.65);
+  --alto-franja: calc(100vw / 7.04);
   --alto-barra: 4.5625rem;
 
   /* Azul PUCV · Pantone 2945 U · derivado de #28598D */

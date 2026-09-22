@@ -3,13 +3,24 @@ import ThemeSelector from './ThemeSelector.astro';
 import LanguageSelector from './LanguageSelector.astro';
 import FranjaSede from './FranjaSede.astro';
 /*
- * Recorte de la fotografía de la sede (RF-21): el nivel de calle —árboles, sello,
- * columnas, entrada—, que es la parte reconocible y la que tiene gente. Se cortó ya
- * apaisado, a la proporción de la banda, en lugar de recortar por CSS el original
- * vertical de 2000×2125: así el navegador no descarga los píxeles que la franja nunca
- * muestra. Ahorro medido: de 126 kB a 55 kB en la variante de 1440.
+ * La fotografía de la banda (RF-21).
+ *
+ * Desde el 2026-09-22 es la vista de Santiago con la cordillera, por decisión de
+ * Daniel tomada en el panel de `/ajustar`. Antes era `sede-acceso.webp`, el acceso
+ * a la sede; ese archivo se conserva en `src/assets/fondos/` sin usar, porque es la
+ * única imagen del lugar real y puede volver. **La banda ya no muestra la sede**: la
+ * sede se nombra en el hero y tiene su propia sección con mapa.
+ *
+ * Como la de antes, se corta ya apaisada y a la proporción exacta de la banda
+ * —2752 × 391 px, 7,04:1— en lugar de recortar por CSS: así el navegador no descarga
+ * los píxeles que la franja nunca muestra, y `object-fit: cover` no vuelve a cortar.
+ * El encuadre está **horneado en el archivo**, no en una propiedad; para cambiarlo hay
+ * que volver a recortar el original desde el panel, no tocar `encuadre`.
+ *
+ * El recorte salió de un original de 2752 × 1536 px tomando el 10 % superior del
+ * sobrante, que es el valor que dio el panel.
  */
-import sedeAcceso from '~/assets/fondos/sede-acceso.webp';
+import santiagoCordillera from '~/assets/fondos/santiago-cordillera.webp';
 import type { Contenido } from '~/data/contenido';
 import type { Idioma } from '~/data/contenido';
 
@@ -217,7 +228,11 @@ const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asun
     calculable, 0 nodos indeterminados— y la foto sigue formando parte de la misma
     banda. Es lo que se pedía, por el único camino que cumple.
   -->
-  <FranjaSede imagen={sedeAcceso} encuadre="50% 50%" />
+  <!--
+    `encuadre` centrado porque el recorte ya viene hecho en el archivo: la banda y la
+    imagen tienen la misma relación, así que no hay sobrante que desplazar.
+  -->
+  <FranjaSede imagen={santiagoCordillera} encuadre="50% 50%" />
 </header>
 
 <script>
