@@ -8,9 +8,14 @@ interface Props {
   institutions: readonly Institucion[];
   /** Escala del bloque. Los patrocinadores principales se muestran mayores. */
   size?: 'md' | 'lg';
+  /**
+   * Leyenda del marcador de posición, ya traducida. Llega como prop y no se lee aquí
+   * porque el componente no sabe en qué idioma se está renderizando: quien lo compone sí.
+   */
+  etiquetaPendiente: string;
 }
 
-const { institutions, size = 'md' } = Astro.props;
+const { institutions, size = 'md', etiquetaPendiente } = Astro.props;
 
 /*
  * Un SVG llega como ruta de `/public`; un ráster llega importado, como objeto.
@@ -85,6 +90,26 @@ const alturaDe = (logo: Logo, escalaOptica = 1): number => {
  * tope de 1,7— para que se vea nítido en pantallas de densidad 2×.
  */
 const ALTURA_EMITIDA = Math.round(ALTURA_BASE.lg * 1.7 * 2);
+
+/*
+ * ═══ MARCADOR DE POSICIÓN: POR QUÉ ES HTML Y NO EL SVG QUE HABÍA ANTES ═══
+ *
+ * Hasta el 2026-08-09 los marcadores eran archivos SVG en `public/logos/` —caja de trazo
+ * discontinuo, nombre y la leyenda `LOGO PENDIENTE`—. Al volver a necesitarlos el
+ * 2026-08-25 se recuperaron del historial y **no se reinstalaron**, por una razón medida:
+ *
+ * 1. **Sus colores están escritos a mano** (`#aab5cd` para el nombre, `#5c6883` para la
+ *    leyenda) y pertenecen a la paleta anterior a la identidad PUCV. Sobre el fondo claro
+ *    de hoy, `#e9f0fa`, ese gris queda muy por debajo de 4,5:1.
+ * 2. **Y ningún verificador lo vería.** axe evalúa contraste de *texto del documento*, no
+ *    texto dentro de un SVG: es la trampa que `AGENTS.md` ya registra por los trazos de la
+ *    figura del hero. Reinstalar esos archivos habría metido un defecto de contraste con
+ *    los seis verificadores en verde.
+ *
+ * En HTML con la capa semántica el aspecto es el mismo, el color sigue al tema sin
+ * duplicar archivos, y `verify` **sí** mide el contraste de estas dos líneas.
+ */
+const ALTO_MARCADOR = { md: 56, lg: 72 } as const;
 ---
 
 <!--
@@ -98,6 +123,42 @@ const ALTURA_EMITIDA = Math.round(ALTURA_BASE.lg * 1.7 * 2);
       const linkProps = institution.url
         ? { href: institution.url, target: '_blank', rel: 'noopener noreferrer' }
         : {};
+
+      /*
+        Sin archivo, la marca no está autorizada todavía: se pinta el marcador. Nombrar a
+        una institución es un hecho y no uso de marca, así que el nombre sí puede ir.
+
+        `min-w-36` y no un ancho fijo: los marcadores de antes medían 220–230 px cada uno y
+        la fila se leía como una serie deliberada. Sin mínimo, cada caja se ajusta a su
+        texto y «UC» queda menos de la mitad que «Nokia Bell Labs», lo que parece descuido
+        en lugar de un estado pendiente. Mínimo y no fijo para que el nombre largo no haya
+        que recortarlo: `overflow-hidden` recorta en silencio, y eso ya costó un defecto en
+        el menú móvil.
+
+        El comentario va aquí, en el cuerpo de la función, y NO entre los atributos del
+        elemento: un comentario JSX en posición de atributo rompe el build de Astro, y en
+        este proyecto ya pasó dos veces. Está en `AGENTS.md`, y hoy volvió a pasar.
+      */
+      if (!institution.logo) {
+        return (
+          <li class="reveal" style={`transition-delay:${index * 60}ms`}>
+            <Tag
+              {...linkProps}
+              class="flex min-w-36 flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed border-border px-6 transition-colors duration-300 hover:border-primary focus-visible:border-primary"
+              style={`height:${ALTO_MARCADOR[size]}px`}
+              title={institution.name}
+            >
+              <span class="font-mono text-sm font-semibold tracking-wider text-foreground">
+                {institution.shortName}
+              </span>
+              <span class="font-mono text-[0.625rem] tracking-[0.18em] text-muted-foreground">
+                {etiquetaPendiente}
+              </span>
+            </Tag>
+          </li>
+        );
+      }
+
       const alto = alturaDe(institution.logo, institution.escalaOptica);
       const altoOscuro = institution.logoOscuro
         ? alturaDe(institution.logoOscuro, institution.escalaOptica)

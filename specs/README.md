@@ -75,13 +75,17 @@ npm run build              # el sitio debe compilar
 npm run check              # tipos, sin errores ni advertencias
 npm run verify             # accesibilidad y presupuestos de peso
 npm run verify:tema        # los criterios de RF-4 que axe no puede evaluar
-npm run verify:red         # los criterios de T3 sobre el haz de la red
 npm run verify:teclado     # los criterios de T6: jerarquía, foco, teclado y zoom
 npm run verify:idioma      # los criterios de RF-1, incluidos textos sin traducir
 npm run verify:seo         # los criterios de RNF-3
-npm run verify:interaccion # los criterios de RF-6
-npm run verify:todo        # los siete en cadena
+npm run verify:interaccion # los criterios de RF-6 y RF-9
+npm run verify:todo        # los seis en cadena
 ```
+
+> **Ya no son siete: `verify:red` se retiró el 2026-08-07** junto con la sección que
+> comprobaba, «Instituciones vinculadas» (RF-16). Quedó **sin objeto, no relajado**: no
+> existe el haz de red que medía. Este documento decía «siete» en cuatro sitios hasta el
+> 2026-08-25, y el bloque de comandos de arranque listaba un guion que ya no existe.
 
 Y uno más, que **no** entra en la cadena porque depende de la red y de un servicio de
 terceros (RNF-7.5):
@@ -93,7 +97,7 @@ npm run verify:publicado -- https://tu-dominio   # RNF-7 y RNF-3.1 contra el sit
 `npm run verify` es la autoridad sobre el cumplimiento (implementado en T1).
 Requiere un `build` previo y termina con código distinto de cero si algo incumple.
 
-**Hay siete verificadores**, y los seis restantes cubren lo que axe no alcanza. Todos
+**Hay seis verificadores**, y los cinco restantes cubren lo que axe no alcanza. Todos
 requieren un `build` previo, y `verify:todo` los lanza como procesos separados —no con
 `&&`— para que un fallo temprano no oculte a los demás.
 
@@ -101,17 +105,17 @@ requieren un `build` previo, y `verify:todo` los lanza como procesos separados �
 | ------- | --------- | ------------- |
 | `verify` | 7 presupuestos, 8 corridas | axe-core en 2 anchos × 2 temas × 2 idiomas, y el peso |
 | `verify:tema` | 17 | RF-4: destello al cargar, sin JavaScript, teclado, persistencia sin cookies, sincronía entre las dos instancias del selector |
-| `verify:red` | 7 | T3: que el pulso recorra el trayecto, que se detenga con `prefers-reduced-motion` y que el navegador no pida ningún `.js` |
 | `verify:teclado` | 12 | T6: jerarquía de encabezados, foco visible y su contraste, menú móvil por teclado, zoom de texto al 200 % sin desbordar |
 | `verify:idioma` | 19 | RF-1: ambas rutas, `lang`, `hreflang` recíproco, título sin traducir, conservación de la sección, sitemap y **textos sin traducir** |
 | `verify:seo` | 22 | RNF-3: imágenes de 1200×630 por idioma, metadatos absolutos, canónico, `noindex` provisional y `schema.org/Event` |
-| `verify:interaccion` | 9 | RF-6: contenido entero sin JavaScript, `aria-current` en la sección activa, patrón ARIA de las pestañas y ninguna primitiva de Radix instalada sin uso |
+| `verify:interaccion` | 33 | RF-6 y RF-9: contenido entero sin JavaScript, `aria-current` en la sección activa, patrón ARIA de las pestañas, ninguna primitiva de Radix sin uso, y toda la malla del hero —puntero, dedo, sueño y despertar, vuelta a la firma neutra— con sus pruebas de sensibilidad |
 | `verify:publicado` | 20 | RNF-7 y RNF-3.1 **contra la URL en vivo**: ambas rutas responden, `noindex` en dominio provisional, canónico y `og:url` sobre el host servido, la imagen se sirve a 1200×630 y `validator.schema.org` sin errores ni avisos. Fuera de la cadena |
 
-Los conteos son los de la corrida del **2026-07-31 sobre `8f4bdfc`** `[medido]`, y van
-fechados porque crecen: `verify:idioma`, `verify:seo` y `verify:interaccion` sumaron
-criterios después de cerrarse su tarea, y los documentos quedaron citando el número
-viejo (17, 20 y 8). Al añadir una comprobación, actualizar esta tabla.
+Los conteos son los de la corrida del **2026-08-25**, `110 criterios en verde` en la
+cadena `[medido]`, y van fechados porque crecen: `verify:idioma`, `verify:seo` y
+`verify:interaccion` sumaron criterios después de cerrarse su tarea, y los documentos
+quedaron citando el número viejo (17, 20 y 8). `verify:interaccion` fue de 9 a 33 al
+absorber RF-9. **Al añadir una comprobación, actualizar esta tabla.**
 
 **Lo que ningún verificador cubre:** RNF-2.3 (ninguna petición a dominios de terceros
 en la carga inicial), RNF-2.4 (sin desplazamiento de diseño por las tipografías) y la

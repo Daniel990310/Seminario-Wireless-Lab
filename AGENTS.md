@@ -9,24 +9,60 @@ regla existe porque su ausencia ya causó un problema concreto.
 
 ## Lo primero
 
-**Leer [`ESTADO.md`](ESTADO.md).** Dice en qué punto quedó el trabajo, qué tarea
-está en curso y con qué reglas conviven los distintos entornos desde los que se
-desarrolla este proyecto (Claude Code en navegador, móvil y PC, y Antigravity).
-Ninguno de ellos ve la conversación de los otros: lo único compartido es el
-repositorio, así que **si no está escrito aquí, no ocurrió**.
+**Leer [`ESTADO.md`](ESTADO.md), y en concreto su bloque «EMPIEZA AQUÍ»**, que está
+arriba del todo y es lo único imprescindible para retomar: qué quedó a medio hacer, qué
+acción está pendiente y qué no se toca sin respuesta de un tercero. El resto de ese
+archivo es historia.
+
+Dice también con qué reglas conviven los distintos entornos desde los que se desarrolla
+este proyecto (Claude Code en navegador, móvil y PC, y Antigravity). Ninguno de ellos ve
+la conversación de los otros: lo único compartido es el repositorio, así que **si no está
+escrito aquí, no ocurrió**.
+
+✅ **Al 2026-08-27 el sitio publicado está al día** (versión `c5149c53`) y ya no muestra
+ninguna marca sin autorización, así que **el enlace se puede mandar a las instituciones**.
+Cómo se comprobó, y las dos trampas que aparecieron al desplegar, en «EMPIEZA AQUÍ» §1.
 
 ```bash
 git fetch origin && git status -sb   # ¿parto del estado que creo?
 npm install
 npm run build        # genera dist/
-npm run verify:todo  # los siete verificadores en cadena
+npm run verify:todo  # los seis verificadores en cadena
 npm run check        # tipos
 ```
 
-Los siete cubren accesibilidad y peso (`verify`, la autoridad), tema, red, teclado,
-idioma, SEO e interacción; la tabla con qué mide cada uno está en
-[`specs/README.md`](specs/README.md). Hay un octavo, `npm run verify:publicado -- <url>`,
+Los seis cubren accesibilidad y peso (`verify`, la autoridad), tema, teclado, idioma,
+SEO e interacción; la tabla con qué mide cada uno está en
+[`specs/README.md`](specs/README.md). Hay un séptimo, `npm run verify:publicado -- <url>`,
 que comprueba el **sitio en vivo** y queda fuera de la cadena porque depende de la red.
+
+**Eran siete hasta el 2026-08-07**, cuando `verify:red` se retiró junto con la sección
+que comprobaba (RF-16): quedó sin objeto, no relajado. Estos documentos siguieron
+diciendo «siete» —y listando un guion inexistente en el bloque de arranque— hasta el
+2026-08-25.
+
+**Un fallo de la cadena se reproduce aislado antes de creérselo.** Pasó dos veces el
+2026-08-25: `verify:todo` terminó en 1 señalando `verify:tema`, y `verify:tema` a solas dio
+exit 0 con sus 17 criterios en verde.
+
+La causa **no es del sitio ni de la comprobación, y tampoco es contención de CPU**, que fue
+la primera explicación y era una conjetura. Al leer la traza completa aparece la firma real
+`[medido]`:
+
+```
+page.goto: net::ERR_NO_BUFFER_SPACE at http://127.0.0.1:53728/
+    at scripts/verify-tema.mjs:126
+```
+
+Es **agotamiento de sockets de Windows**: cada verificador levanta su propio servidor y su
+propio Chromium, y tras muchas corridas seguidas en la misma sesión —siete cadenas, más
+capturas y diagnósticos— los puertos efímeros no alcanzan. `netstat` mostraba 62 conexiones
+en `TIME_WAIT`.
+
+Cómo se distingue de una regresión de verdad, que es lo que importa: **un criterio que
+incumple imprime su línea con `✗`**; esto **aborta el proceso** y no imprime ninguna, así
+que en el resumen aparece el verificador en rojo sin ningún criterio fallado debajo. Si al
+mirar el detalle no hay línea `✗`, buscar `ERR_` en la salida antes de tocar código.
 
 **Nunca reescribir historia ya publicada en la rama de trabajo** (`push --force`,
 rebase de commits empujados). Hay clones en varios entornos y se rompen todos.
@@ -107,6 +143,47 @@ la del ancestro que recorta, no a ojo.
 que una comprobación protege algo, hay que romper deliberadamente lo que vigila y
 verla fallar. Una comprobación que nunca ha fallado no se ha probado.
 
+**Un `>=` puede ocultar dos errores que se compensan.** `verify:teclado` comprobaba
+«alcanzados `>=` enfocables» y daba **35 de 34**: pasaba con un elemento de margen. Debajo
+había dos defectos de signo contrario `[medido: 2026-08-25]` —contaba los tres radios del
+selector de tema como tres paradas de Tab, cuando un grupo de radios es **una**; y excluía
+por `width > 0` a los enlaces que envuelven una imagen diferida, que miden 0 de ancho hasta
+que la imagen llega—. Se destaparon al cambiar la pared de logos, no antes. **Cuando una
+comprobación cuenta cosas, la relación correcta es la igualdad**, y la identidad de cada
+elemento no puede depender de su posición: el recorrido desplaza la página, así que un
+elemento que se mueve sale como «no alcanzado» y su gemelo como «alcanzado de más». Ahora
+cada enfocable se sella con un atributo antes de recorrer y el informe dice **cuál** falta.
+
+**`getComputedStyle` devuelve el `display` del elemento, no el del ancestro que lo
+esconde.** El `<summary>` del menú móvil vive dentro de un contenedor `lg:hidden`: a
+1440 px no se dibuja ni se puede enfocar, pero su propio `display` sigue siendo
+`list-item`. Lo que dice si algo está representado en la página es **tener cajas**,
+`getClientRects().length`. Es la misma trampa ya registrada para el conteo de animaciones.
+
+**Un verificador intermitente es peor que uno que falla.** «El foco se ve en todo el
+recorrido» daba verde o rojo en la misma corrida: el mapa se carga al entrar en pantalla,
+el propio recorrido con Tab desplaza la página, y el `<iframe>` existía o no según el
+momento. Y el hallazgo no era real —al enfocar un `<iframe>` el foco entra en el documento
+embebido, cuyo indicador **ninguna hoja de estilos nuestra puede pintar**—. Se excluye
+`iframe` con el motivo escrito; el botón «Cargar mapa», que sí gobernamos, sigue medido.
+
+**Lo que se publica es `dist/`, no lo que el HTML referencia.** Son dos preguntas
+distintas y confundirlas dejó dos marcas sin autorización alojadas en el sitio. `public/`
+se copia **verbatim** a `dist/`: tras retirar UC y Nokia de la maqueta el 2026-08-25, sus
+archivos seguían en `public/logos/` y `https://…/logos/uc.svg` habría respondido **200** sin
+que ninguna página lo enlazara `[medido: 2026-08-27]`. Alojar no es mostrar, pero sigue
+siendo publicar. Los ráster no tenían el problema: viven en `src/assets/` y Astro **solo
+los emite si alguien los importa**. En la misma revisión apareció que `public/logos/README.md`
+se servía en `/logos/README.md` con 200 — documentación interna, con rutas y con qué
+instituciones no han autorizado su marca, en el sitio de la Universidad. **Nada que no sea
+el sitio va en `public/`, y antes de desplegar se mira `dist/`.**
+
+**El texto dentro de un SVG no lo mide nadie.** Al reponer los marcadores de logo el
+2026-08-25 se recuperaron del historial los SVG originales y **no se reinstalaron**: traían
+los colores escritos a mano de la paleta anterior a la identidad PUCV y sobre el fondo claro
+de hoy no llegan a 4,5:1. Puestos en HTML con la capa semántica, el aspecto es el mismo y
+`verify` **sí** los mide. Es la misma familia que los trazos de `PropagationFigure`.
+
 **Solo cuenta como peso lo que la página referencia.** `@astrojs/react` emite su
 runtime de cliente aunque no quede ninguna isla que hidratar. Tras T3 no queda
 ninguna, así que `client.*.js` se genera pero **ningún archivo de `dist` lo
@@ -138,7 +215,7 @@ entraba por el `>` y salía por el `<`: falso positivo. Ya se excluyen `<script>
 asignadas a `textContent`/`innerHTML` desde un guion. Probado en los dos sentidos.
 
 **Ningún verificador mide los trazos de un SVG.** axe evalúa contraste de **texto**, así
-que una figura puede estar dibujada a 1,3:1 con los siete verificadores en verde. Es lo
+que una figura puede estar dibujada a 1,3:1 con todos los verificadores en verde. Es lo
 que pasa hoy con `PropagationFigure`: los anillos de rango y las radiales usan `--border`
 —«filete decorativo, sin umbral»— y quedan entre **1,27:1 y 1,49:1** en los dos temas
 `[medido: specs/002-rediseno-visual/baseline/hero-2026-08-03.md]`. No incumple WCAG
@@ -202,11 +279,26 @@ No volver a proponer esto sin un argumento nuevo. El detalle está en
 | **Cargar las tipografías desde `fonts.googleapis.com`** | Petición a terceros en la carga inicial (RNF-2.3). Están auto-hospedadas |
 | **Subir un presupuesto sin acuerdo del cliente** | El presupuesto disciplina al código. Cambiarlo es una decisión del cliente, registrada como decisión cerrada (así se hizo con D6) |
 
-**Sobre los logos institucionales:** los de PUCV, ANID, Columbia University, Nokia
-Bell Labs, PUC y USACH son marcas de terceros. **No se generan ni se aproximan con
-ninguna herramienta**, aunque los skills instalados sean capaces de hacerlo. Los
-archivos de `public/logos/` son marcadores de posición deliberados hasta que las
-instituciones entreguen los oficiales.
+**Sobre los logos institucionales**, tres reglas, y la tercera se aprendió tarde:
+
+1. **No se generan ni se aproximan con ninguna herramienta**, aunque los skills
+   instalados sean capaces de hacerlo.
+2. **No se extraen de una página renderizada.** Se toman del paquete que publica su
+   dueño, o no se toman.
+3. **No se publican sin autorización de su titular.** El 2026-08-25, al preparar los
+   correos que la pedían, se midió qué mostraba la URL publicada: mostraba las cuatro
+   marcas de terceros —UC, USACH, Nokia Bell Labs y Columbia— y el borrador a Columbia
+   decía «no las hemos publicado» `[medido]`. En dos de los cuatro casos el titular ya
+   había dicho **por escrito** que su uso exige consentimiento previo. Volvieron a
+   marcador de posición. **Que el cliente asuma la responsabilidad cubre el riesgo de
+   quien la asume; no convierte a nadie en dueño de una marca ajena.**
+
+Nombrar a una institución **sí** se puede: es un hecho, no uso de marca. Por eso el
+marcador lleva el nombre escrito. El estado de cada trámite está en
+[`specs/gestion/correos-instituciones.md`](specs/gestion/correos-instituciones.md).
+
+Hoy están instaladas PUCV, EIE y el conjunto **Ministerio de Ciencia + ANID**: las dos
+primeras son marcas del cliente, y la tercera **es obligatoria** por RNF-8.
 
 ## Servidores MCP: cuál sirve para qué
 
@@ -278,6 +370,21 @@ entonces y se escribe el motivo.
 
 Rama de trabajo: `claude/framework-app-profesional-n4wa0t`.
 
+**Si un `push` devuelve 403, no es falta de permisos: es la cuenta equivocada.** En el
+PC hay dos cuentas de GitHub en `gh` y la activa suele ser `danielcaignet-dataseed`, que
+se usa en otros proyectos; **este repositorio es de `Daniel990310`**. Resuelto el
+2026-09-21 con un ayudante de credenciales **local al repositorio**, que pide el token de
+esa cuenta concreta sin cambiar la cuenta activa del sistema:
+
+```bash
+git config --local --replace-all credential.helper ""
+git config --local --add credential.helper '!f() { echo username=Daniel990310; echo password=$(gh auth token --user Daniel990310); }; f'
+```
+
+Se prefiere a `gh auth switch` porque eso es estado global: cambiarlo para empujar aquí
+rompe cualquier trabajo simultáneo en los otros repositorios. El token **no queda escrito
+en `.git/config`**; se pide al llavero en cada invocación.
+
 Los mensajes de commit explican **por qué** se hizo el cambio y qué se descartó,
 no solo qué archivos se tocaron. Si una medición cambió, el mensaje incluye el
 número antes y después.
@@ -290,5 +397,16 @@ bloqueantes (A3–A7) en `requirements.md`:
 - Afiliación de Rodolfo Feick, hoy «por confirmar»
 - Correo institucional real (`seminario.wireless@pucv.cl` es un ejemplo)
 - Logos oficiales: los 7 de `public/logos/` son marcadores de posición
-- Subdominio definitivo, a confirmar con la DTI de la PUCV
+- ~~Subdominio definitivo~~ **Resuelto el 2026-09-21**: el cliente compró
+  **`bcsensing.org`** ante la demora de la DTI. El repositorio ya apunta ahí; falta
+  configurar el panel y desplegar. Ver «EMPIEZA AQUÍ» de `ESTADO.md`
+- Si el seminario tiene costo o es gratuito: hace falta para `offers` en el JSON-LD
 - Traducción al inglés de los textos largos
+
+**El host de producción no se escribe a mano en ningún archivo.** Sale de
+`PRODUCTION_HOST`, que `astro.config.mjs` deriva de `PRODUCTION_SITE`. Lo importan
+`BaseLayout.astro`, `src/pages/robots.txt.ts` y `scripts/verify-seo.mjs`. Hasta el
+2026-09-21 había **dos** literales del dominio viejo decidiendo si el sitio se indexa:
+olvidar uno al cambiar de dominio dejaba el sitio con `noindex` permanente y el
+verificador en verde. Es justo el defecto que RNF-7.4 prohíbe, dentro del propio
+verificador.

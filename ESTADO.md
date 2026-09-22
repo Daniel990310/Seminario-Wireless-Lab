@@ -7,20 +7,454 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-08-09** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
-· Último commit de tarea: `5998723` (identidad PUCV, marcas, retratos y franja de la sede)
+Actualizado: **2026-09-22** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
+· Último despliegue: **2026-09-22**, versión `adda9052`, en `https://bcsensing.org`.
+· **Publicado en <https://bcsensing.org> el 2026-09-22, versión `830dafb9`. Primer
+despliegue indexable. Pendientes en «EMPIEZA AQUÍ»: Search Console y el token de
+Hostinger sin revocar.**
 
-> **El árbol está limpio y el sitio está publicado.** La sesión de §10 y §11 se
-> commiteó y se empujó a `origin/claude/framework-app-profesional-n4wa0t`, y se
-> desplegó a Workers el 2026-08-09 (versión `4cca071f`):
-> <https://seminario-wireless-lab.danielcaignet99.workers.dev>
-> `verify:publicado` en verde contra esa URL, con `noindex` porque el dominio es
-> provisional. **Recordar `SITE_URL` al construir para desplegar**, o el canónico
-> apunta a un dominio que no existe: ver el aviso de `wrangler.jsonc`.
+---
+
+# EMPIEZA AQUÍ · traspaso del 2026-09-22
+
+## ✅ El sitio está publicado en https://bcsensing.org
+
+Despliegue `adda9052`, 2026-09-22 00:50 UTC. `verify:todo` y
+`verify:publicado -- https://bcsensing.org` **en verde, los dos** `[medido]`.
+Es el primer despliegue **sin `noindex`**: el sitio es indexable desde ahora.
+
+Cómo se llegó, con lo que tardó de verdad:
+
+| Paso | Resultado |
+|---|---|
+| Zona `bcsensing.org` creada en Cloudflare | id `d19fd380d4814d99efcaace07281d18d`, plan Free |
+| Nameservers delegados en Hostinger | `jobs.ns.cloudflare.com` · `nataly.ns.cloudflare.com` |
+| Propagación al registro `.org` | **minutos**, no horas. La previsión de «puede tardar horas» fue pesimista |
+| Zona activa | 2026-09-22 00:47:08 UTC |
+| Dominio colgado del Worker | `bcsensing.org → seminario-wireless-lab`, id `d8c3059078fb…` |
+| Certificado TLS | Universal + advanced, emitidos solos. ~1 min tras la activación |
+| Despliegue con `SITE_URL=https://bcsensing.org` | versión `adda9052-545e-4d84-8c6d-95f487c28021` |
+
+**Reversión del dominio**, si alguna vez hace falta:
+`node scripts/hostinger-nameservers.mjs poner bcsensing.org orbit.dns-parking.com horizon.dns-parking.com --confirmo`
+—o a mano en hPanel si el token ya se revocó, que es lo que debe pasar.
+
+## ⚠️ Pendiente inmediato de seguridad
+
+**Revocar el token de Hostinger y borrarlo de `.env.local`.** Ya cumplió su único
+propósito. Hereda todos los permisos del usuario, el VPS de Demeter incluido.
+
+## Revisión del sitio publicado · 2026-09-22
+
+Medida contra `https://bcsensing.org`, **no** deducida del código. Ocho hallazgos; seis
+quedaron corregidos y verificados, dos dependen de alguien más.
+
+### ✅ Corregido y verificado en vivo
+
+| Hallazgo | Estado medido |
+|---|---|
+| `www.bcsensing.org` **no resolvía** | `CNAME www → apex` *proxied* + regla 301. Redirige por HTTP y HTTPS conservando ruta y query, en las dos IPs |
+| `min_tls_version` era **1.0** | 1.2. TLS 1.1 **rechazado**, 1.2 aceptado `[medido]` |
+| `http://` respondía **200 en claro** | `always_use_https: on` → 301 |
+| Sin **HSTS** | `max-age=15552000`, sin `preload`, sin `includeSubDomains` |
+| La **404 devolvía 0 bytes** | 3 945 B, bilingüe, `noindex`, sin JSON-LD, fuera del sitemap |
+| Sin **CSP** | Generada en el build. `script-src` con hashes, **sin `'unsafe-inline'`** |
+
+**El orden de magnitud del trabajo estuvo en la 404 y la CSP**, que son cambio de
+código y por eso empezaron por `requirements.md` (RNF-7.6 y RNF-7.7), no por el editor.
+
+### 🔴 El hallazgo que no buscábamos
+
+**Cloudflare inyectaba un script de analítica de terceros en todas las páginas**, y
+llevaba ahí desde que la zona activó. Incumple RNF-4.1 —«sin analítica, sin cookies y
+sin tipografías remotas»—.
+
+Rastro exacto: la zona activó a las **00:47:08 UTC**; Cloudflare creó un sitio de Web
+Analytics con `auto_install: true` y regla `host:* paths:*` a las **00:47:10**. Dos
+segundos. Nadie lo pidió.
+
+**Por qué ningún verificador lo vio, que es la parte que importa:**
+
+1. **Todos miraban `dist/`.** Esto no está en `dist/`. Lo añade el borde *después* del
+   despliegue. Un sitio que cumple RNF-4.1 en el repositorio puede incumplirlo en
+   producción sin que el repositorio se entere.
+2. **La inyección es condicional.** Un `curl` sin `User-Agent` de navegador recibe el
+   HTML limpio. Una comprobación escrita sin esa cabecera habría pasado **en verde con
+   el beacon puesto**, que es peor que no comprobar nada.
+
+**Lo destapó la CSP al bloquearlo.** Sin CSP habría seguido ahí indefinidamente.
+
+Corregido con `auto_install: false` —la acción reversible mínima, en vez de borrar el
+sitio— y cerrado con **RNF-4.3**, que lo comprueba en vivo y con cabeceras de navegador
+en cada `verify:publicado`. Sensibilidad probada apuntando el mismo verificador a
+`pucv.cl`: detecta `googletagmanager.com`, `secure.adnxs.com` y `youtube.com` `[medido]`.
+
+**Esta configuración vive en Cloudflare, no en el repositorio.** Es la excepción a
+RNF-7.1 y por eso hay que medirla, no confiar en ella. Lo mismo vale para HSTS, el
+`min_tls_version`, el `always_use_https` y la regla de `www`.
+
+### Comprobado en navegador real, no solo por cabeceras
+
+Playwright contra las tres URL: **cero violaciones de CSP**, el guion del tema se
+ejecuta (`data-theme` puesto), los atributos `style` se aplican y la 404 renderiza
+`[medido]`. Una CSP con un hash mal calculado no falla ninguna comprobación de
+cabeceras: simplemente deja de ejecutar el guion y la página se queda en claro. Solo un
+navegador lo dice.
+
+### ⏳ Lo que sigue abierto y no depende de nosotros
+
+1. **Revocar el token de Hostinger y borrarlo de `.env.local`.** Ya cumplió su único
+   propósito. Hereda todos los permisos del usuario, el VPS de Demeter incluido.
+2. **Dar de alta el sitio en Google Search Console.** Sin esto no hay forma de saber si
+   Google indexó, ni de pedir el rastreo, ni de ver con qué consultas lo encuentran. El
+   seminario es el **21–22 de octubre de 2026**: quedan unas cuatro semanas y un dominio
+   registrado ayer tarda.
+3. ~~`offers` / `isAccessibleForFree`~~ **Resuelto el 2026-09-22.** Daniel confirmó que
+   **la asistencia es gratuita**. Implementado como RNF-3.7: `isAccessibleForFree: true`
+   más una `Offer` con `price: 0` y `priceCurrency: CLP` —Google necesita las dos, y la
+   moneda aunque el precio sea cero—. `validator.schema.org` reconoce ahora el tipo
+   `Offer` con **0 errores y 0 avisos** en ambos idiomas `[medido]`.
+4. **Cuatro dependencias instaladas y sin usar.** `@astrojs/react`, `react`, `react-dom`
+   y `motion` están en `package.json` y la integración React está activa en
+   `astro.config.mjs`, pero `src/` no tiene ni un `.tsx` ni un solo import de ninguna
+   `[medido]`. `AGENTS.md` afirma lo contrario. Hoy no pesan en la primera carga —312 kB:
+   HTML 130 + CSS 62 + tres fuentes 120— pero son superficie muerta, y el documento que
+   las niega es el que se lee para decidir. **Decisión pendiente de Daniel**: sacarlas
+   exige correr `verify:todo` después para confirmar que nada dependía de ellas.
+5. **Un enlace en `http://`**: `investigacion.electronica.usm.cl/~wcg/`. Es del sitio de
+   destino, no nuestro, y `upgrade-insecure-requests` no afecta a la navegación. Cambiarlo
+   a `https://` exige comprobar que ese servidor lo soporta.
+
+---
+
+# Traspaso anterior · 2026-08-27
+
+Lo que sigue es lo único que hay que leer para retomar. El detalle de cómo se llegó
+aquí está en **§12**; el resto del archivo es historia y no hace falta para arrancar.
+
+## 1. Desplegado el 2026-08-27. El enlace ya se puede mandar
+
+✅ <https://seminario-wireless-lab.danielcaignet99.workers.dev> sirve la versión
+**`c5149c53`**, sin las cuatro marcas de terceros. Comprobado sobre la URL en vivo, no
+sobre el build `[medido: 2026-08-27]`:
+
+- La página solo referencia **PUCV, EIE y el conjunto Ministerio de Ciencia + ANID**.
+- Los marcadores aparecen en los dos idiomas.
+- `/logos/uc.svg`, `/logos/uc-oscuro.svg`, `/logos/nokia-bell-labs.svg` y
+  `/logos/README.md` devuelven **404**.
+- `verify:publicado` en verde, 20 criterios, con `noindex` porque el dominio sigue siendo
+  provisional.
+
+**Con esto se desbloquea la tanda 2 de correos** (§3).
+
+### Lo que apareció justo antes de desplegar, y hay que no volver a olvidar
+
+Retirar una marca de la maqueta **no basta**. `public/` se copia verbatim a `dist/`, así
+que los archivos de UC y de Nokia seguían alojados: `https://…/logos/uc.svg` habría
+respondido 200 sin que ninguna página lo enlazara. **Alojar no es mostrar, pero sigue
+siendo publicar.** Se detectó mirando `dist/logos/`, no razonando sobre el HTML.
+
+Están archivados en
+[`specs/002-rediseno-visual/marcas/pendientes-de-autorizacion/`](specs/002-rediseno-visual/marcas/pendientes-de-autorizacion/),
+con cómo reponerlos. El de Nokia **era el único ejemplar**: se movió, no se borró.
+
+Los ráster —Columbia y USACH— no tenían el problema: viven en `src/assets/` y Astro solo
+los emite si alguien los importa.
+
+Y en la misma revisión: **`public/logos/README.md` se servía en `/logos/README.md` con
+200** — documentación interna, con rutas y con qué instituciones no han autorizado su
+marca, publicada en el sitio de la Universidad. Movida a `specs/`. **Nada que no sea el
+sitio va en `public/`.**
+
+### Cómo se vuelve a desplegar
+
+```bash
+git fetch origin && git status -sb
+npm ci
+$env:SITE_URL = "https://seminario-wireless-lab.danielcaignet99.workers.dev"
+npm run build
+npm run verify:todo                  # los SEIS, no siete
+npx wrangler deploy
+npm run verify:publicado -- https://seminario-wireless-lab.danielcaignet99.workers.dev
+```
+
+**`SITE_URL` no es opcional.** `CF_PAGES_URL` solo existe en Cloudflare Pages, no en
+Workers; sin ella el canónico, el sitemap y las imágenes para compartir apuntan al respaldo
+`PRODUCTION_SITE` —un dominio que todavía no existe— y el `noindex` provisional se
+desactiva creyendo estar en producción. El aviso está en `wrangler.jsonc`.
+
+**Y antes de desplegar se mira `dist/`**, no lo que referencia el HTML: son dos preguntas
+distintas, y confundirlas es lo que dejó dos marcas alojadas. Para volver atrás,
+`npx wrangler rollback`.
+
+## 2. Los accesos funcionan, comprobado el 2026-08-25
+
+- **GitHub:** `gh` autenticado como `Daniel990310`, dueño del repositorio, scope `repo`,
+  credential helper `manager`. Sin PR abierto. `main` va **1 commit atrás** de la rama.
+- **Cloudflare:** el token OAuth del disco **estaba vencido** y el `refresh_token` lo renovó
+  solo, sin intervención. Cuenta `ad6ad6434f0de8b33a85a93af92f7a39`, correo
+  `danielcaignet99@gmail.com`, con `workers_scripts (write)`.
+- **Dos avisos sobre wrangler:** **no es dependencia del proyecto** —baja por `npx` en cada
+  uso, hoy 4.125.0— y el `$schema` de `wrangler.jsonc` apunta a
+  `node_modules/wrangler/config-schema.json`, **que no existe**, así que ese archivo no se
+  valida en el editor.
+- **Servidor local:** `npm run dev` → <http://localhost:4321>. **En Astro 7 `astro dev` se
+  demoniza**: arranca en segundo plano y el comando termina con código 0. Ver «terminado» NO
+  significa que se haya caído. Se maneja con `astro dev status | logs | stop`.
+
+## 3. Los correos: están escritos, y el orden importa
+
+Los siete están listos para copiar en
+[`specs/gestion/correos-instituciones.md`](specs/gestion/correos-instituciones.md).
+
+**Tanda 1 — se puede mandar ya, no depende del despliegue:**
+
+1. **DSIC (F-180)**, el primero de todos aunque parezca el menos urgente: fija el dominio
+   definitivo, y con la solicitud puesta los demás correos pueden decir «la dirección
+   definitiva será `beyondconnectivity.pucv.cl`» y el enlace no se vuelve obsoleto en tres
+   semanas. **Lo firma una autoridad de la PUCV**, no un proveedor externo: la sección A
+   pide «responsable ante la PUCV» y la E exige firma. Empezar por conseguir esa firma.
+2. **ANID.** Su respuesta condiciona el sitio, no solo el trámite: el nombre exacto del
+   concurso está en la mención visible (A11) y la regla de convivencia de logos puede
+   obligar a recomponer la maqueta (A16). Y no puede decir «no»: su logo es obligatorio.
+3. **PUCV Comunicación Estratégica** y **EIE**. Cero riesgo, es el cliente. De ahí salen la
+   variante oscura del escudo (A13) y el manual vigente.
+
+**Tanda 2 — solo después de desplegar. Por tiempo de respuesta, el más lento primero:**
+
+4. **Columbia** y **Nokia**, el mismo día. Son las lentas: Office of General Counsel y un
+   equipo global de marca. **Sus direcciones siguen sin confirmar**: `cufo.columbia.edu` y
+   `anid.cl` devolvieron **403** el 2026-08-25 y no se inventaron. Hay que copiarlas de la
+   página del titular.
+5. **USACH.** Mayor riesgo declarado —autoriza o rechaza sitios web explícitamente— pero
+   responde una dirección chilena. Es la única de la que además hace falta un archivo: la
+   variante blanca, porque su tinta es negro puro y desaparece sobre `#0a1020`.
+6. **UC.** Misma estructura, sin exigencia explícita. Probablemente la primera en contestar.
+
+## 4. Una fecha tope real, a mediados de septiembre de 2026
+
+El protocolo de eventos de ANID exige, para invitar a una autoridad de la Agencia:
+**15 días hábiles de anticipación**, invitación **firmada por el rector o el director**, y
+**adjuntar el programa de la actividad**. El seminario es el **21–22 de octubre de 2026**.
+
+**Por lo tanto `program.days` vacío ya no es una sección incompleta del sitio: bloquea un
+trámite con fecha.** Eso cambia la prioridad de lo que quedaba del plan 002 — la línea de
+tiempo del programa no es la siguiente tarea por ser la más vistosa, lo es porque vence.
+
+Faltan tres datos para llenar la minuta de ANID: **horarios de inicio y cierre por
+jornada**, **proyección de asistentes** y **si el seminario es gratuito**.
+
+## 5. Lo que NO se toca sin respuesta de ANID
+
+Dos hallazgos del manual 2026 quedaron **deliberadamente sin resolver**, y la tentación va a
+ser arreglarlos por criterio propio. No:
+
+- **RNF-8.4** · los logos no gubernamentales van «a la izquierda de ANID» con el mismo peso
+  visual. Hoy las universidades van en una sección y ANID en un bloque propio más abajo. La
+  regla está escrita para una fila horizontal y **no contempla la disposición vertical**.
+  Recomponer la maqueta sin saber si hacía falta sería inventarse un requisito.
+- **RNF-8.5** · la versión **pluma** que usa el tema oscuro no está prevista para pantalla,
+  y **es el único archivo blanco que trae el kit**. No hay entre qué elegir.
+
+Las dos están preguntadas en el correo a ANID. Es la decisión abierta **A16**.
+
+## 6. Qué queda en el plan 002, y con qué
+
+De los cinco pedidos del cliente (§5k) siguen **sin especificar** los puntos 1, 2, 3 y 5:
+fotos en las fichas, línea de tiempo vertical, enlace sesión→expositor y transiciones entre
+vistas. El punto 5 es el único uso real que tendrían los **59,5 kB de React y Motion** que
+hoy `dist` emite sin que ningún HTML los referencie (D11, y RF-6.4 le sigue apuntando).
+
+Defectos concretos abiertos: USACH sin variante blanca, Columbia con la marca de otra
+facultad (`CUSPS` en vez de SEAS), retrato de Zussman a 260×260, y el anillo de foco en
+tema claro a **3,62:1** contra el mínimo de 3 — es el primer umbral que cae si el fondo
+claro se oscurece más.
+
+**Y una restricción nueva que gobierna las fotos que falten:** el manual de ANID prohíbe
+**estrictamente** generar rostros con IA, y descarta filtros de postproducción que alteren
+la escena y fotografías compuestas artificialmente (RNF-8.6). Aplica a los seis retratos y
+al carrusel de la sede. Cierra un atajo que hasta ahora nadie había prohibido por escrito.
+
+## 7. Referencia que mandó el tutor, ya evaluada
+
+<https://isstt2026.org/> — sitio **post-evento** hecho en WordPress con Elementor.
+
+**Descartado, y Daniel ya lo había intuido:** seis grupos de navegación con desplegables y
+unas 25 páginas va contra **D1** (una sola página con anclas), y su propia navegación
+aparece duplicada en el marcado. Tampoco se copia que **el programa esté detrás de un
+login** ni que **no tenga versión en español** pese a ser un evento en Chile: en las dos
+cosas este sitio va por delante.
+
+**Rescatable**, por valor:
+
+| Idea | Por qué encaja |
+| ---- | -------------- |
+| **Franja de fechas clave** | Lo mejor de su portada. Este sitio **no tiene ninguna fecha** aparte de las del seminario: ni envío de resúmenes ni inscripción. Es donde vive RF-3, el registro, aún sin implementar |
+| **Cuenta atrás** | Señal de vida, y significa algo del dominio (filtro de D12). **Calculada en el build**, «faltan N días», a 0 kB y sin chocar con WCAG 2.2.2, que exige poder detener lo que se actualiza solo |
+| **Información práctica de viaje** | Visa, alojamiento, cómo llegar. Hay **cuatro expositores extranjeros** y el sitio no dice nada. Es redacción, no tecnología |
+| **Galería de la sede** | Es el carrusel ya previsto, esperando fotos |
+
+## 8. Reglas de esta sesión que conviene no volver a aprender
+
+- **Son SEIS verificadores, no siete.** `verify:red` se retiró el 2026-08-07 con la sección
+  que medía. Media docena de documentos decían «siete» y el bloque de comandos de arranque
+  listaba un guion inexistente; corregido en `52d9f5e`.
+- **Un fallo de `verify:todo` se reproduce aislado antes de creérselo.** Pasó dos veces:
+  la cadena señaló `verify:tema` y a solas dio exit 0 con sus 17 criterios en verde. La
+  causa no es del sitio ni de la comprobación: es **`net::ERR_NO_BUFFER_SPACE` en
+  `page.goto`**, agotamiento de sockets de Windows tras muchas corridas de Playwright en la
+  misma sesión `[medido]`. **Cómo distinguirlo de una regresión:** un criterio que incumple
+  imprime su línea con `✗`; esto aborta el proceso y no imprime ninguna, así que el
+  verificador sale en rojo sin ningún criterio fallado debajo. Buscar `ERR_` antes de tocar
+  código. Está en `AGENTS.md` con la traza.
+- **`.agents/` (8,5 MB) y `.codex/config.toml`** están sin versionar y sin ignorar, a
+  propósito: es configuración de otras herramientas. Versionarlas es decisión de Daniel.
+- **`beyond-connectivity-seminario-pucv.html`** era una prueba vieja de claude.ai. Está en
+  `.gitignore`. No es la dirección de diseño del proyecto.
+
+## 9. Estado medido al cerrar, sobre `52d9f5e` `[medido: 2026-08-25]`
+
+`astro check` **0 errores / 0 avisos**. **Los seis verificadores en verde, 110 criterios.**
+Revisado a ojo en los dos temas y los dos anchos, sin desbordes a 390 px.
+
+| Presupuesto | Valor | Límite |
+| ----------- | ----- | ------ |
+| RNF-2.1 · JavaScript | 4,3 kB | 115 |
+| RNF-2.2 · Primera carga | 167,4 kB | 260 |
+| RNF-2.6 · Tipografías | 122,6 kB | 125 — **2,4 kB de margen** |
+
+---
 
 > **Hay un plan abierto: [002 · Rediseño visual y movimiento](specs/002-rediseno-visual/requirements.md).**
-> RF-9 está implementado y verificado, y desde el 2026-08-06 el plan creció hasta RF-21.
+> RF-9 está implementado y verificado, y desde el 2026-08-06 el plan creció hasta RF-22.
 > Qué pasó desde el 2026-08-03 y qué se descartó: **§9**. La sesión del 06 al 09: **§10**.
+
+## 12. El 2026-08-25: los logos vuelven a marcador, y dos verificadores estaban mal
+
+Sesión de gestión que terminó en código. **Lo que la disparó fue preparar los correos que
+piden autorización de marca**, y lo que encontró fue que el sitio ya las usaba.
+
+### Lo primero, porque es lo que más costaba de ver
+
+**Este archivo llevaba 16 días desactualizado y se contradecía.** Decía «último commit de
+tarea `5998723`» con `HEAD` en `7115b61`, tres commits más allá, y §10 seguía afirmando
+«Nada de esto está commiteado» cuando ya lo estaba. Los dos commits del 2026-08-13 —RF-9.8
+reformulado y RF-9.15b— **no tienen relato aquí**: están en `requirements.md` y en el
+historial, y esta sección es lo único que lo repara.
+
+Y una cifra que estaba mal en todos los documentos: **son seis verificadores, no siete.**
+`verify:red` se retiró el 2026-08-07 con la sección que medía. `AGENTS.md`, `specs/README.md`
+y este archivo decían «siete», y el bloque de comandos de arranque listaba un guion
+inexistente: cualquier entorno que empezara por ahí partía de una premisa falsa.
+
+### Las cuatro marcas de terceros estaban publicadas sin permiso
+
+Medido sobre la URL en vivo `[medido: 2026-08-25]`: `/logos/uc.svg`, `/logos/uc-oscuro.svg`,
+`/logos/nokia-bell-labs.svg`, `columbia*.webp` y `usach*.webp`. Y el borrador del correo a
+Columbia decía «*we have not published them*».
+
+Por instrucción de Daniel vuelven a **marcador de posición**: caja de trazo discontinuo con
+el nombre y `LOGO PENDIENTE`, igual que antes del 2026-08-09. **Los archivos no se borran**;
+reponer una marca autorizada es volver a poner su `import` y su línea `logo:`.
+
+Tres defectos que el mismo cambio resuelve, y que conviene no perder de vista:
+
+1. **Columbia estaba con la marca equivocada**: `CUSPS`, la School of Professional Studies,
+   cuando Zussman es de SEAS.
+2. **USACH desaparecía en tema oscuro**: tinta negra pura sobre `#0a1020`.
+3. En dos de los cuatro casos —Columbia y Nokia— **el titular ya había dicho por escrito**
+   que su uso exige consentimiento previo.
+
+**No se reinstalaron los SVG de marcador que había antes**, aunque estaban en el historial.
+Traen los colores escritos a mano de la paleta anterior a la identidad PUCV y sobre el fondo
+claro de hoy no llegan a 4,5:1 — **y ningún verificador lo habría visto**, porque axe mide
+texto del documento y no texto dentro de un SVG. En HTML con la capa semántica el aspecto es
+el mismo y `verify` sí lo mide.
+
+### Dos verificadores afirmaban algo distinto de lo que decían verificar
+
+Ninguno se relajó. Es el mismo patrón que ya había aparecido cinco veces (§10).
+
+1. **`verify:teclado` · el recorrido llega a todo.** Pasaba **por suerte**: comprobado
+   volviendo al árbol anterior, daba «35 alcanzados de **34**», o sea colaba por un `>=`.
+   Debajo había dos errores de signo contrario que se compensaban: contaba los tres radios
+   del selector de tema como tres paradas de Tab —un grupo de radios es **una**, y el
+   recorrido con flechas ya lo mide `verify:tema`—, y excluía por `width > 0` a los enlaces
+   que envuelven una imagen diferida, que miden 0 de ancho hasta que la imagen llega. Al
+   corregirlo apareció un tercero: el `<summary>` del menú móvil se contaba a 1440 px, porque
+   `getComputedStyle` devuelve el `display` **del elemento** y no el del ancestro `lg:hidden`
+   que lo esconde. Ahora cada enfocable **se sella con un atributo** antes de recorrer, la
+   comparación es una igualdad y el informe dice **cuál** falta. Prueba de sensibilidad
+   hecha: con `tabindex="-1"` en un marcador, falla nombrando los cuatro.
+2. **`verify:teclado` · el foco se ve en todo el recorrido.** Era **intermitente**: «sin
+   anillo: iframe» según la corrida. El mapa se carga al entrar en pantalla y el propio
+   recorrido con Tab desplaza la página. El hallazgo no era real —el indicador de un iframe
+   es del documento embebido y ninguna hoja nuestra puede pintarlo—, así que se excluye
+   `iframe` con el motivo escrito. Tres corridas seguidas en verde.
+
+Y una trampa de medición nueva, del entorno: **no correr nada en paralelo con
+`verify:todo`.** Con `npm run check` a la vez la cadena falló en `verify:tema`, y sola quedó
+en verde.
+
+### La documentación de ANID que mandó el cliente
+
+Cuatro PDF, revisados íntegros en
+[`specs/gestion/anid-normas-2026.md`](specs/gestion/anid-normas-2026.md). **El más accionable
+no es el manual de marca: es el protocolo de eventos**, que el repositorio no conocía.
+
+- Hay una **minuta obligatoria**, y es **la vía formal para pedir los logos**.
+- Invitar a una autoridad de ANID exige **15 días hábiles**, firma del rector o director, y
+  **adjuntar el programa**. El seminario es el 21–22 de octubre: la fecha tope cae a
+  mediados de septiembre de 2026. **`program.days` vacío pasa a bloquear un trámite**, no
+  solo una sección del sitio.
+- Del manual: los logos no gubernamentales van **a la izquierda de ANID** con el mismo peso
+  visual —la maqueta actual los pone en otra sección, y **se consulta antes de tocarla**—;
+  la versión **pluma** no está prevista para pantalla y es la única blanca del kit; queda
+  **estrictamente prohibido generar rostros con IA**, lo que cierra un atajo que nadie había
+  prohibido para los retratos y para el carrusel de la sede.
+- Corrección de registro: `marcas/README.md` decía que la variante clara instalada es la
+  «pluma» de tinta única. **No lo es** — lleva `#1b6ab1` y `#e73c48`, o sea la **color**, que
+  para fondo claro es la correcta `[medido]`.
+
+### Accesos y dominio
+
+- **GitHub:** `gh` autenticado como `Daniel990310`, dueño del repositorio. Sin PR abierto.
+- **Cloudflare:** el token OAuth del disco **estaba vencido** y el `refresh_token` lo renovó
+  solo. Cuenta `ad6ad6434f0de8b33a85a93af92f7a39`, con `workers_scripts (write)`.
+  **`wrangler` no es dependencia del proyecto**: baja por `npx` en cada uso, y el `$schema`
+  de `wrangler.jsonc` apunta a un archivo que no existe.
+- **Dominio PUCV:** trámite levantado en
+  [`specs/gestion/dsic-subdominio-pucv.md`](specs/gestion/dsic-subdominio-pucv.md). Es el
+  **F-180, gratuito**, no el F-170 de hosting, que cuesta UF 0,5 y no hace falta. Lo firma
+  una autoridad de la PUCV, no un proveedor. **Duda abierta que el correo plantea de frente:**
+  el anexo del F-180 está escrito para sitios alojados en la PUCV y no dice si la DSIC crea
+  un `CNAME` hacia infraestructura externa.
+- **`astro dev` se demoniza en Astro 7**: arranca en segundo plano y el comando termina. Se
+  maneja con `astro dev status | logs | stop`. Ver el comando «terminado» no significa que el
+  servidor se haya caído.
+
+### Cifras tras el cambio `[medido: 2026-08-25]`
+
+`astro check` 0 errores / 0 avisos. **Los seis verificadores en verde, 110 criterios.**
+Revisado a ojo en los dos temas y los dos anchos, sin desbordes a 390 px.
+
+| | Valor | Límite |
+| - | ----- | ------ |
+| RNF-2.1 · JavaScript | 4,3 kB | 115 |
+| RNF-2.2 · Primera carga | 167,4 kB | 260 |
+| RNF-2.6 · Tipografías | 122,6 kB | 125 |
+
+Sigue emitiéndose `_astro/client.*.js`, **59,5 kB que ningún HTML referencia**: es el peso
+latente de D11, y RF-6.4 le sigue apuntando mientras no exista una isla real.
+
+### Lo que queda sin versionar, dicho aquí para que no vuelva a ser un misterio
+
+- **`beyond-connectivity-seminario-pucv.html`**, artifact de claude.ai del 2026-08-22.
+  Daniel confirmó que es **una prueba vieja** y que se ignora. Añadido a `.gitignore`, como
+  ya se hizo con el prototipo de agosto.
+- **`.agents/` (8,5 MB, 231 archivos) y `.codex/config.toml`**: configuración de otras
+  herramientas, no del sitio. Se dejan fuera del repositorio a propósito. Versionarlas es
+  una decisión de Daniel, no un efecto secundario de este commit.
 
 ## 11. El 2026-08-09, tarde: la fotografía de la sede entra como franja
 
@@ -483,6 +917,12 @@ inventarle un techo.
 T5 y T6 los cerraron, y desde entonces `npm run verify` termina en 0: comprobado el
 2026-07-31 sobre `8f4bdfc` con `npm run verify:todo`, exit 0. Cualquier fallo a partir
 de aquí es una regresión.
+
+> ⚠️ **Esta tabla quedó atrás: hoy son SEIS.** `verify:red` se retiró el 2026-08-07 con la
+> sección que medía (RF-16). Se conserva la fila para que se entienda qué cubría, porque
+> media docena de documentos siguieron citándola. La lista vigente está en
+> [`specs/README.md`](specs/README.md), y el resto de las cifras de esta sección son las de
+> julio: las actuales están en §12.
 
 Hay siete verificadores, y `npm run verify:todo` los corre en cadena:
 

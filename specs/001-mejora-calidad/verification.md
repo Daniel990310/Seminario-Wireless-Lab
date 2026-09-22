@@ -2,7 +2,7 @@
 
 Generado por `npm run verify`. **No editar a mano**: se sobrescribe en cada corrida.
 
-**Fecha:** 2026-08-10 · **Commit:** `8dd4a77`
+**Fecha:** 2026-09-22 · **Commit:** `8f0d8ea`
 **Resultado:** todos los presupuestos cumplidos
 
 Método: axe-core sobre el build servido localmente, en 1440×900 y 390×844,
@@ -24,8 +24,8 @@ de ese orden respecto de la línea base no indica un cambio real.
 | RNF-1.3 | Nodos con contraste indeterminado | 28 | 0 | 0 | cumple |
 | RNF-1.4 | Secciones sin nombre accesible | 7 | 0 | 0 | cumple |
 | RNF-1.5 | Saltos de nivel en encabezados | 0 | 0 | 0 | cumple |
-| RNF-2.1 | JavaScript comprimido | 109.3 kB | 4.2 kB | 115.0 kB | cumple |
-| RNF-2.2 | Primera carga comprimida | 241.2 kB | 165.8 kB | 260.0 kB | cumple |
+| RNF-2.1 | JavaScript comprimido | 109.3 kB | 4.3 kB | 115.0 kB | cumple |
+| RNF-2.2 | Primera carga comprimida | 241.2 kB | 166.1 kB | 260.0 kB | cumple |
 | RNF-2.6 | Tipografías | 110.9 kB | 122.6 kB | 125.0 kB | cumple |
 
 En RNF-1.1 y RNF-1.3 la columna «Actual» **suma todas las corridas**, mientras que
@@ -37,13 +37,13 @@ el desglose por corrida más abajo.
 | Recurso | Comprimido |
 | ------- | ---------- |
 | JavaScript en archivos `.js` | 0.0 kB |
-| JavaScript en línea, dentro del HTML | 4.2 kB |
-| JavaScript total (RNF-2.1) | 4.2 kB |
+| JavaScript en línea, dentro del HTML | 4.3 kB |
+| JavaScript total (RNF-2.1) | 4.3 kB |
 | Tipografías | 122.6 kB |
-| HTML (incluye los scripts en línea) | 31.2 kB |
-| CSS en hojas enlazadas | 12.0 kB |
-| Imágenes SVG | 56.8 kB |
-| **Primera carga** | **165.8 kB** |
+| HTML (incluye los scripts en línea) | 31.6 kB |
+| CSS en hojas enlazadas | 11.9 kB |
+| Imágenes SVG | 22.1 kB |
+| **Primera carga** | **166.1 kB** |
 
 Medido sobre `/en/`, la **más pesada** de las auditadas, que es contra la que se juzga el presupuesto.
 
@@ -51,8 +51,8 @@ Primera carga por página:
 
 | Página | Primera carga |
 | ------ | ------------- |
-| `/en/` | 165.8 kB |
-| `/` | 165.8 kB |
+| `/en/` | 166.1 kB |
+| `/` | 166.1 kB |
 
 Solo se cuenta lo que la página referencia. Archivos generados que **ningún archivo
 de `dist` menciona**, y que por tanto ningún navegador descarga:

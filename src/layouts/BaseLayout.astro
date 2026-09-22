@@ -1,6 +1,6 @@
 ---
 import { Font } from 'astro:assets';
-import { SITE_ES_RESPALDO } from '../../astro.config.mjs';
+import { PRODUCTION_HOST, SITE_ES_RESPALDO } from '../../astro.config.mjs';
 import { IDIOMAS, rutaBase, type Contenido, type Idioma } from '~/data/contenido';
 import '~/styles/global.css';
 
@@ -62,7 +62,7 @@ const ogImage = new URL(`/og/${lang}.png`, sitio).href;
  * canónicos que apuntan a un dominio que quizá ni existe. Pasó el 2026-07-31
  * en el primer despliegue a Workers; ver `ESTADO.md` §6c.
  */
-const isPreview = canonical.host !== 'seminario-wireless.pucv.cl' || SITE_ES_RESPALDO;
+const isPreview = canonical.host !== PRODUCTION_HOST || SITE_ES_RESPALDO;
 
 // Datos estructurados: permiten que buscadores y calendarios reconozcan
 // el seminario como un evento con fecha y lugar.
@@ -72,10 +72,43 @@ const eventSchema = {
   name: seminar.title,
   alternateName: seminar.subtitle,
   description: seminar.seo.description,
+  /*
+   * `url` e `image` son recomendados por schema.org/Event, y sin `image` Google
+   * no construye el resultado enriquecido de evento (RNF-3.6). Se reutilizan el
+   * canónico y la imagen para compartir en vez de declarar valores propios: si
+   * alguna vez divergieran, el buscador vería dos direcciones para la misma
+   * página y una imagen que nadie mantiene.
+   */
+  url: canonical.href,
+  image: ogImage,
   startDate: seminar.dates.startISO,
   endDate: seminar.dates.endISO,
   eventStatus: 'https://schema.org/EventScheduled',
   eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  /*
+   * Acceso gratuito (RNF-3.7). Google necesita LAS DOS cosas para mostrar el
+   * distintivo «Gratis» en el resultado de evento: `isAccessibleForFree` y una
+   * `Offer` con precio 0. Solo con la primera no lo construye.
+   *
+   * El dato sale de `comun.acceso` y no está escrito aquí: el día que el seminario
+   * cobre, se cambia en los datos y esto deja de anunciar gratuidad solo. Un precio
+   * viejo en un resultado de búsqueda es peor que no declarar precio.
+   *
+   * `priceCurrency` se declara aunque el precio sea 0 porque `schema.org/Offer` la
+   * exige; sin ella el validador descarta la oferta entera y el distintivo no sale.
+   */
+  isAccessibleForFree: seminar.acceso.gratuito,
+  offers: {
+    '@type': 'Offer',
+    price: seminar.acceso.precio,
+    priceCurrency: seminar.acceso.moneda,
+    availability: 'https://schema.org/InStock',
+    /*
+     * La URL de la oferta es la página del seminario, no una de inscripción: RF-3
+     * —registro de asistentes— está fuera de alcance y no existe tal página.
+     */
+    url: canonical.href,
+  },
   location: {
     '@type': 'Place',
     name: seminar.venue.name,

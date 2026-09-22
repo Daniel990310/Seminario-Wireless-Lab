@@ -153,6 +153,14 @@ export const es = {
       cambiarA: 'English',
     },
 
+    error404: {
+      etiqueta: 'Error 404',
+      titulo: 'Esta página no existe',
+      explicacion: 'Puede que el enlace esté mal copiado. El seminario está en el inicio.',
+      volver: 'Ir al inicio',
+      tituloDocumento: 'Página no encontrada',
+    },
+
     hero: {
       eyebrow: 'Seminario internacional',
       lugarEyebrow: 'Lugar',
@@ -241,6 +249,13 @@ export const es = {
       participantes: 'Instituciones participantes y colaboradoras',
       financia: 'Financia',
       proyecto: 'Proyecto',
+      /*
+       * Leyenda del marcador de posición de una marca cuyo titular todavía no autorizó
+       * su uso. Vive aquí, y no en `LogoWall.astro`, porque **es texto visible**: escrita
+       * en el componente la detectó `verify:idioma` como cadena sin traducir, que es
+       * exactamente para lo que existe esa comprobación.
+       */
+      logoPendiente: 'LOGO PENDIENTE',
     },
 
     pie: {

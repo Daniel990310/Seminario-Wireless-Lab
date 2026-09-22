@@ -26,25 +26,26 @@ import pucvOscuro from '~/assets/logos/pucv-oscuro.png';
 import eieClaro from '~/assets/logos/eie-pucv.png';
 import eieOscuro from '~/assets/logos/eie-pucv-oscuro.png';
 /*
- * Columbia. Autorización confirmada por Daniel el 2026-08-07; el detalle de quién autoriza
- * qué está en `specs/002-rediseno-visual/marcas/README.md`.
+ * ═══ AQUÍ ESTABAN LOS IMPORTS DE COLUMBIA Y USACH ═══
  *
- * **OJO CON CUÁL ES.** Los archivos entregados son `CUSPS_logo_simple_RGB_*`, o sea la
- * submarca de la **School of Professional Studies**, y el expositor de Columbia —Gil
- * Zussman— es de Ingeniería Eléctrica, o sea SEAS. Es la escuela equivocada, del mismo tipo
- * de error que un nombre institucional traducido a mano.
+ * Retirados el 2026-08-25 con las marcas que alimentaban (ver `participants`). Se quitan
+ * los imports y no solo su uso porque `astro check` los reportaría como código muerto, y
+ * este proyecto lo mantiene en 0 avisos.
  *
- * Se instalan porque se pidieron, y **con estos nombres de archivo** precisamente para que
- * sustituir el archivo por la marca correcta no obligue a tocar código: basta con
- * reemplazar `columbia.png` y `columbia-oscuro.png` conservando el nombre. Originales
- * archivados en `marcas/columbia/`.
+ * **Los archivos siguen en `src/assets/logos/`**: `columbia.png`, `columbia-oscuro.png` y
+ * `usach.png`. Reponer una marca autorizada es volver a poner su `import` y su línea
+ * `logo:`. Lo que hay que saber al hacerlo:
  *
- * Variante `dkblue` para fondo claro y `white` para fondo oscuro, las dos que trae el
- * paquete. No se recolorea ninguna (RF-10.4).
+ * · **Columbia está con la marca equivocada.** Los archivos son `CUSPS_logo_simple_RGB_*`,
+ *   la submarca de la School of Professional Studies, y Gil Zussman es de SEAS. Se
+ *   nombraron `columbia.png` / `columbia-oscuro.png` a propósito, para que sustituir el
+ *   archivo por el correcto no obligue a tocar código. Originales en `marcas/columbia/`.
+ *   Variantes del paquete: `dkblue` para fondo claro, `white` para oscuro.
+ * · **USACH no tiene variante para fondo oscuro y hace falta.** Su tinta es negra pura
+ *   —`rgb(0,0,0)` en los píxeles opacos `[medido]`— y sobre `#0a1020` desaparece. No se
+ *   resuelve recoloreando: alterar el color de una marca va contra el manual de su dueño
+ *   (RF-10.4). Está pedida a `imagen@usach.cl`.
  */
-import columbiaClaro from '~/assets/logos/columbia.png';
-import columbiaOscuro from '~/assets/logos/columbia-oscuro.png';
-import usachClaro from '~/assets/logos/usach.png';
 
 /*
  * Retratos de los expositores, normalizados el 2026-08-09.
@@ -67,6 +68,7 @@ import fotoValenzuela from '~/assets/expositores/valenzuela.webp';
 import fotoFeick from '~/assets/expositores/feick.webp';
 import fotoGutierrez from '~/assets/expositores/gutierrez.webp';
 import fotoToledo from '~/assets/expositores/toledo.webp';
+import { acceso } from './acceso';
 
 /**
  * Contenido que NO se traduce (T7).
@@ -127,8 +129,16 @@ export type Logo = string | ImageMetadata;
 export interface Institucion {
   name: string;
   shortName: string;
-  /** SVG: ruta en `/public`. Ráster: importado de `src/assets/logos`. Ver `Logo`. */
-  logo: Logo;
+  /**
+   * SVG: ruta en `/public`. Ráster: importado de `src/assets/logos`. Ver `Logo`.
+   *
+   * **Opcional a propósito, y no por comodidad.** Sin archivo, `LogoWall` pinta el
+   * marcador de posición —caja de trazo discontinuo con el nombre y `LOGO PENDIENTE`—,
+   * que es el estado correcto de una marca cuyo titular todavía no autorizó su uso.
+   * Un logo de tercero sin permiso no se muestra «mientras llega la respuesta»: se
+   * pide primero. Ver `specs/gestion/correos-instituciones.md`.
+   */
+  logo?: Logo;
   /**
    * Variante autorizada para fondo oscuro (RF-10).
    *
@@ -214,6 +224,25 @@ export const comun = {
     startISO: '2026-10-21',
     endISO: '2026-10-22',
   },
+
+  /**
+   * Asistencia gratuita. **Confirmado por Daniel el 2026-09-22**; hasta entonces el
+   * dato no existía y por eso el JSON-LD no declaraba nada (A-abierta de RNF-3).
+   *
+   * Va aquí y no en `es.ts`/`en.ts` porque un precio no tiene idioma, y va como dato
+   * y no escrito en el layout porque RNF-5.1 exige que todo el contenido editable viva
+   * en archivos de datos: el día que el seminario cobre, se cambia aquí y el JSON-LD
+   * deja de anunciar «Gratis» solo.
+   *
+   * La moneda se declara aunque el precio sea 0: `schema.org/Offer` la exige, y
+   * omitirla hace que el validador de Google descarte la oferta entera.
+   */
+  /**
+   * Régimen de acceso. El dato vive en `acceso.ts`, sin importaciones, para que
+   * `scripts/verify-seo.mjs` pueda leer **la misma fuente** que el sitio. Ver la
+   * cabecera de ese archivo.
+   */
+  acceso,
 
   venue: {
     street: 'Antonio Bellet 314',
@@ -317,59 +346,61 @@ export const comun = {
     },
   ],
 
+  /*
+   * ═══ LAS CUATRO MARCAS DE TERCEROS VUELVEN A MARCADOR DE POSICIÓN ═══
+   *
+   * Retiradas el 2026-08-25, por instrucción de Daniel. **No es una regresión de
+   * maquetación: es que estaban publicadas sin autorización de su titular.**
+   *
+   * Lo que lo destapó: al preparar los correos que piden el permiso se midió qué
+   * mostraba la URL publicada, y mostraba las cuatro `[medido: 2026-08-25]`. El correo
+   * a Columbia decía «no las hemos publicado» y el enlace del propio correo lo
+   * desmentía. Y en dos casos —Columbia y Nokia— el titular ya había dicho por escrito
+   * que su uso exige consentimiento previo: pedir permiso enseñando el uso ya hecho no
+   * es pedir permiso.
+   *
+   * Dos defectos más que el mismo cambio resuelve:
+   *   · El archivo de Columbia era el equivocado —`CUSPS`, la School of Professional
+   *     Studies— y Zussman es de SEAS. Se mostraba la marca de otra facultad.
+   *   · USACH desaparecía en tema oscuro: tinta negra pura sobre `#0a1020`.
+   *
+   * Los archivos NO se borran; siguen en `public/logos/` y en `src/assets/logos/`.
+   * Reponer una marca cuando llegue su autorización es **volver a poner su línea
+   * `logo:`**, con la variante por tema si la tiene. El trámite y su estado están en
+   * `specs/gestion/correos-instituciones.md`.
+   *
+   * Nota para quien reponga la UC: **la numeración de sus archivos no significa lo
+   * mismo entre variantes.** El `-04` azul tiene proporción 2,56 y el `-04` blanco
+   * 3,87; el blanco equivalente es el `-03`. Se eligen por proporción, no por número,
+   * para que la marca no cambie de forma al cambiar de tema.
+   */
   participants: [
-    /*
-     * UC: vectores oficiales del paquete de «Uso de la marca UC», instalados el 2026-08-09.
-     *
-     * Variante `LINEAL P2727` —el azul institucional de la UC— para fondo claro, y
-     * `LINEAL BLANCO` para oscuro. Se quedan en `/public` porque son SVG y el optimizador de
-     * Astro no procesa vectores.
-     *
-     * OJO al elegir el archivo: **la numeración no significa lo mismo entre variantes.** El
-     * `-04` azul tiene proporción 2,56 y el `-04` blanco 3,87; el blanco equivalente es el
-     * `-03`. Se eligieron por proporción para que la marca no cambie de forma al cambiar de
-     * tema, no por número.
-     */
     {
       name: 'Pontificia Universidad Católica de Chile',
       shortName: 'UC',
-      logo: '/logos/uc.svg',
-      logoOscuro: '/logos/uc-oscuro.svg',
-      // Escudo pequeño sobre una línea de texto fina: su caja es casi toda aire.
-      escalaOptica: 1.28,
+      // Autorización pedida a `mhola@uc.cl`. Archivos listos: `/logos/uc.svg` y
+      // `/logos/uc-oscuro.svg`, con `escalaOptica: 1.28`.
       url: 'https://www.uc.cl',
     },
-    /*
-     * USACH: PNG oficial, instalado el 2026-08-09.
-     *
-     * **Sin variante para fondo oscuro, y hace falta.** La tinta es negra pura —medido:
-     * rgb(0,0,0) sobre los píxeles opacos— así que sobre el fondo oscuro del sitio
-     * desaparece. No se puede resolver recoloreando: alterar el color de una marca va contra
-     * el manual de su dueño (RF-10.4). La variante blanca hay que sacarla del paquete de
-     * imagotipos de USACH, que publica varios ZIP.
-     *
-     * Mientras tanto se usa la negra en los dos temas, que es lo que hace `LogoWall` cuando
-     * falta `logoOscuro`, y en oscuro no se ve.
-     */
     {
       name: 'Universidad de Santiago de Chile',
       shortName: 'USACH',
-      logo: usachClaro,
-      // Marca vertical y densa: el tope de 1,7 la deja dominando la fila.
-      escalaOptica: 0.82,
+      // Autorización pedida a `imagen@usach.cl`, junto con la variante blanca que su
+      // paquete no trae. Al reponer: `logo: usachClaro` con `escalaOptica: 0.82`.
       url: 'https://www.usach.cl',
     },
     {
       name: 'Nokia Bell Labs',
       shortName: 'Nokia Bell Labs',
-      logo: '/logos/nokia-bell-labs.svg',
+      // Sus términos: el acceso al sitio no concede derecho a usar ninguna marca.
+      // Archivo listo: `/logos/nokia-bell-labs.svg`.
       url: 'https://www.bell-labs.com',
     },
     {
       name: 'Columbia University',
       shortName: 'Columbia',
-      logo: columbiaClaro,
-      logoOscuro: columbiaOscuro,
+      // Requiere permiso de su Office of General Counsel. **Y hay que pedirles el
+      // archivo correcto**: el que tenemos es de CUSPS, no de SEAS.
       url: 'https://www.columbia.edu',
     },
   ],

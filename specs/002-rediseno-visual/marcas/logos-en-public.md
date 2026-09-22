@@ -18,25 +18,28 @@
 > importa; si llega en SVG, va aquí. El tipo `Logo` de `comun.ts` admite las dos formas y
 > `LogoWall.astro` ramifica según cuál sea.
 
-Los archivos de esta carpeta son **marcadores de posición**: se ven como una caja
-de borde discontinuo con el nombre de la institución y la leyenda
-`LOGO PENDIENTE`. Están para que la maquetación quede lista y solo haya que
-reemplazar los archivos por los oficiales.
+> **Al día 2026-08-25.** El párrafo que seguía aquí describía el estado de julio, cuando
+> los siete archivos eran marcadores dibujados en SVG. Ya no es así, y la tabla apuntaba
+> además a `src/data/seminar.ts`, que **no existe**: es `src/data/comun.ts`.
+>
+> **El marcador ya no es un archivo.** Lo pinta `LogoWall.astro` en HTML cuando una
+> institución no tiene `logo`, con la capa semántica de color. Los SVG de marcador de antes
+> traían los colores escritos a mano de la paleta previa a la identidad PUCV, y sobre el
+> fondo claro de hoy no llegan a 4,5:1 — **y ningún verificador lo vería**, porque axe mide
+> texto del documento y no texto dentro de un SVG. Ver RF-22.
+>
+> **Qué hay hoy en esta carpeta**, y por qué:
+>
+> | Archivo | Estado |
+> | ------- | ------ |
+> | `anid-minciencia.svg` · `anid-minciencia-oscuro.svg` | **En uso.** Conjunto Ministerio de Ciencia + ANID, obligatorio por RNF-8. El claro es la variante **color**; el oscuro es `PLUMA-BLANCO` y está consultado con la agencia (RNF-8.5) |
+> | `uc.svg` · `uc-oscuro.svg` · `nokia-bell-labs.svg` | **Presentes pero NO referenciados.** Se retiraron el 2026-08-25 por RF-22: falta la autorización de su titular. Reponerlos es volver a poner su línea `logo:` en `comun.ts` |
+>
+> PUCV, EIE, USACH y Columbia son ráster y viven en `src/assets/logos/`. Los dos últimos
+> también están retirados, por lo mismo.
 
-## Cómo reemplazarlos
-
-Sustituye cada archivo **manteniendo exactamente el mismo nombre**. No hay que
-tocar código: `src/data/seminar.ts` ya apunta a estas rutas.
-
-| Archivo                       | Institución                                  |
-| ----------------------------- | -------------------------------------------- |
-| `anid.svg`                    | Agencia Nacional de Investigación y Desarrollo |
-| `pucv.svg`                    | Pontificia Universidad Católica de Valparaíso |
-| `eie-pucv.svg`                | Escuela de Ingeniería Eléctrica PUCV          |
-| `uc.svg`                      | Pontificia Universidad Católica de Chile      |
-| `usach.svg`                   | Universidad de Santiago de Chile              |
-| `nokia-bell-labs.svg`         | Nokia Bell Labs                               |
-| `columbia.svg`                | Columbia University                           |
+Cuando llegue un archivo oficial, sustitúyelo **manteniendo exactamente el mismo nombre**:
+así reponer una marca no obliga a tocar más que la línea `logo:` de `src/data/comun.ts`.
 
 ## Requisitos de los archivos
 

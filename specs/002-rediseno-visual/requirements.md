@@ -334,6 +334,75 @@ sobre ninguna de las dos.
 | RF-20.4 | Las líneas radiales llegan a 560 y no a 548, para cubrir la fila más externa de la malla. Una radial corta deja los últimos nodos flotando sin retícula debajo | inspección |
 | RF-20.5 | **El acoplamiento queda declarado en los dos archivos.** `SensingPersistence` replica la serie del SVG; si cambian las constantes en uno, hay que cambiarlas en el otro | comentarios cruzados |
 
+## RF-9.15b · El puntero despierta la malla dormida
+
+Origen: Daniel, 2026-08-09. «Cargo el enlace, hago scroll con 2 dedos en mi notebook,
+paso el mouse por la figura y no pasa nada; tengo que hacer clic en algún sitio o
+recargar la página para que empiece a trabajar la interacción.»
+
+**Era un fallo real, y el comentario del código lo negaba.** El bucle duerme cuando la
+malla se asienta con el puntero encima (RF-9.15), y el comentario del sueño afirmaba que
+se despierta «con el primer `pointermove`, que llama a `arrancar()` por su cuenta». No
+era cierto: `arrancar()` solo comprobaba si el bucle estaba corriendo, y con el bucle
+vivo pero dormido no limpiaba `dormido`. La perturbación del puntero **sí** se escribía
+en `velocidades` —`perturbar()` corre antes—, pero `simular()` se saltaba la integración
+cuadro tras cuadro, así que la energía quedaba guardada sin integrar **hasta que el
+barrido cruzaba la banda del puntero: hasta 17 segundos**. Ni salir y volver a entrar lo
+arreglaba, porque `pointerenter` llama al mismo `arrancar()`.
+
+Secuencia medida antes de la corrección `[medido: 2026-08-09]`:
+
+| Paso | Nodos pintados |
+| ---- | -------------- |
+| Entrar y mover | 2466 |
+| 6 s quieto dentro (duerme) | 0 |
+| Volver a mover, sin salir | **0** |
+| Salir y volver a entrar | **0** |
+
+Después: 2834 → 0 → **2181** → **2168**, y sigue volviendo a 0 al salir.
+
+| - | Criterio | Cómo se comprueba |
+| - | -------- | ----------------- |
+| RF-9.15b.1 | `arrancar()` limpia `dormido`. Despertar es parte de arrancar, no un efecto secundario del barrido | inspección |
+| RF-9.15b.2 | Se mide **la secuencia completa**: encender, dormir con el puntero dentro, y volver a mover sin salir. La firma tiene que volver a diferir de la neutra | `verify:interaccion` |
+| RF-9.15b.3 | RF-9.10 sigue en pie: al salir, la malla vuelve **exactamente** a la firma neutra, energía 0 y bucle detenido | `verify:interaccion` |
+
+**Por qué el verificador no lo veía, que es la parte que importa:** RF-9.15 comprobaba
+que **el barrido** despierta la malla, y de ahí se dio por hecho que el puntero también.
+Es el mismo error de forma que RF-9.8 aprobando una figura inerte: la comprobación medía
+un camino y se leía como si cubriera los dos.
+
+## RF-9.8 reformulado · El dedo excita la malla sin competir con el desplazamiento
+
+Origen: Daniel, 2026-08-09. «No funciona con el dedo.»
+
+**Y tenía razón: no funcionaba en absoluto.** El efecto se descartaba antes de
+inicializar nada, en una sola línea —`if (!matchMedia('(hover: hover) and (pointer:
+fine)').matches) continue;`—, así que en cualquier pantalla táctil la figura quedaba
+muerta. RF-9.8 decía «táctil no compite con el desplazamiento» y su comprobación exigía
+**0 efectos inicializados**: el verificador aprobaba en verde una figura inerte.
+
+Lo que motivaba el filtro sigue vigente y ahora se resuelve de otra forma.
+
+| - | Criterio | Cómo se comprueba |
+| - | -------- | ----------------- |
+| RF-9.8.1 | El efecto **se inicializa** en táctil | `1 efecto inicializado` en contexto `hasTouch` |
+| RF-9.8.2 | **El dedo excita la malla.** Gesto real, no lectura de código | `0 → 4952` nodos pintados tras arrastrar el dedo `[medido: 2026-08-09]` |
+| RF-9.8.3 | **La página sigue desplazándose** tras el gesto | `window.scrollY` aumenta |
+| RF-9.8.4 | Ni `preventDefault` en el código —comentarios aparte— ni `touch-action` que atrape el gesto, medido sobre el **valor calculado** porque puede llegar heredado | `verify:interaccion` |
+| RF-9.8.5 | Se usan `touchstart`/`touchmove` **pasivos** y no eventos de puntero. Los de puntero se **cancelan** en cuanto el gesto pasa a ser scroll —llega `pointercancel` y no hay más coordenadas—, así que la malla se apagaría justo al empezar a deslizar | inspección |
+
+**Dos trampas medidas mientras se escribía la comprobación**, las dos del mismo tipo —el
+verificador culpando al código correcto—:
+
+1. La primera versión medía `0 → 0` nodos. La causa no era el código: en móvil la figura
+   queda bajo el pliegue y el `IntersectionObserver` del efecto apaga el bucle cuando no
+   se ve. La comprobación tiene que traer la figura a pantalla antes del gesto.
+2. La comprobación de `preventDefault` fallaba porque encontraba la palabra **en el
+   comentario que explica que no se usa**. Es exactamente lo que ya había pasado en este
+   archivo con `createRadialGradient` en RF-9.9. Hay que quitar comentarios antes de
+   buscar.
+
 ## RF-21 · Franja fotográfica de la sede, y barra consciente del hero
 
 Origen: Daniel, 2026-08-09. «La cuestión es darle algo de vida a la página que está
@@ -386,12 +455,68 @@ costó 11 nodos.
    de la fila de navegación, que conserva su color plano. Ver A15 si algún día se quiere
    la navegación literalmente encima de la imagen.
 
+## RF-22 · Una marca de tercero no se publica sin autorización de su titular
+
+Origen: Daniel, 2026-08-25. Se escribe **después** del código, y se declara así, como se
+hizo con RF-7, RF-8 y RNF-7. Lo que lo motivó no fue una idea de diseño sino una medición.
+
+**El hallazgo.** Al preparar los correos que piden la autorización se midió qué servía la
+URL publicada, y servía las cuatro marcas de terceros: `/logos/uc.svg`,
+`/logos/uc-oscuro.svg`, `/logos/nokia-bell-labs.svg`, `columbia*.webp` y `usach*.webp`
+`[medido: 2026-08-25]`. El borrador del correo a Columbia decía «*we have not published
+them*». En dos de los cuatro casos —Columbia y Nokia— el titular ya había dicho **por
+escrito** que su uso exige consentimiento previo, así que el correo pedía permiso enseñando
+el uso ya hecho.
+
+**La distinción que sostiene el requisito**, y que ya estaba escrita en `marcas/README.md`
+sin haberse aplicado: que el cliente asuma la responsabilidad cubre el riesgo de quien la
+asume; **no convierte a nadie en dueño de una marca ajena**. Y **nombrar** a una institución
+sí se puede: es un hecho, no uso de marca. Por eso el estado por defecto no es un hueco.
+
+| - | Criterio | Cómo se comprueba |
+| - | -------- | ----------------- |
+| RF-22.1 | Una institución sin autorización registrada **no lleva archivo de logo**. `Institucion.logo` es opcional | inspección de `comun.ts` |
+| RF-22.2 | Sin archivo, `LogoWall` pinta el marcador: caja de trazo discontinuo, **nombre** de la institución y la leyenda de pendiente | captura en los dos temas |
+| RF-22.3 | El marcador es **HTML**, no un SVG. El texto dentro de un SVG no lo mide axe, y los marcadores anteriores traían color escrito a mano de la paleta previa a la identidad PUCV: sobre el fondo claro de hoy no llegan a 4,5:1 | `verify` mide su contraste como el de cualquier texto |
+| RF-22.4 | La leyenda vive en `es.ts` y `en.ts`, **no en el componente**. Es texto visible | `verify:idioma` |
+| RF-22.5 | Los archivos retirados **no se borran**: reponer una marca autorizada es volver a poner su `import` y su línea `logo:` | inspección |
+| RF-22.6 | El marcador tiene ancho mínimo, para que la fila se lea como una serie deliberada y no como cajas de tamaños dispares | captura a 1440 y 390 px |
+
+**Estado:** implementado y verificado el 2026-08-25. Seis verificadores en verde, 110
+criterios, revisado a ojo en los dos temas y los dos anchos. Afecta a UC, USACH, Nokia Bell
+Labs y Columbia; **no** a PUCV ni a la EIE, que son marcas del cliente, ni al conjunto
+Ministerio de Ciencia + ANID, que es obligatorio por RNF-8.
+
+## Enmienda de RNF-8 · lo que añade el Manual de Normas Gráficas ANID 2026
+
+El cliente entregó el manual completo el 2026-08-25 —26 páginas— junto con el protocolo de
+eventos y las pautas de mención en prensa. El repositorio lo citaba de segunda mano y nunca
+lo había tenido. Revisión íntegra en
+[`../../gestion/anid-normas-2026.md`](../../gestion/anid-normas-2026.md).
+
+| # | Criterio | Estado |
+| - | -------- | ------ |
+| RNF-8.4 | Los logos de instituciones **no gubernamentales** se sitúan **a la izquierda de ANID**, con el mismo peso visual `[verificado: manual, p. 8]` | **Sin resolver, y no se toca la maqueta hasta saberlo.** Hoy las universidades van en una sección y ANID en un bloque propio más abajo. La regla está escrita para una fila horizontal y no contempla la disposición vertical. Consultado a la agencia |
+| RNF-8.5 | La versión **pluma** es solo para impresión sin color o materiales especiales `[verificado: manual, pp. 7 y 11]` | **Sin resolver.** El tema oscuro la usa, y es el **único** archivo blanco del kit. Consultado |
+| RNF-8.6 | **Prohibido generar rostros con IA**; sin filtros de postproducción que alteren la escena; sin fotografías compuestas artificialmente; consentimiento de imagen por escrito `[verificado: manual, p. 18]` | **Cumple hoy**, y pasa a gobernar los seis retratos (RF-11) y el carrusel de la sede, que está pendiente de fotos |
+| RNF-8.7 | El **isologo reducido o marcador** es de uso exclusivo de la papelería de ANID | Cumple: no se usa. Queda escrito para que no parezca una alternativa más limpia |
+| RNF-8.8 | Toda aplicación de diseño no contemplada en el manual **se solicita al Departamento de Comunicaciones** | Pendiente: el correo ofrece mostrar el sitio antes de publicarlo |
+
+**Y un cambio de prioridad que no es de diseño.** El protocolo de eventos exige, para
+invitar a una autoridad de ANID, **15 días hábiles de anticipación**, firma de la máxima
+autoridad de la institución organizadora y **adjuntar el programa de la actividad**. Con el
+seminario el 21–22 de octubre de 2026, la fecha tope cae a mediados de septiembre. Por lo
+tanto **`program.days` vacío deja de ser solo una sección incompleta del sitio y pasa a
+bloquear un trámite con fecha**.
+
 ## Decisiones abiertas nuevas
 
 | # | Qué falta | ¿Bloquea? |
 | - | --------- | --------- |
 | A11 | Nombre exacto del concurso de `FOVI250222` para la fórmula de ANID | **Sí**, a RNF-8.1 |
-| A12 | Autorización de UC, USACH, Columbia y Nokia Bell Labs para mostrar su logo | Sí, a esos cuatro logos |
+| A12 | Autorización de UC, USACH, Columbia y Nokia Bell Labs para mostrar su logo. **Los cuatro correos están redactados** en `specs/gestion/correos-instituciones.md`; dos direcciones siguen sin confirmar porque sus páginas devolvieron 403 | Sí. Desde el 2026-08-25 el bloqueo es explícito: RF-22 |
+| A16 | **Cómo convive el logo ANID con los demás en un sitio web**, y **qué variante corresponde a un fondo oscuro en pantalla** | Sí, a RNF-8.4 y RNF-8.5. Consultado a ANID |
+| A17 | **Subdominio `pucv.cl`.** Formulario F-180 de la DSIC, gratuito, 48 horas hábiles. Lo firma una autoridad de la PUCV. Duda abierta: si la DSIC crea un `CNAME` hacia infraestructura externa. Detalle en `specs/gestion/dsic-subdominio-pucv.md` | No al sitio; sí a retirar el `noindex` y a cerrar A6 |
 | A13 | Variante PUCV para fondo oscuro y logo de la EIE: pedir a Comunicación Estratégica y a `dir.eie@pucv.cl` | Sí, al tema oscuro de esos dos |
 | A14 | Fotografías de los seis expositores, con autorización escrita | No: el monograma cubre el estado por defecto |
 | A15 | **Barra realmente embebida en la fotografía.** La vía compatible con RNF-1.3 no es una barra translúcida a todo lo ancho, sino una barra **opaca más estrecha que el viewport** —flotando sobre la foto, con la imagen visible por encima y a los lados— que se acopla al canto superior al desplazarse. Opaca ⇒ fondo uniforme ⇒ contraste calculable. Falta decidir si el registro institucional admite una barra flotante | No: el estado actual cumple y ya da el relevo |

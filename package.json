@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/generar-csp.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "og": "node scripts/generar-og.mjs",
@@ -15,6 +15,7 @@
     "verify:teclado": "node scripts/verify-teclado.mjs",
     "verify:idioma": "node scripts/verify-idioma.mjs",
     "verify:seo": "node scripts/verify-seo.mjs",
+    "verify:cabeceras": "node scripts/verify-cabeceras.mjs",
     "verify:interaccion": "node scripts/verify-interaccion.mjs",
     "verify:publicado": "node scripts/verify-publicado.mjs",
     "verify:todo": "node scripts/verify-todo.mjs"
@@ -35,6 +36,7 @@
     "@astrojs/check": "^0.9.10",
     "axe-core": "^4.12.1",
     "playwright": "^1.62.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.136.1"
   }
 }

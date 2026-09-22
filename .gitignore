@@ -4,6 +4,13 @@ node_modules/
 .DS_Store
 *.log
 
+# Credenciales de operación (Cloudflare, Hostinger). Se declaran aquí ANTES de que
+# exista ningún archivo: un token commiteado no se arregla borrándolo en el commit
+# siguiente, porque queda en el historial y hay clones en varios entornos.
+.env
+.env.local
+.env.*.local
+
 # Entregas de diseño que llegan de fuera. Lo que del prototipo hay que conservar ya
 # está versionado en `specs/002-rediseno-visual/referencia/`, con su procedencia y sus
 # errores anotados. La copia suelta de la raíz no debe entrar al repositorio: incluye
@@ -11,6 +18,13 @@ node_modules/
 # `astro check` la analiza y reporta avisos de un archivo que no es nuestro.
 Revisión de home en español/
 Revisión de home en español.zip
+
+# Artifact de claude.ai del 2026-08-22, 608 kB. Daniel confirmó el 2026-08-25 que es una
+# **prueba vieja** y que se ignora. Se anota en `.gitignore` y no simplemente se borra
+# porque un archivo suelto y sin mención en ningún documento es exactamente lo que este
+# proyecto ya sufrió con el prototipo de agosto: para el clon de otro entorno, no existe.
+# Su rastro queda en `ESTADO.md` §12.
+beyond-connectivity-seminario-pucv.html
 
 # Secretos. `.mcp.json` está versionado a propósito, pero solo contiene la
 # REFERENCIA `${API_KEY_21ST}`, nunca el valor.
@@ -35,3 +49,10 @@ Revisión de home en español.zip
 # el `.py` cambia, así que no significan nada en el clon de otro entorno.
 __pycache__/
 *.pyc
+
+# Directorios de skills que otras herramientas —Codex, agentes de terceros— dejan en la
+# raíz al abrir el proyecto. No son contenido del sitio ni configuración compartida: son
+# copias locales de habilidades que cada entorno instala por su cuenta. Versionarlas
+# metería cientos de archivos ajenos en un repositorio que se clona en varios sitios.
+.agents/
+.codex/

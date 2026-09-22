@@ -16,6 +16,22 @@ import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+/*
+ * El host de producción se importa; no se escribe aquí.
+ *
+ * RNF-7.4: «Ningún verificador queda atado a un dominio concreto». Hasta el
+ * 2026-09-21 este archivo tenía `seminario-wireless.pucv.cl` escrito a mano, que
+ * es la misma forma del defecto que la propia regla nombra: al cambiar de dominio,
+ * el verificador seguiría midiendo contra el viejo y aprobaría un sitio publicado
+ * con `noindex` permanente.
+ */
+import { PRODUCTION_HOST } from '../astro.config.mjs';
+/*
+ * El régimen de acceso se IMPORTA de los datos; no se escribe aquí. Repetirlo sería
+ * el mismo defecto que RNF-7.4 prohíbe para el dominio: dos copias, y el verificador
+ * aprobando contra la suya cuando la del sitio cambia.
+ */
+import { acceso as ACCESO } from '../src/data/acceso.ts';
 
 const RAIZ = fileURLToPath(new URL('..', import.meta.url)).replace(/[\\/]$/, '');
 const DIST = join(RAIZ, 'dist');
@@ -126,8 +142,7 @@ for (const [idioma, ruta] of Object.entries(paginas)) {
    * canónico sale del respaldo y tampoco debe indexarse, aunque el host
    * coincida: eso es lo que falló en el primer despliegue a Workers.
    */
-  const hostProduccion = 'seminario-wireless.pucv.cl';
-  const enProduccion = !!m.canonical && new URL(m.canonical).host === hostProduccion;
+  const enProduccion = !!m.canonical && new URL(m.canonical).host === PRODUCTION_HOST;
   const urlDeclarada = !!(
     process.env.SITE_URL ||
     process.env.CF_PAGES_URL ||
@@ -187,6 +202,52 @@ for (const idioma of ['es', 'en']) {
     faltan.length ? `faltan: ${faltan.join(', ')}` : `${requeridos.length} campos presentes`,
   );
 
+  /*
+   * RNF-3.6 · `url` e `image` en los datos estructurados.
+   *
+   * No basta con que existan: tienen que ser **los mismos** que ya declara la
+   * página. Un `url` que no coincide con el canónico le da al buscador dos
+   * direcciones para el mismo contenido, y una `image` propia sería un segundo
+   * activo que nadie regenera cuando cambia el título.
+   */
+  check(
+    `RNF-3.6 · el evento declara url y coincide con el canónico (${idioma})`,
+    !!evento?.url && evento.url === meta[idioma].canonical,
+    evento?.url ? (evento.url === meta[idioma].canonical ? 'coinciden' : 'difieren') : 'sin url',
+  );
+
+  check(
+    `RNF-3.6 · el evento declara image y coincide con og:image (${idioma})`,
+    !!evento?.image && evento.image === meta[idioma].ogImage,
+    evento?.image
+      ? evento.image === meta[idioma].ogImage
+        ? 'coinciden'
+        : 'difieren'
+      : 'sin image',
+  );
+
+  /*
+   * RNF-3.7 · régimen de acceso.
+   *
+   * El criterio NO es «dice que es gratis»: es que **concuerde con los datos**. Escrito
+   * al revés, el día que el seminario pase a cobrar y alguien cambie `comun.acceso`, el
+   * verificador seguiría en verde mientras Google anuncia «Gratis». Un precio viejo en
+   * un resultado de búsqueda es peor que no declarar precio.
+   */
+  check(
+    `RNF-3.7 · isAccessibleForFree concuerda con los datos (${idioma})`,
+    evento?.isAccessibleForFree === ACCESO.gratuito,
+    `${evento?.isAccessibleForFree} ↔ datos: ${ACCESO.gratuito}`,
+  );
+
+  check(
+    `RNF-3.7 · la Offer lleva precio Y moneda (${idioma})`,
+    evento?.offers?.price === ACCESO.precio && evento?.offers?.priceCurrency === ACCESO.moneda,
+    evento?.offers
+      ? `${evento.offers.price} ${evento.offers.priceCurrency}`
+      : 'sin offers: Google no construye el distintivo «Gratis» solo con isAccessibleForFree',
+  );
+
   check(
     `RNF-3.1 · el evento declara su idioma (${idioma})`,
     evento?.inLanguage === idioma,
@@ -201,6 +262,54 @@ for (const idioma of ['es', 'en']) {
     `RNF-3.1 · ninguna afiliación vacía en performer (${idioma})`,
     performersSinAfiliacion.length === 0,
     `${evento?.performer?.length ?? 0} expositores declarados`,
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 5. robots.txt generado (RNF-3.5)
+// ---------------------------------------------------------------------------
+/*
+ * La regla que se comprueba es la misma que gobierna el `noindex`: si la URL es
+ * provisional, se prohíbe el rastreo entero; si es la de producción, se permite y
+ * se anuncia el sitemap. Que las dos señales coincidan importa más que cualquiera
+ * por separado — un `robots.txt` que invita a rastrear un despliegue marcado
+ * `noindex` es una contradicción que el buscador resuelve como quiere.
+ */
+const rutaRobots = join(DIST, 'robots.txt');
+
+if (!existsSync(rutaRobots)) {
+  check('RNF-3.5 · existe /robots.txt', false, 'falta en dist/');
+} else {
+  const robots = await readFile(rutaRobots, 'utf8');
+  const urlDeclaradaEnEntorno = !!(
+    process.env.SITE_URL ||
+    process.env.CF_PAGES_URL ||
+    process.env.DEPLOY_PRIME_URL ||
+    process.env.URL
+  );
+  const canonicalEnProduccion =
+    !!meta.es.canonical && new URL(meta.es.canonical).host === PRODUCTION_HOST;
+  const debeProhibirRastreo = !canonicalEnProduccion || !urlDeclaradaEnEntorno;
+
+  check('RNF-3.5 · existe /robots.txt', true, `${robots.length} bytes`);
+
+  check(
+    'RNF-3.5 · el régimen de rastreo concuerda con el del noindex',
+    debeProhibirRastreo ? /^Disallow: \/$/m.test(robots) : /^Allow: \/$/m.test(robots),
+    debeProhibirRastreo ? 'provisional → debe prohibir' : 'producción → debe permitir',
+  );
+
+  /*
+   * El sitemap se anuncia **solo** en producción, y con URL absoluta: el formato
+   * de robots.txt no admite rutas relativas en esa directiva.
+   */
+  const sitemapAnunciado = robots.match(/^Sitemap: (\S+)$/m)?.[1];
+  check(
+    'RNF-3.5 · anuncia el sitemap solo en producción',
+    debeProhibirRastreo
+      ? !sitemapAnunciado
+      : sitemapAnunciado === `https://${PRODUCTION_HOST}/sitemap-index.xml`,
+    sitemapAnunciado ?? 'sin línea Sitemap',
   );
 }
 

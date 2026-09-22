@@ -1,5 +1,38 @@
 # Marcas institucionales: qué se puede usar, qué no, y por qué
 
+> ## ⚠️ Actualización del 2026-08-25 — las cuatro marcas de terceros se retiraron
+>
+> **Lo de abajo describe el estado hasta el 2026-08-09, y en un punto describe una decisión
+> que no fue la que se tomó.** Léase con esto delante.
+>
+> **1. Se retiraron UC, USACH, Nokia Bell Labs y Columbia**, por instrucción de Daniel.
+> Vuelven a marcador de posición en `LogoWall`. El motivo no es de maquetación: al preparar
+> los correos que piden la autorización se midió qué mostraba la URL publicada, y mostraba
+> las cuatro `[medido: 2026-08-25]`. El borrador a Columbia decía «*we have not published
+> them*» y el enlace del propio correo lo desmentía. En dos de los cuatro casos —Columbia y
+> Nokia— el titular ya había dicho **por escrito** que su uso exige consentimiento previo.
+>
+> La nota que ya estaba escrita aquí abajo resultó ser la que importaba: *«una autorización
+> solo vale si la da el titular; asumir la responsabilidad cubre el riesgo de quien la
+> asume, no convierte a nadie en dueño de la marca ajena»*. Los siete correos están en
+> [`../../gestion/correos-instituciones.md`](../../gestion/correos-instituciones.md).
+>
+> **Los archivos no se borraron.** Siguen en `public/logos/` y `src/assets/logos/`. Reponer
+> una marca autorizada es volver a poner su `import` y su línea `logo:` en `comun.ts`.
+>
+> **2. Corrección de una cifra de este documento.** La tabla «Archivos de esta carpeta» dice
+> que `anid-minciencia-claro.svg` sale de `..._PLUMA.svg`, «tinta única `#1c335a`», y deja la
+> versión color «de reserva». **Lo instalado no es eso:** `public/logos/anid-minciencia.svg`
+> lleva **dos tintas, `#1b6ab1` y `#e73c48`**, o sea la variante **COLOR**, que para fondo
+> claro es la correcta `[medido: 2026-08-25]`. Está mal la ficha, no el archivo.
+>
+> **3. Y una duda nueva, abierta con ANID.** El tema oscuro usa `..._PLUMA-BLANCO.svg`, y el
+> Manual de Normas Gráficas ANID 2026 reserva la versión **pluma** para sistemas de impresión
+> sin color y aplicaciones sobre materiales especiales —telas, metales, mampostería—. Una
+> pantalla no es ninguna de esas cosas, y **es el único archivo blanco que trae el kit**. Con
+> las demás reglas del manual que tocan a este sitio, en
+> [`../../gestion/anid-normas-2026.md`](../../gestion/anid-normas-2026.md).
+
 ## Actualización del 2026-08-07 — la autorización del cliente y su alcance
 
 Daniel informó que **el cliente autorizó el uso de las imágenes de las instituciones** y que
