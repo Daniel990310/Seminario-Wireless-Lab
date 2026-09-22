@@ -101,6 +101,40 @@ ejecuta (`data-theme` puesto), los atributos `style` se aplican y la 404 renderi
 cabeceras: simplemente deja de ejecutar el guion y la página se queda en claro. Solo un
 navegador lo dice.
 
+### La miniatura al compartir por WhatsApp · 2026-09-22
+
+**El problema no era el que parecía.** La imagen para compartir nunca fue una captura
+de la página: siempre fue una tarjeta 1200×630 hecha a propósito. El defecto estaba en
+que **WhatsApp no siempre muestra la vista previa grande**: a menudo la reduce a una
+miniatura cuadrada y recorta por el centro. Recortada así, la tarjeta anterior cortaba
+todas las líneas a media palabra `[medido con Playwright sobre la imagen publicada]`.
+
+**No se puede dar una imagen distinta a WhatsApp.** No existe ese campo: lee `og:image`,
+el mismo que LinkedIn, X, Facebook, Slack y Telegram. Y **no hay logo del seminario**:
+lo único usable es la marca propia de la PUCV —las de UC y Nokia se retiraron en agosto
+por falta de autorización y reponerlas desharía esa decisión—.
+
+La salida es geométrica y no de contenido: la composición pasó a estar **centrada, con
+todo lo legible dentro del cuadrado central de 630×630**, y la figura a fondo a sangre,
+ocupando justo las bandas que el recorte desecha. El escudo PUCV encabeza el bloque.
+Así WhatsApp recorta y ve escudo, título completo, fechas y sede; LinkedIn sigue viendo
+la tarjeta entera.
+
+`scripts/generar-og.mjs` **mide** esa condición y **aborta con código 1** si el bloque
+se sale. Probado ensanchándolo a 800 px: falla y no genera ninguna imagen `[medido]`.
+No se puede comprobar sobre el PNG —exige saber dónde está cada elemento, no cómo se ve
+el resultado—, así que sin esa medición un cambio de título rompería la miniatura y
+`verify:seo` seguiría en verde.
+
+**Los archivos llevan versión en el nombre** (`og/es-2.png`) porque las plataformas
+cachean la vista previa por URL y durante mucho tiempo: cambiar el contenido con el
+mismo nombre no actualiza los enlaces ya compartidos, y WhatsApp no tiene depurador.
+El número se sube en `src/data/og.ts` cuando cambia el aspecto del cartel.
+
+**Enlaces ya compartidos antes de hoy**: seguirán mostrando la tarjeta vieja en el chat
+donde ya se renderizaron. La caché es de la plataforma y no se purga desde el sitio. Un
+enlace nuevo, o el mismo reenviado a otra conversación, ya trae la nueva.
+
 ### ⏳ Lo que sigue abierto y no depende de nosotros
 
 1. **Revocar el token de Hostinger y borrarlo de `.env.local`.** Ya cumplió su único

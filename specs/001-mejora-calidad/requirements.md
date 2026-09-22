@@ -344,8 +344,37 @@ interactivas de T10— sin que el peso sea por sí solo el argumento para rechaz
    > `npm run verify:publicado`, que llama al validador y falla si aparece cualquier
    > error o aviso. `verify:seo` sigue comprobando la estructura sobre `dist/`, que es
    > lo que se puede hacer sin red.
-2. `og:image` presente, de 1200×630, con el título y las fechas legibles.
+2. `og:image` presente, de 1200×630, con el título y las fechas legibles **y
+   contenidos dentro del cuadrado central de 630×630**. El nombre del archivo lleva
+   número de versión.
    *Línea base: ausente.*
+
+   > La condición del cuadrado se añadió el 2026-09-22, **medida**. El cartel anterior
+   > era correcto a 1200×630 y se veía bien en LinkedIn; el defecto estaba en otra
+   > parte. **WhatsApp no siempre muestra la vista previa grande**: a menudo la reduce
+   > a una miniatura cuadrada y recorta la imagen por el centro. Recortado así, el
+   > cartel cortaba todas las líneas a media palabra —«…nnectivity:», «…ensing»,
+   > «…ands»— `[medido: recorte central reproducido con Playwright sobre la imagen
+   > publicada]`.
+   >
+   > **No se puede resolver dando otra imagen a WhatsApp: no existe tal campo.** Lee
+   > `og:image`, el mismo que LinkedIn, X, Facebook, Slack y Telegram. Y sustituirlo
+   > por un logo suelto dejaría a LinkedIn —donde un seminario académico se difunde—
+   > con un cuadro sin título ni fechas, que es lo que este mismo criterio prohíbe.
+   >
+   > No se verifica sobre el PNG: exige saber **dónde** está cada elemento, no cómo se
+   > ve el resultado. Lo mide `scripts/generar-og.mjs`, que aborta si el bloque legible
+   > se sale de `x ∈ [285, 915]`. La captura saldría perfecta y `verify:seo` aprobaría
+   > igual, así que sin esa medición el fallo solo se descubre mirando un teléfono.
+   >
+   > **El número de versión del nombre existe porque las plataformas cachean la vista
+   > previa por URL**, y durante mucho tiempo. Cambiar el contenido dejando el mismo
+   > nombre no actualiza los enlaces ya compartidos ni los reenvíos: Facebook tiene un
+   > depurador manual, WhatsApp no tiene ninguno. Se sube en `src/data/og.ts` cada vez
+   > que cambia el aspecto del cartel.
+   >
+   > El peso se vigila de paso: **WhatsApp descarta la vista previa grande por encima
+   > de unos 300 kB** `[Probable]`. Las actuales pesan 191 y 190 kB `[medido]`.
 3. Enlace canónico correcto por idioma, y `noindex` mientras el sitio esté en una
    URL provisional.
 4. Descripción y título propios por idioma, sin texto duplicado entre versiones.

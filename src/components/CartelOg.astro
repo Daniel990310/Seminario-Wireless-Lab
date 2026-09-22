@@ -16,9 +16,36 @@
  * No lleva enlaces ni navegación: no es una página para visitar. Queda fuera
  * del sitemap y de la auditoría de accesibilidad, que se ocupan de las páginas
  * reales.
+ *
+ * ── POR QUÉ LA COMPOSICIÓN ESTÁ CENTRADA Y NO EN DOS COLUMNAS ────────────────
+ *
+ * Hasta el 2026-09-22 el cartel era texto a la izquierda y figura a la derecha,
+ * y se veía bien **a 1200×630**. El defecto aparecía en otra parte: WhatsApp no
+ * siempre muestra la vista previa grande. A menudo la reduce a una miniatura
+ * CUADRADA y recorta la imagen por el centro. Recortado así, el cartel anterior
+ * cortaba todas las líneas a media palabra —«…nnectivity:», «…ensing», «…ands»—
+ * y quedaba ilegible `[medido: 2026-09-22, recorte central reproducido con
+ * Playwright sobre la imagen publicada]`.
+ *
+ * No se puede resolver dando otra imagen a WhatsApp: **no existe tal campo**.
+ * WhatsApp lee `og:image`, el mismo que LinkedIn, X, Facebook, Slack y Telegram.
+ * Y sustituirlo por un logo suelto incumpliría RNF-3.2, que exige título y
+ * fechas legibles, y dejaría a LinkedIn —donde un seminario académico se
+ * difunde— con un cuadro sin información.
+ *
+ * La salida es geométrica: **todo lo que hay que poder leer vive dentro del
+ * cuadrado central de 630×630**, es decir entre x=285 y x=915. Así el recorte de
+ * WhatsApp contiene el escudo, el título y las fechas, y la tarjeta completa
+ * sigue siendo correcta en todas las demás. La figura pasa a fondo a sangre:
+ * ocupa el ancho que el recorte desecha, que es justo para lo que sirve.
+ *
+ * `scripts/generar-og.mjs` **mide** esa condición y aborta si el bloque se sale
+ * del cuadrado. Sin esa comprobación, cualquier cambio de título la rompería sin
+ * que nadie lo notara hasta ver un enlace mal en un teléfono.
  */
-import { Font } from 'astro:assets';
+import { Font, Image } from 'astro:assets';
 import PropagationFigure from './PropagationFigure.astro';
+import escudoPucv from '~/assets/logos/pucv.png';
 import { contenido, type Idioma } from '~/data/contenido';
 import '~/styles/global.css';
 
@@ -58,34 +85,67 @@ const c = contenido(Astro.props.lang);
     </style>
   </head>
   <body>
-    <div class="relative flex h-[630px] w-[1200px] bg-background">
-      <!-- Campo de texto: mismas proporciones que el hero del sitio. -->
-      <div class="flex w-[680px] flex-col justify-center gap-8 px-16">
-        <p class="eyebrow flex items-center gap-4 text-[0.8rem]">
-          <span>{c.ui.hero.eyebrow}</span>
-          <span class="h-px w-10 bg-primary/40"></span>
-          <span class="text-muted-foreground">{c.organizers[0].shortName} · {c.venue.country}</span>
-        </p>
-
-        <!-- Título oficial, en inglés en ambos idiomas (RF-1.2). -->
-        <h1 class="font-display text-[3.1rem] leading-[1.05] font-semibold text-foreground">
-          {c.title}
-        </h1>
-
-        <span class="block h-px w-28 bg-primary/80"></span>
-
-        <div class="flex flex-col gap-2">
-          <p class="font-display text-2xl font-semibold text-foreground">{c.dates.label}</p>
-          <p class="text-lg text-muted-foreground">{c.venue.name}</p>
-        </div>
-      </div>
-
-      <!-- La figura, en su propia mitad: la misma que identifica al sitio. -->
-      <div class="relative w-[520px]">
+    <div class="relative h-[630px] w-[1200px] overflow-hidden bg-background">
+      <!--
+        La figura, a sangre y de fondo. Antes ocupaba su propia mitad; ahora se
+        extiende bajo todo el lienzo porque las bandas laterales son exactamente lo
+        que la miniatura cuadrada desecha. `opacity` baja para que no compita con el
+        texto que ahora pasa por encima: el cartel anterior nunca superpuso los dos.
+      -->
+      <div class="pointer-events-none absolute inset-0 scale-[1.35] opacity-[0.55]">
         <PropagationFigure
           titulo={c.ui.hero.figuraTitulo}
           descripcion={c.ui.hero.figuraDescripcion}
         />
+      </div>
+
+      <!--
+        Bloque legible. `w-[600px]` centrado ocupa x=300…900, dentro del cuadrado
+        central (285…915) con 15 px de holgura a cada lado. Ese número no es
+        estético: es la condición que `generar-og.mjs` mide.
+      -->
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div
+          data-og-bloque
+          class="flex w-[600px] flex-col items-center gap-5 text-center"
+        >
+          <!--
+            `width`/`height` fijos y no `widths`+`densities`: el cartel se captura a
+            1200×630 sin escalado, así que hay un único tamaño emitido. Astro rechaza
+            las dos formas juntas.
+
+            `alt` vacío a propósito: esto es un PNG que se captura, no una página que
+            alguien navegue, y la descripción del enlace la da `og:image:alt`.
+          -->
+          <Image
+            src={escudoPucv}
+            alt=""
+            width={512}
+            height={260}
+            class="h-[58px] w-auto"
+            data-og-escudo
+          />
+
+          <p class="eyebrow flex items-center gap-3 text-[0.72rem]">
+            <span class="h-px w-8 bg-primary/40"></span>
+            <span>{c.ui.hero.eyebrow}</span>
+            <span class="h-px w-8 bg-primary/40"></span>
+          </p>
+
+          <!-- Título oficial, en inglés en ambos idiomas (RF-1.2). -->
+          <h1 class="font-display text-[2.45rem] leading-[1.08] font-semibold text-balance text-foreground">
+            {c.title}
+          </h1>
+
+          <span class="block h-px w-24 bg-primary/80"></span>
+
+          <div data-og-fechas class="flex flex-col gap-1.5">
+            <p class="font-display text-[1.6rem] leading-tight font-semibold text-foreground">
+              {c.dates.label}
+            </p>
+            <p class="text-base text-muted-foreground">{c.venue.name}</p>
+          </div>
+        </div>
       </div>
     </div>
   </body>

@@ -2,6 +2,7 @@
 import { Font } from 'astro:assets';
 import { PRODUCTION_HOST, SITE_ES_RESPALDO } from '../../astro.config.mjs';
 import { IDIOMAS, rutaBase, type Contenido, type Idioma } from '~/data/contenido';
+import { rutaOg } from '~/data/og';
 import '~/styles/global.css';
 
 interface Props {
@@ -48,7 +49,7 @@ const ogLocale = lang === 'es' ? 'es_CL' : 'en_US';
  * `verify:og` avisa si las imágenes faltan o no miden 1200×630, pero no puede
  * saber si el texto de dentro quedó viejo.
  */
-const ogImage = new URL(`/og/${lang}.png`, sitio).href;
+const ogImage = new URL(rutaOg(lang), sitio).href;
 
 /*
  * Mientras el sitio viva en una URL de previsualización (*.pages.dev,

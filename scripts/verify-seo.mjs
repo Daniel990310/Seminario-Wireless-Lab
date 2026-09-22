@@ -32,6 +32,7 @@ import { PRODUCTION_HOST } from '../astro.config.mjs';
  * aprobando contra la suya cuando la del sitio cambia.
  */
 import { acceso as ACCESO } from '../src/data/acceso.ts';
+import { rutaOg } from '../src/data/og.ts';
 
 const RAIZ = fileURLToPath(new URL('..', import.meta.url)).replace(/[\\/]$/, '');
 const DIST = join(RAIZ, 'dist');
@@ -60,7 +61,7 @@ const dimensionesPng = (buffer) => {
 // 1. Las imágenes existen y miden 1200×630
 // ---------------------------------------------------------------------------
 for (const idioma of ['es', 'en']) {
-  const ruta = join(RAIZ, 'public', 'og', `${idioma}.png`);
+  const ruta = join(RAIZ, 'public', rutaOg(idioma).replace(/^\//, ''));
 
   if (!existsSync(ruta)) {
     check(`RNF-3.2 · existe la imagen de ${idioma}`, false, 'falta: corré `npm run og`');
@@ -105,7 +106,7 @@ for (const [idioma, ruta] of Object.entries(paginas)) {
 
   check(
     `RNF-3.2 · ${idioma} apunta a su propia imagen`,
-    !!m.ogImage?.endsWith(`/og/${idioma}.png`),
+    !!m.ogImage?.endsWith(rutaOg(idioma)),
     m.ogImage ?? 'sin og:image',
   );
 
