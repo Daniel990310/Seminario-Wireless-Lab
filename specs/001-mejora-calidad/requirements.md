@@ -366,6 +366,30 @@ interactivas de T10— sin que el peso sea por sí solo el argumento para rechaz
    > piezas ya existen en la página —el enlace canónico y la imagen para compartir—,
    > así que es exponerlas en el JSON-LD, no producir nada nuevo.
 
+7. **Los datos estructurados declaran el régimen de acceso**: `isAccessibleForFree` y
+   una `Offer` con precio y moneda, tomados de los datos y no escritos en el marcado.
+
+   > Añadido el 2026-09-22, **cuando el dato existió**. Hasta entonces esto era una
+   > decisión abierta y no un pendiente de implementación: nadie había confirmado si el
+   > seminario tenía costo, y la regla de procedencia prohíbe inventarlo. Daniel
+   > confirmó ese día que **la asistencia es gratuita**.
+   >
+   > Google necesita **las dos** cosas para mostrar el distintivo «Gratis» en el
+   > resultado de evento: `isAccessibleForFree: true` **y** una `Offer` con `price: 0`.
+   > Solo con la primera no construye el resultado enriquecido. Y `priceCurrency` va
+   > aunque el precio sea cero, porque `schema.org/Offer` la exige y sin ella el
+   > validador descarta la oferta entera.
+   >
+   > El dato vive en `comun.acceso` y no en el layout —RNF-5.1—, y no se traduce: un
+   > precio no tiene idioma. **El riesgo que esto introduce y por el que el criterio se
+   > verifica**: si el seminario pasara a cobrar y nadie tocara los datos, el sitio
+   > seguiría anunciando «Gratis» en Google. Un precio viejo en un resultado de
+   > búsqueda es peor que no declarar precio, así que el verificador comprueba que el
+   > JSON-LD **concuerde con los datos**, no que diga «gratis».
+   >
+   > La `url` de la oferta es la página del seminario y no una de inscripción: RF-3
+   > —registro de asistentes— está fuera de alcance y esa página no existe.
+
 ### RNF-4 · Privacidad
 
 **Criterios de aceptación**

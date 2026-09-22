@@ -26,6 +26,12 @@ import { fileURLToPath } from 'node:url';
  * con `noindex` permanente.
  */
 import { PRODUCTION_HOST } from '../astro.config.mjs';
+/*
+ * El régimen de acceso se IMPORTA de los datos; no se escribe aquí. Repetirlo sería
+ * el mismo defecto que RNF-7.4 prohíbe para el dominio: dos copias, y el verificador
+ * aprobando contra la suya cuando la del sitio cambia.
+ */
+import { acceso as ACCESO } from '../src/data/acceso.ts';
 
 const RAIZ = fileURLToPath(new URL('..', import.meta.url)).replace(/[\\/]$/, '');
 const DIST = join(RAIZ, 'dist');
@@ -218,6 +224,28 @@ for (const idioma of ['es', 'en']) {
         ? 'coinciden'
         : 'difieren'
       : 'sin image',
+  );
+
+  /*
+   * RNF-3.7 · régimen de acceso.
+   *
+   * El criterio NO es «dice que es gratis»: es que **concuerde con los datos**. Escrito
+   * al revés, el día que el seminario pase a cobrar y alguien cambie `comun.acceso`, el
+   * verificador seguiría en verde mientras Google anuncia «Gratis». Un precio viejo en
+   * un resultado de búsqueda es peor que no declarar precio.
+   */
+  check(
+    `RNF-3.7 · isAccessibleForFree concuerda con los datos (${idioma})`,
+    evento?.isAccessibleForFree === ACCESO.gratuito,
+    `${evento?.isAccessibleForFree} ↔ datos: ${ACCESO.gratuito}`,
+  );
+
+  check(
+    `RNF-3.7 · la Offer lleva precio Y moneda (${idioma})`,
+    evento?.offers?.price === ACCESO.precio && evento?.offers?.priceCurrency === ACCESO.moneda,
+    evento?.offers
+      ? `${evento.offers.price} ${evento.offers.priceCurrency}`
+      : 'sin offers: Google no construye el distintivo «Gratis» solo con isAccessibleForFree',
   );
 
   check(

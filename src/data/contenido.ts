@@ -137,6 +137,8 @@ export function contenido(lang: Idioma) {
 
     contact: { ...comun.contact, ...t.contact },
 
+    acceso: comun.acceso,
+
     seo: {
       description: t.seo.description,
       keywords: [...comun.keywordsComunes, ...t.seo.keywords],

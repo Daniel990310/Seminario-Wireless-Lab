@@ -10,8 +10,8 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 Actualizado: **2026-09-22** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
 · Último despliegue: **2026-09-22**, versión `adda9052`, en `https://bcsensing.org`.
 · **Publicado en <https://bcsensing.org> el 2026-09-22, versión `830dafb9`. Primer
-despliegue indexable. Pendientes en «EMPIEZA AQUÍ»: Search Console, `offers`, el token
-de Hostinger sin revocar.**
+despliegue indexable. Pendientes en «EMPIEZA AQUÍ»: Search Console y el token de
+Hostinger sin revocar.**
 
 ---
 
@@ -109,10 +109,11 @@ navegador lo dice.
    Google indexó, ni de pedir el rastreo, ni de ver con qué consultas lo encuentran. El
    seminario es el **21–22 de octubre de 2026**: quedan unas cuatro semanas y un dominio
    registrado ayer tarda.
-3. **`offers` / `isAccessibleForFree` en el JSON-LD.** Si la asistencia es gratuita,
-   declararlo habilita el distintivo «Gratis» en el resultado de evento de Google.
-   Nadie ha confirmado si el seminario tiene costo y la regla de procedencia prohíbe
-   inventarlo.
+3. ~~`offers` / `isAccessibleForFree`~~ **Resuelto el 2026-09-22.** Daniel confirmó que
+   **la asistencia es gratuita**. Implementado como RNF-3.7: `isAccessibleForFree: true`
+   más una `Offer` con `price: 0` y `priceCurrency: CLP` —Google necesita las dos, y la
+   moneda aunque el precio sea cero—. `validator.schema.org` reconoce ahora el tipo
+   `Offer` con **0 errores y 0 avisos** en ambos idiomas `[medido]`.
 4. **Cuatro dependencias instaladas y sin usar.** `@astrojs/react`, `react`, `react-dom`
    y `motion` están en `package.json` y la integración React está activa en
    `astro.config.mjs`, pero `src/` no tiene ni un `.tsx` ni un solo import de ninguna

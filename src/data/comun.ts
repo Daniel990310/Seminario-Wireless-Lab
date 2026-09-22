@@ -68,6 +68,7 @@ import fotoValenzuela from '~/assets/expositores/valenzuela.webp';
 import fotoFeick from '~/assets/expositores/feick.webp';
 import fotoGutierrez from '~/assets/expositores/gutierrez.webp';
 import fotoToledo from '~/assets/expositores/toledo.webp';
+import { acceso } from './acceso';
 
 /**
  * Contenido que NO se traduce (T7).
@@ -223,6 +224,25 @@ export const comun = {
     startISO: '2026-10-21',
     endISO: '2026-10-22',
   },
+
+  /**
+   * Asistencia gratuita. **Confirmado por Daniel el 2026-09-22**; hasta entonces el
+   * dato no existía y por eso el JSON-LD no declaraba nada (A-abierta de RNF-3).
+   *
+   * Va aquí y no en `es.ts`/`en.ts` porque un precio no tiene idioma, y va como dato
+   * y no escrito en el layout porque RNF-5.1 exige que todo el contenido editable viva
+   * en archivos de datos: el día que el seminario cobre, se cambia aquí y el JSON-LD
+   * deja de anunciar «Gratis» solo.
+   *
+   * La moneda se declara aunque el precio sea 0: `schema.org/Offer` la exige, y
+   * omitirla hace que el validador de Google descarte la oferta entera.
+   */
+  /**
+   * Régimen de acceso. El dato vive en `acceso.ts`, sin importaciones, para que
+   * `scripts/verify-seo.mjs` pueda leer **la misma fuente** que el sitio. Ver la
+   * cabecera de ese archivo.
+   */
+  acceso,
 
   venue: {
     street: 'Antonio Bellet 314',
