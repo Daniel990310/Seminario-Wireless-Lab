@@ -12,7 +12,7 @@
  * bolsa plana: con más de setenta cadenas, una lista alfabética hace imposible
  * saber si falta algo o si algo dejó de usarse.
  */
-import type { CodigoPais, DiaPrograma } from './comun';
+import type { CodigoPais, DiaPrograma, GradoAcademico } from './comun';
 
 export interface SeccionEncabezado {
   /**
@@ -210,6 +210,14 @@ export interface ContenidoIdioma {
       secciones: string;
       financiadoPor: string;
       proyecto: string;
+      comite: string;
+      desarrollo: string;
+      /**
+       * Los grados sí se traducen y por eso viven aquí y no junto a los nombres.
+       * «Ing., candidato a Doctor» y «Eng., PhD candidate» no son la misma cadena,
+       * mientras que el nombre de una persona es el mismo en los dos idiomas.
+       */
+      grados: Record<GradoAcademico, string>;
     };
   };
 }

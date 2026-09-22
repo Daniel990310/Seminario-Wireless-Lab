@@ -238,6 +238,22 @@ export const en = {
       secciones: 'Sections',
       financiadoPor: 'Funded by',
       proyecto: 'Project',
+      comite: 'Organizing committee',
+      desarrollo: 'Site development',
+      /*
+       * El grado cambia de forma según el idioma, por indicación de Daniel el
+       * 2026-09-22: en español `Dr.` y en inglés `PhD`. No es una traducción
+       * literal sino la convención de cada tradición académica, y es justo el
+       * motivo por el que los grados viven en los archivos de idioma y no junto
+       * a los nombres en `comun.ts`.
+       *
+       * Sin punto final: la forma corriente en inglés es `PhD` o `Ph.D.`, nunca
+       * `PhD.` con un solo punto al final. Si se prefiere la otra, se cambia aquí.
+       */
+      grados: {
+        doctor: 'PhD',
+        candidato: 'Eng., PhD candidate',
+      },
     },
   },
 } satisfies ContenidoIdioma;

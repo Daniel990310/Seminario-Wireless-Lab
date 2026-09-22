@@ -24,7 +24,19 @@ const year = new Date().getFullYear();
 -->
 <footer class="superficie-institucional relative px-5 py-16 sm:px-8">
   <div class="mx-auto max-w-7xl">
-    <div class="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr]">
+    <!--
+      Cuatro columnas desde el 2026-09-22, antes tres. La del comité entra entre la
+      marca y el contacto porque es información de la misma naturaleza —quién está
+      detrás—, y deja «Secciones», que es navegación, al final.
+
+      El primer tramo baja de 1,4fr a 1,2fr: con una columna más, 1,4fr dejaba las
+      otras tres por debajo del ancho de «Ing., candidato a Doctor» a 1024 px y el
+      grado partía en tres líneas.
+
+      Un escalón intermedio en `sm`: cuatro columnas apiladas en un móvil son cuatro
+      pantallazos de pie. A partir de 640 px van de dos en dos.
+    -->
+    <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
       <div class="min-w-0">
         <p class="font-display text-lg leading-snug font-semibold text-foreground">
           {c.title}
@@ -33,6 +45,27 @@ const year = new Date().getFullYear();
         <p class="eyebrow mt-6 text-muted-foreground">
           {c.dates.shortLabel} · {c.venue.city}, {c.venue.country}
         </p>
+      </div>
+
+      <!--
+        Comité organizador. El grado va delante del nombre y en su propia etiqueta
+        `<span>` para poder darle el tratamiento tipográfico del epígrafe sin que el
+        nombre lo herede: el nombre es el dato, el grado es el rótulo.
+      -->
+      <div class="min-w-0">
+        <h2 class="eyebrow text-muted-foreground">{c.ui.pie.comite}</h2>
+        <ul class="mt-4 space-y-3 text-sm text-muted-foreground">
+          {
+            c.committee.map((persona) => (
+              <li class="leading-relaxed">
+                <span class="block font-mono text-[0.6875rem] tracking-wide text-muted-foreground/80">
+                  {c.ui.pie.grados[persona.grado]}
+                </span>
+                {persona.nombre}
+              </li>
+            ))
+          }
+        </ul>
       </div>
 
       <div class="min-w-0">
@@ -71,6 +104,12 @@ const year = new Date().getFullYear();
     >
       <!-- Los nombres institucionales no se traducen: ver `src/data/comun.ts`. -->
       <p>© {year} {c.organizers[0].name} · {c.organizers[1].name}</p>
+      <!--
+        El crédito de desarrollo va en la línea inferior y no en una columna propia:
+        es autoría del sitio, no del seminario, y mezclarlo con el comité confundiría
+        dos papeles que Daniel pidió distinguir. Mismo tamaño que el copyright.
+      -->
+      <p>{c.ui.pie.desarrollo}: {c.developer.nombre}</p>
       <!--
         El espacio antes del código va explícito con `{' '}`, y no es cosmético: un salto de
         línea entre dos expresiones se colapsa a nada, así que la versión anterior imprimía

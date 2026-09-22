@@ -263,6 +263,12 @@ export const es = {
       secciones: 'Secciones',
       financiadoPor: 'Financiado por',
       proyecto: 'Proyecto',
+      comite: 'Comité organizador',
+      desarrollo: 'Desarrollo del sitio',
+      grados: {
+        doctor: 'Dr.',
+        candidato: 'Ing., candidato a Doctor',
+      },
     },
   },
 } satisfies ContenidoIdioma;

@@ -109,6 +109,13 @@ export const PROGRAMA_DEMOSTRATIVO = false;
 
 export type CodigoPais = 'US' | 'CL';
 
+/**
+ * Grados del comité organizador. Es una unión y no una cadena libre a propósito:
+ * `ui.pie.grados` es un `Record` sobre este tipo, así que añadir un grado nuevo
+ * **no compila** hasta que esté traducido en los dos idiomas.
+ */
+export type GradoAcademico = 'doctor' | 'candidato';
+
 /*
  * Los logos aceptan dos formas, y la distinción tiene consecuencias.
  *
@@ -441,6 +448,32 @@ export const comun = {
     /** La fórmula exacta que exige ANID. Se compone con `concurso`. */
     mencion: 'Financiado por la Agencia Nacional de Investigación y Desarrollo, ANID',
   },
+
+  /**
+   * Comité organizador y desarrollo del sitio, en el pie (indicación de Daniel,
+   * 2026-09-22).
+   *
+   * Los **nombres** viven aquí porque el nombre de una persona no se traduce. El
+   * **grado** sí, y por eso es una clave que `ui.pie.grados` resuelve en cada idioma:
+   * «Ing., candidato a Doctor» y «Eng., PhD candidate» no son la misma cadena.
+   *
+   * Dos normalizaciones deliberadas respecto de cómo llegaron los datos:
+   *   - `Caignet` y no «Caigent», que es como se escribió una de las dos veces. Manda
+   *     la dirección institucional, `daniel.caignet@pucv.cl`.
+   *   - Grados como `Dr.` y nombres en caja normal con sus tildes, no `Phd.` ni
+   *     versales. En un sitio institucional una abreviatura inventada se nota.
+   * Si alguno de los dos está mal, se corrige aquí y aparece en los dos idiomas.
+   */
+  committee: [
+    { nombre: 'Mauricio Alejandro Rodríguez Guzmán', grado: 'doctor' },
+    { nombre: 'Daniel Caignet González', grado: 'candidato' },
+    // `satisfies` y no una anotación: conserva los tipos literales de `grado` —que
+    // es lo que permite indexar `ui.pie.grados` sin castear— y a la vez falla aquí
+    // mismo si alguien escribe un grado que no existe en los dos idiomas.
+  ] satisfies ReadonlyArray<{ nombre: string; grado: GradoAcademico }>,
+
+  /** Quien construyó el sitio. Separado del comité: son dos papeles distintos. */
+  developer: { nombre: 'Daniel Caignet González' },
 
   contact: {
     /**

@@ -137,6 +137,15 @@ export function contenido(lang: Idioma) {
 
     contact: { ...comun.contact, ...t.contact },
 
+    /*
+     * Pasan tal cual: son nombres de personas, y un nombre no tiene versión en
+     * inglés. Lo único traducible —el grado— lo resuelve el pie con
+     * `ui.pie.grados`, que sí está en los dos idiomas y cuya paridad vigila
+     * `tipos.ts`.
+     */
+    committee: comun.committee,
+    developer: comun.developer,
+
     acceso: comun.acceso,
 
     seo: {
