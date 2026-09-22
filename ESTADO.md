@@ -7,191 +7,113 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-09-21** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
-· Último despliegue: **2026-08-27**, versión `c5149c53`, sin marcas sin autorización.
-· **Dominio `bcsensing.org`: delegado a Cloudflare en el registrador. Esperando que el
-registro `.org` propague y Cloudflare active la zona. Ver «EMPIEZA AQUÍ».**
+Actualizado: **2026-09-22** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
+· Último despliegue: **2026-09-22**, versión `adda9052`, en `https://bcsensing.org`.
+· **Publicado en <https://bcsensing.org> el 2026-09-22, versión `adda9052`. Primer
+despliegue indexable. Pendientes de operación en «EMPIEZA AQUÍ».**
 
 ---
 
-# EMPIEZA AQUÍ · traspaso del 2026-09-21
+# EMPIEZA AQUÍ · traspaso del 2026-09-22
 
-## El dominio dejó de ser una previsión
+## ✅ El sitio está publicado en https://bcsensing.org
 
-El cliente compró **`bcsensing.org`** en Hostinger el 2026-09-21, ante la falta de
-respuesta de la DTI de la PUCV por el subdominio institucional. A6 queda resuelta por
-la vía alternativa. Si el subdominio llega después, **redirige hacia `bcsensing.org`**,
-no al revés.
+Despliegue `adda9052`, 2026-09-22 00:50 UTC. `verify:todo` y
+`verify:publicado -- https://bcsensing.org` **en verde, los dos** `[medido]`.
+Es el primer despliegue **sin `noindex`**: el sitio es indexable desde ahora.
 
-### Lo que ya está hecho en el repositorio
+Cómo se llegó, con lo que tardó de verdad:
 
-Todo verificado con `verify:todo` en verde y `astro check` sin errores ni advertencias
-`[medido: 2026-09-21]`.
-
-- `PRODUCTION_SITE` es `https://bcsensing.org`.
-- **Se eliminaron las dos copias literales del host de producción**, que incumplían
-  RNF-7.4: `BaseLayout.astro` y `verify-seo.mjs` ahora importan `PRODUCTION_HOST`,
-  derivado de `PRODUCTION_SITE`. Con dos literales, un cambio de dominio que olvidara
-  uno dejaba el sitio publicado con `noindex` permanente **y el verificador
-  aprobándolo**. Era el defecto que la propia regla nombra.
-- **Nuevo `/robots.txt` generado en el build** (`src/pages/robots.txt.ts`, RNF-3.5). En
-  producción permite el rastreo y anuncia el sitemap; con URL provisional, `Disallow: /`.
-  No va en `public/` a propósito: ese directorio se copia verbatim y el archivo
-  anunciaría el sitemap de producción desde cualquier previsualización.
-- **`url` e `image` en el JSON-LD** (RNF-3.6). Sin `image`, Google no construye el
-  resultado enriquecido de evento.
-- Los dos criterios nuevos pasaron **prueba de sensibilidad**: rotos a mano, fallan
-  (`2 CRITERIOS FALLAN` y `3 CRITERIOS FALLAN` respectivamente) `[medido]`.
-
-### ✅ Resuelto: el MCP de Cloudflare carga y responde
-
-Tras el reinicio, el servidor que responde es **`cloudflare-api`** (el añadido a mano);
-el homónimo del plugin quedó `⊘ Disabled for this project`, así que **no hay duplicado
-activo** y no hace falta borrar nada. Verificado con `claude mcp list` `[medido: 2026-09-21]`.
-
-Está autorizado contra la cuenta correcta: `accountId` = `ad6ad6434f0de8b33a85a93af92f7a39`
-(`Danielcaignet99@gmail.com`), la misma a la que responde `wrangler whoami` y donde vive
-el Worker `seminario-wireless-lab` `[medido]`.
-
-### ⚠️ La API de Hostinger cargada es SOLO la de VPS
-
-El plugin de Hostinger publica **siete** servidores MCP distintos —`hostinger-hosting`,
-`hostinger-domains`, `hostinger-dns`, `hostinger-ecommerce`, `hostinger-reach`,
-`hostinger-billing`, `hostinger-vps`—. En esta sesión cargó **únicamente
-`hostinger-vps`**, cuyas ~100 herramientas son todas `VPS_*`.
-
-`updateDomainNameserversV1` vive en `hostinger-domains`, que **no está cargado**. Habilitarlo
-cuesta otro reinicio. Se descartó por eso: se llama a la API REST directamente desde
-`scripts/hostinger-nameservers.mjs`.
-
-**El token de Hostinger hereda todos los permisos del usuario, el VPS de Demeter incluido.**
-Va en `.env.local` (ignorado), con **fecha de expiración corta**, y se rota el mismo día.
-
-### Estado medido del dominio antes de tocarlo
-
-Contenido completo de la zona en el DNS de Hostinger `[medido: 2026-09-21,
-`nslookup ... orbit.dns-parking.com`]`:
-
-```
-A     bcsensing.org  → 2.57.91.91                                  (parking)
-TXT   bcsensing.org  → v=spf1 include:_spf.reach.hostinger.com ~all
-NS    orbit.dns-parking.com / horizon.dns-parking.com
-```
-
-**No hay MX.** No hay correo que romper al delegar: lo único que se pierde es la página
-de parking, que es justo lo que se reemplaza. Esta comprobación no estaba en el plan y
-es la que decide si la migración de NS es segura o corta el correo del cliente.
-
-### ✅ Paso 2 hecho: zona creada en Cloudflare
-
-```
-zona   bcsensing.org
-id     d19fd380d4814d99efcaace07281d18d
-plan   Free Website
-estado pending  (sin efecto hasta que el registrador delegue)
-```
-
-| | |
+| Paso | Resultado |
 |---|---|
-| **Nameservers de Cloudflare** (los que hay que poner en Hostinger) | `jobs.ns.cloudflare.com` · `nataly.ns.cloudflare.com` |
-| **Nameservers de reversión** (los actuales, de Hostinger) | `orbit.dns-parking.com` · `horizon.dns-parking.com` |
+| Zona `bcsensing.org` creada en Cloudflare | id `d19fd380d4814d99efcaace07281d18d`, plan Free |
+| Nameservers delegados en Hostinger | `jobs.ns.cloudflare.com` · `nataly.ns.cloudflare.com` |
+| Propagación al registro `.org` | **minutos**, no horas. La previsión de «puede tardar horas» fue pesimista |
+| Zona activa | 2026-09-22 00:47:08 UTC |
+| Dominio colgado del Worker | `bcsensing.org → seminario-wireless-lab`, id `d8c3059078fb…` |
+| Certificado TLS | Universal + advanced, emitidos solos. ~1 min tras la activación |
+| Despliegue con `SITE_URL=https://bcsensing.org` | versión `adda9052-545e-4d84-8c6d-95f487c28021` |
 
-La zona nació **sin ningún registro DNS**: Cloudflare no importó el A del parking
-`[medido]`. Es lo deseado — el dominio personalizado del Worker creará el suyo.
+**Reversión del dominio**, si alguna vez hace falta:
+`node scripts/hostinger-nameservers.mjs poner bcsensing.org orbit.dns-parking.com horizon.dns-parking.com --confirmo`
+—o a mano en hPanel si el token ya se revocó, que es lo que debe pasar.
 
-### ✅ `wrangler` instalado y fijado
+## ⚠️ Pendiente inmediato de seguridad
 
-`wrangler@4.136.1` en `devDependencies`, no vía `npx` a la última, para que el despliegue
-sea reproducible entre entornos. `npm run build` en verde, 4 páginas, exit 0 `[medido]`.
+**Revocar el token de Hostinger y borrarlo de `.env.local`.** Ya cumplió su único
+propósito. Hereda todos los permisos del usuario, el VPS de Demeter incluido.
 
-Confirmado lo que ya decía este archivo: el OAuth de `wrangler` tiene `zone (read)` y
-**ningún** `dns_records`. Por eso **el dominio personalizado se cuelga por la API del MCP,
-no con `wrangler`**.
+## Lo que le falta al sitio para estar bien operado
 
-### ✅ Paso 3 hecho: el dominio está delegado a Cloudflare
+Medido sobre `https://bcsensing.org` el 2026-09-22, **no** deducido del código.
+Ninguno impide que el sitio funcione; el orden es por daño.
 
-`domains_updateDomainNameserversV1` aceptó el cambio `[medido: 2026-09-21]`:
+### 1. `www.bcsensing.org` no resuelve · **bloqueado, falta permiso**
 
-```
-ANTES:   horizon.dns-parking.com · orbit.dns-parking.com
-DESPUÉS: jobs.ns.cloudflare.com  · nataly.ns.cloudflare.com
-```
+`curl: (6) Could not resolve host` `[medido]`. Quien teclee `www.` —mucha gente, y
+cualquiera que transcriba mal una URL de un programa impreso o un QR— recibe «no se
+puede acceder al sitio», no el seminario.
 
-Estado del dominio según la API de Hostinger antes de tocarlo: `Active`, registrado el
-2026-09-21 18:36 UTC, expira 2027-09-21, con protección de privacidad y `is_locked: true`.
-Ese bloqueo es el de **transferencia** y no impidió el cambio de nameservers — medido, no
-supuesto: el PUT pasó. El bloqueo ICANN de 60 días vence el 2026-11-20 y tampoco afecta
-al DNS.
+**Arreglo**: `CNAME www → bcsensing.org` *proxied* + regla de redirección 301 al apex
+conservando ruta y query. **No** colgar `www` del Worker como segundo dominio: eso
+serviría el mismo sitio en dos hosts y parte la señal de indexación entre ambos.
+**Qué se pierde**: nada. El 301 consolida en el apex.
+*Intentado el 2026-09-22; el clasificador de auto mode lo bloqueó por crear un registro DNS.*
 
-### ⏸ Esperando aquí: propagación al registro `.org` y activación de la zona
+### 2. `min_tls_version` es **1.0** · **bloqueado en el mismo lote**
 
-**Este es el punto exacto donde se retoma.** No hay nada que ejecutar para acelerarlo.
+`[medido vía API]`. TLS 1.0 y 1.1 están retirados desde 2020. Subir a 1.2 no deja fuera
+a ningún navegador en uso. **Qué se pierde**: clientes anteriores a ~2014.
 
-Inmediatamente después del cambio, el TLD seguía publicando los nameservers viejos
-`[medido: `nslookup -type=NS bcsensing.org b0.org.afilias-nst.org`]`, y la zona en
-Cloudflare seguía en `pending`. Es lo esperado: el registrador envía el cambio al
-registro, el registro lo publica, y recién entonces Cloudflare lo ve y activa.
+### 3. Sin HSTS · **decisión, no se aplica sin autorización**
 
-Comprobar con estos dos, que son los que mandan:
+`strict_transport_security.enabled: false` `[medido]`. `always_use_https` ya está **on**
+—se activó el 2026-09-22 y `http://` responde 301 `[medido]`—, pero eso protege después
+de la primera petición en claro. HSTS la elimina.
 
-```bash
-nslookup -type=NS bcsensing.org b0.org.afilias-nst.org   # el registro .org
-# y el estado de la zona d19fd380d4814d99efcaace07281d18d en Cloudflare
-```
+**No se activó a propósito.** Es la única de esta lista **difícil de revertir**: el
+navegador recuerda la directiva durante todo el `max-age` y apagarla no borra lo ya
+almacenado. Con un `max-age` largo, un fallo de certificado deja el sitio inalcanzable
+sin forma de saltárselo. Propuesta: empezar en 6 meses, **sin `preload`** y **sin
+`includeSubDomains`** hasta que `www` esté cableado.
 
-Cuando el TLD devuelva `jobs` y `nataly`, la zona pasa a `active` sola. Si tarda más de
-24 h, forzar la revisión con `PUT /zones/{id}/activation_check`.
+### 4. La página 404 está en blanco · **cambio de código, fuera de `requirements.md`**
 
-### Lo que falta hacer, en orden
+`HTTP 404`, **0 bytes** `[medido]`. No hay `src/pages/404.astro`, así que Cloudflare
+devuelve el suyo, que es vacío. Un enlace mal copiado deja a la persona en una página
+blanca sin manera de llegar al seminario.
 
-1. ~~Anotar los nameservers actuales antes de tocarlos~~ **hecho**, arriba.
-2. ~~Cloudflare: crear la zona y leer sus nameservers~~ **hecho**, arriba.
-3. ~~Token de Hostinger en `.env.local`~~ **hecho**.
-4. ~~Comprobar el token sin escribir nada~~ **hecho**: `leer` devolvió el dominio.
-5. ~~Delegar los nameservers~~ **hecho**, arriba.
-   **Reversión**: `node scripts/hostinger-nameservers.mjs poner bcsensing.org
-   orbit.dns-parking.com horizon.dns-parking.com --confirmo`, o a mano en hPanel si el
-   token ya se revocó.
-6. **Esperar** la propagación y la activación. No se puede acelerar. ← *aquí estamos*
-7. Colgar el dominio personalizado del Worker `seminario-wireless-lab`. **Por la API del
-   MCP de Cloudflare**, no con `wrangler`: su OAuth no tiene `dns_records`.
-8. Desplegar con `SITE_URL="https://bcsensing.org"` (abajo) y
-   `npm run verify:publicado -- https://bcsensing.org`.
-9. **Revocar el token de Hostinger y borrarlo de `.env.local`.** Ya cumplió su único
-   propósito. Mantenerlo en disco solo conserva la capacidad de revertir sin entrar al
-   panel, y eso no vale un token con permiso sobre el VPS de Demeter: la reversión desde
-   hPanel son dos minutos.
+**No se implementó** porque `AGENTS.md` prohíbe implementar lo que no está en
+`requirements.md`. Es un requisito que falta, no una tarea pendiente: decidir si entra.
 
-**El orden de 7 y 8 no se invierte.** Desplegar con `SITE_URL=https://bcsensing.org`
-antes de que el dominio resuelva deja `workers.dev` sirviendo un sitio **sin `noindex`**
-y con `robots.txt` en `Allow`, canonizando a un dominio que no responde: rastreable y
-apuntando al vacío. Mientras el dominio no esté cableado, cualquier despliegue va con la
-URL de `workers.dev`.
+### 5. Sin Content-Security-Policy
 
-`bcsensing.com` **no se compró** (decisión del 2026-09-21), así que no hay redirección
-301 que configurar.
+Las cabeceras servidas son `X-Frame-Options`, `X-Content-Type-Options`,
+`Referrer-Policy` y `Permissions-Policy` `[medido]` — `_headers` **sí funciona** en
+Workers con activos estáticos, lo que despeja la duda que el archivo dejaba abierta.
+Falta CSP. El sitio no carga terceros (RNF-2.3), así que una CSP estricta es viable,
+pero el tema en línea del `<head>` exige `'unsafe-inline'` o un nonce, y un nonce no
+existe en un sitio 100 % estático. Hay que medirlo antes de escribirlo.
 
-Hasta que esto corra, el sitio publicado **sigue siendo el de agosto** (`c5149c53`,
-2026-08-28, confirmado con `wrangler deployments list` `[medido]`), **con `noindex`**.
+### 6. Nadie ha dado de alta el sitio en Google Search Console
 
-### Lo que queda abierto y necesita un dato del cliente
+Sin esto no hay forma de saber si Google indexó, ni de pedir el rastreo, ni de ver qué
+consultas lo encuentran. El seminario es el **21–22 de octubre de 2026**: quedan unas
+cuatro semanas. Un sitio nuevo sin altas tarda.
 
-**`offers` / `isAccessibleForFree` en el JSON-LD.** Si la asistencia es gratuita,
-declararlo habilita el distintivo «Gratis» en el resultado de evento de Google. **No se
-implementó porque nadie ha confirmado si el seminario tiene costo**, y la regla de
-procedencia prohíbe inventarlo. Es un campo cuando se sepa.
+### 7. `offers` / `isAccessibleForFree` en el JSON-LD · **falta un dato del cliente**
 
-```powershell
-$env:SITE_URL = "https://bcsensing.org"
-npm run build
-npm run verify:todo
-npx wrangler deploy
-npm run verify:publicado -- https://bcsensing.org
-```
+Si la asistencia es gratuita, declararlo habilita el distintivo «Gratis» en el resultado
+de evento de Google. **Nadie ha confirmado si el seminario tiene costo** y la regla de
+procedencia prohíbe inventarlo.
 
-`wrangler` ya está instalado y fijado: `wrangler@4.136.1` en `devDependencies`
-`[medido: 2026-09-21]`. No se usa `npx wrangler` a secas porque eso descarga la última
-versión publicada y el despliegue deja de ser el mismo entre entornos.
+### 8. Cuatro dependencias instaladas y sin usar
+
+`@astrojs/react`, `react`, `react-dom` y `motion` están en `package.json` y la
+integración React está activa en `astro.config.mjs`, pero **`src/` no tiene ni un
+`.tsx` ni un solo import de ninguna** `[medido]`. `AGENTS.md` afirma lo contrario. Hoy
+no pesan en la primera carga —son 312 kB: HTML 130 + CSS 62 + tres fuentes 120—, pero
+son superficie muerta y el documento que las niega es el que se lee para decidir.
 
 ---
 
