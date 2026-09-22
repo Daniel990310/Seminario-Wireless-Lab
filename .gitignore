@@ -49,3 +49,10 @@ beyond-connectivity-seminario-pucv.html
 # el `.py` cambia, así que no significan nada en el clon de otro entorno.
 __pycache__/
 *.pyc
+
+# Directorios de skills que otras herramientas —Codex, agentes de terceros— dejan en la
+# raíz al abrir el proyecto. No son contenido del sitio ni configuración compartida: son
+# copias locales de habilidades que cada entorno instala por su cuenta. Versionarlas
+# metería cientos de archivos ajenos en un repositorio que se clona en varios sitios.
+.agents/
+.codex/
