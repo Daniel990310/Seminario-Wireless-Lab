@@ -205,9 +205,24 @@ function construirCss(): string {
   const alturaFranja = f.relacionFija
     ? `calc(100vw / ${f.relacion})`
     : `calc(clamp(9rem, 21vw, 16rem) * 0.65 * ${f.alto})`;
+  /*
+   * `!important` en las propiedades personalizadas, y no es adorno.
+   *
+   * Astro compila el estilo de un componente con un atributo de ámbito, de modo
+   * que `.franja-sede` del componente sale como `.franja-sede[data-astro-cid-…]`:
+   * especificidad (0,2,0). Lo que inyecta el panel es `.franja-sede`, (0,1,0), y
+   * **pierde**. Durante horas los deslizadores de velo y desvanecido movieron el
+   * número del informe sin cambiar un solo píxel, y Daniel lo reportó como «nunca
+   * vi diferencia al mover el velo» `[2026-09-22]`.
+   *
+   * Regla para quien añada perillas: si la propiedad la declara un componente en su
+   * propio `<style>`, la inyección necesita `!important`. Y la prueba que lo cubre
+   * tiene que comparar **píxeles**, no el texto del CSS; la que había comparaba el
+   * informe, que era justo lo único que sí cambiaba.
+   */
   const lineas: string[] = [
-    `:root { --alto-franja: ${alturaFranja}; }`,
-    `.franja-sede { --velo: ${f.velo}%; --desvanecido: ${f.desvanecido}%; }`,
+    `:root { --alto-franja: ${alturaFranja} !important; }`,
+    `.franja-sede { --velo: ${f.velo}% !important; --desvanecido: ${f.desvanecido}% !important; }`,
     // `!important` porque `FranjaSede.astro` pone `object-position` en el atributo
     // `style` del propio `<img>`, y un estilo en línea gana a cualquier hoja.
     `.franja-sede__imagen { object-position: ${f.x}% ${f.y}% !important;` +
