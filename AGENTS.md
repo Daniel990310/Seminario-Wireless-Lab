@@ -436,7 +436,9 @@ No son tareas de implementación. Están registrados como decisiones abiertas no
 bloqueantes (A3–A7) en `requirements.md`:
 
 - Afiliación de Rodolfo Feick, hoy «por confirmar»
-- Correo institucional real (`seminario.wireless@pucv.cl` es un ejemplo)
+- ~~Correo institucional real~~ **Resuelto el 2026-09-22 (A4)**: `contact@bcsensing.org`,
+  alias de Cloudflare Email Routing que reenvía a `daniel.caignet@pucv.cl`. Gratis, y no
+  publica una dirección personal. DNS y trampas, junto al valor en `src/data/comun.ts`
 - Logos oficiales: los 7 de `public/logos/` son marcadores de posición
 - ~~Subdominio definitivo~~ **Resuelto el 2026-09-21**: el cliente compró
   **`bcsensing.org`** ante la demora de la DTI. El repositorio ya apunta ahí; falta

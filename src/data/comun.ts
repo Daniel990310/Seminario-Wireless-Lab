@@ -443,7 +443,26 @@ export const comun = {
   },
 
   contact: {
-    email: 'seminario.wireless@pucv.cl',
+    /**
+     * Dirección real y probada, desde el 2026-09-22. Ya no es un marcador (cerraba A4).
+     *
+     * No es un buzón: es un alias de **Cloudflare Email Routing** sobre `bcsensing.org`
+     * que reenvía a `daniel.caignet@pucv.cl`. Gratis, y evita publicar una dirección
+     * personal en una página que va a repartirse impresa.
+     *
+     * Lo que hay detrás, para quien tenga que tocarlo:
+     *   - MX `route1/2/3.mx.cloudflare.net`, SPF `include:_spf.mx.cloudflare.net`,
+     *     DKIM `cf2024-1._domainkey` y DMARC `p=reject`.
+     *   - El atrapa-todo está **desactivado** a propósito: cualquier otra dirección
+     *     `@bcsensing.org` rebota, así que probar direcciones no revela cuáles existen.
+     *   - `p=reject` vale porque el dominio **solo recibe**. Si algún día se responde
+     *     desde aquí con un relé SMTP, hay que añadirlo al SPF y firmar con DKIM
+     *     **antes** de enviar, o esos envíos rebotarán.
+     *
+     * Comprobado de extremo a extremo el 2026-09-22: DNS resuelto contra los NS
+     * autoritativos y un correo de prueba recibido en el buzón PUCV `[verificado]`.
+     */
+    email: 'contact@bcsensing.org',
   },
 
   /*

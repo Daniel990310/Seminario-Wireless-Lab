@@ -348,8 +348,11 @@ Ninguno de estos huecos se puede adivinar sin inventar un dato institucional:
 
 1. **Quién firma.** Los correos hablan en nombre del comité organizador de una
    universidad; los tiene que firmar alguien de la PUCV, no un proveedor externo.
-2. **Correo institucional real.** `seminario.wireless@pucv.cl` es un ejemplo que está en
-   el código como marcador (A4).
+2. ~~**Correo institucional real.**~~ **Resuelto el 2026-09-22 (A4)**: el sitio publica
+   `contact@bcsensing.org`, que reenvía a `daniel.caignet@pucv.cl`. Para estos correos hay
+   que decidir aparte si se firma desde esa dirección o desde una casilla PUCV: **hoy el
+   dominio solo recibe**, no puede enviar, así que un correo «desde» `contact@` habría que
+   mandarlo con un relé SMTP que todavía no existe.
 3. **Las dos direcciones bloqueadas por 403**: Columbia y ANID.
 4. **La Subdirección de ANID** desde la que se gestiona FOVI250222, para la copia.
 5. **La afiliación de Rodolfo Feick**, que sigue «por confirmar» (A3). No aparece en estos

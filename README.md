@@ -135,8 +135,10 @@ program: {
    detalle de cada archivo y los requisitos de formato.
 2. **Afiliación de Rodolfo Feick**, hoy «Afiliación por confirmar» en
    `src/data/comun.ts`.
-3. **Correo de contacto.** `seminario.wireless@pucv.cl` es un valor de ejemplo;
-   reemplazar por la casilla institucional real.
+3. ~~**Correo de contacto.**~~ **Resuelto el 2026-09-22**: `contact@bcsensing.org`,
+   un alias gratuito de Cloudflare Email Routing que reenvía a `daniel.caignet@pucv.cl`.
+   Probado de extremo a extremo. El detalle de DNS y sus consecuencias está junto al
+   valor, en `src/data/comun.ts`.
 4. **Dominio.** Ajustar `site` en `astro.config.mjs` al dominio definitivo: de
    él dependen el sitemap, los `hreflang` y las URLs de las imágenes para
    compartir. Después, regenerar con `npm run og`.
