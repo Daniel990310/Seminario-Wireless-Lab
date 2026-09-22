@@ -112,6 +112,16 @@ si se mide por otra vía, hay que replicarlo.
 **kB decimal, 1 kB = 1000 bytes.** No binario. Mezclar convenciones hizo que el
 mismo archivo apareciera como 109,3 kB y 106,8 kB.
 
+**RNF-2.2 no mide imágenes.** `primeraCarga` es `javascript + css + html +
+tipografias`, y nada más (`scripts/verify.mjs`, la función que arma los grupos).
+Así que «primera carga 166,3 kB de 260» en verde **no dice nada** sobre la
+fotografía de la banda, que es el archivo más pesado que se sirve: 33,0 kB en la
+variante de 1440 y 115,1 kB en la de 2752 `[medido: 2026-09-22]`. Al cambiar una
+imagen o su `quality`, esa cifra hay que medirla aparte —`ls` sobre `dist/_astro/`
+después de `npm run build`— y decirla con su número. Dar por bueno el presupuesto
+como si cubriera la imagen es exactamente la clase de número falso que esta
+sección existe para evitar.
+
 **Los nodos `incomplete` de axe no son aprobaciones.** Significan que no se pudo
 determinar el contraste, normalmente porque el texto va sobre un fondo no
 uniforme. RNF-1.3 exige resolverlos.
@@ -259,7 +269,7 @@ ese entorno Playwright resuelve el suyo.
 | D3 | Registro de asistentes: previsto en la especificación, no implementado |
 | D4 | Swiss Modernism 2.0 más minimalismo; Crimson Pro y Atkinson Hyperlegible Next |
 | D5 | Dos temas con selector: claro por omisión, oscuro y «según el sistema» |
-| D12 | **La banda del encabezado muestra Santiago con la cordillera, no la sede, y su altura es una relación fija** (2026-09-22, decidido por Daniel en el panel de `/ajustar`). Dos cambios que van juntos: el archivo es `santiago-cordillera.webp`, recortado a 2752 × 391 px —el encuadre está horneado, no en una propiedad—, y `--alto-franja` pasa de un `clamp` a `calc(100vw / 7.04)`. Motivo del segundo: con el `clamp`, la relación de la banda solo se mantenía entre 686 y 1219 px de ancho y cada pantalla veía un recorte distinto, de 4,17:1 a 15,39:1 `[medido: 2026-09-22]`. El precio aceptado: la altura ya no tiene tope —55 px a 390 px de ancho, 364 px a 2560—, porque recorte constante y altura acotada son incompatibles. `sede-acceso.webp` se conserva sin usar |
+| D12 | **La banda del encabezado muestra Santiago con la cordillera, no la sede, y su altura es una relación fija** (2026-09-22, decidido por Daniel en el panel de `/ajustar`). Dos cambios que van juntos: el archivo es `santiago-cordillera.webp`, recortado a 2752 × 391 px —el encuadre está horneado, no en una propiedad—, y `--alto-franja` pasa de un `clamp` a `calc(100vw / 7.04)`. Motivo del segundo: con el `clamp`, la relación de la banda solo se mantenía entre 686 y 1219 px de ancho y cada pantalla veía un recorte distinto, de 4,17:1 a 15,39:1 `[medido: 2026-09-22]`. La altura lleva además un tope por alto de ventana, `max(0px, min(100vw / 7.04, 100vh - 32rem))`, y sin banda por debajo de 36rem de alto: **el bloque de texto del hero tiene prioridad sobre la fotografía** y sin el tope se cortaba en ventanas anchas y bajas. Cuando el tope actúa, el recorte deja de ser constante; es el único modo de cumplir las dos cosas que se pidieron. Verificado en 18 combinaciones de pantalla, el texto entra en todas `[medido: 2026-09-22]`. `quality` de la banda es 78, no 58: a 58 se veían bloques en la nieve. `sede-acceso.webp` se conserva sin usar |
 | D7 | **Se descarta la estructura de agenda del prototipo de rediseño** (2026-08-03): acordeón que no abre sin JavaScript y panel con desplazamiento propio a `70vh`. Se conserva la idea de línea de tiempo vertical. Detalle y los tres motivos en [`specs/002-rediseno-visual/requirements.md`](specs/002-rediseno-visual/requirements.md) |
 | D8 | **Las tipografías siguen auto-hospedadas.** El prototipo las carga desde `fonts.googleapis.com`; ese `<helmet>` no se porta (RNF-2.3) |
 | D6 | **Se adopta shadcn/ui sobre Radix.** El cliente busca un sitio interactivo. **No se materializó en ningún componente**: las 5 interacciones de RF-6 se resolvieron con HTML nativo, porque RF-6.2 exige que el contenido exista sin JavaScript. El 2026-07-31, por instrucción de Daniel, **se retiró React y la base de shadcn** —`@astrojs/react`, `react`, `react-dom`, `clsx`, `tailwind-merge`, `components.json`, `src/lib/utils.ts`—: nada de eso lo usaba ningún componente y la integración emitía 59,5 kB de runtime huérfano en cada build. **Reinstalarlo es un comando** si aparece un componente que lo justifique; el candidato natural es el registro de asistentes (RF-3). Ver la enmienda de RF-6 y `design.md` §6.6 |

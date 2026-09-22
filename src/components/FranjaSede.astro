@@ -60,13 +60,23 @@ const { imagen, encuadre = '50% 50%' } = Astro.props;
   sangre completa, así que una pantalla de 1440 a 2× ya pide 2880 px y sin esta
   variante recibía la de 1800 ampliada. No cuesta peso a quien no la necesita:
   con `sizes="100vw"` elige el navegador, y a 1× ninguna pantalla la pide.
+
+  `quality` es 78 y no 58 desde el 2026-09-22. El 58 venía de la fotografía anterior,
+  una fachada de hormigón: contenido indulgente. La vista de Santiago tiene nieve,
+  bruma y el detalle fino de la ciudad, y a 58 salían bloques visibles en la nieve.
+  Coste medido en la variante de 1440: 22,6 kB → 32,9 kB `[medido: 2026-09-22]`.
+
+  El archivo maestro también cambió, de q88 a q95, por el mismo hallazgo: encadenar
+  dos compresiones fuertes —la del recorte y la de esta línea— degrada más que
+  cualquiera de las dos por separado. El maestro pesa 356 kB en el repositorio y no
+  se sirve nunca; lo que viaja son las variantes de `widths`.
 -->
   <Image
     src={imagen}
     alt=""
     widths={[640, 1024, 1440, 1800, 2752]}
     sizes="100vw"
-    quality={58}
+    quality={78}
     loading="eager"
     decoding="async"
     class="franja-sede__imagen"

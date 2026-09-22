@@ -95,8 +95,42 @@
    * Se expresa como altura y no con `aspect-ratio` porque la contracción al
    * desplazarse anima `height`, y animar desde `auto` no se comporta igual en todos
    * los navegadores.
+   *
+   * ————— El tope por altura de ventana, 2026-09-22 —————
+   *
+   * Daniel pidió dos cosas que **no pueden cumplirse las dos a la vez**: que el
+   * recorte no dependa de la pantalla, y que el bloque de texto del hero —epígrafe,
+   * titular y bajada— esté siempre visible sin desplazarse. La primera hace que la
+   * altura de la banda crezca con el ancho; en una ventana ancha y baja eso empuja el
+   * texto fuera. Medido antes de poner el tope: a 1280 × 650 la bajada terminaba 5 px
+   * por debajo del borde, a 1366 × 625 unos 53 px, y a 2560 × 800 unos 48 px
+   * `[medido: 2026-09-22]`.
+   *
+   * El tope resuelve el conflicto **a favor del texto**, que es lo que Daniel dijo que
+   * importa. Lo que hay sobre la bajada y no es banda ocupa 473–484 px en escritorio y
+   * ~420 px en móvil, así que reservar 32rem deja margen suficiente.
+   *
+   * Consecuencia que hay que conocer antes de tocar el número: **cuando el tope actúa,
+   * el recorte deja de ser constante** —la banda se recorta por arriba y por abajo, y
+   * se queda con la cordillera, que es el centro del encuadre—. Solo actúa en ventanas
+   * anchas y bajas; en móvil, tableta y escritorio normal manda la relación.
+   *
+   * `vh` y no `dvh` a propósito: `dvh` cambia mientras el móvil esconde la barra de
+   * direcciones, y eso animaría la altura de la banda en pleno desplazamiento, justo
+   * contra la contracción de `FranjaSede`.
+   *
+   * El suelo de 0 no es descuido: en una ventana más baja que la reserva —un teléfono
+   * apaisado, 844 × 390— el tope sale negativo y **la banda tiene que desaparecer**.
+   * Con un suelo de 3rem que se probó primero, esos 48 px eran justo los que dejaban la
+   * bajada 28 px fuera de la pantalla `[medido: 2026-09-22]`. La fotografía es
+   * decorativa —`aria-hidden`, `alt=""`— y el texto no lo es; cuando no caben los dos,
+   * se va la fotografía.
+   *
+   * La regla de `max-height` que sigue evita la franja de valores en que la banda
+   * quedaría entre 1 y 60 px: una tira así se lee como un defecto, no como una
+   * fotografía. Por debajo de 36rem de alto, no hay banda.
    */
-  --alto-franja: calc(100vw / 7.04);
+  --alto-franja: max(0px, min(calc(100vw / 7.04), calc(100vh - 32rem)));
   --alto-barra: 4.5625rem;
 
   /* Azul PUCV · Pantone 2945 U · derivado de #28598D */
@@ -205,6 +239,17 @@
   --steel-100: #e4edfd; /* texto principal · 16,24:1 */
 
   --pure-white: #ffffff;
+}
+
+/*
+ * Ventana más baja que 36rem: sin banda. Ver la nota de `--alto-franja`.
+ * El caso real es el teléfono apaisado; ahí el titular y la bajada se quedan con toda
+ * la pantalla en vez de competir con una tira de fotografía de 40 px.
+ */
+@media (max-height: 36rem) {
+  :root {
+    --alto-franja: 0px;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
