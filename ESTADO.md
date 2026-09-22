@@ -9,8 +9,8 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 Actualizado: **2026-09-21** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
 · Último despliegue: **2026-08-27**, versión `c5149c53`, sin marcas sin autorización.
-· **Dominio `bcsensing.org`: zona creada en Cloudflare (`pending`). Falta delegar los
-nameservers en Hostinger — bloqueado por el token. Ver «EMPIEZA AQUÍ».**
+· **Dominio `bcsensing.org`: delegado a Cloudflare en el registrador. Esperando que el
+registro `.org` propague y Cloudflare active la zona. Ver «EMPIEZA AQUÍ».**
 
 ---
 
@@ -108,30 +108,59 @@ Confirmado lo que ya decía este archivo: el OAuth de `wrangler` tiene `zone (re
 **ningún** `dns_records`. Por eso **el dominio personalizado se cuelga por la API del MCP,
 no con `wrangler`**.
 
-### ⏸ Bloqueado aquí: falta el token de Hostinger en `.env.local`
+### ✅ Paso 3 hecho: el dominio está delegado a Cloudflare
 
-**Este es el punto exacto donde se retoma.** Nada de lo de abajo está hecho.
+`domains_updateDomainNameserversV1` aceptó el cambio `[medido: 2026-09-21]`:
+
+```
+ANTES:   horizon.dns-parking.com · orbit.dns-parking.com
+DESPUÉS: jobs.ns.cloudflare.com  · nataly.ns.cloudflare.com
+```
+
+Estado del dominio según la API de Hostinger antes de tocarlo: `Active`, registrado el
+2026-09-21 18:36 UTC, expira 2027-09-21, con protección de privacidad y `is_locked: true`.
+Ese bloqueo es el de **transferencia** y no impidió el cambio de nameservers — medido, no
+supuesto: el PUT pasó. El bloqueo ICANN de 60 días vence el 2026-11-20 y tampoco afecta
+al DNS.
+
+### ⏸ Esperando aquí: propagación al registro `.org` y activación de la zona
+
+**Este es el punto exacto donde se retoma.** No hay nada que ejecutar para acelerarlo.
+
+Inmediatamente después del cambio, el TLD seguía publicando los nameservers viejos
+`[medido: `nslookup -type=NS bcsensing.org b0.org.afilias-nst.org`]`, y la zona en
+Cloudflare seguía en `pending`. Es lo esperado: el registrador envía el cambio al
+registro, el registro lo publica, y recién entonces Cloudflare lo ve y activa.
+
+Comprobar con estos dos, que son los que mandan:
+
+```bash
+nslookup -type=NS bcsensing.org b0.org.afilias-nst.org   # el registro .org
+# y el estado de la zona d19fd380d4814d99efcaace07281d18d en Cloudflare
+```
+
+Cuando el TLD devuelva `jobs` y `nataly`, la zona pasa a `active` sola. Si tarda más de
+24 h, forzar la revisión con `PUT /zones/{id}/activation_check`.
 
 ### Lo que falta hacer, en orden
 
 1. ~~Anotar los nameservers actuales antes de tocarlos~~ **hecho**, arriba.
 2. ~~Cloudflare: crear la zona y leer sus nameservers~~ **hecho**, arriba.
-3. Token de Hostinger en `.env.local` como `HOSTINGER_API_TOKEN=…`, con expiración corta.
-   Se crea en hPanel → cuenta → API.
-4. Comprobar el token **sin escribir nada**:
-   `node scripts/hostinger-nameservers.mjs leer bcsensing.org`
-5. Delegar:
-   `node scripts/hostinger-nameservers.mjs poner bcsensing.org jobs.ns.cloudflare.com nataly.ns.cloudflare.com --confirmo`
-   Sin `--confirmo` el script se niega y explica qué destruye. **Reversión**: el mismo
-   comando con `orbit.dns-parking.com horizon.dns-parking.com`.
-6. Esperar la activación de la zona. **No es inmediato y no se puede acelerar**: Cloudflare
-   no activa hasta ver la delegación propagada, y el dominio se registró el 2026-09-21, así
-   que el registro puede tardar horas en aceptar el cambio de NS. Comprobar con
-   `nslookup -type=NS bcsensing.org 8.8.8.8` y el estado de la zona en Cloudflare.
-7. Colgar el dominio personalizado del Worker `seminario-wireless-lab`.
+3. ~~Token de Hostinger en `.env.local`~~ **hecho**.
+4. ~~Comprobar el token sin escribir nada~~ **hecho**: `leer` devolvió el dominio.
+5. ~~Delegar los nameservers~~ **hecho**, arriba.
+   **Reversión**: `node scripts/hostinger-nameservers.mjs poner bcsensing.org
+   orbit.dns-parking.com horizon.dns-parking.com --confirmo`, o a mano en hPanel si el
+   token ya se revocó.
+6. **Esperar** la propagación y la activación. No se puede acelerar. ← *aquí estamos*
+7. Colgar el dominio personalizado del Worker `seminario-wireless-lab`. **Por la API del
+   MCP de Cloudflare**, no con `wrangler`: su OAuth no tiene `dns_records`.
 8. Desplegar con `SITE_URL="https://bcsensing.org"` (abajo) y
    `npm run verify:publicado -- https://bcsensing.org`.
-9. **Rotar o revocar el token de Hostinger el mismo día.**
+9. **Revocar el token de Hostinger y borrarlo de `.env.local`.** Ya cumplió su único
+   propósito. Mantenerlo en disco solo conserva la capacidad de revertir sin entrar al
+   panel, y eso no vale un token con permiso sobre el VPS de Demeter: la reversión desde
+   hPanel son dos minutos.
 
 **El orden de 7 y 8 no se invierte.** Desplegar con `SITE_URL=https://bcsensing.org`
 antes de que el dominio resuelva deja `workers.dev` sirviendo un sitio **sin `noindex`**
