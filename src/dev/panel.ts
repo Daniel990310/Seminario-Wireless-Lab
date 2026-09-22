@@ -44,6 +44,8 @@ interface AjusteFranja {
    */
   relacionFija: boolean;
   relacion: number;
+  /** Fracción superior de la banda que cubre el degradado hacia la barra. */
+  desvanecido: number;
   imagen: ImagenCargada | null;
 }
 
@@ -88,6 +90,7 @@ const FRANJA_ACTUAL: AjusteFranja = {
   alto: 1,
   relacionFija: false,
   relacion: 7.33, // la que ya rige entre 686 y 1219 px `[medido: 2026-09-22]`
+  desvanecido: 18,
   imagen: null,
 };
 
@@ -204,7 +207,7 @@ function construirCss(): string {
     : `calc(clamp(9rem, 21vw, 16rem) * 0.65 * ${f.alto})`;
   const lineas: string[] = [
     `:root { --alto-franja: ${alturaFranja}; }`,
-    `.franja-sede { --velo: ${f.velo}%; }`,
+    `.franja-sede { --velo: ${f.velo}%; --desvanecido: ${f.desvanecido}%; }`,
     // `!important` porque `FranjaSede.astro` pone `object-position` en el atributo
     // `style` del propio `<img>`, y un estilo en línea gana a cualquier hoja.
     `.franja-sede__imagen { object-position: ${f.x}% ${f.y}% !important;` +
@@ -403,6 +406,7 @@ function informe(): string {
     f.y !== 50 ||
     f.escala !== 1 ||
     f.velo !== 18 ||
+    f.desvanecido !== 18 ||
     f.alto !== 1 ||
     f.relacionFija ||
     f.imagen !== null;
@@ -412,6 +416,9 @@ function informe(): string {
       l.push(`- encuadre: "${f.x}% ${f.y}%"  (antes "50% 50%")  → src/components/SiteHeader.astro, prop \`encuadre\``);
     }
     if (f.velo !== 18) l.push(`- velo: ${f.velo}%  (antes 18%)  → src/components/FranjaSede.astro, \`--velo\``);
+    if (f.desvanecido !== 18) {
+      l.push(`- desvanecido: ${f.desvanecido}%  (antes 18%)  → src/components/FranjaSede.astro, \`--desvanecido\``);
+    }
     if (f.relacionFija) {
       l.push(`- relación FIJA: ${f.relacion.toFixed(2)} : 1  → src/styles/global.css, \`--alto-franja: calc(100vw / ${f.relacion.toFixed(2)})\``);
       l.push(
@@ -674,6 +681,15 @@ function montarControles(): void {
     deslizador({ etiqueta: 'encuadre ↕', min: 0, max: 100, paso: 1, unidad: '%', leer: () => f.y, escribir: (v) => (f.y = v) }),
     deslizador({ etiqueta: 'zoom', min: 1, max: 2, paso: 0.01, unidad: '×', leer: () => f.escala, escribir: (v) => (f.escala = v) }),
     deslizador({ etiqueta: 'velo', min: 0, max: 80, paso: 1, unidad: '%', leer: () => f.velo, escribir: (v) => (f.velo = v) }),
+    deslizador({
+      etiqueta: 'desvanecido hacia la barra',
+      min: 0,
+      max: 60,
+      paso: 1,
+      unidad: '%',
+      leer: () => f.desvanecido,
+      escribir: (v) => (f.desvanecido = v),
+    }),
     deslizador({ etiqueta: 'alto', min: 0.4, max: 2, paso: 0.05, unidad: '×', leer: () => f.alto, escribir: (v) => (f.alto = v) }),
     cargadorDeImagen('otra fotografía', (img) => (f.imagen = img)),
   );

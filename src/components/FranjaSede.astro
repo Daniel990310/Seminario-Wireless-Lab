@@ -108,6 +108,9 @@ const { imagen, encuadre = '50% 50%' } = Astro.props;
      * debajo, que es para lo que existe.
      */
     --velo: 16%;
+
+    /* Fracción superior de la banda que alcanza el degradado. Ver su nota abajo. */
+    --desvanecido: 18%;
   }
 
   /*
@@ -238,11 +241,30 @@ const { imagen, encuadre = '50% 50%' } = Astro.props;
    * `oklab` para que el tramo intermedio no vire a gris sucio, que es lo que hace la
    * interpolación en sRGB entre el azul del cielo y el azul de la barra.
    */
+  /*
+   * El alcance del desvanecido es una variable desde el 2026-09-22, y el valor bajó
+   * de 54 % a 18 %.
+   *
+   * Por qué. Los tres topes estaban escritos a mano —transparente al 46 %, mezcla al
+   * 76 %, sólido al 100 %—, así que el degradado cubría el 54 % superior de la banda.
+   * Se calibró cuando la banda medía 93,6 px y solo tenía que evitar un canto duro
+   * contra la barra. Con la relación fija la banda pasó a medir 273 px a 1920, y ese
+   * 54 % se convirtió en 147 px de fotografía lavada a azul.
+   *
+   * Daniel lo reportó como «la foto perdió resolución». No era resolución: capturada
+   * la banda en vivo a 2× y mirada al 100 %, la mitad inferior está nítida —se leen
+   * los paneles de vidrio de la Costanera— y la superior está bajo el degradado
+   * `[medido: 2026-09-22, captura de bcsensing.org]`.
+   *
+   * Ahora el alcance es una fracción declarada y el tramo intermedio se deriva de
+   * ella, de modo que cambiar un número no descoloca los otros dos.
+   */
   .franja-sede__desvanecido {
     background-image: linear-gradient(
       to top,
-      transparent 46%,
-      color-mix(in oklab, var(--background) 55%, transparent) 76%,
+      transparent calc(100% - var(--desvanecido)),
+      color-mix(in oklab, var(--background) 55%, transparent)
+        calc(100% - var(--desvanecido) * 0.45),
       var(--background) 100%
     );
   }
