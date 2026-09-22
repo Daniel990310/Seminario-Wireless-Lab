@@ -29,6 +29,7 @@ import { readFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { OG_VERSION } from '../src/data/og.ts';
 
 const RAIZ = fileURLToPath(new URL('..', import.meta.url)).replace(/[\\/]$/, '');
 const DIST = join(RAIZ, 'dist');
@@ -94,9 +95,65 @@ for (const idioma of ['es', 'en']) {
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(300);
 
-  const destino = join(SALIDA, `${idioma}.png`);
+  /*
+   * LA COMPROBACIÓN QUE JUSTIFICA EL DISEÑO DEL CARTEL.
+   *
+   * WhatsApp no siempre muestra la vista previa grande: a menudo la reduce a una
+   * miniatura CUADRADA y recorta la imagen por el centro. Si el bloque legible se
+   * sale de ese cuadrado, el recorte corta el texto a media palabra —que es lo que
+   * pasaba hasta el 2026-09-22— y nadie se entera hasta ver un enlace mal en un
+   * teléfono. La captura sale perfecta, el PNG mide 1200×630, `verify:seo` aprueba,
+   * y el enlace se ve roto igual.
+   *
+   * Por eso se mide aquí, donde el navegador ya está abierto y donde el fallo puede
+   * impedir que la imagen llegue a existir. No hay forma de comprobarlo sobre el PNG:
+   * exige saber DÓNDE está cada elemento, no cómo se ve el resultado.
+   */
+  const CUADRADO = { izq: (ANCHO - ALTO) / 2, der: (ANCHO + ALTO) / 2 };
+  const fuera = await page.evaluate(
+    ({ izq, der }) => {
+      const problemas = [];
+      for (const sel of ['[data-og-bloque]', '[data-og-escudo]', '[data-og-fechas]', 'h1']) {
+        const el = document.querySelector(sel);
+        if (!el) {
+          problemas.push(`${sel}: no existe en el cartel`);
+          continue;
+        }
+        const r = el.getBoundingClientRect();
+        if (r.left < izq || r.right > der) {
+          problemas.push(
+            `${sel}: ocupa ${Math.round(r.left)}…${Math.round(r.right)}, fuera de ${izq}…${der}`,
+          );
+        }
+        if (r.top < 0 || r.bottom > 630) {
+          problemas.push(`${sel}: se sale por arriba o por abajo`);
+        }
+      }
+      return problemas;
+    },
+    CUADRADO,
+  );
+
+  if (fuera.length) {
+    console.error(`
+✗ El cartel de ${idioma} no sobrevive al recorte cuadrado de WhatsApp:
+`);
+    for (const f of fuera) console.error(`  · ${f}`);
+    console.error(
+      `
+Todo lo legible tiene que caber entre x=${CUADRADO.izq} y x=${CUADRADO.der}.
+` +
+        `Ver la cabecera de src/components/CartelOg.astro.
+`,
+    );
+    process.exitCode = 1;
+    await ctx.close();
+    continue;
+  }
+
+  const destino = join(SALIDA, `${idioma}-${OG_VERSION}.png`);
   await page.screenshot({ path: destino, clip: { x: 0, y: 0, width: ANCHO, height: ALTO } });
-  generadas.push(`public/og/${idioma}.png`);
+  generadas.push(`public/og/${idioma}-${OG_VERSION}.png`);
   await ctx.close();
 }
 
