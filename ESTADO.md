@@ -135,6 +135,49 @@ El número se sube en `src/data/og.ts` cuando cambia el aspecto del cartel.
 donde ya se renderizaron. La caché es de la plataforma y no se purga desde el sitio. Un
 enlace nuevo, o el mismo reenviado a otra conversación, ya trae la nueva.
 
+### Lo que encontró Lighthouse que nuestros verificadores no · 2026-09-22
+
+Puntajes tras los arreglos, medidos con Lighthouse 12.8.2 en local (la API de PageSpeed
+devolvía 429 por cuota):
+
+| | Rendimiento | Accesibilidad | Prácticas | SEO |
+|---|---|---|---|---|
+| Escritorio | 99 | **100** (era 99) | 100 | 100 |
+| Móvil | **98** (era 94) | **100** (era 98) | 100 | 100 |
+
+**El hallazgo que importa no es un puntaje.** El enlace «Saltar al contenido» —el primer
+elemento interactivo de la página— apuntaba a `#contenido`, **un ancla que no existía en
+ninguna parte**. Con teclado: Tab, Enter, y a ninguna parte.
+
+`npm run verify` daba **0 violaciones**. La causa está medida: corría axe con
+`runOnly: ['wcag2a','wcag2aa','wcag21a','wcag21aa']`, y la regla `skip-link` está
+etiquetada `best-practice`. El comentario del propio archivo decía que las buenas
+prácticas «se informan pero no bloquean»; **ni se ejecutaban**.
+
+Es el mismo patrón que el beacon de Cloudflare, y ya van dos en un día: **la autoridad
+sobre un criterio puede estar mirando el sitio equivocado, y entonces el verde no dice
+nada**. Allí miraba `dist/` en vez del borde; aquí miraba un subconjunto de reglas.
+
+Resuelto: `id="contenido"` con `tabindex="-1"` en `<main>` —sin el `tabindex`, varios
+navegadores desplazan pero no mueven el foco, y el siguiente Tab devuelve a la barra—, y
+`best-practice` añadido a las etiquetas de axe. Comprobado con teclado real sobre el
+sitio publicado: Tab lleva al enlace, Enter mueve el foco a `<main id="contenido">`, y
+axe con las reglas ampliadas da 0 violaciones `[medido]`.
+
+**Un segundo defecto, latente, salió por el camino.** `LogoWall.proporcionDe` y su gemelo
+en `PaginaSeminario` resolvían las rutas de `/public` con `import.meta.url`. En el build
+Astro compila esos componentes a `dist/.prerender/chunks/`, así que `../../public`
+apuntaba a `dist/public` —inexistente— y el `catch` devolvía la proporción de reserva
+**en silencio**. Estaba dormido porque hoy ningún SVG pasa por `LogoWall`. Se resuelve
+desde `process.cwd()` y **los fallos pasan a ser ruidosos**: el silencio es lo que lo
+mantuvo escondido.
+
+**Lo que se dejó sin hacer, y por qué.** `uses-responsive-images` sigue en 0: se sirven
+fotografías de expositores a 416 px para pintarlas a la mitad, ~76 kB de más en
+escritorio y ~17 kB en móvil. Es real pero pequeño, y tocar los `widths` de `<Image />`
+arriesga las densidades 2× que hoy se ven nítidas. No se tocó sin medir primero qué
+tamaño se pinta en cada punto de ruptura.
+
 ### ⏳ Lo que sigue abierto y no depende de nosotros
 
 1. **Revocar el token de Hostinger y borrarlo de `.env.local`.** Ya cumplió su único

@@ -58,6 +58,30 @@ const site = sitioDeclarado || PRODUCTION_SITE;
  */
 export const SITE_ES_RESPALDO = !sitioDeclarado;
 
+/**
+ * Panel de ajuste visual en `/ajustar`, **solo con `astro dev`**.
+ *
+ * La ruta se inyecta aqui y no existe un archivo en `src/pages/`: una pagina de
+ * `src/pages/` se construye siempre y terminaria publicada en `dist/`. Con la
+ * inyeccion condicionada a `command === 'dev'`, en produccion la ruta no esta
+ * protegida —**no existe**—, que es la unica forma de no anadir superficie.
+ *
+ * Que hace el panel esta explicado en `src/dev/ajustar.astro`.
+ */
+function panelDeAjuste() {
+  /** @type {import('astro').AstroIntegration} */
+  const integracion = {
+    name: 'panel-de-ajuste',
+    hooks: {
+      'astro:config:setup': ({ command, injectRoute }) => {
+        if (command !== 'dev') return;
+        injectRoute({ pattern: '/ajustar', entrypoint: './src/dev/ajustar.astro' });
+      },
+    },
+  };
+  return integracion;
+}
+
 export default defineConfig({
   site,
   output: 'static',
@@ -107,6 +131,8 @@ export default defineConfig({
       // pedirle al buscador que indexe el archivo que le da las instrucciones.
       filter: (pagina) => !pagina.includes('/og/') && !pagina.endsWith('/robots.txt'),
     }),
+    // Solo se activa con `astro dev`; ver la nota sobre `panelDeAjuste` arriba.
+    panelDeAjuste(),
   ],
   /*
    * AquÃ­ vivÃ­a un alias `'@' â†’ ./src`, para que los componentes de Magic UI

@@ -353,6 +353,7 @@ scripts/verify.mjs     verificador de accesibilidad y peso
 .claude/skills/        skills instalados (ver specs/habilidades.md)
 src/
 ├── data/              todo el contenido editable
+├── dev/               panel de ajuste visual — NO se construye, ver abajo
 ├── layouts/           <head>, SEO, datos estructurados
 ├── pages/             composición
 ├── components/        secciones y piezas — todas `.astro`, ninguna `.tsx`
@@ -365,6 +366,35 @@ public/og/             imágenes para compartir, generadas con `npm run og`
 **No hay dependencias de interfaz.** El sitio se compone solo con Astro: sin React, sin
 `src/lib/`, sin `components.json`. Si hace falta una isla, se instala la integración
 entonces y se escribe el motivo.
+
+### El panel de ajuste visual (`/ajustar`)
+
+`npm run dev` → <http://localhost:4321/ajustar>. Muestra la página **real** dentro de un
+iframe con un panel de perillas al lado: encuadre y zoom de la fotografía de la franja,
+velo, alto, fondos de sección, encuadre de los retratos y edición de textos en sitio.
+
+Existe por un problema concreto: Daniel sabe qué quiere ver y describirlo en palabras
+—«la imagen un poco más abajo»— cuesta varias vueltas y acaba en un número que el agente
+adivina. El panel **no adivina**: emite el valor exacto y el archivo donde va, y eso es lo
+que se pega en el chat.
+
+Tres propiedades que no se pueden perder al tocarlo:
+
+1. **No se publica.** La ruta la inyecta `panelDeAjuste()` en `astro.config.mjs` solo con
+   `command === 'dev'`. Por eso el archivo vive en `src/dev/` y no en `src/pages/`: una
+   página de `src/pages/` se construye siempre. En producción la ruta no está protegida,
+   **no existe**. `[verificado: 2026-09-22, npm run build → dist/ajustar ausente]`
+2. **No escribe en el repositorio.** El borrador vive en `localStorage`. Lo que sale del
+   panel es texto para pegar; implementarlo sigue siendo un cambio revisado.
+3. **Avisa antes de enamorarse.** Poner una imagen bajo un texto hace que axe devuelva ese
+   texto como contraste indeterminado y `npm run verify` falla (RNF-1.3, la nota larga está
+   en `FranjaSede.astro`). El panel lo dice en rojo en cuanto se activa, en vez de dejar que
+   se descubra al implementarlo.
+
+Comprobado el 2026-09-22 con Playwright sobre el servidor de desarrollo: monta los diez
+grupos de controles, el encuadre mueve la fotografía real (`50% 50%` → `50% 72%`), el
+informe emite el valor y el archivo, el marco a 390 px activa el diseño móvil de verdad, el
+borrador sobrevive a recargar y el aviso de accesibilidad aparece. `[medido]`
 
 ## Git
 

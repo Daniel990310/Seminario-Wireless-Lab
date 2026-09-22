@@ -22,4 +22,18 @@ export const acceso = {
    * validador de Google descarta la oferta entera y el distintivo «Gratis» no sale.
    */
   moneda: 'CLP',
+  /**
+   * Fecha desde la que la oferta es válida (`schema.org/Offer.validFrom`).
+   *
+   * Google la marca como **opcional y no crítica**: sin ella el resultado de evento se
+   * construye igual. Se declara porque el valor **existe y es verificable**, no para
+   * silenciar el aviso: es el día en que el sitio se publicó anunciando la gratuidad.
+   * Antes de esa fecha no había ninguna oferta que ofrecer.
+   *
+   * **No es la fecha de apertura de inscripciones.** No hay inscripciones: RF-3 está
+   * fuera de alcance. Inventar una fecha de venta de entradas para un evento sin
+   * entradas sería precisamente lo que la regla de procedencia prohíbe, y además
+   * quedaría escrita en un resultado de búsqueda.
+   */
+  validoDesde: '2026-09-22',
 } as const;
