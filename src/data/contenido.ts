@@ -137,6 +137,9 @@ export function contenido(lang: Idioma) {
 
     contact: { ...comun.contact, ...t.contact },
 
+    /* Un único formulario para los dos idiomas; ver la nota en `comun.ts` (RF-3). */
+    registro: comun.registro,
+
     /*
      * Pasan tal cual: son nombres de personas, y un nombre no tiene versión en
      * inglés. Lo único traducible —el grado— lo resuelve el pie con

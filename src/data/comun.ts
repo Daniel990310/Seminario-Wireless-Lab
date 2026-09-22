@@ -450,6 +450,21 @@ export const comun = {
   },
 
   /**
+   * Inscripción (RF-3). **Un enlace saliente a un formulario de Google**, no un
+   * formulario propio ni un `<iframe>`: ver el porqué en RF-3, que lo decide.
+   *
+   * Mientras esto sea `null` **no se pinta ningún botón** y el sitio queda como
+   * estaba. Es deliberado: un botón de inscripción que no lleva a ninguna parte
+   * es peor que no tener botón. Para activarlo basta pegar aquí la dirección que
+   * da Google en «Enviar → enlace»; no hay que tocar ningún componente.
+   *
+   * No se traduce: Google Forms sirve un único formulario para los dos idiomas.
+   * Si algún día hay uno por idioma, esto pasa a `es.ts`/`en.ts` y `tipos.ts`
+   * obliga a que estén los dos.
+   */
+  registro: { url: null as string | null },
+
+  /**
    * Comité organizador y desarrollo del sitio, en el pie (indicación de Daniel,
    * 2026-09-22).
    *

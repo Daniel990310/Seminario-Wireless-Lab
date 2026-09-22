@@ -147,6 +147,8 @@ export interface ContenidoIdioma {
       lugarEyebrow: string;
       fechasEyebrow: string;
       verPrograma: string;
+      /** Llamada a la acción de RF-3. Solo se usa si `comun.registro.url` existe. */
+      inscribirse: string;
       verExpositores: string;
       /** Descripción accesible de la figura de propagación. */
       figuraTitulo: string;

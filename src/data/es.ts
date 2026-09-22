@@ -166,6 +166,7 @@ export const es = {
       lugarEyebrow: 'Lugar',
       fechasEyebrow: 'Fechas',
       verPrograma: 'Ver programa',
+      inscribirse: 'Inscribirse',
       verExpositores: 'Expositores',
       figuraTitulo: 'Detección inalámbrica en bandas mmWave y sub-THz',
       figuraDescripcion:

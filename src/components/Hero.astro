@@ -106,9 +106,38 @@ const { c } = Astro.props;
           Botones rectos y de acento apagado. El cian saturado del relleno
           resultaba estridente para el registro institucional del seminario.
         -->
+        <!--
+          Inscripción (RF-3). El botón **solo existe si hay dirección**: sin ella no
+          se pinta nada y el hero queda como estaba. Publicar una llamada a la acción
+          que no lleva a ninguna parte es peor que no tenerla.
+
+          Cuando existe, se lleva el relleno sólido y `Ver programa` pasa a contorno:
+          inscribirse es lo que el organizador quiere que ocurra, y dos botones
+          rellenos no jerarquizan nada.
+
+          Se abre en la misma pestaña. `target="_blank"` obliga a avisar de que se
+          abre una ventana nueva para no sorprender a quien navega con lector de
+          pantalla, y aquí no aporta: es el final del camino, no una consulta lateral.
+        -->
+        {
+          c.registro.url && (
+            <a
+              href={c.registro.url}
+              rel="noopener"
+              class="rounded-control bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity duration-200 hover:opacity-90"
+            >
+              {c.ui.hero.inscribirse}
+            </a>
+          )
+        }
         <a
           href="#programa"
-          class="rounded-control bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity duration-200 hover:opacity-90"
+          class:list={[
+            'rounded-control px-6 py-3 text-sm transition-colors',
+            c.registro.url
+              ? 'border border-border-control font-medium text-foreground hover:border-primary/50 hover:text-primary'
+              : 'bg-primary font-semibold text-primary-foreground transition-opacity duration-200 hover:opacity-90',
+          ]}
         >
           {c.ui.hero.verPrograma}
         </a>

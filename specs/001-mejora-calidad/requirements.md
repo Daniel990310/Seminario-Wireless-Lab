@@ -168,13 +168,41 @@ rápido.
 son mejores que un menú desplegable: menos peso, menos código y una interacción
 menos que verificar.
 
-### RF-3 · Registro de asistentes (previsto, no implementado)
+### RF-3 · Registro de asistentes
+
+**Decisión tomada el 2026-09-22.** El organizador del evento pidió un formulario de
+inscripción y Daniel eligió **enlazar un formulario de Google**, no construir uno.
+Los dos criterios anteriores —describir sin implementar, y no integrar terceros
+mientras la decisión estuviera abierta— quedan cumplidos y cerrados.
+
+Por qué enlazar y no incrustar ni construir, que es lo que decide el resto:
+
+- **Ningún dato personal queda bajo nuestra custodia.** El sitio es estático y no
+  tiene respaldo; construir el formulario obligaría a levantar un punto de entrada
+  público, con Turnstile, límite de tasa, control detectivo y una política de datos
+  escrita. Enlazar no añade **ninguna** superficie expuesta.
+- **Incrustar en un `<iframe>` no es lo mismo que enlazar.** Un iframe de Google en
+  la página carga terceros en la carga inicial (contra RNF-2.3), mete un documento
+  ajeno en el árbol de accesibilidad y su contraste y su foco no los podemos medir
+  con `verify`. Se enlaza.
+- El organizador ve las respuestas sin depender de nosotros, que era el punto.
 
 **Criterios de aceptación**
 
-1. La especificación de diseño describe dónde entraría la sección y qué datos
-   requeriría, sin agregar código ni dependencias.
-2. Ningún servicio de terceros se integra mientras la decisión esté abierta.
+1. La inscripción es **un enlace saliente**. Ni `<iframe>`, ni petición a terceros
+   en la carga inicial, ni script de Google en el sitio.
+2. La dirección del formulario vive en `src/data/comun.ts` como un único valor. No
+   se escribe en el marcado de ningún componente.
+3. **Mientras ese valor sea `null`, la llamada a la acción no se renderiza** y el
+   sitio queda exactamente como antes. Publicar un botón que lleva a ninguna parte
+   es peor que no tener botón.
+4. Cuando el valor existe, la llamada a la acción es el botón primario del hero, y
+   `Ver programa` pasa a secundario: inscribirse es lo que el organizador quiere que
+   ocurra.
+5. La `url` de la oferta en los datos estructurados apunta al formulario cuando
+   existe, y a la página del seminario cuando no.
+6. `npm run verify` sigue en verde con el botón presente, en los dos idiomas y en
+   los dos temas.
 
 ### RF-7 · Fichas de expositor con reseña verificable
 

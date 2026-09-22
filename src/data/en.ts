@@ -166,6 +166,7 @@ export const en = {
       lugarEyebrow: 'Venue',
       fechasEyebrow: 'Dates',
       verPrograma: 'View programme',
+      inscribirse: 'Register',
       verExpositores: 'Speakers',
       figuraTitulo: 'Wireless sensing in mmWave and sub-THz bands',
       figuraDescripcion:

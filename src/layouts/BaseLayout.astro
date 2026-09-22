@@ -110,10 +110,13 @@ const eventSchema = {
      */
     validFrom: seminar.acceso.validoDesde,
     /*
-     * La URL de la oferta es la página del seminario, no una de inscripción: RF-3
-     * —registro de asistentes— está fuera de alcance y no existe tal página.
+     * La URL de la oferta apunta al formulario de inscripción cuando existe (RF-3,
+     * criterio 5), y a la página del seminario cuando no. Un buscador que muestre el
+     * distintivo de evento enlaza esta dirección: si hay dónde inscribirse, llevar
+     * ahí es lo correcto; si no lo hay, mandar a la propia página es preferible a
+     * declarar una oferta sin destino.
      */
-    url: canonical.href,
+    url: seminar.registro.url ?? canonical.href,
   },
   location: {
     '@type': 'Place',
