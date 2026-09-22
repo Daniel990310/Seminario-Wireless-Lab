@@ -137,13 +137,25 @@ enlace nuevo, o el mismo reenviado a otra conversación, ya trae la nueva.
 
 ### Lo que encontró Lighthouse que nuestros verificadores no · 2026-09-22
 
-Puntajes tras los arreglos, medidos con Lighthouse 12.8.2 en local (la API de PageSpeed
-devolvía 429 por cuota):
+Puntajes tras los arreglos. **PageSpeed Insights da 100 en las cuatro categorías, en
+escritorio y en móvil** `[medido por Daniel, 2026-09-22]`.
+
+Mi medición local con Lighthouse 12.8.2 fue algo más baja —la API de PageSpeed devolvía
+429 por cuota, así que corrí Lighthouse a mano—, y las dos se dejan escritas para que
+nadie confunda una con otra:
 
 | | Rendimiento | Accesibilidad | Prácticas | SEO |
 |---|---|---|---|---|
-| Escritorio | 99 | **100** (era 99) | 100 | 100 |
-| Móvil | **98** (era 94) | **100** (era 98) | 100 | 100 |
+| PageSpeed, escritorio | **100** | **100** | **100** | **100** |
+| PageSpeed, móvil | **100** | **100** | **100** | **100** |
+| Local, escritorio | 99 | 100 (era 99) | 100 | 100 |
+| Local, móvil | 98 (era 94) | 100 (era 98) | 100 | 100 |
+
+La diferencia en rendimiento es varianza entre ejecuciones, no una mejora: el rendimiento
+de laboratorio fluctúa entre pasadas. **Un 100 de hoy no es una garantía de mañana**, y
+los datos de campo (CrUX) solo aparecerán cuando haya tráfico real. Los que sí son
+deterministas son los de accesibilidad: `skip-link` y `unsized-images` pasaron de fallar
+a pasar por un cambio de código, no por suerte.
 
 **El hallazgo que importa no es un puntaje.** El enlace «Saltar al contenido» —el primer
 elemento interactivo de la página— apuntaba a `#contenido`, **un ancla que no existía en
