@@ -88,8 +88,9 @@ if (accion === 'leer') {
   await pedir('PUT', `/api/domains/v1/portfolio/${dominio}/nameservers`, { ns1, ns2 });
   const despues = await pedir('GET', `/api/domains/v1/portfolio/${dominio}`);
   console.log('Nameservers DESPUÉS:', JSON.stringify(despues?.name_servers ?? despues?.nameservers ?? '(no informado)'));
-  console.log('\nLa propagación no es inmediata. Comprobar con:');
-  console.log(`  nslookup -type=NS ${dominio} 8.8.8.8`);
+  console.log('\nLa propagación no es inmediata. Comprobar contra el REGISTRO del TLD,');
+  console.log('no contra un resolutor público: 8.8.8.8 devuelve lo que tenga en caché.');
+  console.log(`  nslookup -type=NS ${dominio} b0.org.afilias-nst.org   # para .org`);
 } else {
   salir(`Acción desconocida: ${accion}`);
 }
