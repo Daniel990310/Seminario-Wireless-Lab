@@ -22,6 +22,16 @@
   "name": "seminario-wireless-lab",
   "compatibility_date": "2026-07-31",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    /*
+     * Sin esto, `dist/404.html` se sube pero NO se usa: Workers devuelve un 404 con
+     * cuerpo vacío y la persona ve una página en blanco. Medido el 2026-09-22 sobre
+     * el sitio ya publicado, con la página 404 desplegada `[medido]`.
+     *
+     * Pages adivinaba este comportamiento mirando si existía `404.html`. Workers
+     * **no adivina a propósito**, y la documentación lo dice así: la opción tiene que
+     * declararse. Es un requisito de RNF-7.6.
+     */
+    "not_found_handling": "404-page"
   }
 }

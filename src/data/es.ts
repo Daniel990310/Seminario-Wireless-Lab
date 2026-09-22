@@ -153,6 +153,14 @@ export const es = {
       cambiarA: 'English',
     },
 
+    error404: {
+      etiqueta: 'Error 404',
+      titulo: 'Esta página no existe',
+      explicacion: 'Puede que el enlace esté mal copiado. El seminario está en el inicio.',
+      volver: 'Ir al inicio',
+      tituloDocumento: 'Página no encontrada',
+    },
+
     hero: {
       eyebrow: 'Seminario internacional',
       lugarEyebrow: 'Lugar',

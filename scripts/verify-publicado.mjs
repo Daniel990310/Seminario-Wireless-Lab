@@ -237,6 +237,152 @@ if (meta.es && meta.en) {
   );
 }
 
+/*
+ * RNF-7.6 y RNF-7.7 en vivo.
+ *
+ * `verify:cabeceras` ya comprueba que `dist/` contenga la 404 y la CSP. Esto es otra
+ * cosa: que el borde las **entregue**. Son dos fallos distintos y el de `dist/` no
+ * detecta el segundo — `_headers` es un archivo que el proveedor puede ignorar, y
+ * hasta el 2026-09-22 nadie en este proyecto había medido si Workers lo respeta.
+ */
+{
+  const rutaInexistente = `${BASE}/esta-ruta-no-existe-${Date.now()}`;
+  const { respuesta, error } = await pedir(rutaInexistente);
+  if (!respuesta) {
+    check('RNF-7.6 · una URL inexistente responde', false, error);
+  } else {
+    const cuerpo = await respuesta.text();
+    check(
+      'RNF-7.6 · una URL inexistente devuelve 404',
+      respuesta.status === 404,
+      `HTTP ${respuesta.status}`,
+    );
+    check(
+      'RNF-7.6 · la 404 servida no está en blanco',
+      cuerpo.length > 1000,
+      `${cuerpo.length} bytes${cuerpo.length === 0 ? ' — página en blanco' : ''}`,
+    );
+    check(
+      'RNF-7.6 · la 404 servida es la del sitio',
+      /Error 404/.test(cuerpo) && cuerpo.includes('href="/en/"'),
+      'con el mensaje y los dos enlaces',
+    );
+  }
+
+  const { respuesta: raiz, error: errorRaiz } = await pedir(`${BASE}/`);
+  if (!raiz) {
+    check('RNF-7.7 · el borde entrega las cabeceras', false, errorRaiz);
+  } else {
+    const csp = raiz.headers.get('content-security-policy');
+    check(
+      'RNF-7.7 · el borde entrega la Content-Security-Policy',
+      !!csp,
+      csp ? `${csp.length} caracteres` : 'AUSENTE: el proveedor ignora dist/_headers',
+    );
+    check(
+      "RNF-7.7 · la CSP servida no permite 'unsafe-inline' en script-src",
+      !!csp && !/script-src[^;]*'unsafe-inline'/.test(csp),
+      csp ? 'solo hashes' : 'sin CSP',
+    );
+    for (const [cabecera, esperado] of [
+      ['x-content-type-options', 'nosniff'],
+      ['x-frame-options', 'SAMEORIGIN'],
+      ['referrer-policy', 'strict-origin-when-cross-origin'],
+    ]) {
+      const v = raiz.headers.get(cabecera);
+      check(`RNF-7.7 · ${cabecera}`, v?.toLowerCase() === esperado.toLowerCase(), v ?? 'ausente');
+    }
+    /*
+     * HSTS no sale de `_headers`: lo inyecta Cloudflare desde la configuración de la
+     * zona, que NO está versionada. Por eso se comprueba aquí y no contra `dist/`: es
+     * la única forma de notar que alguien lo apagó en el panel.
+     */
+    const hsts = raiz.headers.get('strict-transport-security');
+    const edad = Number(hsts?.match(/max-age=(\d+)/)?.[1] ?? 0);
+    check(
+      'RNF-7.7 · HSTS activo (ajuste de zona, no versionado)',
+      edad >= 15552000,
+      hsts ?? 'ausente',
+    );
+  }
+
+  const { respuesta: claro } = await pedir(`${BASE.replace('https://', 'http://')}/`, {
+    redirect: 'manual',
+  });
+  check(
+    'RNF-7.7 · http:// redirige a https://',
+    !!claro && claro.status >= 300 && claro.status < 400,
+    claro ? `HTTP ${claro.status} → ${claro.headers.get('location') ?? '?'}` : 'sin respuesta',
+  );
+}
+
+/*
+ * RNF-4.1 en vivo — «sin analítica, sin cookies y sin tipografías remotas».
+ *
+ * ESTE CRITERIO EXISTE POR UN FALLO REAL, no por precaución. El 2026-09-22, dos
+ * segundos después de que la zona de Cloudflare activara, Cloudflare creó **solo** un
+ * sitio de Web Analytics con `auto_install: true` y regla `host:* paths:*`, y empezó a
+ * inyectar `static.cloudflareinsights.com/beacon.min.js` en todas las páginas
+ * `[medido]`. Nadie lo pidió y ningún verificador lo vio.
+ *
+ * Por qué no lo vio nadie: **todos los demás verificadores miran `dist/`**, y esto no
+ * está en `dist/`. Lo añade el borde, DESPUÉS del despliegue, y solo ante peticiones
+ * que parecen de navegador —un `curl` por omisión no lo recibe—. De ahí el
+ * `User-Agent`: sin él, este criterio pasaría en verde con el beacon puesto.
+ *
+ * Lo destapó la CSP al bloquearlo. Sin CSP habría seguido ahí indefinidamente.
+ */
+{
+  const COMO_NAVEGADOR = {
+    'User-Agent':
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' +
+      'Chrome/141.0.0.0 Safari/537.36',
+    Accept: 'text/html,application/xhtml+xml',
+  };
+  const propio = new URL(BASE).host;
+
+  for (const ruta of ['/', '/en/']) {
+    // El parámetro evita que responda una copia en caché de antes del arreglo.
+    const { respuesta, error } = await pedir(`${BASE}${ruta}?verificacion=${Date.now()}`, {
+      headers: COMO_NAVEGADOR,
+    });
+    if (!respuesta) {
+      check(`RNF-4.1 · sin terceros en el HTML servido (${ruta})`, false, error);
+      continue;
+    }
+    const html = await respuesta.text();
+    const terceros = [
+      ...new Set(
+        [...html.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)]
+          .map((m) => new URL(m[1]).host)
+          .filter((h) => h !== propio),
+      ),
+    ];
+    /*
+     * Solo cuentan los SUBRECURSOS: `<script src>`, `<link href>`, `<img src>`,
+     * `<iframe src>`. Los enlaces `<a href>` a las universidades y a los perfiles de
+     * los expositores son navegación, no peticiones, y RNF-4.1 no los prohíbe.
+     */
+    const subrecursos = [
+      ...new Set(
+        [
+          ...html.matchAll(/<(?:script|img|iframe)[^>]*\bsrc="(https?:\/\/[^"]+)"/g),
+          ...html.matchAll(/<link[^>]*\bhref="(https?:\/\/[^"]+)"/g),
+        ]
+          .map((m) => new URL(m[1]).host)
+          .filter((h) => h !== propio),
+      ),
+    ];
+    check(
+      `RNF-4.1 · el borde no inyecta terceros en ${ruta}`,
+      subrecursos.length === 0,
+      subrecursos.length === 0
+        ? `0 subrecursos externos (${terceros.length} enlaces de navegación, permitidos)`
+        : `INYECTADO: ${subrecursos.join(', ')}`,
+    );
+  }
+}
+
 console.log(`\nComprobación del sitio publicado — ${BASE}\n`);
 let fallos = 0;
 for (const r of resultados) {

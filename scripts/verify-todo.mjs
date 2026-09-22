@@ -1,5 +1,5 @@
 /**
- * Corre los siete verificadores y resume.
+ * Corre los verificadores de `dist/` y resume.
  *
  * No es un `&&` encadenado: si el primero falla, un `&&` nunca llegaría a los
  * demás y parecería que no existen. Además el encadenado depende del shell, y
@@ -24,6 +24,7 @@ const VERIFICADORES = [
   { guion: 'verify-idioma.mjs', nombre: 'Sitio bilingüe (RF-1)' },
   { guion: 'verify-seo.mjs', nombre: 'SEO y metadatos (RNF-3)' },
   { guion: 'verify-interaccion.mjs', nombre: 'Componentes interactivos (RF-6)' },
+  { guion: 'verify-cabeceras.mjs', nombre: 'Página 404 y cabeceras (RNF-7.6, RNF-7.7)' },
 ];
 
 const correr = (guion) =>

@@ -9,8 +9,9 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 Actualizado: **2026-09-22** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
 · Último despliegue: **2026-09-22**, versión `adda9052`, en `https://bcsensing.org`.
-· **Publicado en <https://bcsensing.org> el 2026-09-22, versión `adda9052`. Primer
-despliegue indexable. Pendientes de operación en «EMPIEZA AQUÍ».**
+· **Publicado en <https://bcsensing.org> el 2026-09-22, versión `830dafb9`. Primer
+despliegue indexable. Pendientes en «EMPIEZA AQUÍ»: Search Console, `offers`, el token
+de Hostinger sin revocar.**
 
 ---
 
@@ -43,77 +44,85 @@ Cómo se llegó, con lo que tardó de verdad:
 **Revocar el token de Hostinger y borrarlo de `.env.local`.** Ya cumplió su único
 propósito. Hereda todos los permisos del usuario, el VPS de Demeter incluido.
 
-## Lo que le falta al sitio para estar bien operado
+## Revisión del sitio publicado · 2026-09-22
 
-Medido sobre `https://bcsensing.org` el 2026-09-22, **no** deducido del código.
-Ninguno impide que el sitio funcione; el orden es por daño.
+Medida contra `https://bcsensing.org`, **no** deducida del código. Ocho hallazgos; seis
+quedaron corregidos y verificados, dos dependen de alguien más.
 
-### 1. `www.bcsensing.org` no resuelve · **bloqueado, falta permiso**
+### ✅ Corregido y verificado en vivo
 
-`curl: (6) Could not resolve host` `[medido]`. Quien teclee `www.` —mucha gente, y
-cualquiera que transcriba mal una URL de un programa impreso o un QR— recibe «no se
-puede acceder al sitio», no el seminario.
+| Hallazgo | Estado medido |
+|---|---|
+| `www.bcsensing.org` **no resolvía** | `CNAME www → apex` *proxied* + regla 301. Redirige por HTTP y HTTPS conservando ruta y query, en las dos IPs |
+| `min_tls_version` era **1.0** | 1.2. TLS 1.1 **rechazado**, 1.2 aceptado `[medido]` |
+| `http://` respondía **200 en claro** | `always_use_https: on` → 301 |
+| Sin **HSTS** | `max-age=15552000`, sin `preload`, sin `includeSubDomains` |
+| La **404 devolvía 0 bytes** | 3 945 B, bilingüe, `noindex`, sin JSON-LD, fuera del sitemap |
+| Sin **CSP** | Generada en el build. `script-src` con hashes, **sin `'unsafe-inline'`** |
 
-**Arreglo**: `CNAME www → bcsensing.org` *proxied* + regla de redirección 301 al apex
-conservando ruta y query. **No** colgar `www` del Worker como segundo dominio: eso
-serviría el mismo sitio en dos hosts y parte la señal de indexación entre ambos.
-**Qué se pierde**: nada. El 301 consolida en el apex.
-*Intentado el 2026-09-22; el clasificador de auto mode lo bloqueó por crear un registro DNS.*
+**El orden de magnitud del trabajo estuvo en la 404 y la CSP**, que son cambio de
+código y por eso empezaron por `requirements.md` (RNF-7.6 y RNF-7.7), no por el editor.
 
-### 2. `min_tls_version` es **1.0** · **bloqueado en el mismo lote**
+### 🔴 El hallazgo que no buscábamos
 
-`[medido vía API]`. TLS 1.0 y 1.1 están retirados desde 2020. Subir a 1.2 no deja fuera
-a ningún navegador en uso. **Qué se pierde**: clientes anteriores a ~2014.
+**Cloudflare inyectaba un script de analítica de terceros en todas las páginas**, y
+llevaba ahí desde que la zona activó. Incumple RNF-4.1 —«sin analítica, sin cookies y
+sin tipografías remotas»—.
 
-### 3. Sin HSTS · **decisión, no se aplica sin autorización**
+Rastro exacto: la zona activó a las **00:47:08 UTC**; Cloudflare creó un sitio de Web
+Analytics con `auto_install: true` y regla `host:* paths:*` a las **00:47:10**. Dos
+segundos. Nadie lo pidió.
 
-`strict_transport_security.enabled: false` `[medido]`. `always_use_https` ya está **on**
-—se activó el 2026-09-22 y `http://` responde 301 `[medido]`—, pero eso protege después
-de la primera petición en claro. HSTS la elimina.
+**Por qué ningún verificador lo vio, que es la parte que importa:**
 
-**No se activó a propósito.** Es la única de esta lista **difícil de revertir**: el
-navegador recuerda la directiva durante todo el `max-age` y apagarla no borra lo ya
-almacenado. Con un `max-age` largo, un fallo de certificado deja el sitio inalcanzable
-sin forma de saltárselo. Propuesta: empezar en 6 meses, **sin `preload`** y **sin
-`includeSubDomains`** hasta que `www` esté cableado.
+1. **Todos miraban `dist/`.** Esto no está en `dist/`. Lo añade el borde *después* del
+   despliegue. Un sitio que cumple RNF-4.1 en el repositorio puede incumplirlo en
+   producción sin que el repositorio se entere.
+2. **La inyección es condicional.** Un `curl` sin `User-Agent` de navegador recibe el
+   HTML limpio. Una comprobación escrita sin esa cabecera habría pasado **en verde con
+   el beacon puesto**, que es peor que no comprobar nada.
 
-### 4. La página 404 está en blanco · **cambio de código, fuera de `requirements.md`**
+**Lo destapó la CSP al bloquearlo.** Sin CSP habría seguido ahí indefinidamente.
 
-`HTTP 404`, **0 bytes** `[medido]`. No hay `src/pages/404.astro`, así que Cloudflare
-devuelve el suyo, que es vacío. Un enlace mal copiado deja a la persona en una página
-blanca sin manera de llegar al seminario.
+Corregido con `auto_install: false` —la acción reversible mínima, en vez de borrar el
+sitio— y cerrado con **RNF-4.3**, que lo comprueba en vivo y con cabeceras de navegador
+en cada `verify:publicado`. Sensibilidad probada apuntando el mismo verificador a
+`pucv.cl`: detecta `googletagmanager.com`, `secure.adnxs.com` y `youtube.com` `[medido]`.
 
-**No se implementó** porque `AGENTS.md` prohíbe implementar lo que no está en
-`requirements.md`. Es un requisito que falta, no una tarea pendiente: decidir si entra.
+**Esta configuración vive en Cloudflare, no en el repositorio.** Es la excepción a
+RNF-7.1 y por eso hay que medirla, no confiar en ella. Lo mismo vale para HSTS, el
+`min_tls_version`, el `always_use_https` y la regla de `www`.
 
-### 5. Sin Content-Security-Policy
+### Comprobado en navegador real, no solo por cabeceras
 
-Las cabeceras servidas son `X-Frame-Options`, `X-Content-Type-Options`,
-`Referrer-Policy` y `Permissions-Policy` `[medido]` — `_headers` **sí funciona** en
-Workers con activos estáticos, lo que despeja la duda que el archivo dejaba abierta.
-Falta CSP. El sitio no carga terceros (RNF-2.3), así que una CSP estricta es viable,
-pero el tema en línea del `<head>` exige `'unsafe-inline'` o un nonce, y un nonce no
-existe en un sitio 100 % estático. Hay que medirlo antes de escribirlo.
+Playwright contra las tres URL: **cero violaciones de CSP**, el guion del tema se
+ejecuta (`data-theme` puesto), los atributos `style` se aplican y la 404 renderiza
+`[medido]`. Una CSP con un hash mal calculado no falla ninguna comprobación de
+cabeceras: simplemente deja de ejecutar el guion y la página se queda en claro. Solo un
+navegador lo dice.
 
-### 6. Nadie ha dado de alta el sitio en Google Search Console
+### ⏳ Lo que sigue abierto y no depende de nosotros
 
-Sin esto no hay forma de saber si Google indexó, ni de pedir el rastreo, ni de ver qué
-consultas lo encuentran. El seminario es el **21–22 de octubre de 2026**: quedan unas
-cuatro semanas. Un sitio nuevo sin altas tarda.
-
-### 7. `offers` / `isAccessibleForFree` en el JSON-LD · **falta un dato del cliente**
-
-Si la asistencia es gratuita, declararlo habilita el distintivo «Gratis» en el resultado
-de evento de Google. **Nadie ha confirmado si el seminario tiene costo** y la regla de
-procedencia prohíbe inventarlo.
-
-### 8. Cuatro dependencias instaladas y sin usar
-
-`@astrojs/react`, `react`, `react-dom` y `motion` están en `package.json` y la
-integración React está activa en `astro.config.mjs`, pero **`src/` no tiene ni un
-`.tsx` ni un solo import de ninguna** `[medido]`. `AGENTS.md` afirma lo contrario. Hoy
-no pesan en la primera carga —son 312 kB: HTML 130 + CSS 62 + tres fuentes 120—, pero
-son superficie muerta y el documento que las niega es el que se lee para decidir.
+1. **Revocar el token de Hostinger y borrarlo de `.env.local`.** Ya cumplió su único
+   propósito. Hereda todos los permisos del usuario, el VPS de Demeter incluido.
+2. **Dar de alta el sitio en Google Search Console.** Sin esto no hay forma de saber si
+   Google indexó, ni de pedir el rastreo, ni de ver con qué consultas lo encuentran. El
+   seminario es el **21–22 de octubre de 2026**: quedan unas cuatro semanas y un dominio
+   registrado ayer tarda.
+3. **`offers` / `isAccessibleForFree` en el JSON-LD.** Si la asistencia es gratuita,
+   declararlo habilita el distintivo «Gratis» en el resultado de evento de Google.
+   Nadie ha confirmado si el seminario tiene costo y la regla de procedencia prohíbe
+   inventarlo.
+4. **Cuatro dependencias instaladas y sin usar.** `@astrojs/react`, `react`, `react-dom`
+   y `motion` están en `package.json` y la integración React está activa en
+   `astro.config.mjs`, pero `src/` no tiene ni un `.tsx` ni un solo import de ninguna
+   `[medido]`. `AGENTS.md` afirma lo contrario. Hoy no pesan en la primera carga —312 kB:
+   HTML 130 + CSS 62 + tres fuentes 120— pero son superficie muerta, y el documento que
+   las niega es el que se lee para decidir. **Decisión pendiente de Daniel**: sacarlas
+   exige correr `verify:todo` después para confirmar que nada dependía de ellas.
+5. **Un enlace en `http://`**: `investigacion.electronica.usm.cl/~wcg/`. Es del sitio de
+   destino, no nuestro, y `upgrade-insecure-requests` no afecta a la navegación. Cambiarlo
+   a `https://` exige comprobar que ese servidor lo soporta.
 
 ---
 

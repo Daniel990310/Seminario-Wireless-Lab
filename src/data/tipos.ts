@@ -123,6 +123,25 @@ export interface ContenidoIdioma {
       cambiarA: string;
     };
 
+    /**
+     * Página de error 404 (RNF-7.6).
+     *
+     * La página es **una sola** y muestra los dos idiomas a la vez: un sitio estático
+     * sirve el mismo `404.html` para cualquier ruta inexistente, en `/` o en `/en/`,
+     * y no hay nada en el borde que pueda elegir sin un Worker. Por eso estas cadenas
+     * se leen de los DOS idiomas en la misma página, y no solo del que toque.
+     */
+    error404: {
+      /** Rótulo pequeño sobre el título. No se traduce el número. */
+      etiqueta: string;
+      titulo: string;
+      explicacion: string;
+      /** Texto del enlace de vuelta al inicio de ESTE idioma. */
+      volver: string;
+      /** `<title>` del documento. La página lleva los dos, unidos por un guion. */
+      tituloDocumento: string;
+    };
+
     hero: {
       eyebrow: string;
       lugarEyebrow: string;

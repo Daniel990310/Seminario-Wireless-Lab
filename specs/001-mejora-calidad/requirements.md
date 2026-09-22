@@ -373,6 +373,32 @@ interactivas de T10— sin que el peso sea por sí solo el argumento para rechaz
 1. Sin analítica, sin cookies y sin tipografías remotas.
 2. Todo contenido de terceros —hoy solo el mapa— se carga únicamente por acción
    explícita de la persona.
+3. **El criterio se comprueba sobre el HTML que el borde entrega, no sobre `dist/`, y
+   con cabeceras de navegador.**
+
+   > Añadido el 2026-09-22 **por un fallo real, no por precaución**. Dos segundos
+   > después de que la zona de Cloudflare activara, Cloudflare creó por su cuenta un
+   > sitio de Web Analytics con `auto_install: true` y regla `host:* paths:*`, y
+   > empezó a inyectar `static.cloudflareinsights.com/beacon.min.js` en todas las
+   > páginas `[medido: 2026-09-22]`. Nadie lo pidió.
+   >
+   > **Ningún verificador podía verlo**, y ese es el punto: todos miraban `dist/`, y
+   > esto no está en `dist/`. Lo añade el borde **después** del despliegue. Un sitio
+   > que cumple RNF-4.1 en el repositorio puede incumplirlo en producción, y el
+   > repositorio no se entera.
+   >
+   > **Y hay que pedirlo como navegador.** La inyección es condicional: un `curl` sin
+   > `User-Agent` de navegador recibe el HTML limpio. Un criterio escrito sin esa
+   > cabecera habría pasado en verde con el beacon puesto, que es peor que no tenerlo.
+   >
+   > Lo destapó la CSP de RNF-7.7 al bloquear el script. Sin ella habría seguido ahí.
+   > Se corrigió poniendo `auto_install: false` en el sitio de Web Analytics —la acción
+   > reversible mínima, en vez de borrarlo— y **la configuración vive en Cloudflare, no
+   > en el repositorio**: por eso el criterio tiene que medirla en vivo cada vez.
+   >
+   > Solo cuentan los **subrecursos** (`<script src>`, `<link href>`, `<img src>`,
+   > `<iframe src>`). Los `<a href>` a las universidades y a los perfiles de los
+   > expositores son navegación, no peticiones, y no los prohíbe nada.
 
 ### RNF-5 · Mantenibilidad
 
@@ -419,6 +445,53 @@ estilos.
    `npm run verify:publicado`. Queda fuera de `verify:todo` a propósito, porque
    depende de la red y de un servicio de terceros, y la autoridad sobre el
    cumplimiento no puede depender de que haya conexión.
+6. **Una URL inexistente devuelve `404` con una página del sitio**, con el mensaje en
+   **ambos idiomas** y enlace de vuelta a cada versión del inicio.
+
+   > Añadido el 2026-09-22, medido sobre el sitio publicado: `/pagina-que-no-existe`
+   > devolvía **`404` con 0 bytes** —una página en blanco—, porque el proyecto no tiene
+   > `src/pages/404.astro` y Cloudflare sirve el suyo, que está vacío. El código HTTP
+   > era correcto; lo que faltaba era la página. Para un sitio que se difunde por
+   > enlace, QR y programa impreso, una letra mal copiada dejaba a la persona en blanco
+   > sin manera de llegar al seminario. **No sustituye al 404: no se redirige al
+   > inicio.** Un redirección 302 al inicio produce un «soft 404», que Google trata
+   > como contenido duplicado del inicio y desaconseja explícitamente.
+   >
+   > **El mensaje va en los dos idiomas en una sola página, y no una por idioma.** Un
+   > sitio estático sirve un único `404.html` para cualquier ruta que no exista:
+   > `/en/lo-que-sea` y `/lo-que-sea` reciben el mismo archivo, y no hay nada en el
+   > borde que pueda elegir. Servir uno por idioma exigiría lógica de Worker, que este
+   > sitio no tiene y que RNF-7.1 evita a propósito. Dos frases cuestan menos que un
+   > Worker.
+7. **El sitio declara una `Content-Security-Policy`** generada en el build a partir de
+   lo que las páginas realmente contienen, no escrita a mano.
+
+   > Añadido el 2026-09-22. Las cabeceras servidas eran `X-Frame-Options`,
+   > `X-Content-Type-Options`, `Referrer-Policy` y `Permissions-Policy` `[medido sobre
+   > el sitio publicado]` — `_headers` **sí funciona** en Workers con activos estáticos,
+   > lo que el comentario del propio archivo dejaba en duda al nombrar solo a Pages y
+   > Netlify—. Faltaba la única que limita **qué puede ejecutarse** si alguna vez se
+   > inyecta contenido.
+   >
+   > Se genera y no se escribe a mano porque el contenido medido lo exige: cada página
+   > lleva **9 scripts en línea y 4 estilos en línea**, todos producidos por Astro, y
+   > sus hashes **cambian en cada build**. Una CSP escrita a mano quedaría obsoleta al
+   > primer cambio de contenido y rompería el sitio en silencio —el navegador no avisa,
+   > solo deja de ejecutar—. Con hashes no hace falta `'unsafe-inline'` en `script-src`.
+   >
+   > **Lo que esta CSP no cubre, y por qué.** Las páginas llevan **34 atributos
+   > `style="…"`**, y los hashes de `style-src` no se aplican a los atributos: exigirían
+   > `'unsafe-hashes'` con 34 hashes, que es peor que el problema. Se declara
+   > `style-src-attr 'unsafe-inline'` y **se dice así**, en lugar de presentar la
+   > política como más estricta de lo que es. El resto sí queda cerrado: sin
+   > `'unsafe-inline'` en `script-src`, `object-src 'none'`, `form-action 'none'` —el
+   > sitio no tiene formularios `[medido]`— y `frame-src` limitado a
+   > `https://www.openstreetmap.org`, que es el único tercero del sitio y solo se carga
+   > por acción explícita (RNF-4.2).
+   >
+   > `frame-ancestors` se declara `'self'` para **concordar** con el
+   > `X-Frame-Options: SAMEORIGIN` que ya se sirve. Dos cabeceras que dicen cosas
+   > distintas sobre lo mismo es una contradicción que alguien acabará resolviendo mal.
 
 ## Fuera de alcance
 

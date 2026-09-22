@@ -153,6 +153,14 @@ export const en = {
       cambiarA: 'Español',
     },
 
+    error404: {
+      etiqueta: 'Error 404',
+      titulo: 'This page does not exist',
+      explicacion: 'The link may have been copied incorrectly. The seminar is on the home page.',
+      volver: 'Go to home page',
+      tituloDocumento: 'Page not found',
+    },
+
     hero: {
       eyebrow: 'International seminar',
       lugarEyebrow: 'Venue',
