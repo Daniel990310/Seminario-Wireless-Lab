@@ -24,8 +24,11 @@ type ModoFondo = 'solido' | 'imagen';
 
 interface ImagenCargada {
   nombre: string;
-  /** `data:` URL. Solo se guarda en `localStorage` si cabe; ver `cargadorDeImagen`. */
+  /** `data:` URL ya reducida; ver `reducir`. */
   datos: string;
+  /** Medidas del archivo original, para saber con qué se cuenta al instalarlo. */
+  ancho?: number;
+  altoPx?: number;
 }
 
 interface AjusteFranja {
@@ -34,6 +37,13 @@ interface AjusteFranja {
   escala: number;
   velo: number;
   alto: number;
+  /**
+   * Con `relacionFija`, la altura pasa a ser `100vw / relacion` y el recorte que
+   * se ve es **el mismo en toda pantalla**. Sin ella rige el `clamp` de hoy, que
+   * mantiene la relación solo entre 686 y 1219 px de ancho `[medido: 2026-09-22]`.
+   */
+  relacionFija: boolean;
+  relacion: number;
   imagen: ImagenCargada | null;
 }
 
@@ -70,7 +80,16 @@ const CLAVE_ACTUAL = 'panel-ajuste:actual';
 const CLAVE_INSTANTANEAS = 'panel-ajuste:instantaneas';
 
 /** Los valores de partida son los que hoy están en el repositorio, no ceros. */
-const FRANJA_ACTUAL: AjusteFranja = { x: 50, y: 50, escala: 1, velo: 18, alto: 1, imagen: null };
+const FRANJA_ACTUAL: AjusteFranja = {
+  x: 50,
+  y: 50,
+  escala: 1,
+  velo: 18,
+  alto: 1,
+  relacionFija: false,
+  relacion: 7.33, // la que ya rige entre 686 y 1219 px `[medido: 2026-09-22]`
+  imagen: null,
+};
 
 function seccionPorOmision(): AjusteSeccion {
   return { modo: 'solido', x: 50, y: 50, velo: 100, desenfoque: 0, imagen: null };
@@ -89,8 +108,17 @@ function porOmision(): Ajustes {
 function cargar(): Ajustes {
   try {
     const crudo = localStorage.getItem(CLAVE_ACTUAL);
-    if (!crudo) return porOmision();
-    return { ...porOmision(), ...(JSON.parse(crudo) as Ajustes) };
+    const base = porOmision();
+    if (!crudo) return base;
+    // Mezcla por nivel y no superficial: un borrador guardado antes de que
+    // existiera una perilla nueva se queda sin ella y `undefined` se cuela en el CSS.
+    const guardado = JSON.parse(crudo) as Partial<Ajustes>;
+    return {
+      ...base,
+      ...guardado,
+      vista: { ...base.vista, ...(guardado.vista ?? {}) },
+      franja: { ...base.franja, ...(guardado.franja ?? {}) },
+    };
   } catch {
     return porOmision();
   }
@@ -127,6 +155,38 @@ function pagina(): Document | null {
   return marco.contentDocument;
 }
 
+/** Nota viva bajo el control de relación; se rellena en `aplicar`. */
+let notaRelacion: HTMLElement | null = null;
+
+const ANCHOS_DE_REFERENCIA = [390, 768, 1280, 1920];
+
+/** Lo que mide la franja ahora mismo en el marco, no lo que debería medir. */
+function medidaDeLaFranja(): { ancho: number; alto: number } | null {
+  const el = pagina()?.querySelector('.franja-sede');
+  if (!el) return null;
+  const c = el.getBoundingClientRect();
+  return c.height > 0 ? { ancho: c.width, alto: c.height } : null;
+}
+
+function pintarNotaRelacion(): void {
+  if (!notaRelacion) return;
+  const f = ajustes.franja;
+  const medida = medidaDeLaFranja();
+  const ahora = medida
+    ? `Ahora mismo: ${Math.round(medida.ancho)} × ${Math.round(medida.alto)} px → ${(medida.ancho / medida.alto).toFixed(2)} : 1.`
+    : '';
+
+  if (!f.relacionFija) {
+    notaRelacion.textContent =
+      `${ahora} Sin fijarla, el recorte solo se mantiene entre 686 y 1219 px de ancho; ` +
+      'fuera de ahí la altura se topa y se ve más o menos fotografía. [medido: 2026-09-22]';
+    return;
+  }
+
+  const alturas = ANCHOS_DE_REFERENCIA.map((w) => `${w}px → ${Math.round(w / f.relacion)}px de alto`).join(' · ');
+  notaRelacion.textContent = `${ahora} Fijada en ${f.relacion.toFixed(2)} : 1 → ${alturas}. Mirá el móvil antes de decidir.`;
+}
+
 /* --------------------------------------------------------- aplicar ajustes */
 
 /**
@@ -135,8 +195,15 @@ function pagina(): Document | null {
  */
 function construirCss(): string {
   const f = ajustes.franja;
+  // Con relación fija la altura se deriva del ancho de la ventana, así que el
+  // recorte visible deja de depender de la pantalla. Se sigue expresando como
+  // **altura** y no como `aspect-ratio` a propósito: la contracción al hacer
+  // scroll anima `height`, y animar desde `auto` no es lo mismo en todo navegador.
+  const alturaFranja = f.relacionFija
+    ? `calc(100vw / ${f.relacion})`
+    : `calc(clamp(9rem, 21vw, 16rem) * 0.65 * ${f.alto})`;
   const lineas: string[] = [
-    `:root { --alto-franja: calc(clamp(9rem, 21vw, 16rem) * 0.65 * ${f.alto}); }`,
+    `:root { --alto-franja: ${alturaFranja}; }`,
     `.franja-sede { --velo: ${f.velo}%; }`,
     // `!important` porque `FranjaSede.astro` pone `object-position` en el atributo
     // `style` del propio `<img>`, y un estilo en línea gana a cualquier hoja.
@@ -210,6 +277,8 @@ function aplicar(): void {
 
   aplicarTextos(d);
   pintarDiagnostico();
+  // Tras un cambio de altura hay que dejar maquetar antes de medir la franja.
+  requestAnimationFrame(pintarNotaRelacion);
   informeEl.value = informe();
 }
 
@@ -320,20 +389,44 @@ function informe(): string {
   );
   l.push('');
 
+  const medida = medidaDeLaFranja();
+  if (medida) {
+    l.push(
+      `Franja tal como se está viendo: ${Math.round(medida.ancho)} × ${Math.round(medida.alto)} px ` +
+        `→ ${(medida.ancho / medida.alto).toFixed(2)} : 1`,
+    );
+    l.push('');
+  }
+
   const franjaCambiada =
-    f.x !== 50 || f.y !== 50 || f.escala !== 1 || f.velo !== 18 || f.alto !== 1 || f.imagen !== null;
+    f.x !== 50 ||
+    f.y !== 50 ||
+    f.escala !== 1 ||
+    f.velo !== 18 ||
+    f.alto !== 1 ||
+    f.relacionFija ||
+    f.imagen !== null;
   if (franjaCambiada) {
     l.push('## Franja de la sede');
     if (f.x !== 50 || f.y !== 50) {
       l.push(`- encuadre: "${f.x}% ${f.y}%"  (antes "50% 50%")  → src/components/SiteHeader.astro, prop \`encuadre\``);
     }
     if (f.velo !== 18) l.push(`- velo: ${f.velo}%  (antes 18%)  → src/components/FranjaSede.astro, \`--velo\``);
-    if (f.alto !== 1) l.push(`- alto: ×${f.alto}  → src/styles/global.css, \`--alto-franja\``);
+    if (f.relacionFija) {
+      l.push(`- relación FIJA: ${f.relacion.toFixed(2)} : 1  → src/styles/global.css, \`--alto-franja: calc(100vw / ${f.relacion.toFixed(2)})\``);
+      l.push(
+        `    alturas que resultan: ${ANCHOS_DE_REFERENCIA.map((w) => `${w}px → ${Math.round(w / f.relacion)}px`).join(' · ')}`,
+      );
+      l.push('    (con la relación fija, el control de «alto» deja de tener efecto)');
+    } else if (f.alto !== 1) {
+      l.push(`- alto: ×${f.alto}  → src/styles/global.css, \`--alto-franja\``);
+    }
     if (f.escala !== 1) {
       l.push(`- zoom: ${f.escala}×  ⚠ no existe hoy: hace falta una prop nueva en FranjaSede.astro`);
     }
     if (f.imagen) {
-      l.push(`- imagen: ${f.imagen.nombre}  ⚠ archivo local: hay que añadirlo a src/assets/fondos/ y recortarlo apaisado`);
+      const medidas = f.imagen.ancho ? ` (${f.imagen.ancho}×${f.imagen.altoPx} px)` : '';
+      l.push(`- imagen: ${f.imagen.nombre}${medidas}  ⚠ archivo local: hay que añadirlo a src/assets/fondos/ recortado a la relación de arriba`);
     }
     l.push('');
   }
@@ -437,6 +530,42 @@ function deslizador(o: OpcionesDeslizador): HTMLElement {
   return fila;
 }
 
+/**
+ * Reduce la imagen antes de guardarla. Sin esto, una fotografía de cámara o de
+ * Gemini —3,58 MB, 2752×1536 en el caso que lo motivó— no cabe en `localStorage`
+ * y el borrador se pierde en cada recarga. 1800 px de ancho sobran: la franja
+ * nunca pinta más de 166 px de alto `[medido: 2026-09-22]`.
+ *
+ * Es solo para *ver*. El archivo que se instale en `src/assets/fondos/` sale del
+ * original, no de esta reducción.
+ */
+function reducir(archivo: File): Promise<ImagenCargada> {
+  return new Promise((resolver, rechazar) => {
+    const img = new Image();
+    const url = URL.createObjectURL(archivo);
+    img.addEventListener('load', () => {
+      const ANCHO_MAX = 1800;
+      const escala = Math.min(1, ANCHO_MAX / img.naturalWidth);
+      const lienzo = document.createElement('canvas');
+      lienzo.width = Math.round(img.naturalWidth * escala);
+      lienzo.height = Math.round(img.naturalHeight * escala);
+      lienzo.getContext('2d')?.drawImage(img, 0, 0, lienzo.width, lienzo.height);
+      URL.revokeObjectURL(url);
+      resolver({
+        nombre: archivo.name,
+        datos: lienzo.toDataURL('image/webp', 0.82),
+        ancho: img.naturalWidth,
+        altoPx: img.naturalHeight,
+      });
+    });
+    img.addEventListener('error', () => {
+      URL.revokeObjectURL(url);
+      rechazar(new Error('no se pudo leer la imagen'));
+    });
+    img.src = url;
+  });
+}
+
 function cargadorDeImagen(etiqueta: string, alCargar: (img: ImagenCargada | null) => void): HTMLElement {
   const fila = crear('div', 'fila');
   fila.append(crear('span', 'rotulo', etiqueta));
@@ -447,18 +576,17 @@ function cargadorDeImagen(etiqueta: string, alCargar: (img: ImagenCargada | null
   entrada.addEventListener('change', () => {
     const archivo = entrada.files?.[0];
     if (!archivo) return;
-    if (archivo.size > 2_000_000) {
-      avisar(
-        `${archivo.name} pesa ${(archivo.size / 1e6).toFixed(1)} MB. Se aplica igual para que la veas, ` +
-          'pero no cabe en el borrador guardado y se pierde al recargar.',
-      );
-    }
-    const lector = new FileReader();
-    lector.addEventListener('load', () => {
-      alCargar({ nombre: archivo.name, datos: String(lector.result) });
-      alCambiar();
-    });
-    lector.readAsDataURL(archivo);
+    void reducir(archivo)
+      .then((img) => {
+        alCargar(img);
+        alCambiar();
+        avisar(
+          `${img.nombre}: ${img.ancho}×${img.altoPx} px, reducida a 1800 px de ancho para el borrador. ` +
+            'El archivo que se instale saldrá del original.',
+        );
+        setTimeout(() => avisar(''), 5000);
+      })
+      .catch(() => avisar(`No se pudo leer ${archivo.name}.`));
   });
 
   const quitar = crear('button', 'menor', 'quitar');
@@ -548,6 +676,35 @@ function montarControles(): void {
     deslizador({ etiqueta: 'velo', min: 0, max: 80, paso: 1, unidad: '%', leer: () => f.velo, escribir: (v) => (f.velo = v) }),
     deslizador({ etiqueta: 'alto', min: 0.4, max: 2, paso: 0.05, unidad: '×', leer: () => f.alto, escribir: (v) => (f.alto = v) }),
     cargadorDeImagen('otra fotografía', (img) => (f.imagen = img)),
+  );
+
+  // Relación fija: la perilla que contesta «que se vea lo mismo en toda pantalla».
+  const fijar = crear('label', 'fila interruptor');
+  const casillaFija = crear('input');
+  casillaFija.type = 'checkbox';
+  casillaFija.checked = f.relacionFija;
+  casillaFija.addEventListener('change', () => {
+    f.relacionFija = casillaFija.checked;
+    alCambiar();
+  });
+  fijar.append(casillaFija, crear('span', '', 'relación fija (mismo recorte en toda pantalla)'));
+  notaRelacion = crear('p', 'nota');
+  gFranja.append(
+    fijar,
+    deslizador({
+      etiqueta: 'relación ancho : alto',
+      min: 3,
+      max: 16,
+      paso: 0.01,
+      unidad: ' : 1',
+      leer: () => f.relacion,
+      escribir: (v) => {
+        f.relacion = v;
+        f.relacionFija = true;
+        casillaFija.checked = true;
+      },
+    }),
+    notaRelacion,
   );
   controlesEl.append(gFranja);
 
