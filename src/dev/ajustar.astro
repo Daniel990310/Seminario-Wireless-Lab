@@ -1,0 +1,308 @@
+---
+/**
+ * Panel de ajuste visual — **solo existe en `npm run dev`**.
+ *
+ * Este archivo vive en `src/dev/` y NO en `src/pages/` a propósito: una página en
+ * `src/pages/` se construye siempre y acabaría en `dist/`, publicada. La ruta
+ * `/ajustar` la inyecta una integración de `astro.config.mjs` que solo corre con
+ * `command === 'dev'`, así que en producción esta página no es que esté
+ * protegida: **no existe**. Es la única forma de exponer cero superficie nueva.
+ *
+ * Para qué es: Daniel ve en su cabeza dónde quiere la fotografía del banner y con
+ * qué recorte; describirlo en palabras («un poco más abajo») cuesta varias idas y
+ * vueltas y termina en un número que alguien adivina. Aquí arrastra el control,
+ * mira la página real, y el panel emite el valor exacto y el archivo donde va.
+ *
+ * No escribe en el repositorio. El borrador vive en `localStorage`.
+ */
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Cinturón y tirantes: aunque la ruta no se construya, si alguien la sirviera. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Panel de ajuste · seminario</title>
+  </head>
+  <body>
+    <div class="marco-general">
+      <aside class="panel">
+        <header class="cabecera">
+          <h1>Panel de ajuste</h1>
+          <p class="nota">
+            Nada de lo que toques aquí modifica el sitio. Cuando algo te guste, copiá el informe y
+            pegalo en el chat.
+          </p>
+          <div class="fila botones">
+            <button id="copiar" type="button" class="principal">Copiar informe</button>
+            <button id="guardar-instantanea" type="button" class="menor">Guardar instantánea</button>
+            <button id="restablecer" type="button" class="menor">Restablecer</button>
+          </div>
+        </header>
+
+        <p id="aviso" class="aviso" hidden></p>
+        <ul id="diagnostico" class="diagnostico" hidden></ul>
+
+        <div id="controles" class="controles"></div>
+
+        <details class="grupo">
+          <summary>Instantáneas guardadas</summary>
+          <p class="nota">
+            Cada una guarda todo el borrador. Las fotografías grandes no caben y se pierden al
+            recargar; el nombre del archivo sí queda anotado en el informe.
+          </p>
+          <div id="instantaneas"></div>
+        </details>
+
+        <details class="grupo">
+          <summary>Informe</summary>
+          <textarea id="informe" rows="14" readonly></textarea>
+        </details>
+      </aside>
+
+      <main class="lienzo-envoltura">
+        <iframe id="lienzo" src="/" title="La página del seminario, en vivo"></iframe>
+      </main>
+    </div>
+
+    <script>
+      import './panel';
+    </script>
+
+    <style is:global>
+      /*
+       * Los controles se crean desde JavaScript, así que el estilo tiene que ser
+       * global: el ámbito de Astro solo marca los elementos de la plantilla.
+       *
+       * El panel usa su propia paleta, deliberadamente ajena a la del sitio. Si se
+       * pareciera, sería fácil confundir el cromo de la herramienta con el diseño
+       * que se está juzgando.
+       */
+      :root {
+        color-scheme: dark;
+        --tinta: #e8e8ea;
+        --tinta-suave: #9a9aa4;
+        --fondo: #16161a;
+        --fondo-alto: #1f1f25;
+        --borde: #33333c;
+        --acento: #e0913a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font:
+          13px/1.45 ui-sans-serif,
+          system-ui,
+          sans-serif;
+        color: var(--tinta);
+        background: var(--fondo);
+      }
+
+      .marco-general {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        height: 100vh;
+      }
+
+      .panel {
+        overflow-y: auto;
+        border-right: 1px solid var(--borde);
+        padding: 14px;
+      }
+
+      .cabecera h1 {
+        margin: 0 0 6px;
+        font-size: 15px;
+        letter-spacing: 0.01em;
+      }
+
+      .nota {
+        margin: 0 0 10px;
+        color: var(--tinta-suave);
+        font-size: 12px;
+      }
+
+      .aviso {
+        margin: 10px 0;
+        border: 1px solid var(--acento);
+        border-radius: 6px;
+        padding: 8px 10px;
+        color: #ffdcb0;
+        background: #3a2a14;
+        font-size: 12px;
+      }
+
+      .diagnostico {
+        margin: 10px 0;
+        border: 1px solid #7a3b3b;
+        border-radius: 6px;
+        padding: 8px 10px 8px 26px;
+        background: #2e1c1c;
+        color: #ffc9c9;
+        font-size: 12px;
+      }
+
+      .diagnostico li + li {
+        margin-top: 6px;
+      }
+
+      .grupo {
+        margin: 10px 0;
+        border: 1px solid var(--borde);
+        border-radius: 8px;
+        background: var(--fondo-alto);
+      }
+
+      .grupo > summary {
+        padding: 8px 10px;
+        font-weight: 600;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .grupo > *:not(summary) {
+        margin-inline: 10px;
+      }
+
+      .grupo > *:last-child {
+        margin-bottom: 10px;
+      }
+
+      .fila {
+        margin: 8px 0;
+      }
+
+      .fila.botones {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .rotulo {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        font-size: 12px;
+        color: var(--tinta-suave);
+      }
+
+      .rotulo > span:first-child {
+        display: inline-block;
+      }
+
+      .valor {
+        position: absolute;
+        right: 24px;
+        color: var(--tinta);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .fila {
+        position: relative;
+      }
+
+      input[type='range'] {
+        width: 100%;
+        margin: 2px 0 0;
+        accent-color: var(--acento);
+      }
+
+      input[type='file'] {
+        max-width: 205px;
+        font-size: 11px;
+        color: var(--tinta-suave);
+      }
+
+      button {
+        border: 1px solid var(--borde);
+        border-radius: 6px;
+        padding: 5px 9px;
+        color: var(--tinta);
+        background: #26262e;
+        font: inherit;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        border-color: var(--acento);
+      }
+
+      button.activo {
+        border-color: var(--acento);
+        color: #17120a;
+        background: var(--acento);
+        font-weight: 600;
+      }
+
+      button.principal {
+        border-color: var(--acento);
+        color: #17120a;
+        background: var(--acento);
+        font-weight: 600;
+      }
+
+      button.crecer {
+        flex: 1;
+        text-align: left;
+      }
+
+      .subgrupo {
+        margin-top: 10px;
+        border-top: 1px solid var(--borde);
+        padding-top: 6px;
+      }
+
+      .subtitulo {
+        margin: 0 0 4px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .interruptor {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+      }
+
+      textarea {
+        width: calc(100% - 20px);
+        border: 1px solid var(--borde);
+        border-radius: 6px;
+        padding: 8px;
+        color: var(--tinta);
+        background: #101014;
+        font:
+          11px/1.5 ui-monospace,
+          monospace;
+        resize: vertical;
+      }
+
+      /*
+       * El lienzo se centra y lleva fondo propio para que, al estrechar el marco a
+       * 390 px, se vea dónde termina la página y no parezca que el diseño se rompió.
+       */
+      .lienzo-envoltura {
+        display: grid;
+        place-items: start center;
+        overflow: hidden;
+        background: #0c0c0f;
+      }
+
+      #lienzo {
+        width: 100%;
+        height: 100vh;
+        border: 0;
+        background: #fff;
+        transition: width 160ms ease-out;
+      }
+    </style>
+  </body>
+</html>
