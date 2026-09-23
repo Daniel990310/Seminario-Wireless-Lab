@@ -37,9 +37,44 @@ en paralelo y el reparto de archivos está en `AGENTS.md` → «Dos personas a l
 | RF-3 reescrito: la inscripción es un enlace a Google Forms | **implementado y apagado**: espera la URL en `comun.registro.url` |
 
 **Lo que sigue abierto y es de Daniel**: el enlace del formulario, el envío *desde*
-`contact@` con un relé SMTP, dos expositores nuevos, y decidir si el repositorio pasa a
-privado —hoy es público y `specs/gestion/correos-instituciones.md` expone doce
-direcciones de terceros.
+`contact@` con un relé SMTP, y decidir si el repositorio pasa a privado —hoy es público
+y `specs/gestion/correos-instituciones.md` expone doce direcciones de terceros.
+
+## ✅ Nómina de expositores cerrada · 2026-09-22, noche
+
+Mauricio Rodríguez envió la **lista confirmada de 8 expositores**, el formato de sesión
+(45 min + 15 de preguntas) y las dos primeras charlas. Todo el detalle, con las citas
+textuales de los resúmenes, en **[`specs/gestion/programa-y-expositores.md`](specs/gestion/programa-y-expositores.md)**.
+
+| Qué | Dónde queda |
+|---|---|
+| **Giorgio Siringo** (ALMA / ESO) y **Gustavo Siles** (U. Privada Boliviana) añadidos | `comun.ts` + reseña en los dos idiomas; **sin foto**, muestran monograma (RF-11.2) |
+| **A3 cerrada**: Feick ya no es «afiliación por confirmar» | `CCTVal, Universidad Técnica Federico Santa María` |
+| Reseña de **Valenzuela** reescrita con la que él mismo envió | corrige el departamento, que estaba mal: Teoría de la Comunicación, no Comunicaciones Inalámbricas |
+| Las dos charlas confirmadas quedan **como dato, sin publicar** | `src/data/charlas.ts`, que no importa ninguna página todavía |
+| `BO` entra en `CodigoPais` | obliga a traducir el país en los dos idiomas o no compila |
+| `verify:idioma` volvió a verde por dos motivos distintos | nombres nuevos en la lista legítima **y** un fallo que arrastraba desde la tarde |
+
+**Ese fallo arrastrado conviene mirarlo**: la lista de coincidencias legítimas de
+`verify-idioma.mjs` traía `/@pucv\.cl/`, y al cambiar el correo a `contact@bcsensing.org`
+dejó de cubrir nada. T7 fallaba **desde el mismo despliegue que se dio por verde**. Ya
+está corregido con un patrón de correo genérico.
+
+### Lo que falta y no depende de nosotros
+
+- **Seis charlas de ocho**, con plazo del organizador el **lunes 28 de septiembre**:
+  Zussman, Du, Siringo, Siles, Gutiérrez y Toledo.
+- **Las ocho fotografías.** El organizador ya se las pidió a todos, con el mismo plazo
+  del 28. **No se descargan de la web**: RF-11.3 lo prohíbe explícitamente y RF-11.1
+  exige autorización de la persona. La de Valenzuela (`RAV Photo.jpg`) ya tiene permiso
+  pero llegó adjunta al correo y **no está en el repositorio**: pedirle el archivo a
+  Mauricio.
+- **Preguntar qué significa la «(R)»** con que Valenzuela firma su cargo. Se publicó en
+  pasado suponiendo *retired* `[probable]`; si es otra cosa, esa frase se corrige.
+- **Decisión de Daniel**: dónde van título y resumen de cada charla. El sitio no tiene
+  sitio para una charla hoy. Las dos opciones y la recomendación, al final de
+  `specs/gestion/programa-y-expositores.md`. **No se implementa hasta que esté en
+  `requirements.md`.**
 
 ## ✅ El sitio está publicado en https://bcsensing.org
 

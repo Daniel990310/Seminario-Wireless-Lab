@@ -107,7 +107,13 @@ import { acceso } from './acceso';
  */
 export const PROGRAMA_DEMOSTRATIVO = false;
 
-export type CodigoPais = 'US' | 'CL';
+/**
+ * `BO` entra el 2026-09-22 con Gustavo Siles, de la Universidad Privada Boliviana,
+ * confirmado en la lista de expositores del organizador. Añadir un código aquí
+ * **no compila** hasta que `paises` lo traduzca en los dos idiomas, que es lo que
+ * impide publicar una ficha con el país en blanco.
+ */
+export type CodigoPais = 'US' | 'CL' | 'BO';
 
 /**
  * Grados del comité organizador. Es una unión y no una cadena libre a propósito:
@@ -290,20 +296,60 @@ export const comun = {
         country: 'US',
         perfil: 'https://www.nokia.com/people/reinaldo-valenzuela/',
       },
+      /*
+       * Los dos expositores que faltaban, incorporados el 2026-09-22 con la lista de
+       * confirmados que envió Mauricio Rodríguez. Ver
+       * `specs/gestion/programa-y-expositores.md`.
+       *
+       * **Ninguno de los dos tiene retrato**, y es el estado correcto: una foto solo se
+       * publica con autorización expresa de la persona (RF-11.1). Hasta que llegue, la
+       * ficha muestra el monograma de iniciales (RF-11.2).
+       *
+       * Siringo va en el bloque «internacionales» aunque **trabaje en Chile**: el Joint
+       * ALMA Observatory es un consorcio internacional —ESO, NSF y NINS— y así lo agrupó
+       * el organizador. Por lo mismo se queda **sin `country`**: ninguna etiqueta de país
+       * describe una organización intergubernamental, y el campo es opcional justamente
+       * para no tener que inventar una. Si la organización decide que lleve «Chile», se
+       * añade `country: 'CL'` y no hay que tocar nada más.
+       *
+       * La afiliación es la cadena que confirmó el organizador. Matiz que conviene saber
+       * antes de «corregirla»: la página oficial de ALMA lo lista como *Front-End
+       * Technical Lead* del **Joint ALMA Observatory**, y ESO es uno de los tres socios
+       * de ALMA, no su empleador directo.
+       */
+      {
+        id: 'siringo',
+        name: 'Giorgio Siringo',
+        affiliation: 'ALMA / European Southern Observatory',
+        perfil: 'https://www.almaobservatory.org/en/team/giorgio-siringo/',
+      },
+      {
+        id: 'siles',
+        name: 'Gustavo A. Siles Soria',
+        affiliation: 'Universidad Privada Boliviana',
+        country: 'BO',
+        perfil: 'https://lrc.upb.edu/people/',
+      },
     ],
     national: [
       /*
-       * La afiliación sigue marcada como pendiente a propósito. Las fuentes
-       * públicas lo sitúan al frente del Wireless Communications Research Group
-       * de la Universidad Técnica Federico Santa María, pero eso es `[probable]`
-       * hasta que la organización lo confirme, y este proyecto no publica datos
-       * institucionales sin confirmar. Ver `ESTADO.md` §7.
+       * Afiliación confirmada el 2026-09-22: el organizador lo lista como **CCTVal** en
+       * la nómina oficial de expositores. Cierra A3, que llevaba abierta desde julio
+       * porque las fuentes públicas lo situaban en el Wireless Communications Research
+       * Group de la UTFSM y eso era `[probable]`, no confirmado.
+       *
+       * Las dos cosas son compatibles y por eso la cadena las nombra juntas: el CCTVal
+       * —Centro Científico Tecnológico de Valparaíso— es un centro basal **alojado en la
+       * UTFSM**, y la propia PUCV lo presenta como «Dr. Rodolfo Feick (CCTVal-UTFSM)».
+       * El organizador escribió solo «CCTVal»; se publica la forma larga porque una
+       * sigla sola no identifica a la institución para quien llega de fuera.
        */
       {
         id: 'feick',
         foto: fotoFeick,
         name: 'Rodolfo Feick',
-        affiliationPending: true,
+        affiliation: 'CCTVal, Universidad Técnica Federico Santa María',
+        country: 'CL',
         perfil: 'http://investigacion.electronica.usm.cl/~wcg/',
       },
       {

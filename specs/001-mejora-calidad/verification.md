@@ -2,7 +2,7 @@
 
 Generado por `npm run verify`. **No editar a mano**: se sobrescribe en cada corrida.
 
-**Fecha:** 2026-09-23 · **Commit:** `c917776`
+**Fecha:** 2026-09-23 · **Commit:** `7e9ad18`
 **Resultado:** todos los presupuestos cumplidos
 
 Método: axe-core sobre el build servido localmente, en 1440×900 y 390×844,
@@ -25,7 +25,7 @@ de ese orden respecto de la línea base no indica un cambio real.
 | RNF-1.4 | Secciones sin nombre accesible | 7 | 0 | 0 | cumple |
 | RNF-1.5 | Saltos de nivel en encabezados | 0 | 0 | 0 | cumple |
 | RNF-2.1 | JavaScript comprimido | 109.3 kB | 4.4 kB | 115.0 kB | cumple |
-| RNF-2.2 | Primera carga comprimida | 241.2 kB | 169.1 kB | 260.0 kB | cumple |
+| RNF-2.2 | Primera carga comprimida | 241.2 kB | 170.6 kB | 260.0 kB | cumple |
 | RNF-2.6 | Tipografías | 110.9 kB | 122.6 kB | 125.0 kB | cumple |
 
 En RNF-1.1 y RNF-1.3 la columna «Actual» **suma todas las corridas**, mientras que
@@ -40,19 +40,19 @@ el desglose por corrida más abajo.
 | JavaScript en línea, dentro del HTML | 4.4 kB |
 | JavaScript total (RNF-2.1) | 4.4 kB |
 | Tipografías | 122.6 kB |
-| HTML (incluye los scripts en línea) | 34.5 kB |
+| HTML (incluye los scripts en línea) | 36.0 kB |
 | CSS en hojas enlazadas | 12.0 kB |
 | Imágenes SVG | 25.1 kB |
-| **Primera carga** | **169.1 kB** |
+| **Primera carga** | **170.6 kB** |
 
-Medido sobre `/en/`, la **más pesada** de las auditadas, que es contra la que se juzga el presupuesto.
+Las 2 páginas auditadas pesan lo mismo. El presupuesto se juzga contra la más pesada; hoy no hay diferencia entre idiomas.
 
 Primera carga por página:
 
 | Página | Primera carga |
 | ------ | ------------- |
-| `/en/` | 169.1 kB |
-| `/` | 169.1 kB |
+| `/en/` | 170.6 kB |
+| `/` | 170.6 kB |
 
 Solo se cuenta lo que la página referencia. Archivos generados que **ningún archivo
 de `dist` menciona**, y que por tanto ningún navegador descarga:
@@ -87,5 +87,5 @@ leer un total como si fuera un valor por pantalla.
 | Corridas | 8 |
 | Temas distinguibles | sí |
 | Secciones | 6 |
-| Encabezados | 24 |
+| Encabezados | 26 |
 | Idioma declarado | `en` |

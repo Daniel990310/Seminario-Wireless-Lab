@@ -25,6 +25,7 @@ export const es = {
   paises: {
     US: 'Estados Unidos',
     CL: 'Chile',
+    BO: 'Bolivia',
   },
 
   program: {
@@ -55,14 +56,38 @@ export const es = {
         'Investigador en Nokia Bell Labs desde 2015, donde trabaja en los fundamentos de las comunicaciones inalámbricas: teoría de la comunicación, diseño y optimización de sistemas de radio y medición de propagación en ondas milimétricas. Doctor por el KTH de Estocolmo y posdoctorado en el MIT.',
       linea: 'Propagación en mmWave y modelado de canal',
     },
+    /*
+     * Reescrita el 2026-09-22 con la reseña que envió él mismo. Es la única del sitio
+     * que no se compone desde perfiles públicos, y manda porque es de primera mano.
+     *
+     * Dos cosas que cambiaron respecto de la versión anterior, y por qué:
+     *   · El departamento **no** era el de Comunicaciones Inalámbricas sino el de
+     *     **Teoría de la Comunicación**, y él lo firma con «(R)». Va en pasado por esa
+     *     marca; el cargo que declara en presente es Distinguished Member of Technical
+     *     Staff. Si «(R)» significara otra cosa, esta frase es lo que hay que corregir.
+     *   · **No entra su recuento de citas.** Él escribe «over 36,400 Google Scholar
+     *     citations»; es una cifra que sube cada semana y en una página estática se
+     *     vuelve falsa sola. Los artículos y las patentes sí, porque no se mueven.
+     * Ver `specs/gestion/programa-y-expositores.md`.
+     */
     valenzuela: {
       resena:
-        'Director del departamento de investigación en Comunicaciones Inalámbricas de Nokia Bell Labs y miembro de la Academia Nacional de Ingeniería de Estados Unidos, que lo eligió en 2017 por su liderazgo en sistemas multiantena y modelado de canal. Bell Labs Fellow y Fellow del IEEE. Estudió Ingeniería en la Universidad de Chile y se doctoró en el Imperial College de Londres.',
+        'Distinguished Member of Technical Staff de Bell Laboratories, donde dirigió el Departamento de Teoría de la Comunicación. Miembro de la Academia Nacional de Ingeniería de Estados Unidos, Fellow del IEEE, Bell Labs Fellow y Fellow del Wireless World Research Forum. Recibió el IEEE Eric E. Sumner Award, el IEEE CTTC Technical Achievement Award en 2014 y el IEEE VTS Avant Garde Award en 2015. Ingeniero por la Universidad de Chile y doctor por el Imperial College de Londres. Trabaja en mediciones y modelos de propagación, sistemas MIMO y espacio-tiempo con arreglos de antenas en transmisión y recepción, redes heterogéneas, celdas pequeñas e interfaces de aire de próxima generación. Más de 250 artículos y 44 patentes.',
       linea: 'MIMO, antenas inteligentes y propagación',
+    },
+    siringo: {
+      resena:
+        'Líder técnico del front-end de ALMA, el conjunto de receptores con que el observatorio capta las bandas milimétricas y submilimétricas desde Atacama. Doctor por la Universidad de Bonn con una tesis sobre PolKa, un polarímetro sintonizable para arreglos de bolómetros submilimétricos que después se instaló en el telescopio APEX. Antes fue científico del Observatorio Europeo Austral. Sus intereses técnicos abarcan detectores de mm y submm, interferometría y polarización, y formación y reducción de imágenes.',
+      linea: 'Receptores e instrumentación en mm y submm',
+    },
+    siles: {
+      resena:
+        'Director del Laboratorio de Radiocomunicaciones de la Universidad Privada Boliviana y profesor investigador. Doctor en Sistemas y Tecnologías de la Comunicación por la Universidad Politécnica de Madrid. Trabaja en propagación radioeléctrica, comunicaciones por satélite y caracterización de la atenuación atmosférica en bandas Ka, Q, V y W, medida a más de 4.000 m de altitud.',
+      linea: 'Propagación atmosférica y comunicaciones por satélite',
     },
     feick: {
       resena:
-        'Encabeza el Wireless Communications Research Group de la Universidad Técnica Federico Santa María, con una trayectoria larga en campañas de medición de canal y caracterización de propagación. Ha coautorado mediciones a 28 GHz en el área del banco de pruebas COSMOS, el mismo proyecto en el que participa Columbia University.',
+        'Investigador del CCTVal, el Centro Científico Tecnológico de Valparaíso alojado en la Universidad Técnica Federico Santa María, donde encabeza el Wireless Communications Research Group. Tiene una trayectoria larga en campañas de medición de canal y caracterización de propagación, y ha coautorado mediciones a 28 GHz en el área del banco de pruebas COSMOS, el mismo proyecto en el que participa Columbia University.',
       linea: 'Medición y caracterización de canal',
     },
     gutierrez: {

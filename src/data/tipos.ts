@@ -69,7 +69,7 @@ export interface ContenidoIdioma {
    * que no tener ficha.
    */
   expositores: Record<
-    'zussman' | 'du' | 'valenzuela' | 'feick' | 'gutierrez' | 'toledo',
+    'zussman' | 'du' | 'valenzuela' | 'siringo' | 'siles' | 'feick' | 'gutierrez' | 'toledo',
     { resena: string; linea: string }
   >;
 

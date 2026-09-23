@@ -28,6 +28,7 @@ export const en = {
   paises: {
     US: 'United States',
     CL: 'Chile',
+    BO: 'Bolivia',
   },
 
   program: {
@@ -54,14 +55,25 @@ export const en = {
         'Researcher at Nokia Bell Labs since 2015, working on the fundamentals of wireless communication: communication theory, radio system design and optimisation, and millimetre-wave propagation measurement. PhD from KTH Stockholm, with a postdoc at MIT.',
       linea: 'mmWave propagation and channel modelling',
     },
+    // Rewritten 2026-09-22 from the biography he sent himself. See the note in `es.ts`.
     valenzuela: {
       resena:
-        'Director of the Wireless Communications Research department at Nokia Bell Labs and a member of the US National Academy of Engineering, which elected him in 2017 for leadership in multi-antenna systems and channel modelling. Bell Labs Fellow and IEEE Fellow. He studied engineering at Universidad de Chile and holds a PhD from Imperial College London.',
+        'Distinguished Member of Technical Staff at Bell Laboratories, where he directed the Communication Theory Department. Member of the US National Academy of Engineering, IEEE Fellow, Bell Labs Fellow and WWRF Fellow. He received the IEEE Eric E. Sumner Award, the 2014 IEEE CTTC Technical Achievement Award and the 2015 IEEE VTS Avant Garde Award. BSc from Universidad de Chile and PhD from Imperial College London. He works on propagation measurements and models, MIMO and space-time systems using transmit and receive antenna arrays, HetNets, small cells and next-generation air interface techniques and architectures. Over 250 papers and 44 patents.',
       linea: 'MIMO, smart antennas and propagation',
+    },
+    siringo: {
+      resena:
+        'Front-End Technical Lead at ALMA, in charge of the receiver system the observatory uses to capture millimetre and submillimetre bands from Atacama. PhD from the University of Bonn with a thesis on PolKa, a tunable polarimeter for submillimetre bolometer arrays later installed on the APEX telescope. He was previously a scientist at the European Southern Observatory. His technical interests cover mm/submm detectors, interferometry and polarisation, imaging and data reduction.',
+      linea: 'mm/submm receivers and instrumentation',
+    },
+    siles: {
+      resena:
+        'Director of the Radiocommunications Laboratory at Universidad Privada Boliviana and research professor. PhD in Communication Systems and Technologies from Universidad Politécnica de Madrid. He works on radio propagation, satellite communications and atmospheric attenuation in the Ka, Q, V and W bands, measured above 4,000 m of altitude.',
+      linea: 'Atmospheric propagation and satellite communications',
     },
     feick: {
       resena:
-        'Heads the Wireless Communications Research Group at Universidad Técnica Federico Santa María, with a long record in channel measurement campaigns and propagation characterisation. He has co-authored 28 GHz measurements in the COSMOS testbed area, the same project Columbia University takes part in.',
+        'Researcher at CCTVal, the Valparaíso science and technology centre hosted by Universidad Técnica Federico Santa María, where he heads the Wireless Communications Research Group. He has a long record in channel measurement campaigns and propagation characterisation, and has co-authored 28 GHz measurements in the COSMOS testbed area, the same project Columbia University takes part in.',
       linea: 'Channel measurement and characterisation',
     },
     gutierrez: {
