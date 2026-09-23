@@ -56,9 +56,14 @@ contact@bcsensing.org · https://bcsensing.org
 
 - **Institución nueva: nunca se le había pedido.** Entró el 2026-09-22 con la nómina
   confirmada de ocho expositores.
-- **La UPB no publica un contacto de marca.** Se buscó y no aparece: su página de contacto
-  lista admisiones y campus, no comunicación institucional ni imagen corporativa. **No se
-  inventó una dirección.**
+- **La UPB no publica un contacto de marca, y esto es un resultado buscado, no una omisión.**
+  Se rastreó su sitio y la web abierta el 2026-09-23: no hay manual de identidad, ni
+  dirección de imagen corporativa, ni formulario de solicitud de uso de marca. Lo que sí
+  aparece son direcciones de admisiones y de programas académicos. **No se inventó ninguna.**
+  Ojo con los buscadores en este punto: casi todo lo que devuelven por «manual de marca UPB»
+  es de la **Universidad Pontificia Bolivariana** de Colombia, que es otra institución.
+- Contacto general publicado, si hace falta llamar: campus Cochabamba, Av. Cap. Víctor
+  Ustáriz Km 6,5, **+591 (4) 4178100**.
 - **El camino más corto es el Dr. Siles.** Va en copia justamente para eso: lo más eficiente
   es escribirle primero a él pidiéndole que indique la unidad, y enviar este mismo texto a
   donde diga. Si prefieres hacerlo así, el correo se convierte en dos líneas para él y este

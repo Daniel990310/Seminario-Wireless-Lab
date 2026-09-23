@@ -70,10 +70,16 @@ Las tres que nunca se han pedido son las nuevas: **CCTVal/UTFSM, ALMA y la UPB**
 la UTFSM es la que tiene el procedimiento más estricto —solicitud formal y **cinco días
 hábiles** antes de publicar—, así que es por la que conviene empezar.
 
-Cuatro direcciones hay que copiarlas del navegador antes de enviar: Columbia y ANID dan
-**403** al leerlas desde aquí, ALMA **ofusca sus correos con Cloudflare**, y la UPB
-sencillamente no publica contacto de marca —ahí el camino corto es preguntárselo a Siles—.
-Ninguna se inventó.
+**Siete de las ocho ya tienen destino concreto**, rastreado en la página del titular:
+`creative@columbia.edu` —su guía de marca manda ahí exactamente este caso—,
+`copyright@alma.cl` —la dirección que su aviso de copyright enlaza en la frase que exige
+consentimiento para el logo—, más las tres chilenas ya conocidas y el formulario del kit
+digital de la USM.
+
+Las dos que no cierran, y por qué: **Nokia exige consentimiento escrito sin decir a quién
+pedírselo** —sus páginas dan 403 a lectura automática—, así que se entra por la oficina de
+prensa y, sobre todo, por Du y Valenzuela, que están dentro; y la **UPB no publica ningún
+contacto de marca** —se buscó—, así que se entra por Siles. Ninguna dirección se inventó.
 
 ### Lo que falta y no depende de nosotros
 

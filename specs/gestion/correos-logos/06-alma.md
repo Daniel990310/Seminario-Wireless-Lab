@@ -1,7 +1,6 @@
 # 06 · ALMA / European Southern Observatory — Giorgio Siringo
 
-**Para:** ALMA Education and Public Outreach Department
-— dirección desde <https://www.almaobservatory.org/en/copyright-notice/> *(ver nota abajo)*
+**Para:** `copyright@alma.cl` — ALMA Education and Public Outreach Department
 **Cc:** `gsiringo@eso.org` *(opcional: el expositor)*
 **Asunto:** Written consent to display the ALMA logo — academic seminar website (PUCV, Chile)
 
@@ -60,10 +59,14 @@ contact@bcsensing.org · https://bcsensing.org
 
 - **Institución nueva: nunca se le había pedido.** Entró el 2026-09-22 con la nómina
   confirmada de ocho expositores.
-- **La dirección hay que copiarla del navegador.** El aviso de copyright de ALMA enlaza el
-  contacto de consentimiento de marca, pero **Cloudflare ofusca los correos** de esa página
-  y no se pueden leer desde aquí. Están en la nota que empieza *«Note that this general
-  permission does not extend to the use of ALMA's logo…»*.
+- **La dirección ya no es un marcador.** `copyright@alma.cl` es la que el propio aviso de
+  copyright enlaza **en la frase que exige el consentimiento para el logo**: *«…may not be
+  used or reproduced without prior and individual written consent of ALMA»*, donde «consent
+  of ALMA» es un `mailto:` `[verificado: 2026-09-23]`. Iba ofuscada por Cloudflare y se
+  decodificó con el esquema público del propio Cloudflare. **Conviene confirmarla a ojo en
+  el navegador antes de enviar.**
+- Es la misma dirección que la página da para enviarles copia de los productos que usan
+  material de ALMA, así que sirve también para mandarles el enlace del sitio cuando esté.
 - **El correo del expositor también está por confirmar.** `gsiringo@eso.org` aparece en la
   lista de destinatarios del correo de Mauricio del 2026-09-22; verifícalo ahí antes de
   ponerlo en copia.

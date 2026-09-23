@@ -1,7 +1,7 @@
 # 01 · Columbia University — Gil Zussman
 
-**Para:** Office of General Counsel / Columbia Licensing
-— dirección desde `cufo.columbia.edu/content/guidelines-use-columbia-marks`
+**Para:** `creative@columbia.edu` — Columbia Creative
+**Cc:** `licensing@columbia.edu` — Trademark and Licensing Program
 **Cc:** `gil.zussman@columbia.edu` *(opcional: el expositor, para que sepa que se pidió)*
 **Asunto:** Permission to display Columbia University marks — academic seminar website (PUCV, Chile)
 
@@ -54,8 +54,20 @@ contact@bcsensing.org · https://bcsensing.org
 
 ### Antes de enviar
 
-- **La dirección.** `cufo.columbia.edu` devolvió **403** al leerlo desde este proyecto
-  `[medido: 2026-08-25]`; desde un navegador normal abre. Copiar de ahí el contacto que
-  indique la guía de uso de marcas.
-- El punto 2 no es un adorno: **el archivo que teníamos era de otra facultad**. Si se borra
-  esa parte, lo más probable es que manden el mismo que ya tenemos.
+- **La dirección ya no es un marcador.** `creative@columbia.edu` sale de la propia guía de
+  marca de Columbia, <https://visualidentity.columbia.edu/branding>, que dice literalmente:
+  *«If you would like to request special permission to use the parent brand trademark,
+  please email your request to Columbia Creative»* `[verificado: 2026-09-23]`. **Ese es
+  exactamente nuestro caso**: un tercero que quiere usar la marca matriz, no una unidad
+  interna usando la suya.
+  El correo va ofuscado por Cloudflare en esa página; se decodificó con el esquema público
+  del propio Cloudflare. **Conviene confirmarlo a ojo en el navegador antes de enviar.**
+- `licensing@columbia.edu` va en copia porque el Trademark and Licensing Program es quien
+  administra las marcas; la misma página remite al **Office of General Counsel**
+  (`ogc.columbia.edu`) si hay dudas legales. Si Columbia Creative deriva, será a uno de
+  esos dos.
+- **No es una licencia de merchandising.** Si contestan mandando a Exemplar Associates
+  —su agente de licencias, `licensing@exemplar.com`—, es porque leyeron «logo» y pensaron
+  en productos. Vale aclarar que es una web académica sin fin comercial.
+- El punto 2 del cuerpo no es un adorno: **el archivo que teníamos era de otra facultad**.
+  Si se borra esa parte, lo más probable es que manden el mismo que ya tenemos.

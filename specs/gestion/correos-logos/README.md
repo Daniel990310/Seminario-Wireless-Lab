@@ -15,32 +15,48 @@ las tres instituciones nuevas.
 
 | # | Institución | Expositor | Destinatario | Estado de la dirección |
 | - | ----------- | --------- | ------------ | ---------------------- |
-| [01](01-columbia.md) | Columbia University | Gil Zussman | Office of General Counsel / Columbia Licensing | **por confirmar** — `cufo.columbia.edu` devolvió 403 |
-| [02](02-nokia-bell-labs.md) | Nokia Bell Labs | Jinfeng Du · Reinaldo A. Valenzuela | Nokia Trademark / Brand | **por confirmar** — vía `nokia.com/notices/terms/` |
+| [01](01-columbia.md) | Columbia University | Gil Zussman | `creative@columbia.edu` | `[verificado]` en `visualidentity.columbia.edu/branding` |
+| [02](02-nokia-bell-labs.md) | Nokia Bell Labs | Jinfeng Du · Reinaldo A. Valenzuela | `Press.Services@nokia.com` + los expositores | **entrada, no destino** — ver abajo |
 | [03](03-uc.md) | Pontificia U. Católica de Chile | Miguel Gutiérrez Gaitán | `mhola@uc.cl` | `[verificado]` |
 | [04](04-usach.md) | Universidad de Santiago de Chile | Karel Toledo de la Garza | `imagen@usach.cl` | `[verificado]` |
-| [05](05-utfsm-cctval.md) | CCTVal · UTFSM | Rodolfo Feick | `cristian.reyessa@usm.cl` | `[verificado]` en `comunicaciones.usm.cl/kit-digital-usm/` |
-| [06](06-alma.md) | ALMA / ESO | Giorgio Siringo | ALMA Education and Public Outreach Dept. | **por confirmar** — correo ofuscado por Cloudflare |
-| [07](07-upb.md) | Universidad Privada Boliviana | Gustavo A. Siles Soria | Comunicación / Marketing institucional | **por confirmar** — no publica contacto de marca |
+| [05](05-utfsm-cctval.md) | CCTVal · UTFSM | Rodolfo Feick | `cristian.reyessa@usm.cl` **+ formulario** | `[verificado]` en `comunicaciones.usm.cl/kit-digital-usm/` |
+| [06](06-alma.md) | ALMA / ESO | Giorgio Siringo | `copyright@alma.cl` | `[verificado]` en el aviso de copyright de ALMA |
+| [07](07-upb.md) | Universidad Privada Boliviana | Gustavo A. Siles Soria | vía el Dr. Siles | **no publica contacto de marca** — buscado |
 | [08](08-pucv-variante-oscura.md) | PUCV | *(organizador)* | Dirección de Comunicación Estratégica | interno |
 
-Los tres primeros dígitos del orden no significan prioridad. **Si hay que elegir por dónde
-empezar, es por el 05, el 06 y el 07**: son los que todavía no se han pedido nunca.
+Los dígitos del orden no significan prioridad. **Si hay que elegir por dónde empezar, es por
+el 05, el 06 y el 07**: son los que todavía no se han pedido nunca.
 
-## Las cuatro direcciones que hay que copiar antes de enviar
+## Cómo se consiguió cada dirección, y qué queda sin cerrar
 
-Este proyecto **no inventa un dato institucional**, así que ninguna de estas se rellenó a
-ojo. Las cuatro se consiguen mirando la página del titular:
+Siete de las ocho tienen ya un destino concreto. Ninguna se rellenó a ojo.
 
-1. **Columbia** — `cufo.columbia.edu/content/guidelines-use-columbia-marks`. Devolvió
-   **403** al leerlo desde aquí `[medido: 2026-08-25]`; desde un navegador normal abre.
-2. **Nokia** — el equipo de marca que indique `nokia.com/notices/terms/`.
-3. **ALMA** — su aviso de copyright, <https://www.almaobservatory.org/en/copyright-notice/>,
-   enlaza el contacto de consentimiento para la marca, pero **la dirección va ofuscada por
-   Cloudflare** y solo se ve al pasar por el navegador. Ahí está, en la nota que empieza
-   «*Note that this general permission does not extend to the use of ALMA's logo…*».
-4. **UPB** — no publica un contacto de marca. Lo más corto es **pedírselo a Gustavo Siles**,
-   que es el expositor y sabe a qué unidad va; está dicho así dentro del archivo 07.
+- **Columbia → `creative@columbia.edu`.** Su guía de marca lo dice con todas las letras:
+  *«If you would like to request special permission to use the parent brand trademark,
+  please email your request to Columbia Creative»*. Ese es nuestro caso exacto —un tercero
+  usando la marca matriz—, así que no hace falta pasar por el Office of General Counsel
+  salvo que ellos deriven. En copia va `licensing@columbia.edu`.
+- **ALMA → `copyright@alma.cl`.** Es la dirección que su propio aviso de copyright enlaza
+  **en la frase que exige el consentimiento escrito para el logo**.
+- **USM → correo _y_ formulario.** Además de `cristian.reyessa@usm.cl`, el kit digital tiene
+  un **formulario para enviar piezas gráficas a autorización**. Es la única de las ocho con
+  un trámite formalizado de punta a punta: solicitud, plazo de cinco días hábiles y acuse.
+- **Nokia → no hay destino, hay entrada.** Es el único titular que **exige consentimiento
+  escrito sin decir a quién pedírselo**: sus términos lo imponen, y tanto la página de
+  términos como la de contacto devuelven **403** a cualquier lectura automática. Lo
+  publicado que sirve de puerta es la oficina de prensa, `Press.Services@nokia.com`, y el
+  formulario de Bell Labs. **El camino corto es Du y Valenzuela**, que están dentro y
+  tienen acceso al proceso interno; por eso van en copia y no por cortesía.
+- **UPB → vía el Dr. Siles.** Se buscó y **no existe** contacto de marca publicado: ni
+  manual de identidad, ni dirección de imagen corporativa, ni formulario. Cuidado con los
+  buscadores aquí: casi todo lo que devuelven es de la **Universidad Pontificia Bolivariana**
+  de Colombia, que es otra institución. Siles va en copia y lo más eficiente es pedirle a él
+  la unidad correcta.
+
+> **Dos direcciones venían ofuscadas por Cloudflare** —Columbia y ALMA— y se decodificaron
+> con el esquema público del propio Cloudflare, que es lo mismo que hace el navegador de
+> cualquiera al abrir la página. Son direcciones publicadas para que la gente escriba.
+> Aun así **conviene confirmarlas a ojo antes de enviar**, que cuesta diez segundos.
 
 ## Quién firma y desde dónde
 

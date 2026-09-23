@@ -1,7 +1,9 @@
 # 02 · Nokia Bell Labs — Jinfeng Du y Reinaldo A. Valenzuela
 
-**Para:** Nokia Trademark / Brand team — dirección desde `nokia.com/notices/terms/`
-**Cc:** `jinfeng.du@nokia-bell-labs.com` *(opcional)*
+**Para:** `Press.Services@nokia.com` — Nokia Press Office
+*(alternativa: el formulario de <https://www.nokia.com/bell-labs/about/contact/>)*
+**Cc:** `jinfeng.du@nokia-bell-labs.com` y `reinaldo.valenzuela@nokia-bell-labs.com`
+— **los dos expositores; ver la nota, aquí la copia no es cortesía**
 **Asunto:** Written consent to display the Nokia Bell Labs logo — academic seminar website (PUCV, Chile)
 
 ---
@@ -48,9 +50,23 @@ contact@bcsensing.org · https://bcsensing.org
 
 ### Antes de enviar
 
-- **La dirección** sale del equipo de marca que indique `nokia.com/notices/terms/`.
+- **Nokia es el único de los ocho que no publica una dirección para permisos de marca.** Se
+  buscó: sus términos de uso exigen «prior written consent» pero **no dicen a quién
+  pedírselo**, y `nokia.com/notices/terms/` y `nokia.com/contact-us/` **devuelven 403** a
+  cualquier lectura automática `[medido: 2026-09-23]`. Desde un navegador normal abren.
+- Lo que sí está publicado y sirve de entrada: **`Press.Services@nokia.com`**, la oficina de
+  prensa de Nokia, y el **formulario de contacto de Bell Labs**,
+  <https://www.nokia.com/bell-labs/about/contact/>. Ninguno de los dos es el equipo de
+  marca, así que lo más probable es que deriven — y eso está bien, porque derivan *dentro*
+  de Nokia, que es a donde no llegamos desde fuera.
+- **Por eso Du y Valenzuela van en copia, y aquí no es cortesía: es el camino corto.** Son
+  empleados de Bell Labs y tienen acceso al proceso interno de uso de marca para materiales
+  de congresos. Si contestan ellos antes que la oficina de prensa, mejor.
 - Nokia es el único titular que **ya dijo por escrito** que el acceso a su sitio no concede
   licencia sobre sus marcas. Por eso el correo lo cita: demuestra que se leyó, y ahorra la
   respuesta automática que lo recordaría.
+- **Las direcciones de Du y Valenzuela hay que confirmarlas** en la lista de destinatarios
+  del correo de Mauricio del 2026-09-22: ahí aparece `Jinfeng.du@nokia-bell-labs.com`, pero
+  Valenzuela escribe desde una cuenta personal y su dirección corporativa no consta.
 - El archivo `/logos/nokia-bell-labs.svg` ya está en el repositorio **sin publicar**. No se
   menciona en el correo a propósito: lo que se pide es el archivo que ellos autoricen.
