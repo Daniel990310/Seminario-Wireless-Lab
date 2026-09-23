@@ -196,7 +196,27 @@ const eventSchema = {
     {alternativas.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
     <link rel="alternate" hreflang="x-default" href={xDefault} />
     {isPreview && <meta name="robots" content="noindex, nofollow" />}
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!--
+      Marca propia del seminario (kit «Beyond Connectivity v5.2», 2026-09-22).
+      Documentación: `specs/marca-beyond-connectivity.md`.
+
+      El `/favicon.svg` anterior era un resto del diseño viejo: cian `#35d0e6` sobre
+      `#05070f`, dos colores que el sitio **ya no usa desde T5**, cuando se retiró el
+      cian por estridente. O sea que la pestaña del navegador mostraba una paleta que
+      no existe en ninguna otra parte de la página.
+
+      Tres entradas y no una, porque cada una cubre un caso que las otras no:
+        - SVG: la que usan los navegadores actuales; nítida a cualquier tamaño.
+        - ICO: Safari antiguo y accesos directos de escritorio en Windows, que no
+          leen SVG. Trae 16, 32 y 48 px con una geometría **simplificada a mano**
+          para 16 px —dos ondas en vez de tres—, porque el símbolo completo a ese
+          tamaño se empasta.
+        - `apple-touch-icon`: iOS al añadir a la pantalla de inicio. Sin ella, Safari
+          recorta una captura de la página.
+    -->
+    <link rel="icon" href="/brand/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/brand/favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="apple-touch-icon" href="/brand/favicon-180.png" sizes="180x180" />
     <!--
       Se declara por tema para que la barra del navegador móvil acompañe.
 
