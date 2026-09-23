@@ -7,8 +7,9 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-09-22** · Rama de trabajo: `claude/framework-app-profesional-n4wa0t`
-· Último despliegue: **2026-09-22**, versión `adda9052`, en `https://bcsensing.org`.
+Actualizado: **2026-09-22** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
+ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-09-22**, versión
+`7a970138`, en `https://bcsensing.org`.
 · **Publicado en <https://bcsensing.org> el 2026-09-22, versión `830dafb9`. Primer
 despliegue indexable. Pendientes en «EMPIEZA AQUÍ»: Search Console y el token de
 Hostinger sin revocar.**
@@ -16,6 +17,29 @@ Hostinger sin revocar.**
 ---
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-22
+
+## ⚠️ Lo primero, si llegas nuevo
+
+Lee [`ONBOARDING.md`](ONBOARDING.md). Dice qué leer y en qué orden, cómo montar el
+entorno, cuál es tu rama y qué **no** se hace. Desde el 2026-09-22 trabajan dos personas
+en paralelo y el reparto de archivos está en `AGENTS.md` → «Dos personas a la vez».
+
+## ✅ Cerrado el 2026-09-22, por la tarde (todo desplegado y comprobado en vivo)
+
+| Qué | Dónde queda |
+|---|---|
+| Banner: fotografía de Santiago con la cordillera, a relación fija 7,04:1 | D12 en `AGENTS.md`; `--alto-franja` en `global.css` |
+| El titular del hero ya no se corta en ventanas anchas y bajas | tope por alto de ventana en `--alto-franja`, 18 combinaciones medidas |
+| Correo de contacto real: `contact@bcsensing.org` → `daniel.caignet@pucv.cl` | cierra A4; DNS y trampas junto al valor en `comun.ts` |
+| Comité organizador y crédito de desarrollo en el pie | `SiteFooter.astro` + `ui.pie` en los dos idiomas |
+| Marca propia del seminario: favicon, ICO, apple-touch-icon y símbolo en la cabecera | `public/brand/`, documentada en `specs/marca-beyond-connectivity.md` |
+| Panel de ajuste visual en `/ajustar`, solo en `npm run dev` | `src/dev/`, inyectado desde `astro.config.mjs` |
+| RF-3 reescrito: la inscripción es un enlace a Google Forms | **implementado y apagado**: espera la URL en `comun.registro.url` |
+
+**Lo que sigue abierto y es de Daniel**: el enlace del formulario, el envío *desde*
+`contact@` con un relé SMTP, dos expositores nuevos, y decidir si el repositorio pasa a
+privado —hoy es público y `specs/gestion/correos-instituciones.md` expone doce
+direcciones de terceros.
 
 ## ✅ El sitio está publicado en https://bcsensing.org
 

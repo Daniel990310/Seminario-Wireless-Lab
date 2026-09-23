@@ -19,9 +19,13 @@ este proyecto (Claude Code en navegador, móvil y PC, y Antigravity). Ninguno de
 la conversación de los otros: lo único compartido es el repositorio, así que **si no está
 escrito aquí, no ocurrió**.
 
-✅ **Al 2026-08-27 el sitio publicado está al día** (versión `c5149c53`) y ya no muestra
-ninguna marca sin autorización, así que **el enlace se puede mandar a las instituciones**.
-Cómo se comprobó, y las dos trampas que aparecieron al desplegar, en «EMPIEZA AQUÍ» §1.
+✅ **Al 2026-09-22 el sitio publicado está al día** (versión `7a970138`, en
+<https://bcsensing.org>) y ya no muestra ninguna marca sin autorización, así que **el
+enlace se puede mandar a las instituciones**. Lo cerrado ese día y lo que sigue abierto,
+en «EMPIEZA AQUÍ».
+
+**¿Primera vez en el repositorio?** [`ONBOARDING.md`](ONBOARDING.md) dice qué leer, en
+qué orden y qué no hacer. Este archivo sigue siendo la fuente de las reglas.
 
 ```bash
 git fetch origin && git status -sb   # ¿parto del estado que creo?
@@ -357,7 +361,8 @@ Detalle completo, con cuotas y lecciones medidas, en
 ## Estructura
 
 ```
-AGENTS.md              este archivo
+AGENTS.md              este archivo: las reglas
+ONBOARDING.md          camino de entrada para quien llega nuevo (no repite reglas)
 CLAUDE.md              puntero a este archivo
 specs/                 especificaciones (leer primero)
 scripts/verify.mjs     verificador de accesibilidad y peso
@@ -372,6 +377,7 @@ src/
 └── assets/fonts/      tipografías auto-hospedadas
 public/logos/          logos institucionales (hoy marcadores de posición)
 public/og/             imágenes para compartir, generadas con `npm run og`
+public/brand/          marca del seminario: favicon, ICO, apple-touch-icon, símbolo
 ```
 
 **No hay dependencias de interfaz.** El sitio se compone solo con Astro: sin React, sin
@@ -409,7 +415,56 @@ borrador sobrevive a recargar y el aviso de accesibilidad aparece. `[medido]`
 
 ## Git
 
-Rama de trabajo: `claude/framework-app-profesional-n4wa0t`.
+**`main` es el tronco, y `main` es lo que sirve producción.** Desde el 2026-09-22 no
+hay «rama de trabajo» permanente: la que hubo hasta entonces
+—`claude/framework-app-profesional-n4wa0t`— se fusionó a `main` y queda como historia.
+
+### Dos personas a la vez (desde el 2026-09-22)
+
+Daniel trabaja en los temas de fondo —formulario de inscripción, envío de correo,
+infraestructura— y **una segunda persona hace ajustes visuales y de texto**, también con
+Claude. Ninguna de las dos ve la conversación de la otra, así que todo lo que sostiene la
+coordinación está aquí, no en un chat.
+
+**Reparto vigente.** No es burocracia: son los archivos donde un cambio de la otra
+persona te sobrescribe el trabajo.
+
+| | Daniel | Segunda persona |
+| --- | --- | --- |
+| `src/components/`, `src/styles/global.css` | si hace falta | **sí, es su terreno** |
+| `src/data/es.ts`, `en.ts`, `tipos.ts` | sí | sí, avisando: son pares que deben cuadrar |
+| `src/data/comun.ts` (`registro`, `contact`) | **solo Daniel** | no |
+| `astro.config.mjs`, `wrangler.jsonc`, DNS, Cloudflare | **solo Daniel** | no |
+| `specs/**`, `AGENTS.md`, `ESTADO.md` | sí | sí, cuando su cambio crea o cierra un requisito |
+
+**Ramas.** Una por asunto, cortas, nacidas de `main` al día:
+
+```bash
+git fetch origin
+git switch -c ajustes/<asunto-corto> origin/main
+```
+
+`ajustes/…` para retoques visuales y de texto; `daniel/…` para lo de fondo. Nada se
+trabaja directamente sobre `main`.
+
+**Para integrar: pull request en GitHub, nunca `push` a `main`.** No es ceremonia —es
+el único punto donde alguien que no escribió el cambio lo mira antes de que llegue al
+sitio que ya está repartido a instituciones.
+
+**Quien despliega es Daniel, y solo Daniel.** `npx wrangler deploy` toca el sitio en
+vivo sin pasar por revisión. La segunda persona **no lo ejecuta nunca**; su trabajo se ve
+en `npm run dev` y en `/ajustar`, y llega a producción cuando su rama se fusiona y Daniel
+despliega.
+
+**El requisito para pedir la fusión es `npm run verify:todo` en verde**, con el número
+pegado en la descripción del pull request. Sin eso, la afirmación «no rompí nada» no
+está respaldada; ver «Lo primero».
+
+**Si un `push` devuelve 403, no es falta de permisos: es la cuenta equivocada.** En el
+PC hay dos cuentas de GitHub en `gh` y la activa suele ser `danielcaignet-dataseed`, que
+se usa en otros proyectos; **este repositorio es de `Daniel990310`**. Resuelto el
+2026-09-21 con un ayudante de credenciales **local al repositorio**, que pide el token de
+esa cuenta concreta sin cambiar la cuenta activa del sistema:
 
 **Si un `push` devuelve 403, no es falta de permisos: es la cuenta equivocada.** En el
 PC hay dos cuentas de GitHub en `gh` y la activa suele ser `danielcaignet-dataseed`, que
@@ -425,6 +480,10 @@ git config --local --add credential.helper '!f() { echo username=Daniel990310; e
 Se prefiere a `gh auth switch` porque eso es estado global: cambiarlo para empujar aquí
 rompe cualquier trabajo simultáneo en los otros repositorios. El token **no queda escrito
 en `.git/config`**; se pide al llavero en cada invocación.
+
+Esto es **específico del PC de Daniel**, que tiene dos cuentas. Quien llegue nuevo con
+una sola cuenta de GitHub no necesita nada de esto: le basta con que Daniel lo invite
+como colaborador del repositorio y con `gh auth login`.
 
 Los mensajes de commit explican **por qué** se hizo el cambio y qué se descartó,
 no solo qué archivos se tocaron. Si una medición cambió, el mensaje incluye el
