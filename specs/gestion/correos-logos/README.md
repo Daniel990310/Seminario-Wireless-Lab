@@ -23,6 +23,7 @@ las tres instituciones nuevas.
 | [06](06-alma.md) | ALMA / ESO | Giorgio Siringo | `copyright@alma.cl` | `[verificado]` en el aviso de copyright de ALMA |
 | [07](07-upb.md) | Universidad Privada Boliviana | Gustavo A. Siles Soria | vía el Dr. Siles | **no publica contacto de marca** — buscado |
 | [08](08-pucv-variante-oscura.md) | PUCV | *(organizador)* | Dirección de Comunicación Estratégica | interno |
+| [09](09-organizador-via-expositores.md) | — *(gestión)* | los ocho | Mauricio Rodríguez | interno |
 
 Los dígitos del orden no significan prioridad. **Si hay que elegir por dónde empezar, es por
 el 05, el 06 y el 07**: son los que todavía no se han pedido nunca.
@@ -57,6 +58,21 @@ Siete de las ocho tienen ya un destino concreto. Ninguna se rellenó a ojo.
 > con el esquema público del propio Cloudflare, que es lo mismo que hace el navegador de
 > cualquiera al abrir la página. Son direcciones publicadas para que la gente escriba.
 > Aun así **conviene confirmarlas a ojo antes de enviar**, que cuesta diez segundos.
+
+## Quién envía qué
+
+**Nada de esto se manda solo.** El correo lo envía una persona desde su cliente, y los
+formularios —el de la USM, y cualquiera que aparezca— los rellena una persona en el
+navegador. El reparto propuesto, para no escribir dos veces a la misma puerta:
+
+| Quién | Qué envía |
+| ----- | --------- |
+| **Daniel** | los seis con canal publicado: **01** Columbia, **03** UC, **04** USACH, **05** UTFSM/CCTVal, **06** ALMA y **08** PUCV |
+| **Mauricio** | el **09**: añade un párrafo a su hilo con los ocho expositores, que cubre los dos casos sin canal y acelera los demás |
+| *en reserva* | **02** Nokia y **07** UPB, solo si el expositor no consigue abrir la puerta interna |
+
+El 02 y el 07 quedan en reserva a propósito: escribir a la oficina de prensa de Nokia antes
+de que Du o Valenzuela hayan preguntado dentro es empezar por el camino largo.
 
 ## Quién firma y desde dónde
 

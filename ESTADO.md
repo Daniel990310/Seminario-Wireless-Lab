@@ -81,6 +81,16 @@ pedírselo** —sus páginas dan 403 a lectura automática—, así que se entra
 prensa y, sobre todo, por Du y Valenzuela, que están dentro; y la **UPB no publica ningún
 contacto de marca** —se buscó—, así que se entra por Siles. Ninguna dirección se inventó.
 
+Para esos dos hay un noveno archivo, **[`09`](specs/gestion/correos-logos/09-organizador-via-expositores.md)**:
+un mensaje a Mauricio para que añada la petición de logo **al hilo que ya tiene abierto con
+los ocho** —el del plazo del 28—, con un párrafo en inglés listo para pegar. Sale más barato
+que abrir una ronda nueva de correos.
+
+**Nada de esto se manda solo**: el reparto de quién envía qué está en el README de esa
+carpeta. Daniel manda los seis con canal publicado; Mauricio manda el 09; el 02 (Nokia) y el
+07 (UPB) quedan **en reserva**, para enviarlos solo si el expositor no abre la puerta
+interna.
+
 ### Lo que falta y no depende de nosotros
 
 - **Seis charlas de ocho**, con plazo del organizador el **lunes 28 de septiembre**:
