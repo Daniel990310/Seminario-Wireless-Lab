@@ -60,6 +60,21 @@ textuales de los resúmenes, en **[`specs/gestion/programa-y-expositores.md`](sp
 dejó de cubrir nada. T7 fallaba **desde el mismo despliegue que se dio por verde**. Ya
 está corregido con un patrón de correo genérico.
 
+### Correos de logos, listos para enviar · `specs/gestion/correos-logos/`
+
+Ocho archivos, uno por institución, **para copiar y pegar**: destinatario, asunto y cuerpo
+con la firma puesta, la dirección del sitio y los ocho expositores. Índice y estado de cada
+dirección en su [`README.md`](specs/gestion/correos-logos/README.md).
+
+Las tres que nunca se han pedido son las nuevas: **CCTVal/UTFSM, ALMA y la UPB**. De ellas,
+la UTFSM es la que tiene el procedimiento más estricto —solicitud formal y **cinco días
+hábiles** antes de publicar—, así que es por la que conviene empezar.
+
+Cuatro direcciones hay que copiarlas del navegador antes de enviar: Columbia y ANID dan
+**403** al leerlas desde aquí, ALMA **ofusca sus correos con Cloudflare**, y la UPB
+sencillamente no publica contacto de marca —ahí el camino corto es preguntárselo a Siles—.
+Ninguna se inventó.
+
 ### Lo que falta y no depende de nosotros
 
 - **Seis charlas de ocho**, con plazo del organizador el **lunes 28 de septiembre**:
