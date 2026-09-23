@@ -24,6 +24,7 @@ las tres instituciones nuevas.
 | [07](07-upb.md) | Universidad Privada Boliviana | Gustavo A. Siles Soria | vía el Dr. Siles | **no publica contacto de marca** — buscado |
 | [08](08-pucv-variante-oscura.md) | PUCV | *(organizador)* | Dirección de Comunicación Estratégica | interno |
 | [09](09-organizador-via-expositores.md) | — *(gestión)* | los ocho | Mauricio Rodríguez | interno |
+| [10](10-whatsapp.md) | — *(encargo)* | — | Mauricio · quien envíe | **WhatsApp**, no correo |
 
 Los dígitos del orden no significan prioridad. **Si hay que elegir por dónde empezar, es por
 el 05, el 06 y el 07**: son los que todavía no se han pedido nunca.
