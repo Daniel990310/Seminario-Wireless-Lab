@@ -116,13 +116,32 @@ const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asun
         versión nueva del kit no obliga a tocar código. Mismo criterio que los logos
         institucionales, ver `public/logos/README.md`.
       -->
+      <!--
+        El tamaño y el tirón hacia la izquierda salen de medir el archivo, no de
+        tantear: dentro de su lienzo de 128, el dibujo deja **16,4 % de margen a
+        izquierda y derecha y 8,2 % arriba y abajo** `[medido: 2026-09-22, sobre los
+        píxeles opacos del SVG]`. Ese margen es el «aire» que pide el manual del kit,
+        y está bien que el archivo lo traiga; lo que no está bien es cobrarlo dos
+        veces, porque en la barra el aire ya lo pone el `gap-3` con el texto.
+
+        Consecuencias que se veían: a `size-8` la tinta medía 21 px —el anillo que
+        había antes ocupaba los 32— y empezaba 5 px adentro del margen de la página.
+        Daniel lo describió como «se ve raro, pegalo más a la izquierda».
+
+        Se corrige sin tocar el archivo de marca:
+          - `size-10`: 40 px de caja dan 33 px de tinta de alto, la misma masa
+            visual que tenía el anillo.
+          - `-ml-[0.41rem]`: 6,6 px, que es exactamente el 16,4 % de 40. Con eso el
+            borde izquierdo **del dibujo** cae en el margen de la página, alineado
+            con el titular del hero, en lugar del borde de un lienzo invisible.
+      -->
       <img
         src="/brand/simbolo-blanco.svg"
         alt=""
         aria-hidden="true"
-        width="32"
-        height="32"
-        class="size-8 shrink-0"
+        width="40"
+        height="40"
+        class="-ml-[0.41rem] size-10 shrink-0"
       />
       <span class="marca-texto leading-tight" aria-hidden="true">
         <!-- Título oficial abreviado, en inglés en ambos idiomas (RF-1.2). -->
