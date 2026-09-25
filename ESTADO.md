@@ -9,7 +9,8 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 Actualizado: **2026-09-25** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
 ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-09-25**, versión
-`0d4a4a84`, en `https://bcsensing.org`, con el formulario de inscripción abierto.
+`809d7a09`, en `https://bcsensing.org`, con la inscripción abierta y enlazada desde la
+barra fija, el menú móvil y el hero.
 · **Publicado en <https://bcsensing.org> el 2026-09-22, versión `830dafb9`. Primer
 despliegue indexable. Pendientes en «EMPIEZA AQUÍ»: Search Console y el token de
 Hostinger sin revocar.**
@@ -23,6 +24,40 @@ Hostinger sin revocar.**
 Lee [`ONBOARDING.md`](ONBOARDING.md). Dice qué leer y en qué orden, cómo montar el
 entorno, cuál es tu rama y qué **no** se hace. Desde el 2026-09-22 trabajan dos personas
 en paralelo y el reparto de archivos está en `AGENTS.md` → «Dos personas a la vez».
+
+## ✅ Inscribirse, también en la barra superior · 2026-09-25
+
+Despliegue `809d7a09-baee-4a80-ae02-05c7ddc32950`, sobre `acde2ff`.
+
+Lo pidió Daniel, y el motivo es medible: **la barra es fija y el hero no**, así que el
+botón del hero deja de verse justo cuando alguien termina de leer el programa y decide
+inscribirse. El del hero se queda. Es el mismo botón —misma cadena `ui.hero.inscribirse`,
+mismo destino—, visible en todos los anchos y también en el panel del menú móvil.
+Queda como **criterio 7 de RF-3**, con las tres condiciones que no se deshacen.
+
+Comprobado en vivo `[medido: 2026-09-25]`: tres enlaces al formulario por página —barra,
+menú y hero— en los dos idiomas, y `verify:publicado` con todos los criterios cumplidos.
+
+### Un fallo de contraste que estaba en producción, y por qué nadie lo vio
+
+Medir el botón nuevo destapó el de al lado. `Contacto` usaba `hover:bg-primary/15`:
+dentro de `superficie-institucional` el velo es oro sobre azul **y el texto también es
+oro**, así que al pasar el puntero el contraste caía a **4,28:1**, bajo el 4,5 de
+WCAG 1.4.3. Baja a `/10`, que da 4,70:1 `[medido: 2026-09-25]`.
+
+Los doce valores que esta barra documenta desde el 2026-08-06 se midieron **todos en
+reposo**. El hover no estaba entre ellos, y axe no evalúa estados de puntero: por eso
+sobrevivió a siete verificadores en verde durante mes y medio. **La lección no es el
+número, es el hábito**: en esta banda, cualquier control cuyo texto comparta tono con
+su velo hay que medirlo también en hover y en foco, no solo quieto.
+
+El `/15` de `VenueLocator` se deja a propósito: ahí `--primary` no es oro sobre azul y
+el peor caso de los dos temas da 7,17:1 `[medido: 2026-09-25]`.
+
+Valores del botón nuevo, mismo método: texto azul sobre oro macizo **5,55:1**; en hover
+con `opacity-90` **4,80:1**; su límite contra la banda **5,55:1**, sobre el 3:1 de
+WCAG 1.4.11. Se usa `opacity` y no un velo porque el texto y la banda son el mismo azul:
+al componer el grupo el texto no cambia y solo se atenúa el fondo.
 
 ## ✅ Formulario de inscripción en producción · 2026-09-25
 
