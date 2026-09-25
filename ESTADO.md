@@ -180,11 +180,18 @@ marcador de posición en todas.
 [`specs/gestion/correos-logos/respuestas/`](specs/gestion/correos-logos/respuestas/README.md)**,
 que es el respaldo de cada marca publicada.
 
-### Dos cosas que salieron de ahí y hay que hacer
+### La UTFSM queda cerrada
 
-- **Escribirle a Cristian Reyes con el enlace.** Lo pidieron: «quedamos atentos a la
-  integración para ver que esté utilizada de manera correcta». Texto listo al final del
-  archivo 05.
+**No hay nada más que gestionar con Cristian Reyes. Lo cerró Daniel el 2026-09-25.**
+
+Queda anotado porque el pendiente sí había nacido de algo concreto: ellos escribieron
+«quedamos atentos a la integración para ver que esté utilizada de manera correcta», así que
+el acuse no era pedirles nada, era enseñarles cómo quedó. El borrador sigue al final del
+archivo 05 por si alguna vez conviene mandarlo —por ejemplo si la sección de logos cambia
+de forma—, pero **no cuenta como tarea abierta**.
+
+### Lo que sí queda abierto
+
 - **Columbia deriva el archivo a Zussman** y **todavía no autoriza explícitamente**. Hay dos
   textos listos en el archivo 01: uno para Zussman pidiéndole el archivo, otro de una línea
   para que Columbia Creative confirme por escrito. **Hasta esa línea, la marca no se

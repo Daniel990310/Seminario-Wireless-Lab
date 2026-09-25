@@ -5,8 +5,9 @@
 > **Es la primera marca de tercero autorizada del proyecto.** Detalle, medidas y las tres
 > decisiones que trajo, en [`respuestas/`](respuestas/README.md).
 >
-> **Queda una cosa por hacer**, y la pidieron ellos: ver la integración. El texto está al
-> final de este archivo.
+> **Cerrado del todo el 2026-09-25, por decisión de Daniel.** Con la UTFSM no queda nada
+> pendiente. El borrador de acuse de integración sigue al final del archivo, sin enviar, por
+> si conviene mandarlo más adelante.
 
 ---
 
@@ -82,10 +83,12 @@ contact@bcsensing.org · https://bcsensing.org
 
 ---
 
-## A enviar cuando esté desplegado · acuse de integración
+## Borrador guardado · acuse de integración · NO enviar salvo que haga falta
 
-Lo pidieron ellos: *«Quedamos atentos a la integración para ver que esté utilizada de manera
-correcta»*. **Responder sobre el mismo hilo**, no abrir uno nuevo.
+**Daniel cerró este punto el 2026-09-25**, así que esto no es una tarea. Se conserva porque
+ellos sí lo habían pedido —*«quedamos atentos a la integración para ver que esté utilizada
+de manera correcta»*— y porque el día que la sección de logos cambie de forma, el texto ya
+está escrito. Si se manda, **sobre el mismo hilo**, no abriendo uno nuevo.
 
 > Estimado Cristian:
 >

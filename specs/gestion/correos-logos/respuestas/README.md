@@ -54,9 +54,12 @@ imágenes incrustadas.
    nada que no esté resuelto, y una marca en un color que su dueño no usa se lee como un
    error aunque esté permitida. Los contrastes medidos arriba confirman que no hace falta.
    **RF-10.4 sigue intacta**, y esta es la primera vez que se pudo haber roto con permiso.
-3. **Pidieron ver la integración.** «Quedamos atentos a la integración para ver que esté
-   utilizada de manera correcta» es un compromiso, no una cortesía. Hay que escribirle con
-   el enlace; el texto está al final de [`../05-utfsm-cctval.md`](../05-utfsm-cctval.md).
+3. **Pidieron ver la integración, y Daniel dio el punto por cerrado el 2026-09-25.** Ellos
+   escribieron «quedamos atentos a la integración para ver que esté utilizada de manera
+   correcta», así que el acuse no era pedirles nada: era enseñarles cómo quedó. El borrador
+   sigue al final de [`../05-utfsm-cctval.md`](../05-utfsm-cctval.md) por si conviene
+   mandarlo más adelante —si la sección de logos cambia de forma, por ejemplo—, pero **no
+   es una tarea abierta**. Con la UTFSM no queda nada pendiente.
 
 ---
 
