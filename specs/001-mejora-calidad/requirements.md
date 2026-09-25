@@ -208,8 +208,21 @@ Por qué enlazar y no incrustar ni construir, que es lo que decide el resto:
    existe, y a la página del seminario cuando no.
 6. `npm run verify` sigue en verde con el botón presente, en los dos idiomas y en
    los dos temas.
+7. **La llamada a la acción aparece también en la barra superior**, con la misma
+   etiqueta y el mismo destino que la del hero. Añadido el 2026-09-25 por indicación
+   de Daniel, y el motivo es medible: la barra es fija y el hero no, así que el botón
+   del hero deja de estar a la vista justo cuando alguien termina de leer el programa
+   y decide inscribirse. Tres condiciones que no son negociables:
+   - **Misma cadena**, `ui.hero.inscribirse`. Una acción conserva su nombre en todo el
+     recorrido; una cadena nueva sería un par es/en más a cambio de que el sitio se
+     llame a sí mismo de dos maneras.
+   - El criterio 3 **vale para las dos apariciones**: si la dirección es `null`, no se
+     pinta ninguna. La ausencia se normaliza en `contenido.ts`, no en cada consumidor.
+   - Visible **en todos los anchos**, no solo desde `sm` como `Contacto`. Esconder la
+     acción principal tras el menú en un móvil es perder justo al visitante que más
+     probablemente se inscriba.
 
-**Estado al 2026-09-24: Activo y verificado.** Se conectó la URL pública del formulario de Google Forms (`https://docs.google.com/forms/d/e/1FAIpQLSc7ltNBBSxUn9ViybRyeRSjDrIsV0evnSK62EcXXybKsgcwAw/viewform`) en `comun.registro.url`. El botón primario («Inscribirse» / «Register») se renderiza en el hero y la oferta de Schema.org enlaza al formulario. `npm run verify` queda en verde con el botón presente: siete presupuestos cumplidos sobre 8 corridas —dos idiomas x escritorio/móvil x claro/oscuro— con 0 hallazgos axe y 0 nodos indeterminados `[verificado: 2026-09-24]`. El formulario responde público, sin exigir sesión de Google `[medido: 2026-09-24]`.
+**Estado al 2026-09-24: Activo y verificado.** Se conectó la URL pública del formulario de Google Forms (`https://docs.google.com/forms/d/e/1FAIpQLSc7ltNBBSxUn9ViybRyeRSjDrIsV0evnSK62EcXXybKsgcwAw/viewform`) en `comun.registro.url`. El botón primario («Inscribirse» / «Register») se renderiza en el hero —y desde el 2026-09-25 también en la barra superior y en el panel del menú móvil, criterio 7— y la oferta de Schema.org enlaza al formulario. `npm run verify` queda en verde con el botón presente: siete presupuestos cumplidos sobre 8 corridas —dos idiomas x escritorio/móvil x claro/oscuro— con 0 hallazgos axe y 0 nodos indeterminados `[verificado: 2026-09-24]`. El formulario responde público, sin exigir sesión de Google `[medido: 2026-09-24]`.
 
 ### RF-7 · Fichas de expositor con reseña verificable
 

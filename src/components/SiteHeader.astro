@@ -189,13 +189,69 @@ const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asun
         control. WCAG 1.4.11 pide 3:1 al límite que identifica un componente; con el borde
         entero son 5,55:1. axe no lo detecta porque no evalúa nada que no sea texto, y por eso
         hizo falta medirlo aparte.
+
+        **El velo del hover baja de `/15` a `/10`, y eso corrige un fallo que estaba en
+        producción** `[medido: 2026-09-25]`. Los doce valores de arriba se midieron todos en
+        reposo: el texto en oro sobre el velo al 8 % da 4,86:1 y pasa. Al 15 % del hover cae a
+        **4,28:1**, bajo el 4,5 de WCAG 1.4.3, así que el botón dejaba de cumplir justo
+        mientras el puntero estaba encima. Al 10 % da 4,70:1. axe no lo vio porque no evalúa
+        estados de puntero, y por eso sobrevivió a seis verificadores en verde.
       -->
       <a
         href={mailto}
-        class="hidden rounded-control border border-primary bg-primary/8 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/15 sm:block"
+        class="hidden rounded-control border border-primary bg-primary/8 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10 sm:block"
       >
         {c.ui.contacto}
       </a>
+
+      <!--
+        Inscripción en la barra (RF-3, criterio 7), por indicación de Daniel el
+        2026-09-25: «debe haber un botón que diga registrarse al evento en el banner
+        superior». El motivo es real y no es de gusto: el botón del hero deja de verse
+        en cuanto alguien baja a leer el programa o los expositores, que es justo
+        cuando decide inscribirse. Esta barra es fija, así que aquí no se va nunca.
+
+        **Se renderiza solo si hay dirección**, igual que el del hero: el criterio 3 de
+        RF-3 vale para las dos apariciones, y `contenido.ts` ya normalizó la ausencia a
+        `null` para que ninguno de los dos tenga que decidirlo por su cuenta.
+
+        Visible en TODOS los anchos, a diferencia de `Contacto`, que empieza en `sm`.
+        No es una excepción caprichosa: en un móvil de 390 px la fila queda con el
+        símbolo, este botón y el menú, y esconder la acción principal detrás de una
+        hamburguesa en el dispositivo desde el que más gente va a inscribirse es
+        exactamente lo que no se quiere. `Contacto` sigue donde estaba y además vive en
+        el panel del menú.
+
+        Relleno y no contorno: es la acción primaria, y `Contacto` conserva el contorno,
+        así que la jerarquía se lee sin depender del color. Dentro de esta banda
+        `--primary` es el oro y `--primary-foreground` el azul PUCV, así que sale oro
+        macizo con texto azul, que es la inversión del botón del hero y se distingue de
+        él sin inventar un color nuevo.
+
+        Medido antes de escribirlo, con el mismo método que dio los doce valores de
+        arriba `[medido: 2026-09-25]`:
+          texto azul sobre oro macizo            5,55:1  (WCAG 1.4.3 pide 4,5)
+          en hover, con `opacity-90`             4,80:1
+          su límite contra la banda              5,55:1  (WCAG 1.4.11 pide 3)
+        Se usa `opacity` y no un velo porque el texto y la banda son el mismo azul: al
+        componer el grupo el texto no cambia y solo se atenúa el fondo. Un velo de oro
+        sobre la banda es lo que hunde al botón de al lado, ver la nota de `Contacto`.
+
+        La etiqueta se reutiliza de `ui.hero.inscribirse` en vez de crear una nueva:
+        es el mismo destino y la misma acción, y una cadena nueva es un par es/en más
+        que mantener a cambio de que el sitio se llame a sí mismo de dos maneras.
+      -->
+      {
+        c.registro.url && (
+          <a
+            href={c.registro.url}
+            rel="noreferrer"
+            class="rounded-control bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity duration-200 hover:opacity-90"
+          >
+            {c.ui.hero.inscribirse}
+          </a>
+        )
+      }
 
       <!--
         Menú móvil con <details>: nativo, accesible por teclado y sin JavaScript.
@@ -237,6 +293,25 @@ const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asun
                 {c.ui.contacto}
               </a>
             </li>
+            {
+              /*
+               * También en el panel, aunque el botón ya esté en la barra a todos los
+               * anchos: quien abre el menú está eligiendo destino, y la inscripción es
+               * uno de ellos. El velo del hover es `/10`, el mismo que el de arriba y
+               * por el mismo motivo medido.
+               */
+              c.registro.url && (
+                <li>
+                  <a
+                    href={c.registro.url}
+                    rel="noreferrer"
+                    class="block px-5 py-3.5 text-sm font-semibold text-primary transition-colors hover:bg-primary/10"
+                  >
+                    {c.ui.hero.inscribirse}
+                  </a>
+                </li>
+              )
+            }
             <!--
               El rótulo va encima y no al lado: en el panel de 15rem el selector
               y un rótulo en la misma fila no caben, y «Sistema» quedaba cortado
