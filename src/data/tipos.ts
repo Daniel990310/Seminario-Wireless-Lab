@@ -199,12 +199,7 @@ export interface ContenidoIdioma {
       participantes: string;
       financia: string;
       proyecto: string;
-      /**
-       * Rótulo de las redes de cooperación de `comun.redes`. Se traduce; el nombre de la
-       * red, no. Obligatorio en los dos idiomas: una red referenciada solo en español en
-       * la versión inglesa leería como un descuido.
-       */
-      red: string;
+
       /**
        * Leyenda del marcador de una marca sin autorización todavía. Obligatoria en los dos
        * idiomas a propósito: un marcador que en inglés saliera en español leería como un

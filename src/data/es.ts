@@ -275,7 +275,6 @@ export const es = {
       participantes: 'Instituciones participantes y colaboradoras',
       financia: 'Financia',
       proyecto: 'Proyecto',
-      red: 'Adscrito a la red',
       /*
        * Leyenda del marcador de posición de una marca cuyo titular todavía no autorizó
        * su uso. Vive aquí, y no en `LogoWall.astro`, porque **es texto visible**: escrita

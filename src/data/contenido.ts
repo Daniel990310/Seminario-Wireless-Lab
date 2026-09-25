@@ -129,9 +129,9 @@ export function contenido(lang: Idioma) {
       mencion: `${comun.funding.mencion} / ${comun.funding.concurso}`,
     },
 
-    // Las redes viajan tal cual: nombre oficial, sigla y código no se traducen. El rótulo
-    // que las introduce sí, y está en `ui.organizacion.red`.
-    redes: comun.redes,
+    // Los demás financiadores viajan tal cual: nombre oficial, sigla y código no se
+    // traducen, por lo mismo que la mención de ANID.
+    financiadores: comun.financiadores,
 
     network: {
       hub: { ...comun.network.hub, detail: t.network.hubDetail, role: t.network.hubRole },

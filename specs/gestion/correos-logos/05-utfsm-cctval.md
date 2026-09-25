@@ -113,3 +113,18 @@ mismo hilo**, no abrir uno nuevo.
 > Comité organizador, *Beyond Connectivity 2026*
 > Escuela de Ingeniería Eléctrica, Pontificia Universidad Católica de Valparaíso
 > contact@bcsensing.org · https://bcsensing.org
+
+> **Añadir a ese mismo correo: la submarca del CCTVal.** Mauricio la pidió el 2026-09-25.
+> Cristian ya contestó la pregunta de «¿cuál corresponde?» enviando la institucional, así
+> que esto es una petición nueva y explícita, no una repregunta. El kit digital de la USM
+> dice que **las submarcas institucionales se solicitan justamente a él**, así que el canal
+> es el correcto. Párrafo para intercalar antes de la despedida:
+>
+> > Una última cosa, si es posible: el comité nos pidió incorporar además **la submarca del
+> > CCTVal**, porque es el centro por el que participa el Dr. Feick. ¿Nos la podría facilitar
+> > por esta misma vía, también en sus variantes para fondo claro y oscuro? Entiendo por el
+> > kit digital que las submarcas institucionales se solicitan a usted.
+> >
+> > Y un aviso que puede serles útil, de paso: al revisar el sitio del CCTVal nos encontramos
+> > con que **`cctval.usm.cl` tiene el certificado TLS vencido**, así que el navegador
+> > muestra advertencia de seguridad al entrar. Se lo comentamos por si no lo tenían visto.

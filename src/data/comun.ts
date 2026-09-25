@@ -604,40 +604,39 @@ export const comun = {
   },
 
   /**
-   * Redes de cooperación que también respaldan el seminario. **Se referencian, no se
-   * confunden con el financiamiento principal**: FOVI250222 es el proyecto que lo paga;
-   * esto es una red temática a la que el seminario se adscribe.
+   * Los demás financiadores del seminario, **al mismo nivel que ANID**.
    *
-   * Incorporada el **2026-09-25** por indicación de Mauricio Rodríguez.
+   * Incorporado el 2026-09-25 por indicación de Mauricio Rodríguez. La primera versión de
+   * ese día lo puso como «red a la que el seminario se adscribe», en tipografía menor y
+   * debajo del proyecto: **estaba mal y Daniel lo corrigió el mismo día**. CYTED financia,
+   * no acoge. Se deja escrito porque el error es fácil de repetir: el código lleva `RT` de
+   * *Red Temática* y eso invita a leerlo como pertenencia en vez de como financiamiento.
    *
-   * Es una lista y no un objeto suelto porque una segunda red no debería obligar a tocar
-   * el marcado, solo a añadir una línea aquí.
+   * Por qué ANID sigue aparte y no entra en esta lista: su mención tiene **nomenclatura
+   * obligatoria** —la fórmula exacta que exige su manual (RNF-8.1)— y su bloque la compone
+   * con `concurso`. Meterlos en la misma estructura obligaría a que ANID renunciara a su
+   * fórmula o a que los demás cargaran con un campo que no usan.
    *
-   * **Nada de esto se traduce**, y es la misma regla que ya rige para la mención de ANID:
-   * el nombre de una red CYTED es su nombre oficial, en español, y traducirlo produciría
-   * una red que no existe. Lo que sí se traduce es el rótulo que la introduce, que vive en
-   * `ui.organizacion.red`.
+   * **Nada de esto se traduce**, por lo mismo que la mención de ANID: el nombre de una red
+   * CYTED es su nombre oficial, en español, y traducirlo produciría una red que no existe.
    *
-   * El código lleva `RT` en medio —`525RT0175`— porque es una **Red Temática**, que es la
-   * modalidad de CYTED que financia coordinación y encuentros, no ejecución de obra. Por eso
-   * encaja con un seminario y por eso se cita junto al FOVI y no en su lugar.
-   *
-   * **Sin logo, a propósito.** CYTED pide reconocimiento en los productos de sus redes, pero
-   * aquí solo se pidió referenciarla. Si más adelante hace falta la marca, va por el mismo
-   * camino que las demás y con el mismo criterio que fijó la organización el 2026-09-25.
+   * `logo` es opcional y hoy **está vacío**: CYTED no publica un archivo utilizable —solo un
+   * JPEG sin transparencia y una marca conmemorativa de 40 años `[medido: 2026-09-25]`—.
+   * Cuando llegue el archivo bueno es una línea aquí.
    */
-  redes: [
+  financiadores: [
     {
-      programa: {
+      agency: {
         name: 'Programa Iberoamericano de Ciencia y Tecnología para el Desarrollo',
         shortName: 'CYTED',
         url: 'https://www.cyted.org',
       },
-      acronimo: 'DISeCom',
-      nombre:
-        'Gemelos digitales integrando la detección y las comunicaciones inalámbricas en Iberoamérica',
-      code: '525RT0175',
-      periodo: '2025–2028',
+      project: {
+        code: '525RT0175',
+        acronimo: 'DISeCom',
+        name: 'Gemelos digitales integrando la detección y las comunicaciones inalámbricas en Iberoamérica',
+        periodo: '2025–2028',
+      },
     },
   ],
 

@@ -88,6 +88,7 @@ const COINCIDENCIA_LEGITIMA = [
    * con la fórmula de mención de ANID. Lo que sí se traduce es el rótulo que la introduce,
    * `ui.organizacion.red`, y por eso ese no está aquí.
    */
+  /^CYTED$/,
   /^DISeCom$/,
   /^Gemelos digitales integrando/,
   /^\(\d{4}[–-]\d{4}\)\.?$/, // Periodo de vigencia: cifras, no texto

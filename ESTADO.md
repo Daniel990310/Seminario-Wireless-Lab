@@ -165,15 +165,34 @@ está corregido con un patrón de correo genérico.
 
 ## Segundo financiamiento y un expositor que cambia de bloque · 2026-09-25
 
-**Red CYTED DISeCom** referenciada en la sección de organización, por indicación de
-Mauricio: *Gemelos digitales integrando la detección y las comunicaciones inalámbricas en
-Iberoamérica*, **525RT0175**, 2025–2028. Va **debajo** del FOVI y con menos peso: es la red
-a la que el seminario se adscribe, no quien lo paga, y confundir las dos cosas en una página
-de financiamiento es justo el error que esa jerarquía evita.
+**CYTED financia, al mismo nivel que ANID**: *DISeCom — Gemelos digitales integrando la
+detección y las comunicaciones inalámbricas en Iberoamérica*, **525RT0175**, 2025–2028.
 
-Vive en `comun.redes`, que es una **lista**: una segunda red es una línea de datos y no
-tocar el marcado. El nombre no se traduce —es una red iberoamericana y su nombre oficial es
-español—; el rótulo que la introduce sí, y está en `ui.organizacion.red`.
+La primera versión de ese día lo puso como «red a la que el seminario se adscribe», en letra
+pequeña y debajo del proyecto FOVI. **Estaba mal y Daniel lo corrigió el mismo día.** Era un
+error de fondo y no de maqueta: CYTED paga, no acoge. Queda escrito porque es fácil de
+repetir —el código lleva `RT` de *Red Temática* y eso invita a leerlo como pertenencia—.
+
+Vive en `comun.financiadores`, que es una **lista**: un tercer financiador es una línea de
+datos y no tocar el marcado. ANID sigue aparte porque su mención tiene **nomenclatura
+obligatoria** y su bloque la compone con el concurso; meterlos en la misma estructura
+obligaría a que ANID renunciara a su fórmula. El nombre del proyecto CYTED no se traduce,
+por lo mismo que la mención de ANID.
+
+**Falta el logo de CYTED, y no por descuido**: no publican un archivo utilizable. En su sitio
+solo hay un **JPEG sin transparencia** y una marca conmemorativa de 40 años `[medido]`, y
+ninguna de las dos sirve para un sitio con tema claro y oscuro. Mientras tanto el hueco lo
+ocupa la sigla **a tamaño de marca**, así que cuando llegue el archivo la composición no se
+mueve.
+
+**Falta también el logo del CCTVal**, que pidió Mauricio. Ese sí tiene camino conocido: el
+kit digital de la USM dice que las **submarcas institucionales se piden a Cristian Reyes**,
+que es quien ya nos autorizó la marca institucional. Va en el mismo correo que el acuse de
+integración.
+
+⚠️ **`cctval.usm.cl` tiene el certificado TLS vencido** `[medido: 2026-09-25]`. Se topó al
+buscar su logo. No nos afecta —no enlazamos ese dominio— pero es la institución de un
+expositor y conviene que alguien de allá lo sepa.
 
 **Giorgio Siringo pasa a expositor nacional**, por decisión de Daniel. Estuvo tres días
 entre los internacionales porque el organizador lo listó junto a los de Estados Unidos y
