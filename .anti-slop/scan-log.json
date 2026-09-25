@@ -229,5 +229,110 @@
     "desc": "2 emoji found in specs/gestion/correos-logos/respuestas/README.md",
     "file": "specs/gestion/correos-logos/respuestas/README.md",
     "timestamp": "2026-09-25T15:51:45.177Z"
+  },
+  {
+    "type": "text-construct",
+    "name": "hr-divider",
+    "count": 4,
+    "line": 16,
+    "severity": "low",
+    "confidence": "Taste note",
+    "fix": "Use a paragraph break, and reserve the rule for a real section boundary in a long document.",
+    "desc": "Horizontal-rule divider between sections (4x)",
+    "file": "ESTADO.md",
+    "timestamp": "2026-09-25T15:53:15.546Z"
+  },
+  {
+    "type": "text-construct",
+    "name": "em-dash-density",
+    "count": 173,
+    "line": 4,
+    "severity": "medium",
+    "confidence": "Pattern smell",
+    "fix": "Replace the surplus dashes with commas, periods, or parentheses; do not swap every dash for a colon",
+    "desc": "High em dash density (173 dashes, 9.2/1k words) -- the #1 AI writing tell",
+    "file": "ESTADO.md",
+    "timestamp": "2026-09-25T15:53:15.546Z"
+  },
+  {
+    "type": "emoji",
+    "count": 17,
+    "line": 22,
+    "severity": "medium",
+    "confidence": "Quality defect",
+    "fix": "Use words for status and an icon component with an accessible name for UI; keep emoji only where the user or the project convention uses them",
+    "desc": "17 emoji found in ESTADO.md",
+    "file": "ESTADO.md",
+    "timestamp": "2026-09-25T15:53:15.546Z"
+  },
+  {
+    "type": "text-construct",
+    "name": "hr-divider",
+    "count": 4,
+    "line": 9,
+    "severity": "low",
+    "confidence": "Taste note",
+    "fix": "Use a paragraph break, and reserve the rule for a real section boundary in a long document.",
+    "desc": "Horizontal-rule divider between sections (4x)",
+    "file": "specs/gestion/correos-logos/05-utfsm-cctval.md",
+    "timestamp": "2026-09-25T15:53:15.546Z"
+  },
+  {
+    "type": "emoji",
+    "count": 1,
+    "line": 3,
+    "severity": "low",
+    "confidence": "Quality defect",
+    "fix": "Use words for status and an icon component with an accessible name for UI; keep emoji only where the user or the project convention uses them",
+    "desc": "1 emoji found in specs/gestion/correos-logos/05-utfsm-cctval.md",
+    "file": "specs/gestion/correos-logos/05-utfsm-cctval.md",
+    "timestamp": "2026-09-25T15:53:15.546Z"
+  },
+  {
+    "type": "text-construct",
+    "name": "hr-divider",
+    "count": 2,
+    "line": 12,
+    "severity": "low",
+    "confidence": "Taste note",
+    "fix": "Use a paragraph break, and reserve the rule for a real section boundary in a long document.",
+    "desc": "Horizontal-rule divider between sections (2x)",
+    "file": "specs/gestion/correos-logos/respuestas/README.md",
+    "timestamp": "2026-09-25T15:53:15.546Z"
+  },
+  {
+    "type": "text-construct",
+    "name": "em-dash-density",
+    "count": 10,
+    "line": 22,
+    "severity": "medium",
+    "confidence": "Pattern smell",
+    "fix": "Replace the surplus dashes with commas, periods, or parentheses; do not swap every dash for a colon",
+    "desc": "High em dash density (10 dashes, 13.8/1k words) -- the #1 AI writing tell",
+    "file": "specs/gestion/correos-logos/respuestas/README.md",
+    "timestamp": "2026-09-25T15:53:15.546Z"
+  },
+  {
+    "type": "emoji",
+    "count": 2,
+    "line": 11,
+    "severity": "low",
+    "confidence": "Quality defect",
+    "fix": "Use words for status and an icon component with an accessible name for UI; keep emoji only where the user or the project convention uses them",
+    "desc": "2 emoji found in specs/gestion/correos-logos/respuestas/README.md",
+    "file": "specs/gestion/correos-logos/respuestas/README.md",
+    "timestamp": "2026-09-25T15:53:15.546Z"
+  },
+  {
+    "type": "text-construct",
+    "name": "hr-divider",
+    "count": 4,
+    "line": 7,
+    "severity": "low",
+    "confidence": "Taste note",
+    "fix": "Use a paragraph break, and reserve the rule for a real section boundary in a long document.",
+    "desc": "Horizontal-rule divider between sections (4x)",
+    "file": "specs/gestion/correos-logos/10-whatsapp.md",
+    "timestamp": "2026-09-25T15:53:15.546Z"
   }
 ]
