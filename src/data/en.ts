@@ -242,6 +242,7 @@ export const en = {
       participantes: 'Participating and collaborating institutions',
       financia: 'Funded by',
       proyecto: 'Project',
+      red: 'Affiliated with the network',
       /** Ver la nota de `es.ts`: es texto visible, así que no puede vivir en el componente. */
       logoPendiente: 'LOGO PENDING',
     },

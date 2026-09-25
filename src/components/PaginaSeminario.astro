@@ -26,7 +26,7 @@ interface Props {
 }
 
 const c = contenido(Astro.props.lang);
-const { program, speakers, topics, venue, organizers, participants, funding, about, ui } = c;
+const { program, speakers, topics, venue, organizers, participants, funding, redes, about, ui } = c;
 
 /*
  * Dimensiones intrínsecas de un SVG de `/public`, leídas de su `viewBox` en el build.
@@ -369,6 +369,31 @@ const hasProgram = program.days.length > 0;
                 <span class="font-mono text-primary">{funding.project.code}</span>,
                 <span class="italic"> {funding.project.name}</span>.
               </p>
+              {/*
+                Redes de cooperación a las que se adscribe el seminario. Van DESPUÉS del
+                proyecto y con el mismo peso tipográfico menor, porque no son quien lo
+                financia: son a qué red pertenece. Confundir las dos cosas en una página de
+                financiamiento es el error que esta jerarquía evita.
+
+                El bucle existe aunque hoy haya una sola: añadir la segunda es una línea en
+                `comun.redes` y no tocar este archivo.
+              */}
+              {redes.map((red) => (
+                <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {ui.organizacion.red}{' '}
+                  <a
+                    href={red.programa.url}
+                    class="underline decoration-dotted underline-offset-4 hover:text-foreground"
+                    rel="noopener"
+                  >
+                    {red.programa.shortName}
+                  </a>{' '}
+                  <span class="font-semibold text-foreground">{red.acronimo}</span>,
+                  <span class="italic"> {red.nombre}</span>{' '}
+                  <span class="font-mono text-primary">{red.code}</span>{' '}
+                  <span class="whitespace-nowrap">({red.periodo})</span>.
+                </p>
+              ))}
             </div>
           </div>
         </div>

@@ -82,6 +82,15 @@ const COINCIDENCIA_LEGITIMA = [
   // marcándola como traducción olvidada. Una dirección no se traduce, sea cual sea.
   /^[\w.+-]+@[\w.-]+\.\w+$/,
   /FOVI\d+/, // Código de proyecto
+  /*
+   * Red CYTED DISeCom, referenciada desde el 2026-09-25. Su **nombre oficial es español**
+   * —es una red iberoamericana— y traducirlo produciría una red que no existe, igual que
+   * con la fórmula de mención de ANID. Lo que sí se traduce es el rótulo que la introduce,
+   * `ui.organizacion.red`, y por eso ese no está aquí.
+   */
+  /^DISeCom$/,
+  /^Gemelos digitales integrando/,
+  /^\(\d{4}[–-]\d{4}\)\.?$/, // Periodo de vigencia: cifras, no texto
   /^Chile$/, // Se escribe igual en ambos idiomas
   /^Antonio Bellet|Providencia|Santiago/, // Dirección postal
   /^\d/, // Fechas y cifras: «21–22 OCT 2026», «2026»

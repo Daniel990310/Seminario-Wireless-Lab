@@ -163,6 +163,45 @@ textuales de los resúmenes, en **[`specs/gestion/programa-y-expositores.md`](sp
 dejó de cubrir nada. T7 fallaba **desde el mismo despliegue que se dio por verde**. Ya
 está corregido con un patrón de correo genérico.
 
+## Segundo financiamiento y un expositor que cambia de bloque · 2026-09-25
+
+**Red CYTED DISeCom** referenciada en la sección de organización, por indicación de
+Mauricio: *Gemelos digitales integrando la detección y las comunicaciones inalámbricas en
+Iberoamérica*, **525RT0175**, 2025–2028. Va **debajo** del FOVI y con menos peso: es la red
+a la que el seminario se adscribe, no quien lo paga, y confundir las dos cosas en una página
+de financiamiento es justo el error que esa jerarquía evita.
+
+Vive en `comun.redes`, que es una **lista**: una segunda red es una línea de datos y no
+tocar el marcado. El nombre no se traduce —es una red iberoamericana y su nombre oficial es
+español—; el rótulo que la introduce sí, y está en `ui.organizacion.red`.
+
+**Giorgio Siringo pasa a expositor nacional**, por decisión de Daniel. Estuvo tres días
+entre los internacionales porque el organizador lo listó junto a los de Estados Unidos y
+porque ALMA es un consorcio intergubernamental. Manda dónde trabaja la persona: Atacama. Con
+eso su `country` deja de ser un problema y pasa a `CL` —se omitía porque ninguna etiqueta de
+país describe a un consorcio, pero sí describe a alguien—.
+
+## ⛔ RF-22 derogada · las marcas se publican sin autorización · 2026-09-25
+
+**Decisión de Mauricio Rodríguez**, que asumió la responsabilidad por escrito; Daniel
+instruyó aplicarla. UC, USACH, Nokia y Columbia pasan de marcador de posición a marca
+publicada **sin permiso de ninguno de los cuatro**. El registro completo, con lo que la
+decisión no puede cambiar, está en el encabezado de RF-22.
+
+**Cómo quedó la pared:** cinco marcas pintadas —UTFSM (la única autorizada), UC, Nokia,
+Columbia, USACH— y dos marcadores, ALMA y la UPB. `verify:todo` en verde.
+
+Tres defectos que se publican a sabiendas, y conviene tenerlos a la vista:
+
+| Qué | Por qué |
+|---|---|
+| **Columbia sale con la marca de otra facultad** | el archivo es de CUSPS y Zussman es de SEAS; Columbia nos lo dijo por escrito el 24 |
+| **USACH no se ve en tema oscuro** | tinta negra pura, **1,10:1** `[medido]`; falta derivar la variante blanca |
+| **ALMA y UPB siguen sin logo** | no es la regla: **no hay archivo**. De ALMA, ESO solo publica la variante blanca, invisible en tema claro |
+
+Lo que arregla el primero es un correo de un día: que Zussman mande el archivo de Columbia
+Engineering, que él sí puede descargar.
+
 ## ✅ Primera marca de tercero autorizada y publicada · 2026-09-25
 
 **La UTFSM autorizó el uso de su marca y mandó los archivos**, el 2026-09-24, menos de tres

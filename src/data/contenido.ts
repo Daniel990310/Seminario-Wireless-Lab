@@ -129,6 +129,10 @@ export function contenido(lang: Idioma) {
       mencion: `${comun.funding.mencion} / ${comun.funding.concurso}`,
     },
 
+    // Las redes viajan tal cual: nombre oficial, sigla y código no se traducen. El rótulo
+    // que las introduce sí, y está en `ui.organizacion.red`.
+    redes: comun.redes,
+
     network: {
       hub: { ...comun.network.hub, detail: t.network.hubDetail, role: t.network.hubRole },
       foreign: comun.network.foreign.map(nodo),
