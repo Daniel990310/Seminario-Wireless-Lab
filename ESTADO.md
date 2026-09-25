@@ -7,9 +7,9 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-09-24** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
-ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-09-22**, versión
-`7a970138`, en `https://bcsensing.org`.
+Actualizado: **2026-09-25** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
+ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-09-25**, versión
+`0d4a4a84`, en `https://bcsensing.org`, con el formulario de inscripción abierto.
 · **Publicado en <https://bcsensing.org> el 2026-09-22, versión `830dafb9`. Primer
 despliegue indexable. Pendientes en «EMPIEZA AQUÍ»: Search Console y el token de
 Hostinger sin revocar.**
@@ -24,18 +24,75 @@ Lee [`ONBOARDING.md`](ONBOARDING.md). Dice qué leer y en qué orden, cómo mont
 entorno, cuál es tu rama y qué **no** se hace. Desde el 2026-09-22 trabajan dos personas
 en paralelo y el reparto de archivos está en `AGENTS.md` → «Dos personas a la vez».
 
+## ✅ Formulario de inscripción en producción · 2026-09-25
+
+El formulario está **abierto y enlazado desde el sitio en vivo**. Despliegue
+`0d4a4a84-ca82-47d9-9748-cb84e179a420`, sobre `387a6a9`.
+
+| Qué | Dónde queda |
+|---|---|
+| **RF-3 activo en producción** (T14): botón «Inscribirse» / «Register» en el hero y `offers.url` del JSON-LD | `comun.ts` (`registro.url`); la ausencia se normaliza en `contenido.ts` |
+| Ocho expositores confirmados, Siringo y Siles incluidos | `comun.ts`, `es.ts`, `en.ts` |
+
+Comprobado contra el sitio vivo, no contra el build `[medido: 2026-09-25]`:
+
+- `verify:publicado -- https://bcsensing.org`: **todos los criterios cumplen**.
+- `validator.schema.org`: **0 errores y 0 avisos** en `/` y `/en/`, con la `Offer`
+  apuntando a Google Forms. Eso responde la duda que quedó abierta en la revisión:
+  Schema.org admite que `Offer.url` sea de un tercero, y el validador no se queja.
+- El formulario responde público, bilingüe, sin muro de sesión.
+
+### Cómo se desplegó esta vez, que es distinto de lo escrito más abajo
+
+```bash
+export SITE_URL=https://bcsensing.org   # no basta con ponerla en el build:
+npm run build                           # verify-seo.mjs:148 la lee al VERIFICAR
+npm run verify:todo                     # son SIETE presupuestos, no seis
+npx wrangler deploy
+npm run verify:publicado -- https://bcsensing.org
+```
+
+El bloque de « Cómo se vuelve a desplegar» de la §1 sigue apuntando a
+`seminario-wireless-lab.danielcaignet99.workers.dev`, que es el dominio viejo. Vale
+este de aquí.
+
+### Lo que entró a producción con defectos conocidos
+
+Decisión de Daniel: fusionar y desplegar directo, **sin pull request**. La revisión
+corrió igual —thermos con los dos revisores, ningún hallazgo alto— pero nadie
+distinto del autor miró el cambio antes de que llegara al sitio.
+
+1. **Siringo y Siles pintan el mismo monograma `GS`**, y salen consecutivos en la
+   retícula de expositores internacionales. Son los dos únicos sin retrato.
+   `aria-hidden`, así que no afecta a lectores de pantalla; se ve, nada más.
+2. **El perfil enlazado de Feick es NXDOMAIN**: `investigacion.electronica.usm.cl` no
+   resuelve. Y la rama lo convirtió en la única prueba de una afiliación que acaba de
+   pasar a confirmada. Hace falta la URL buena, o quitar el enlace.
+3. **`dist` publica 895 kB que ningún HTML referencia** `[medido: 2026-09-25]`:
+   `client.D9vVWfjN.js` (187 kB, el runtime de React que §12 da por eliminado) y
+   cuatro PNG de PUCV/EIE (708 kB). Quedan fuera del presupuesto de primera carga
+   **por diseño**, así que los siete verificadores no los ven.
+4. Ningún verificador mira `offers.url`. Si el organizador cierra el formulario, el
+   botón sigue pintado, el JSON-LD sigue anunciándolo y todo sigue en verde.
+5. `astro check` no está ni en `build` ni en `verify:todo`; hay que acordarse.
+
+**El repositorio sigue siendo público** y ahora versiona las direcciones personales de
+ocho expositores —una tomada de correspondencia privada, según declara
+`correos-logos/09-organizador-via-expositores.md:105`— más `correos-logos.rar`, que
+guarda una segunda copia que ningún `grep` ni escaneo puede leer. Borrarlas en un
+commit nuevo **no las quita del historial**.
+
 ## ✅ Formulario de inscripción conectado · 2026-09-24
 
 Daniel creó el formulario público de Google Forms para la inscripción y se conectó al sitio.
 
 | Qué | Dónde queda |
 |---|---|
-| **RF-3 conectado en el repositorio, sin desplegar**: URL pública del formulario de Google Forms | `comun.ts` (`registro.url`), activa el botón primario «Inscribirse» / «Register» en el hero y `offers.url` en los datos estructurados |
+| **RF-3 conectado** (desplegado el 2026-09-25): URL pública del formulario de Google Forms | `comun.ts` (`registro.url`), activa el botón primario «Inscribirse» / «Register» en el hero y `offers.url` en los datos estructurados |
 
-**En `https://bcsensing.org` todavía no hay botón**: el último despliegue es del 2026-09-22 (`7a970138`) y es anterior a este cambio. Quien lea esta sección no puede decirle al organizador que la inscripción está abierta hasta que se despliegue.
+Cuando se escribió esta sección el botón aún no estaba en vivo. **Lo está desde el 2026-09-25**; ver la sección de arriba.
 
-Cierra el pendiente del enlace del formulario. **Lo que sigue abierto y es de Daniel**: **desplegar** para que el
-botón exista en producción, el envío *desde*
+Cierra el pendiente del enlace del formulario. **Lo que sigue abierto y es de Daniel**: el envío *desde*
 `contact@` con un relé SMTP, y decidir si el repositorio pasa a privado —hoy es público
 y `specs/gestion/correos-instituciones.md` expone doce direcciones de terceros.
 
