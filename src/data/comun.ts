@@ -430,6 +430,41 @@ export const comun = {
       // paquete no trae. Al reponer: `logo: usachClaro` con `escalaOptica: 0.82`.
       url: 'https://www.usach.cl',
     },
+    /*
+     * ═══ LA PRIMERA MARCA DE TERCERO AUTORIZADA ═══
+     *
+     * Concedida por escrito el **2026-09-24** por Cristian Reyes Sandoval, Jefe del Área
+     * de Diseño de la Sub Dirección de Imagen Corporativa de la UTFSM, en respuesta a la
+     * solicitud del comité. Los dos archivos los envió él. Copia del hilo en
+     * `specs/gestion/correos-logos/respuestas/`.
+     *
+     * **Es la marca institucional USM, no la submarca del CCTVal.** Se le preguntó cuál
+     * correspondía —Feick participa por su afiliación al centro— y respondió enviando la
+     * institucional, así que esa es la que se usa. Si más adelante prefieren la submarca,
+     * se sustituyen los dos archivos conservando el nombre y no hay que tocar código.
+     *
+     * Las dos variantes tienen **el mismo `viewBox`** —305,85 × 61,76, proporción 4,95—
+     * así que la marca no cambia de forma al cambiar de tema, que es el defecto que tiene
+     * la UC. Una sola tinta cada una: `#1d1d1b` la clara y `#fff` la oscura `[medido]`.
+     *
+     * **Nos autorizó además a recolorearla** para ajustarla al azul del sitio —«si desean
+     * hacer el cambio de color para mantener la paleta cromática del sitio no veo ningún
+     * problema»—. **No se ejercita ese permiso**, y no por inercia: con las dos variantes
+     * ya cubrimos los dos fondos, así que recolorear no resolvería nada que no esté
+     * resuelto, y una marca en un color que su dueño no usa se ve como un error aunque
+     * esté permitida. El permiso queda registrado por si alguna vez hace falta.
+     *
+     * **Pendiente que nace con esto:** pidieron ver la integración —«quedamos atentos a la
+     * integración para ver que esté utilizada de manera correcta»—. Hay que escribirle a
+     * Cristian con el enlace cuando esté desplegada.
+     */
+    {
+      name: 'Universidad Técnica Federico Santa María',
+      shortName: 'UTFSM',
+      logo: '/logos/utfsm.svg',
+      logoOscuro: '/logos/utfsm-oscuro.svg',
+      url: 'https://www.usm.cl',
+    },
     {
       name: 'Nokia Bell Labs',
       shortName: 'Nokia Bell Labs',
@@ -437,12 +472,42 @@ export const comun = {
       // Archivo listo: `/logos/nokia-bell-labs.svg`.
       url: 'https://www.bell-labs.com',
     },
+    /*
+     * Columbia contestó el 2026-09-24 y **el archivo hay que pedírselo a Zussman**:
+     * Geoffrey Allen, de Columbia Creative, responde que cualquier docente puede
+     * descargar la marca de Columbia Engineering desde `downloads.visualidentity.columbia.edu`.
+     *
+     * Confirma de paso que teníamos razón en el error que les señalamos: la marca que
+     * corresponde es la de **Columbia Engineering (SEAS)**, no la de CUSPS que teníamos.
+     *
+     * Lo que **todavía no hay** es una autorización explícita por escrito para mostrarla
+     * en un sitio de terceros. Contestaron nuestra petición —que describía el uso
+     * completo— indicándonos cómo conseguir el archivo, lo que se lee razonablemente como
+     * consentimiento; pero una línea suya diciéndolo cuesta nada y vale mucho más que esa
+     * lectura nuestra. Ver `specs/gestion/correos-logos/respuestas/`.
+     */
     {
       name: 'Columbia University',
       shortName: 'Columbia',
-      // Requiere permiso de su Office of General Counsel. **Y hay que pedirles el
-      // archivo correcto**: el que tenemos es de CUSPS, no de SEAS.
       url: 'https://www.columbia.edu',
+    },
+    /*
+     * Las dos instituciones que entraron con la nómina definitiva. Ninguna tiene todavía
+     * autorización ni archivo, así que pintan el marcador de posición, igual que las
+     * demás. Ver `specs/gestion/correos-logos/`.
+     */
+    {
+      name: 'ALMA / European Southern Observatory',
+      shortName: 'ALMA',
+      // Su aviso de copyright exige consentimiento escrito previo para el logo. Pedido a
+      // `copyright@alma.cl`.
+      url: 'https://www.almaobservatory.org',
+    },
+    {
+      name: 'Universidad Privada Boliviana',
+      shortName: 'UPB',
+      // No publica contacto de marca; la vía es el propio Dr. Siles.
+      url: 'https://www.upb.edu',
     },
   ],
 

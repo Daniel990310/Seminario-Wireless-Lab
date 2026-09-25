@@ -1,0 +1,152 @@
+[
+  {
+    "type": "text-construct",
+    "name": "em-dash-density",
+    "count": 171,
+    "line": 4,
+    "severity": "medium",
+    "confidence": "Pattern smell",
+    "fix": "Replace the surplus dashes with commas, periods, or parentheses; do not swap every dash for a colon",
+    "desc": "High em dash density (171 dashes, 9.1/1k words) -- the #1 AI writing tell",
+    "file": "ESTADO.md",
+    "timestamp": "2026-09-25T14:25:59.939Z"
+  },
+  {
+    "type": "emoji",
+    "count": 17,
+    "line": 22,
+    "severity": "medium",
+    "confidence": "Quality defect",
+    "fix": "Use words for status and an icon component with an accessible name for UI; keep emoji only where the user or the project convention uses them",
+    "desc": "17 emoji found in ESTADO.md",
+    "file": "ESTADO.md",
+    "timestamp": "2026-09-25T14:25:59.939Z"
+  },
+  {
+    "type": "code-pattern",
+    "name": "banner-comment",
+    "count": 14,
+    "line": 95,
+    "severity": "low",
+    "confidence": "Taste note",
+    "fix": "Delete the dividers; a file that needs them to stay navigable is a file asking to be split.",
+    "desc": "ASCII banner/divider comment (14x)",
+    "file": "scripts/verify-idioma.mjs",
+    "timestamp": "2026-09-25T14:25:59.939Z"
+  },
+  {
+    "type": "emoji",
+    "count": 1,
+    "line": 97,
+    "severity": "low",
+    "confidence": "Quality defect",
+    "fix": "Use words for status and an icon component with an accessible name for UI; keep emoji only where the user or the project convention uses them",
+    "desc": "1 emoji found in src/data/comun.ts",
+    "file": "src/data/comun.ts",
+    "timestamp": "2026-09-25T14:25:59.939Z"
+  },
+  {
+    "type": "text-construct",
+    "name": "em-dash-density",
+    "count": 9,
+    "line": 1,
+    "severity": "medium",
+    "confidence": "Pattern smell",
+    "fix": "Replace the surplus dashes with commas, periods, or parentheses; do not swap every dash for a colon",
+    "desc": "High em dash density (9 dashes, 13.8/1k words) -- the #1 AI writing tell",
+    "file": "specs/gestion/correos-logos/01-columbia.md",
+    "timestamp": "2026-09-25T14:25:59.939Z"
+  },
+  {
+    "type": "emoji",
+    "count": 2,
+    "line": 3,
+    "severity": "low",
+    "confidence": "Quality defect",
+    "fix": "Use words for status and an icon component with an accessible name for UI; keep emoji only where the user or the project convention uses them",
+    "desc": "2 emoji found in specs/gestion/correos-logos/01-columbia.md",
+    "file": "specs/gestion/correos-logos/01-columbia.md",
+    "timestamp": "2026-09-25T14:25:59.939Z"
+  },
+  {
+    "type": "text-construct",
+    "name": "hr-divider",
+    "count": 1,
+    "line": 81,
+    "severity": "low",
+    "confidence": "Taste note",
+    "fix": "Use a paragraph break, and reserve the rule for a real section boundary in a long document.",
+    "desc": "Horizontal-rule divider between sections (1x)",
+    "file": "specs/gestion/correos-logos/05-utfsm-cctval.md",
+    "timestamp": "2026-09-25T14:25:59.939Z"
+  },
+  {
+    "type": "emoji",
+    "count": 1,
+    "line": 3,
+    "severity": "low",
+    "confidence": "Quality defect",
+    "fix": "Use words for status and an icon component with an accessible name for UI; keep emoji only where the user or the project convention uses them",
+    "desc": "1 emoji found in specs/gestion/correos-logos/05-utfsm-cctval.md",
+    "file": "specs/gestion/correos-logos/05-utfsm-cctval.md",
+    "timestamp": "2026-09-25T14:25:59.939Z"
+  },
+  {
+    "type": "text-construct",
+    "name": "em-dash-density",
+    "count": 15,
+    "line": 28,
+    "severity": "medium",
+    "confidence": "Pattern smell",
+    "fix": "Replace the surplus dashes with commas, periods, or parentheses; do not swap every dash for a colon",
+    "desc": "High em dash density (15 dashes, 11.9/1k words) -- the #1 AI writing tell",
+    "file": "specs/gestion/correos-logos/README.md",
+    "timestamp": "2026-09-25T14:25:59.939Z"
+  },
+  {
+    "type": "emoji",
+    "count": 3,
+    "line": 27,
+    "severity": "low",
+    "confidence": "Quality defect",
+    "fix": "Use words for status and an icon component with an accessible name for UI; keep emoji only where the user or the project convention uses them",
+    "desc": "3 emoji found in specs/gestion/correos-logos/README.md",
+    "file": "specs/gestion/correos-logos/README.md",
+    "timestamp": "2026-09-25T14:25:59.939Z"
+  },
+  {
+    "type": "text-construct",
+    "name": "hr-divider",
+    "count": 2,
+    "line": 12,
+    "severity": "low",
+    "confidence": "Taste note",
+    "fix": "Use a paragraph break, and reserve the rule for a real section boundary in a long document.",
+    "desc": "Horizontal-rule divider between sections (2x)",
+    "file": "specs/gestion/correos-logos/respuestas/README.md",
+    "timestamp": "2026-09-25T14:25:59.939Z"
+  },
+  {
+    "type": "text-construct",
+    "name": "em-dash-density",
+    "count": 10,
+    "line": 22,
+    "severity": "medium",
+    "confidence": "Pattern smell",
+    "fix": "Replace the surplus dashes with commas, periods, or parentheses; do not swap every dash for a colon",
+    "desc": "High em dash density (10 dashes, 13.7/1k words) -- the #1 AI writing tell",
+    "file": "specs/gestion/correos-logos/respuestas/README.md",
+    "timestamp": "2026-09-25T14:25:59.939Z"
+  },
+  {
+    "type": "emoji",
+    "count": 2,
+    "line": 11,
+    "severity": "low",
+    "confidence": "Quality defect",
+    "fix": "Use words for status and an icon component with an accessible name for UI; keep emoji only where the user or the project convention uses them",
+    "desc": "2 emoji found in specs/gestion/correos-logos/respuestas/README.md",
+    "file": "specs/gestion/correos-logos/respuestas/README.md",
+    "timestamp": "2026-09-25T14:25:59.939Z"
+  }
+]

@@ -71,7 +71,11 @@ const COINCIDENCIA_LEGITIMA = [
   /Universidad|University|Nokia Bell Labs|Columbia|PUCV|PUC de Chile|U\. de Santiago|USACH|ANID|Agencia Nacional/,
   // Nombres de personas. Siringo y Siles entran el 2026-09-22 con la nómina confirmada.
   /Gil Zussman|Jinfeng Du|Reinaldo|Giorgio Siringo|Gustavo A\. Siles|Rodolfo Feick|Miguel Gutiérrez|Karel Toledo/,
-  /^ALMA \//, // Afiliación de Siringo: ALMA y ESO son nombres propios, no se traducen
+  // ALMA y ESO son nombres propios. El patrón cubre la afiliación de Siringo en su ficha
+  // —«ALMA / European Southern Observatory»— **y la forma corta sola** de la pared de
+  // logos, que es la que se escapó al añadir la institución `[medido: 2026-09-25]`.
+  /^ALMA\b/,
+  /^UPB$|^UTFSM$/, // Formas cortas de la pared de logos; siglas, no texto traducible
   /^Bolivia$/, // Se escribe igual en ambos idiomas, como Chile
   // Correo de contacto. Era `/@pucv\.cl/` y dejó de cubrir nada el 2026-09-22, cuando la
   // dirección pasó a `contact@bcsensing.org`: el verificador llevaba desde entonces

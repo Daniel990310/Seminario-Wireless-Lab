@@ -163,7 +163,46 @@ textuales de los resúmenes, en **[`specs/gestion/programa-y-expositores.md`](sp
 dejó de cubrir nada. T7 fallaba **desde el mismo despliegue que se dio por verde**. Ya
 está corregido con un patrón de correo genérico.
 
-### Correos de logos, listos para enviar · `specs/gestion/correos-logos/`
+## ✅ Primera marca de tercero autorizada y publicada · 2026-09-25
+
+**La UTFSM autorizó el uso de su marca y mandó los archivos**, el 2026-09-24, menos de tres
+horas después de pedírselo. Es la primera de las siete: desde agosto el sitio mostraba
+marcador de posición en todas.
+
+| Qué | Dónde queda |
+|---|---|
+| `/logos/utfsm.svg` y `/logos/utfsm-oscuro.svg`, vector puro, una tinta cada uno | contraste **14,7:1** y **19,1:1** `[medido]`, muy por encima del umbral |
+| Mismo `viewBox` en las dos variantes | la marca no cambia de forma al cambiar de tema, que es el defecto del paquete de la UC |
+| **UTFSM, ALMA y la UPB** entran en la pared de logos | faltaban: eran cuatro instituciones para ocho expositores |
+| Autorizaron **recolorear** la marca y **no se ejerce** | con las dos variantes no hace falta; RF-10.4 sigue intacta |
+
+**Lo que contestó cada titular está en
+[`specs/gestion/correos-logos/respuestas/`](specs/gestion/correos-logos/respuestas/README.md)**,
+que es el respaldo de cada marca publicada.
+
+### Dos cosas que salieron de ahí y hay que hacer
+
+- **Escribirle a Cristian Reyes con el enlace.** Lo pidieron: «quedamos atentos a la
+  integración para ver que esté utilizada de manera correcta». Texto listo al final del
+  archivo 05.
+- **Columbia deriva el archivo a Zussman** y **todavía no autoriza explícitamente**. Hay dos
+  textos listos en el archivo 01: uno para Zussman pidiéndole el archivo, otro de una línea
+  para que Columbia Creative confirme por escrito. **Hasta esa línea, la marca no se
+  publica**, aunque tengamos el archivo.
+
+### Y un error propio, para no repetirlo
+
+`licensing@columbia.edu` **rebotó**: `550 5.1.1 User Unknown`. La puse yo desde un resumen
+de buscador en vez de la página del titular — justo lo que este proyecto dice no hacer. La
+que sí salía de la guía de marca, `creative@columbia.edu`, contestó en seis horas.
+
+De paso, `verify:idioma` volvió a fallar por la misma clase de agujero de siempre: al entrar
+ALMA en la pared de logos, su forma corta aparecía igual en los dos idiomas y T7 la marcó
+como traducción olvidada. **Es la tercera vez que ese verificador cae al añadir un dato**;
+si vuelve a pasar, conviene que la lista de coincidencias legítimas lea los nombres propios
+desde `comun.ts` en lugar de repetirlos a mano.
+
+### Correos de logos · `specs/gestion/correos-logos/`
 
 Ocho archivos, uno por institución, **para copiar y pegar**: destinatario, asunto y cuerpo
 con la firma puesta, la dirección del sitio y los ocho expositores. Índice y estado de cada

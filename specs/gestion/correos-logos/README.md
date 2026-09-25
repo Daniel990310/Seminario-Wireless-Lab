@@ -1,5 +1,14 @@
 # Correos para pedir los logos que faltan
 
+> **Estado al 2026-09-25.** Enviados dos: **la UTFSM autorizó y mandó los archivos** —ya
+> está publicada, es la primera marca de tercero del proyecto— y **Columbia deriva el
+> archivo a Zussman** sin autorizar todavía. Lo que contestaron, medido y decidido, en
+> [`respuestas/`](respuestas/README.md).
+>
+> Y una corrección que sale de ahí: **`licensing@columbia.edu` no existe**, rebotó con
+> `550 User Unknown`. La había puesto yo desde un resumen de buscador en vez de la página
+> del titular, que es justo lo que este proyecto dice no hacer.
+
 Redactados el **2026-09-23**. Uno por institución, **listos para copiar y pegar** en el
 cliente de correo. Cada archivo trae destinatario, asunto y cuerpo; lo único que falta
 poner es el envío.
@@ -15,11 +24,11 @@ las tres instituciones nuevas.
 
 | # | Institución | Expositor | Destinatario | Estado de la dirección |
 | - | ----------- | --------- | ------------ | ---------------------- |
-| [01](01-columbia.md) | Columbia University | Gil Zussman | `creative@columbia.edu` | `[verificado]` en `visualidentity.columbia.edu/branding` |
+| [01](01-columbia.md) | Columbia University | Gil Zussman | `creative@columbia.edu` | ✉️ **enviado 24-09** · contestado: deriva a Zussman |
 | [02](02-nokia-bell-labs.md) | Nokia Bell Labs | Jinfeng Du · Reinaldo A. Valenzuela | `Press.Services@nokia.com` + los expositores | **entrada, no destino** — ver abajo |
 | [03](03-uc.md) | Pontificia U. Católica de Chile | Miguel Gutiérrez Gaitán | `mhola@uc.cl` | `[verificado]` |
 | [04](04-usach.md) | Universidad de Santiago de Chile | Karel Toledo de la Garza | `imagen@usach.cl` | `[verificado]` |
-| [05](05-utfsm-cctval.md) | CCTVal · UTFSM | Rodolfo Feick | `cristian.reyessa@usm.cl` **+ formulario** | `[verificado]` en `comunicaciones.usm.cl/kit-digital-usm/` |
+| [05](05-utfsm-cctval.md) | CCTVal · UTFSM | Rodolfo Feick | `cristian.reyessa@usm.cl` | ✅ **AUTORIZADO 24-09, con archivos. Publicado.** |
 | [06](06-alma.md) | ALMA / ESO | Giorgio Siringo | `copyright@alma.cl` | `[verificado]` en el aviso de copyright de ALMA |
 | [07](07-upb.md) | Universidad Privada Boliviana | Gustavo A. Siles Soria | vía el Dr. Siles | **no publica contacto de marca** — buscado |
 | [08](08-pucv-variante-oscura.md) | PUCV | *(organizador)* | Dirección de Comunicación Estratégica | interno |
