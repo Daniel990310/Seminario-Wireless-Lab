@@ -30,10 +30,10 @@ export const acceso = {
    * silenciar el aviso: es el día en que el sitio se publicó anunciando la gratuidad.
    * Antes de esa fecha no había ninguna oferta que ofrecer.
    *
-   * **No es la fecha de apertura de inscripciones.** No hay inscripciones: RF-3 está
-   * fuera de alcance. Inventar una fecha de venta de entradas para un evento sin
-   * entradas sería precisamente lo que la regla de procedencia prohíbe, y además
-   * quedaría escrita en un resultado de búsqueda.
+   * **No es la fecha de apertura de inscripciones**, y ahora que esa fecha existe
+   * —RF-3 se conectó el 2026-09-24— la distinción importa: `validFrom` describe desde
+   * cuándo la oferta gratuita es válida, no desde cuándo se puede uno inscribir. Son
+   * dos hechos distintos y Schema.org solo pregunta por el primero.
    */
   validoDesde: '2026-09-22',
 } as const;

@@ -7,7 +7,7 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-09-22** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
+Actualizado: **2026-09-24** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
 ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-09-22**, versión
 `7a970138`, en `https://bcsensing.org`.
 · **Publicado en <https://bcsensing.org> el 2026-09-22, versión `830dafb9`. Primer
@@ -16,13 +16,28 @@ Hostinger sin revocar.**
 
 ---
 
-# EMPIEZA AQUÍ · traspaso del 2026-09-22
+# EMPIEZA AQUÍ · traspaso del 2026-09-24
 
 ## ⚠️ Lo primero, si llegas nuevo
 
 Lee [`ONBOARDING.md`](ONBOARDING.md). Dice qué leer y en qué orden, cómo montar el
 entorno, cuál es tu rama y qué **no** se hace. Desde el 2026-09-22 trabajan dos personas
 en paralelo y el reparto de archivos está en `AGENTS.md` → «Dos personas a la vez».
+
+## ✅ Formulario de inscripción conectado · 2026-09-24
+
+Daniel creó el formulario público de Google Forms para la inscripción y se conectó al sitio.
+
+| Qué | Dónde queda |
+|---|---|
+| **RF-3 conectado en el repositorio, sin desplegar**: URL pública del formulario de Google Forms | `comun.ts` (`registro.url`), activa el botón primario «Inscribirse» / «Register» en el hero y `offers.url` en los datos estructurados |
+
+**En `https://bcsensing.org` todavía no hay botón**: el último despliegue es del 2026-09-22 (`7a970138`) y es anterior a este cambio. Quien lea esta sección no puede decirle al organizador que la inscripción está abierta hasta que se despliegue.
+
+Cierra el pendiente del enlace del formulario. **Lo que sigue abierto y es de Daniel**: **desplegar** para que el
+botón exista en producción, el envío *desde*
+`contact@` con un relé SMTP, y decidir si el repositorio pasa a privado —hoy es público
+y `specs/gestion/correos-instituciones.md` expone doce direcciones de terceros.
 
 ## ✅ Cerrado el 2026-09-22, por la tarde (todo desplegado y comprobado en vivo)
 
@@ -34,12 +49,74 @@ en paralelo y el reparto de archivos está en `AGENTS.md` → «Dos personas a l
 | Comité organizador y crédito de desarrollo en el pie | `SiteFooter.astro` + `ui.pie` en los dos idiomas |
 | Marca propia del seminario: favicon, ICO, apple-touch-icon y símbolo en la cabecera | `public/brand/`, documentada en `specs/marca-beyond-connectivity.md` |
 | Panel de ajuste visual en `/ajustar`, solo en `npm run dev` | `src/dev/`, inyectado desde `astro.config.mjs` |
-| RF-3 reescrito: la inscripción es un enlace a Google Forms | **implementado y apagado**: espera la URL en `comun.registro.url` |
+| RF-3 reescrito: la inscripción es un enlace a Google Forms | **implementado y apagado** en esa fecha (esperaba URL); activado el 2026-09-24 |
 
-**Lo que sigue abierto y es de Daniel**: el enlace del formulario, el envío *desde*
-`contact@` con un relé SMTP, dos expositores nuevos, y decidir si el repositorio pasa a
-privado —hoy es público y `specs/gestion/correos-instituciones.md` expone doce
-direcciones de terceros.
+## ✅ Nómina de expositores cerrada · 2026-09-22, noche
+
+Mauricio Rodríguez envió la **lista confirmada de 8 expositores**, el formato de sesión
+(45 min + 15 de preguntas) y las dos primeras charlas. Todo el detalle, con las citas
+textuales de los resúmenes, en **[`specs/gestion/programa-y-expositores.md`](specs/gestion/programa-y-expositores.md)**.
+
+| Qué | Dónde queda |
+|---|---|
+| **Giorgio Siringo** (ALMA / ESO) y **Gustavo Siles** (U. Privada Boliviana) añadidos | `comun.ts` + reseña en los dos idiomas; **sin foto**, muestran monograma (RF-11.2) |
+| **A3 cerrada**: Feick ya no es «afiliación por confirmar» | `CCTVal, Universidad Técnica Federico Santa María` |
+| Reseña de **Valenzuela** reescrita con la que él mismo envió | corrige el departamento, que estaba mal: Teoría de la Comunicación, no Comunicaciones Inalámbricas |
+| Las dos charlas confirmadas quedan **como dato, sin publicar** | `src/data/charlas.ts`, que no importa ninguna página todavía |
+| `BO` entra en `CodigoPais` | obliga a traducir el país en los dos idiomas o no compila |
+| `verify:idioma` volvió a verde por dos motivos distintos | nombres nuevos en la lista legítima **y** un fallo que arrastraba desde la tarde |
+
+**Ese fallo arrastrado conviene mirarlo**: la lista de coincidencias legítimas de
+`verify-idioma.mjs` traía `/@pucv\.cl/`, y al cambiar el correo a `contact@bcsensing.org`
+dejó de cubrir nada. T7 fallaba **desde el mismo despliegue que se dio por verde**. Ya
+está corregido con un patrón de correo genérico.
+
+### Correos de logos, listos para enviar · `specs/gestion/correos-logos/`
+
+Ocho archivos, uno por institución, **para copiar y pegar**: destinatario, asunto y cuerpo
+con la firma puesta, la dirección del sitio y los ocho expositores. Índice y estado de cada
+dirección en su [`README.md`](specs/gestion/correos-logos/README.md).
+
+Las tres que nunca se han pedido son las nuevas: **CCTVal/UTFSM, ALMA y la UPB**. De ellas,
+la UTFSM es la que tiene el procedimiento más estricto —solicitud formal y **cinco días
+hábiles** antes de publicar—, así que es por la que conviene empezar.
+
+**Siete de las ocho ya tienen destino concreto**, rastreado en la página del titular:
+`creative@columbia.edu` —su guía de marca manda ahí exactamente este caso—,
+`copyright@alma.cl` —la dirección que su aviso de copyright enlaza en la frase que exige
+consentimiento para el logo—, más las tres chilenas ya conocidas y el formulario del kit
+digital de la USM.
+
+Las dos que no cierran, y por qué: **Nokia exige consentimiento escrito sin decir a quién
+pedírselo** —sus páginas dan 403 a lectura automática—, así que se entra por la oficina de
+prensa y, sobre todo, por Du y Valenzuela, que están dentro; y la **UPB no publica ningún
+contacto de marca** —se buscó—, así que se entra por Siles. Ninguna dirección se inventó.
+
+Para esos dos hay un noveno archivo, **[`09`](specs/gestion/correos-logos/09-organizador-via-expositores.md)**:
+un mensaje a Mauricio para que añada la petición de logo **al hilo que ya tiene abierto con
+los ocho** —el del plazo del 28—, con un párrafo en inglés listo para pegar. Sale más barato
+que abrir una ronda nueva de correos.
+
+**Nada de esto se manda solo**: el reparto de quién envía qué está en el README de esa
+carpeta. Daniel manda los seis con canal publicado; Mauricio manda el 09; el 02 (Nokia) y el
+07 (UPB) quedan **en reserva**, para enviarlos solo si el expositor no abre la puerta
+interna.
+
+### Lo que falta y no depende de nosotros
+
+- **Seis charlas de ocho**, con plazo del organizador el **lunes 28 de septiembre**:
+  Zussman, Du, Siringo, Siles, Gutiérrez y Toledo.
+- **Las ocho fotografías.** El organizador ya se las pidió a todos, con el mismo plazo
+  del 28. **No se descargan de la web**: RF-11.3 lo prohíbe explícitamente y RF-11.1
+  exige autorización de la persona. La de Valenzuela (`RAV Photo.jpg`) ya tiene permiso
+  pero llegó adjunta al correo y **no está en el repositorio**: pedirle el archivo a
+  Mauricio.
+- **Preguntar qué significa la «(R)»** con que Valenzuela firma su cargo. Se publicó en
+  pasado suponiendo *retired* `[probable]`; si es otra cosa, esa frase se corrige.
+- **Decisión de Daniel**: dónde van título y resumen de cada charla. El sitio no tiene
+  sitio para una charla hoy. Las dos opciones y la recomendación, al final de
+  `specs/gestion/programa-y-expositores.md`. **No se implementa hasta que esté en
+  `requirements.md`.**
 
 ## ✅ El sitio está publicado en https://bcsensing.org
 
@@ -402,7 +479,7 @@ cosas este sitio va por delante.
 
 | Idea | Por qué encaja |
 | ---- | -------------- |
-| **Franja de fechas clave** | Lo mejor de su portada. Este sitio **no tiene ninguna fecha** aparte de las del seminario: ni envío de resúmenes ni inscripción. Es donde vive RF-3, el registro, aún sin implementar |
+| **Franja de fechas clave** | Lo mejor de su portada. Este sitio **no tiene ninguna fecha** aparte de las del seminario: ni envío de resúmenes ni inscripción. Es donde viviría, junto a RF-3: la inscripción ya existe como enlace a Google Forms, la franja de fechas no |
 | **Cuenta atrás** | Señal de vida, y significa algo del dominio (filtro de D12). **Calculada en el build**, «faltan N días», a 0 kB y sin chocar con WCAG 2.2.2, que exige poder detener lo que se actualiza solo |
 | **Información práctica de viaje** | Visa, alojamiento, cómo llegar. Hay **cuatro expositores extranjeros** y el sitio no dice nada. Es redacción, no tecnología |
 | **Galería de la sede** | Es el carrusel ya previsto, esperando fotos |
@@ -1172,8 +1249,8 @@ Windows—. Resultado medido: **`dist` ya no emite ningún archivo huérfano**; 
 emitía 59,5 kB comprimidos de runtime de cliente que ningún navegador pedía.
 `astro check` sigue en 0/0/0 y los siete verificadores en verde.
 
-Reinstalarlo es un comando. El candidato natural sigue siendo RF-3, el registro de
-asistentes.
+Reinstalarlo es un comando. El candidato natural **era** RF-3, el registro de
+asistentes; se resolvió el 2026-09-24 como enlace saliente a Google Forms, sin React.
 
 ### El hallazgo grave: la primera carga estaba subestimada 11,8 kB
 

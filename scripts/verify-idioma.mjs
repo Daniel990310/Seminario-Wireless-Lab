@@ -69,8 +69,14 @@ const COINCIDENCIA_LEGITIMA = [
   /^International Seminar on Wireless/, // Subtítulo, parte del título oficial
   // Nombres institucionales, incluidas sus formas abreviadas de uso corriente.
   /Universidad|University|Nokia Bell Labs|Columbia|PUCV|PUC de Chile|U\. de Santiago|USACH|ANID|Agencia Nacional/,
-  /Gil Zussman|Jinfeng Du|Reinaldo|Rodolfo Feick|Miguel Gutiérrez|Karel Toledo/, // Nombres de personas
-  /@pucv\.cl/, // Correo
+  // Nombres de personas. Siringo y Siles entran el 2026-09-22 con la nómina confirmada.
+  /Gil Zussman|Jinfeng Du|Reinaldo|Giorgio Siringo|Gustavo A\. Siles|Rodolfo Feick|Miguel Gutiérrez|Karel Toledo/,
+  /^ALMA \//, // Afiliación de Siringo: ALMA y ESO son nombres propios, no se traducen
+  /^Bolivia$/, // Se escribe igual en ambos idiomas, como Chile
+  // Correo de contacto. Era `/@pucv\.cl/` y dejó de cubrir nada el 2026-09-22, cuando la
+  // dirección pasó a `contact@bcsensing.org`: el verificador llevaba desde entonces
+  // marcándola como traducción olvidada. Una dirección no se traduce, sea cual sea.
+  /^[\w.+-]+@[\w.-]+\.\w+$/,
   /FOVI\d+/, // Código de proyecto
   /^Chile$/, // Se escribe igual en ambos idiomas
   /^Antonio Bellet|Providencia|Santiago/, // Dirección postal

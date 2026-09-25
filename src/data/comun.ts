@@ -107,7 +107,13 @@ import { acceso } from './acceso';
  */
 export const PROGRAMA_DEMOSTRATIVO = false;
 
-export type CodigoPais = 'US' | 'CL';
+/**
+ * `BO` entra el 2026-09-22 con Gustavo Siles, de la Universidad Privada Boliviana,
+ * confirmado en la lista de expositores del organizador. Añadir un código aquí
+ * **no compila** hasta que `paises` lo traduzca en los dos idiomas, que es lo que
+ * impide publicar una ficha con el país en blanco.
+ */
+export type CodigoPais = 'US' | 'CL' | 'BO';
 
 /**
  * Grados del comité organizador. Es una unión y no una cadena libre a propósito:
@@ -233,18 +239,6 @@ export const comun = {
   },
 
   /**
-   * Asistencia gratuita. **Confirmado por Daniel el 2026-09-22**; hasta entonces el
-   * dato no existía y por eso el JSON-LD no declaraba nada (A-abierta de RNF-3).
-   *
-   * Va aquí y no en `es.ts`/`en.ts` porque un precio no tiene idioma, y va como dato
-   * y no escrito en el layout porque RNF-5.1 exige que todo el contenido editable viva
-   * en archivos de datos: el día que el seminario cobre, se cambia aquí y el JSON-LD
-   * deja de anunciar «Gratis» solo.
-   *
-   * La moneda se declara aunque el precio sea 0: `schema.org/Offer` la exige, y
-   * omitirla hace que el validador de Google descarte la oferta entera.
-   */
-  /**
    * Régimen de acceso. El dato vive en `acceso.ts`, sin importaciones, para que
    * `scripts/verify-seo.mjs` pueda leer **la misma fuente** que el sitio. Ver la
    * cabecera de ese archivo.
@@ -290,20 +284,60 @@ export const comun = {
         country: 'US',
         perfil: 'https://www.nokia.com/people/reinaldo-valenzuela/',
       },
+      /*
+       * Los dos expositores que faltaban, incorporados el 2026-09-22 con la lista de
+       * confirmados que envió Mauricio Rodríguez. Ver
+       * `specs/gestion/programa-y-expositores.md`.
+       *
+       * **Ninguno de los dos tiene retrato**, y es el estado correcto: una foto solo se
+       * publica con autorización expresa de la persona (RF-11.1). Hasta que llegue, la
+       * ficha muestra el monograma de iniciales (RF-11.2).
+       *
+       * Siringo va en el bloque «internacionales» aunque **trabaje en Chile**: el Joint
+       * ALMA Observatory es un consorcio internacional —ESO, NSF y NINS— y así lo agrupó
+       * el organizador. Por lo mismo se queda **sin `country`**: ninguna etiqueta de país
+       * describe una organización intergubernamental, y el campo es opcional justamente
+       * para no tener que inventar una. Si la organización decide que lleve «Chile», se
+       * añade `country: 'CL'` y no hay que tocar nada más.
+       *
+       * La afiliación es la cadena que confirmó el organizador. Matiz que conviene saber
+       * antes de «corregirla»: la página oficial de ALMA lo lista como *Front-End
+       * Technical Lead* del **Joint ALMA Observatory**, y ESO es uno de los tres socios
+       * de ALMA, no su empleador directo.
+       */
+      {
+        id: 'siringo',
+        name: 'Giorgio Siringo',
+        affiliation: 'ALMA / European Southern Observatory',
+        perfil: 'https://www.almaobservatory.org/en/team/giorgio-siringo/',
+      },
+      {
+        id: 'siles',
+        name: 'Gustavo A. Siles Soria',
+        affiliation: 'Universidad Privada Boliviana',
+        country: 'BO',
+        perfil: 'https://lrc.upb.edu/people/',
+      },
     ],
     national: [
       /*
-       * La afiliación sigue marcada como pendiente a propósito. Las fuentes
-       * públicas lo sitúan al frente del Wireless Communications Research Group
-       * de la Universidad Técnica Federico Santa María, pero eso es `[probable]`
-       * hasta que la organización lo confirme, y este proyecto no publica datos
-       * institucionales sin confirmar. Ver `ESTADO.md` §7.
+       * Afiliación confirmada el 2026-09-22: el organizador lo lista como **CCTVal** en
+       * la nómina oficial de expositores. Cierra A3, que llevaba abierta desde julio
+       * porque las fuentes públicas lo situaban en el Wireless Communications Research
+       * Group de la UTFSM y eso era `[probable]`, no confirmado.
+       *
+       * Las dos cosas son compatibles y por eso la cadena las nombra juntas: el CCTVal
+       * —Centro Científico Tecnológico de Valparaíso— es un centro basal **alojado en la
+       * UTFSM**, y la propia PUCV lo presenta como «Dr. Rodolfo Feick (CCTVal-UTFSM)».
+       * El organizador escribió solo «CCTVal»; se publica la forma larga porque una
+       * sigla sola no identifica a la institución para quien llega de fuera.
        */
       {
         id: 'feick',
         foto: fotoFeick,
         name: 'Rodolfo Feick',
-        affiliationPending: true,
+        affiliation: 'CCTVal, Universidad Técnica Federico Santa María',
+        country: 'CL',
         perfil: 'http://investigacion.electronica.usm.cl/~wcg/',
       },
       {
@@ -453,16 +487,17 @@ export const comun = {
    * Inscripción (RF-3). **Un enlace saliente a un formulario de Google**, no un
    * formulario propio ni un `<iframe>`: ver el porqué en RF-3, que lo decide.
    *
-   * Mientras esto sea `null` **no se pinta ningún botón** y el sitio queda como
-   * estaba. Es deliberado: un botón de inscripción que no lleva a ninguna parte
-   * es peor que no tener botón. Para activarlo basta pegar aquí la dirección que
-   * da Google en «Enviar → enlace»; no hay que tocar ningún componente.
+   * Conectado el 2026-09-24 con el formulario creado por el organizador, que responde
+   * público y sin exigir sesión de Google `[medido: 2026-09-24]`.
+   * Si vuelve a `null` **no se pinta ningún botón** y el sitio queda como estaba.
    *
    * No se traduce: Google Forms sirve un único formulario para los dos idiomas.
    * Si algún día hay uno por idioma, esto pasa a `es.ts`/`en.ts` y `tipos.ts`
    * obliga a que estén los dos.
    */
-  registro: { url: null as string | null },
+  registro: {
+    url: 'https://docs.google.com/forms/d/e/1FAIpQLSc7ltNBBSxUn9ViybRyeRSjDrIsV0evnSK62EcXXybKsgcwAw/viewform' as string | null,
+  },
 
   /**
    * Comité organizador y desarrollo del sitio, en el pie (indicación de Daniel,

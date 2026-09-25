@@ -1,5 +1,15 @@
 # Correos para las marcas institucionales
 
+> ⚠️ **Para enviar, usa [`correos-logos/`](correos-logos/), no este archivo.** Desde el
+> 2026-09-23 los correos listos están ahí, uno por institución, con la firma puesta, la
+> dirección del sitio y los ocho expositores. Este archivo se queda como **registro de por
+> qué cada titular está en la situación en que está**: la clasificación, las fuentes y las
+> trampas de cada paquete de marca siguen siendo válidas y no se repiten allá.
+>
+> Lo que aquí quedó desactualizado: hablaba de **seis** expositores, el sitio todavía no
+> tenía dirección publicada, la firma era `[Nombre] — [cargo]`, y faltaban las tres
+> instituciones que entraron con la nómina definitiva —CCTVal, ALMA y la UPB—.
+
 Redactados el **2026-08-25**. Cubren las siete instituciones de `public/logos/` y
 `src/data/comun.ts`, separadas por **qué hace falta pedir**, que no es lo mismo en todas.
 

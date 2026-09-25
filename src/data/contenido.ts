@@ -137,8 +137,18 @@ export function contenido(lang: Idioma) {
 
     contact: { ...comun.contact, ...t.contact },
 
-    /* Un único formulario para los dos idiomas; ver la nota en `comun.ts` (RF-3). */
-    registro: comun.registro,
+    /*
+     * Un único formulario para los dos idiomas; ver la nota en `comun.ts` (RF-3).
+     *
+     * **Aquí se decide una sola vez qué cuenta como «no hay inscripción»**, y por eso
+     * la URL se normaliza a `null`. Antes el dato pasaba crudo y cada consumidor
+     * resolvía por su cuenta: el hero con `&&` (una cadena vacía no pinta botón) y el
+     * JSON-LD con `??` (esa misma cadena vacía entraba como `offers.url: ""`, una
+     * oferta sin destino). Dos criterios distintos para un solo hecho, sostenidos solo
+     * por comentarios. Normalizado aquí, los dos aciertan sin ponerse de acuerdo, y un
+     * tercer consumidor tampoco tiene que enterarse. Mismo patrón que `program.days`.
+     */
+    registro: { url: comun.registro.url || null },
 
     /*
      * Pasan tal cual: son nombres de personas, y un nombre no tiene versión en
