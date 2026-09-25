@@ -147,8 +147,9 @@ rápido.
 > `astro:assets`, CSS y la API de transiciones del navegador. Detalle y fuentes en
 > `design.md` §6.6.
 >
-> Reinstalarlo es un comando. El candidato natural sigue siendo RF-3, el registro de
-> asistentes, que es interacción que HTML nativo resuelve peor.
+> Reinstalarlo es un comando. El candidato natural era RF-3, el registro de
+> asistentes, que es interacción que HTML nativo resuelve peor. (Resuelto el
+> 2026-09-22/24 como enlace saliente a Google Forms, sin requerir React).
 >
 > Detalle en `ESTADO.md` §5h y §5j.
 
@@ -180,7 +181,11 @@ Por qué enlazar y no incrustar ni construir, que es lo que decide el resto:
 - **Ningún dato personal queda bajo nuestra custodia.** El sitio es estático y no
   tiene respaldo; construir el formulario obligaría a levantar un punto de entrada
   público, con Turnstile, límite de tasa, control detectivo y una política de datos
-  escrita. Enlazar no añade **ninguna** superficie expuesta.
+  escrita. Enlazar no añade **ninguna superficie bajo nuestra custodia**. La que queda es la del
+  formulario en Google: envíos anónimos, sin límite de tasa propio ni control detectivo
+  nuestro. Mitigación disponible y **no aplicada**: limitar a una respuesta por cuenta, o
+  revisar la hoja antes de usarla como nómina. Si esa hoja se inunda, se pierde la nómina
+  de inscritos, no el sitio.
 - **Incrustar en un `<iframe>` no es lo mismo que enlazar.** Un iframe de Google en
   la página carga terceros en la carga inicial (contra RNF-2.3), mete un documento
   ajeno en el árbol de accesibilidad y su contraste y su foco no los podemos medir
@@ -203,6 +208,8 @@ Por qué enlazar y no incrustar ni construir, que es lo que decide el resto:
    existe, y a la página del seminario cuando no.
 6. `npm run verify` sigue en verde con el botón presente, en los dos idiomas y en
    los dos temas.
+
+**Estado al 2026-09-24: Activo y verificado.** Se conectó la URL pública del formulario de Google Forms (`https://docs.google.com/forms/d/e/1FAIpQLSc7ltNBBSxUn9ViybRyeRSjDrIsV0evnSK62EcXXybKsgcwAw/viewform`) en `comun.registro.url`. El botón primario («Inscribirse» / «Register») se renderiza en el hero y la oferta de Schema.org enlaza al formulario. `npm run verify` queda en verde con el botón presente: siete presupuestos cumplidos sobre 8 corridas —dos idiomas x escritorio/móvil x claro/oscuro— con 0 hallazgos axe y 0 nodos indeterminados `[verificado: 2026-09-24]`. El formulario responde público, sin exigir sesión de Google `[medido: 2026-09-24]`.
 
 ### RF-7 · Fichas de expositor con reseña verificable
 
@@ -444,8 +451,9 @@ interactivas de T10— sin que el peso sea por sí solo el argumento para rechaz
    > búsqueda es peor que no declarar precio, así que el verificador comprueba que el
    > JSON-LD **concuerde con los datos**, no que diga «gratis».
    >
-   > La `url` de la oferta es la página del seminario y no una de inscripción: RF-3
-   > —registro de asistentes— está fuera de alcance y esa página no existe.
+   > La `url` de la oferta apunta al formulario de inscripción cuando existe (RF-3,
+   > criterio 5; conectado al formulario público de Google Forms desde el 2026-09-24),
+   > y a la página del seminario cuando no.
 
 ### RNF-4 · Privacidad
 
@@ -596,7 +604,7 @@ estilos.
 
 ## Fuera de alcance
 
-- Registro de asistentes (RF-3 queda como previsión).
+- ~~Registro de asistentes~~ (RF-3 resuelto como enlace saliente a Google Forms; activo desde el 2026-09-24).
 - Panel de administración de contenidos: se mantiene la edición por archivos.
 - Más de dos idiomas.
 - Fragmentación en varias páginas (D1).

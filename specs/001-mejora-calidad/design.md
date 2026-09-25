@@ -485,8 +485,10 @@ actualizar, un archivo de configuración apuntando a una carpeta inexistente
 `AGENTS.md` prohíbe por romperse en Windows.
 
 **Cuándo volver a instalarlo:** cuando exista un componente que lo justifique. El
-candidato natural es RF-3, el registro de asistentes —formulario con validación,
+candidato natural era RF-3, el registro de asistentes —formulario con validación,
 selección y confirmación—, que es donde HTML nativo rinde peor. Es un comando.
+*(Nota: RF-3 se resolvió mediante D3 como enlace saliente a Google Forms, activo desde el
+2026-09-24, por lo que no requirió construir componentes en el sitio ni reinstalar React).*
 
 **Lo que esta decisión NO afirma:** que React sea malo, ni que shadcn/ui no sirva. Lo
 que dice es que hoy no hay ningún componente que lo pida, y que las reglas del proyecto

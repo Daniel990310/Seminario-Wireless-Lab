@@ -115,8 +115,14 @@ const eventSchema = {
      * distintivo de evento enlaza esta dirección: si hay dónde inscribirse, llevar
      * ahí es lo correcto; si no lo hay, mandar a la propia página es preferible a
      * declarar una oferta sin destino.
+     *
+     * `||` y no `??`, para decidir con el mismo criterio que `Hero.astro`: allí el
+     * botón se pinta con un `&&`, así que una cadena vacía no pinta botón. Con `??`
+     * esa misma cadena vacía entraría aquí como `offers.url: ""` —una oferta sin
+     * destino en los datos estructurados, justo lo que este comentario dice evitar—.
+     * El tipo admite `''`; los dos consumidores tienen que tratarlo igual.
      */
-    url: seminar.registro.url ?? canonical.href,
+    url: seminar.registro.url || canonical.href,
   },
   location: {
     '@type': 'Place',

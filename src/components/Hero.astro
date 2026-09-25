@@ -118,12 +118,18 @@ const { c } = Astro.props;
           Se abre en la misma pestaña. `target="_blank"` obliga a avisar de que se
           abre una ventana nueva para no sorprender a quien navega con lector de
           pantalla, y aquí no aporta: es el final del camino, no una consulta lateral.
+
+          `rel="noreferrer"` y no `noopener`: sin `target="_blank"` no hay ventana que
+          aislar, así que `noopener` no haría nada y solo le diría al siguiente lector
+          que esto abre pestaña. `noreferrer` sí hace algo aquí —impide que la cabecera
+          `Referer` le cuente a Google desde qué sección del sitio llegó cada persona—
+          y lo único que se pierde es una analítica de origen que no usamos.
         -->
         {
           c.registro.url && (
             <a
               href={c.registro.url}
-              rel="noopener"
+              rel="noreferrer"
               class="rounded-control bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-opacity duration-200 hover:opacity-90"
             >
               {c.ui.hero.inscribirse}

@@ -590,13 +590,33 @@ cada corrida en vez de darse por hecho.
 
 ---
 
+## T14 · Conectar el formulario de inscripción
+
+**Satisface:** RF-3 · **Depende de:** que el organizador cree el formulario
+
+RF-3 quedó implementado y apagado el 2026-09-22: el botón solo se pinta si
+`comun.registro.url` tiene dirección. Esta tarea es pegar esa dirección.
+
+- Pegar en `comun.registro.url` la URL pública que da Google en «Enviar → enlace».
+- Comprobar que el formulario responde sin exigir sesión de Google: si la pidiera,
+  los cuatro expositores extranjeros no podrían inscribirse.
+- `npm run verify` en verde con el botón presente, en los dos idiomas y los dos temas.
+
+**Cumplida el 2026-09-24.** URL conectada; el formulario responde público, bilingüe y
+sin muro de sesión `[medido: 2026-09-24]`. `npm run verify`: siete presupuestos
+cumplidos sobre 8 corridas, 0 hallazgos axe y 0 nodos indeterminados
+`[verificado: 2026-09-24]`.
+
+**Lo que esta tarea NO cierra:** el botón no existe en `https://bcsensing.org` hasta
+que se despliegue. Desplegar es de Daniel (`AGENTS.md` → «Dos personas a la vez»).
+
 ## Trazabilidad
 
 | Requisito | Tareas |
 | --------- | ------ |
 | RF-1 Bilingüe | T7 |
 | RF-2 Una página | T5 |
-| RF-3 Registro previsto | — (solo documentado, `design.md`) |
+| RF-3 Registro de asistentes | T14 |
 | RF-4 Selector de tema | T2 |
 | RNF-1 Accesibilidad | T2, T5, T6 |
 | RNF-2 Rendimiento | T3, T4 |

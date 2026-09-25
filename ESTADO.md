@@ -7,7 +7,7 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-09-22** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
+Actualizado: **2026-09-24** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
 ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-09-22**, versión
 `7a970138`, en `https://bcsensing.org`.
 · **Publicado en <https://bcsensing.org> el 2026-09-22, versión `830dafb9`. Primer
@@ -16,13 +16,28 @@ Hostinger sin revocar.**
 
 ---
 
-# EMPIEZA AQUÍ · traspaso del 2026-09-22
+# EMPIEZA AQUÍ · traspaso del 2026-09-24
 
 ## ⚠️ Lo primero, si llegas nuevo
 
 Lee [`ONBOARDING.md`](ONBOARDING.md). Dice qué leer y en qué orden, cómo montar el
 entorno, cuál es tu rama y qué **no** se hace. Desde el 2026-09-22 trabajan dos personas
 en paralelo y el reparto de archivos está en `AGENTS.md` → «Dos personas a la vez».
+
+## ✅ Formulario de inscripción conectado · 2026-09-24
+
+Daniel creó el formulario público de Google Forms para la inscripción y se conectó al sitio.
+
+| Qué | Dónde queda |
+|---|---|
+| **RF-3 conectado en el repositorio, sin desplegar**: URL pública del formulario de Google Forms | `comun.ts` (`registro.url`), activa el botón primario «Inscribirse» / «Register» en el hero y `offers.url` en los datos estructurados |
+
+**En `https://bcsensing.org` todavía no hay botón**: el último despliegue es del 2026-09-22 (`7a970138`) y es anterior a este cambio. Quien lea esta sección no puede decirle al organizador que la inscripción está abierta hasta que se despliegue.
+
+Cierra el pendiente del enlace del formulario. **Lo que sigue abierto y es de Daniel**: **desplegar** para que el
+botón exista en producción, el envío *desde*
+`contact@` con un relé SMTP, y decidir si el repositorio pasa a privado —hoy es público
+y `specs/gestion/correos-instituciones.md` expone doce direcciones de terceros.
 
 ## ✅ Cerrado el 2026-09-22, por la tarde (todo desplegado y comprobado en vivo)
 
@@ -34,11 +49,7 @@ en paralelo y el reparto de archivos está en `AGENTS.md` → «Dos personas a l
 | Comité organizador y crédito de desarrollo en el pie | `SiteFooter.astro` + `ui.pie` en los dos idiomas |
 | Marca propia del seminario: favicon, ICO, apple-touch-icon y símbolo en la cabecera | `public/brand/`, documentada en `specs/marca-beyond-connectivity.md` |
 | Panel de ajuste visual en `/ajustar`, solo en `npm run dev` | `src/dev/`, inyectado desde `astro.config.mjs` |
-| RF-3 reescrito: la inscripción es un enlace a Google Forms | **implementado y apagado**: espera la URL en `comun.registro.url` |
-
-**Lo que sigue abierto y es de Daniel**: el enlace del formulario, el envío *desde*
-`contact@` con un relé SMTP, y decidir si el repositorio pasa a privado —hoy es público
-y `specs/gestion/correos-instituciones.md` expone doce direcciones de terceros.
+| RF-3 reescrito: la inscripción es un enlace a Google Forms | **implementado y apagado** en esa fecha (esperaba URL); activado el 2026-09-24 |
 
 ## ✅ Nómina de expositores cerrada · 2026-09-22, noche
 
@@ -468,7 +479,7 @@ cosas este sitio va por delante.
 
 | Idea | Por qué encaja |
 | ---- | -------------- |
-| **Franja de fechas clave** | Lo mejor de su portada. Este sitio **no tiene ninguna fecha** aparte de las del seminario: ni envío de resúmenes ni inscripción. Es donde vive RF-3, el registro, aún sin implementar |
+| **Franja de fechas clave** | Lo mejor de su portada. Este sitio **no tiene ninguna fecha** aparte de las del seminario: ni envío de resúmenes ni inscripción. Es donde viviría, junto a RF-3: la inscripción ya existe como enlace a Google Forms, la franja de fechas no |
 | **Cuenta atrás** | Señal de vida, y significa algo del dominio (filtro de D12). **Calculada en el build**, «faltan N días», a 0 kB y sin chocar con WCAG 2.2.2, que exige poder detener lo que se actualiza solo |
 | **Información práctica de viaje** | Visa, alojamiento, cómo llegar. Hay **cuatro expositores extranjeros** y el sitio no dice nada. Es redacción, no tecnología |
 | **Galería de la sede** | Es el carrusel ya previsto, esperando fotos |
@@ -1238,8 +1249,8 @@ Windows—. Resultado medido: **`dist` ya no emite ningún archivo huérfano**; 
 emitía 59,5 kB comprimidos de runtime de cliente que ningún navegador pedía.
 `astro check` sigue en 0/0/0 y los siete verificadores en verde.
 
-Reinstalarlo es un comando. El candidato natural sigue siendo RF-3, el registro de
-asistentes.
+Reinstalarlo es un comando. El candidato natural **era** RF-3, el registro de
+asistentes; se resolvió el 2026-09-24 como enlace saliente a Google Forms, sin React.
 
 ### El hallazgo grave: la primera carga estaba subestimada 11,8 kB
 
