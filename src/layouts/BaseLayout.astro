@@ -116,13 +116,10 @@ const eventSchema = {
      * ahí es lo correcto; si no lo hay, mandar a la propia página es preferible a
      * declarar una oferta sin destino.
      *
-     * `||` y no `??`, para decidir con el mismo criterio que `Hero.astro`: allí el
-     * botón se pinta con un `&&`, así que una cadena vacía no pinta botón. Con `??`
-     * esa misma cadena vacía entraría aquí como `offers.url: ""` —una oferta sin
-     * destino en los datos estructurados, justo lo que este comentario dice evitar—.
-     * El tipo admite `''`; los dos consumidores tienen que tratarlo igual.
+     * `??` basta porque `contenido.ts` ya normalizó la ausencia a `null`: aquí no hay
+     * que volver a decidir qué cuenta como «no hay formulario».
      */
-    url: seminar.registro.url || canonical.href,
+    url: seminar.registro.url ?? canonical.href,
   },
   location: {
     '@type': 'Place',

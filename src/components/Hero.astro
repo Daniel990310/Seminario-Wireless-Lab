@@ -121,9 +121,14 @@ const { c } = Astro.props;
 
           `rel="noreferrer"` y no `noopener`: sin `target="_blank"` no hay ventana que
           aislar, así que `noopener` no haría nada y solo le diría al siguiente lector
-          que esto abre pestaña. `noreferrer` sí hace algo aquí —impide que la cabecera
-          `Referer` le cuente a Google desde qué sección del sitio llegó cada persona—
-          y lo único que se pierde es una analítica de origen que no usamos.
+          que esto abre pestaña.
+
+          Lo que `noreferrer` añade es **menos de lo que parece**, y conviene no
+          exagerarlo: `public/_headers` ya declara
+          `Referrer-Policy: strict-origin-when-cross-origin`, así que en un salto a
+          `docs.google.com` la ruta y el fragmento nunca viajaron; solo el origen. El
+          delta real es suprimir también ese origen. Se pierde una analítica de
+          procedencia que no usamos.
         -->
         {
           c.registro.url && (
