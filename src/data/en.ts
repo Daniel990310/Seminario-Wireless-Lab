@@ -102,6 +102,8 @@ export const en = {
     paragraphs: [
       'The mmWave and sub-THz bands make it possible for a single wireless infrastructure not only to carry information but also to perceive its surroundings: detecting presence and motion, estimating range, characterising materials and reconstructing scenes. This convergence of communication and sensing is one of the pillars of 6G networks.',
       'The seminar brings together researchers from the United States and Chile to discuss propagation models, experimental measurements, joint sensing architectures and the open challenges of taking these technologies to real deployments.',
+      'It exists so that those who measure, model and design the networks of the future can talk in one place, and so that postgraduate students in Chile can learn first-hand from internationally recognised researchers.',
+      'It is directed by Dr. Mauricio Rodríguez Guzmán, a professor at the PUCV School of Electrical Engineering and director of the PhD in Electrical Engineering. He holds a PhD in Electronics Engineering from Universidad Técnica Federico Santa María, researches wireless telecommunications, electromagnetic propagation and microwave systems design, and heads the Wireless Communications Laboratory. He invited the speakers and leads the organisation of the event.',
     ],
   },
 

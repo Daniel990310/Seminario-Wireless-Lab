@@ -19,6 +19,47 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Logo EIE y flyer · 2026-10-01 · cambio local sin desplegar
+
+[verificado] Daniel entregó el logo institucional cuadrado de la EIE en el chat de
+Codex y pidió usarlo también en la página. `comun.ts` ahora importa
+`src/assets/logos/eie-institucional.jpg`; el original conserva su fondo blanco en
+ambos temas y reemplaza las dos variantes de la submarca horizontal anterior.
+El requisito quedó registrado en RF-10, enmienda del 2026-10-01.
+El flyer refinado se guarda en el directorio de outputs del chat, fuera del sitio.
+No se ha desplegado ni modificado Cloudflare.
+
+
+## Reseña de Mauricio, foto de Siringo · 2026-10-01 · esta sesión termina aquí, sigue otra
+
+Esta sesión de Claude Code se cierra y Daniel continúa en otra. Lo que queda hecho, en
+la rama `ajustes/logo-eie-organizacion`, sin desplegar ni empujar:
+
+- **«El seminario»** (`about.paragraphs` en `es.ts` y `en.ts`) lleva dos párrafos nuevos.
+  El primero es la **razón del seminario y es un texto de ejemplo mío, no de Mauricio**:
+  [supuesto] hay que mostrárselo y cambiarlo por la suya. El segundo es la reseña de
+  Mauricio Rodríguez Guzmán: profesor de la EIE, director del Doctorado en Ingeniería
+  Eléctrica, doctor en Ingeniería Electrónica (UTFSM), líneas de telecomunicaciones
+  inalámbricas, propagación y microondas, y director del Laboratorio de Comunicaciones
+  Inalámbricas. [verificado] en <https://eie.pucv.cl/nuestro-equipo/mauricio-rodriguez-guzman/>,
+  salvo «dirige el laboratorio», que Daniel confirmó de palabra.
+- **Foto de Giorgio Siringo** (`src/assets/expositores/siringo.webp`, 560×560, recorte
+  centrado en la cara, cabeza completa bajo la máscara circular). Daniel confirmó que
+  autoriza publicarla (RF-11.1). Falta saber si pide crédito. [supuesto] que la imagen es
+  suya: la entregó Daniel y no se pudo comprobar.
+- `astro build` y el scanner anti-slop en verde. **No se corrió `npm run verify`.**
+
+**Pendiente**
+1. Foto de Gustavo A. Siles Soria (autoriza; falta el archivo). Cuando llegue: guardarla
+   como `siles.webp` en `src/assets/expositores/`, importarla en `comun.ts` y repetir la
+   revisión con la máscara circular.
+2. Razón del seminario: que Mauricio la dicte o apruebe.
+3. Flyer: Mauricio lo pidió para difusión e impresión. El de la sesión de Codex está en
+   el directorio de outputs de ese chat, fuera del repositorio; no se vio desde aquí.
+4. Mauricio también sugirió reforzar su protagonismo; se resolvió con la reseña y no con
+   una página de comité organizador (le pareció «más operacional»).
+5. `npm run verify` antes de desplegar. Nadie despliega salvo Daniel.
+
 ## ⚠️ Lo primero, si llegas nuevo
 
 Lee [`ONBOARDING.md`](ONBOARDING.md). Dice qué leer y en qué orden, cómo montar el
@@ -2212,3 +2253,13 @@ repositorio, y en particular:
   antes; ver la advertencia del artefacto de 67 nodos en `specs/fuentes.md`.
 - No implementar nada que no esté en `requirements.md`. Si hace falta algo nuevo,
   primero se escribe el requisito.
+
+### Validación del logo EIE · 2026-10-01
+
+[medido] Rama local `ajustes/logo-eie-organizacion`, creada desde el HEAD existente
+para conservar sus cinco commits locales. `astro check`: 0 errores, 0 advertencias,
+6 sugerencias existentes. Build con `SITE_URL=https://bcsensing.org` y generación
+CSP completados; los siete verificadores de `verify:todo` terminaron en verde.
+[medido] Capturas revisadas a 390 y 1440 px, temas claro y oscuro: el nuevo logo
+carga en los cuatro casos y mantiene proporción (106,5625 × 107 px). La copia JPG
+coincide byte por byte con el adjunto. Cambio local, sin commit, push ni despliegue.

@@ -11,20 +11,12 @@
 import pucvClaro from '~/assets/logos/pucv.png';
 import pucvOscuro from '~/assets/logos/pucv-oscuro.png';
 /*
- * Submarca oficial de la Escuela de Ingeniería Eléctrica, del paquete `logos_submarca` de
- * Normas Gráficas PUCV. Instalada el 2026-08-07.
- *
- * El rastreo del 2026-08-03 la dejó pendiente porque la descarga se cortó dos veces; se
- * cortó una tercera y salió con reanudación por rangos. El paquete pesa **186,1 MB**, que es
- * la razón de los cortes.
- *
- * Variante `AZUL` para fondo claro y `BLANCO` para fondo oscuro, que son las dos que el
- * manual autoriza para cada fondo. No se recolorea ninguna (RF-10.4). El paquete de
- * submarcas **sí** trae versión para fondo oscuro, a diferencia del paquete del escudo
- * principal, que no la tiene y sigue pedida.
+ * Logo EIE entregado por Daniel el 2026-10-01 para sustituir la submarca
+ * horizontal anterior. Se conserva el JPG original, incluido su fondo blanco,
+ * en los dos temas: no se inventa una variante oscura ni se recolorea la marca.
+ * Procedencia y criterios en RF-10, enmienda del 2026-10-01.
  */
-import eieClaro from '~/assets/logos/eie-pucv.png';
-import eieOscuro from '~/assets/logos/eie-pucv-oscuro.png';
+import eieInstitucional from '~/assets/logos/eie-institucional.jpg';
 /*
  * ═══ COLUMBIA Y USACH VUELVEN, POR DECISIÓN DE LA ORGANIZACIÓN ═══
  *
@@ -74,6 +66,7 @@ import fotoValenzuela from '~/assets/expositores/valenzuela.webp';
 import fotoFeick from '~/assets/expositores/feick.webp';
 import fotoGutierrez from '~/assets/expositores/gutierrez.webp';
 import fotoToledo from '~/assets/expositores/toledo.webp';
+import fotoSiringo from '~/assets/expositores/siringo.webp';
 import { acceso } from './acceso';
 
 /**
@@ -295,9 +288,11 @@ export const comun = {
        * confirmados que envió Mauricio Rodríguez. Ver
        * `specs/gestion/programa-y-expositores.md`.
        *
-       * **Ninguno de los dos tiene retrato**, y es el estado correcto: una foto solo se
-       * publica con autorización expresa de la persona (RF-11.1). Hasta que llegue, la
-       * ficha muestra el monograma de iniciales (RF-11.2).
+       * **Siles sigue sin retrato**, y es el estado correcto: una foto solo se publica con
+       * autorización expresa de la persona (RF-11.1). Hasta que llegue, la ficha muestra el
+       * monograma de iniciales (RF-11.2). El retrato de Siringo entró el 2026-10-01: Daniel
+       * confirmó que autoriza su publicación (RF-11.1), a 560×560 con recorte cuadrado
+       * centrado en la cara y revisado con la máscara circular, como los seis anteriores.
        *
        * Siles es el único internacional de los dos: la Universidad Privada Boliviana está
        * en Bolivia y por eso entra `BO` en `CodigoPais`. **Siringo se movió al bloque
@@ -331,6 +326,7 @@ export const comun = {
        */
       {
         id: 'siringo',
+        foto: fotoSiringo,
         name: 'Giorgio Siringo',
         affiliation: 'ALMA / European Southern Observatory',
         country: 'CL',
@@ -397,8 +393,7 @@ export const comun = {
     {
       name: 'Escuela de Ingeniería Eléctrica PUCV',
       shortName: 'EIE PUCV',
-      logo: eieClaro,
-      logoOscuro: eieOscuro,
+      logo: eieInstitucional,
       url: 'https://www.eie.ucv.cl',
     },
   ],

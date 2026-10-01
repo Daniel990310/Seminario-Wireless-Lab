@@ -582,3 +582,21 @@ Lo que ya se sabe que habrá que medir, venga la dirección que venga:
   `PropagationFigure` y `CollaborationNetwork`.
 - **Que cada cadena nueva exista en `es.ts` y `en.ts`**, o `verify:idioma` falla.
 - **Zoom de texto al 200 % sin desbordamiento horizontal** en los dos anchos.
+
+
+## RF-10 · Sustitución del logo EIE indicada por Daniel · 2026-10-01
+
+[verificado] Daniel entregó en el chat de Codex el logo cuadrado azul y rojo de la
+Escuela de Ingeniería Eléctrica e indicó sustituirlo en el sitio y en el flyer.
+La imagen adjunta es la fuente; no se reconstruye ni recolorea la marca.
+
+| Criterio | Comprobación |
+| --- | --- |
+| La EIE usa `src/assets/logos/eie-institucional.jpg`, copiado sin alterar del adjunto, en ambas versiones de idioma | identidad del archivo y build |
+| Ambos temas muestran el mismo original con su fondo blanco, conservando proporciones; se retira la variante de la submarca anterior | inspección del dato y capturas en claro/oscuro a 390 y 1440 px |
+| Las otras instituciones y el destino del enlace EIE no cambian | diff |
+| La sustitución compila, no introduce errores de tipos y pasa los verificadores del sitio | `check`, `build`, `verify:todo` |
+
+El adjunto mide 366 × 367 px [medido: PIL]. Esta entrega no aporta una variante
+transparente ni una versión blanca: se conserva el original sobre blanco también
+en tema oscuro. La sustitución local no implica un despliegue.

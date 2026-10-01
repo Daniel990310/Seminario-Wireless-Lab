@@ -116,6 +116,8 @@ export const es = {
     paragraphs: [
       'Las bandas mmWave y sub-THz abren la posibilidad de que una misma infraestructura inalámbrica no solo transmita información, sino que además perciba el entorno: detectar presencia y movimiento, estimar distancias, caracterizar materiales y reconstruir escenas. Esta convergencia entre comunicación y detección es uno de los ejes de las redes 6G.',
       'El seminario reúne a investigadores de Estados Unidos y Chile para discutir modelos de propagación, mediciones experimentales, arquitecturas de sensado conjunto y los desafíos abiertos de llevar estas tecnologías a despliegues reales.',
+      'Existe para que quienes miden, modelan y diseñan las redes del futuro conversen en un mismo lugar, y para que los estudiantes de postgrado de Chile conozcan de primera mano el trabajo de investigadores de referencia internacional.',
+      'Lo dirige el Dr. Mauricio Rodríguez Guzmán, profesor de la Escuela de Ingeniería Eléctrica de la PUCV y director del Doctorado en Ingeniería Eléctrica. Doctor en Ingeniería Electrónica por la Universidad Técnica Federico Santa María, investiga telecomunicaciones inalámbricas, propagación electromagnética y diseño de sistemas de microondas, y dirige el Laboratorio de Comunicaciones Inalámbricas. Convocó a los expositores y encabeza la organización del encuentro.',
     ],
   },
 
