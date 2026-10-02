@@ -232,10 +232,10 @@ export const comun = {
   /** Título oficial: se mantiene en inglés en toda la web (RF-1.2). */
   title: 'Beyond Connectivity: Wireless Sensing in mmWave and Sub-THz Bands',
   /**
-   * `<title>` del documento, la pestaña y el buscador. Sin la fecha, que ya viaja en la
-   * descripción: con ella el título pasaba de ~85 caracteres y Google lo sustituía por la
-   * fecha en los resultados `[medido: 2026-10-02]`. «mmWave/Sub-THz» y no «… and …» para
-   * acortarlo. El nombre oficial del evento, en el `<h1>`, no cambia.
+   * `<title>` del documento, la pestaña y el buscador: variante de `title` (RF-1.2), corta
+   * a propósito (~61 caracteres), sin la fecha, que va en la descripción, y con «/» en vez
+   * de « and ». El `<h1>` sigue usando `title`; si el nombre oficial cambia, actualizar
+   * las dos.
    */
   tituloDocumento: 'Beyond Connectivity: Wireless Sensing in mmWave/Sub-THz Bands',
   /** Forma corta para la barra, donde el título completo no cabe. Tampoco se traduce. */
