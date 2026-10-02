@@ -50,8 +50,9 @@ npm run dev      # luego abre http://localhost:4321/ajustar
 ```
 
 Muestra la página **real** con perillas: encuadre y zoom de la fotografía de la banda,
-velo, degradado, fondos de sección, encuadre de los retratos y edición de textos en
-sitio. No escribe en el repositorio: el borrador vive en el navegador y el botón
+velo, degradado, fondos de sección, encuadre de los retratos, edición de textos en
+sitio, colores del tema con su contraste, orden de secciones y una herramienta para
+señalar cualquier elemento y cambiarle tamaño, margen o color, ocultarlo o anotarlo. No escribe en el repositorio: el borrador vive en el navegador y el botón
 **Copiar informe** emite los valores exactos con el archivo donde va cada uno.
 
 Úsalo para **decidir** el número, y luego escribe ese número en el código. Es la

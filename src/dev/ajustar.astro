@@ -13,6 +13,10 @@
  * vueltas y termina en un número que alguien adivina. Aquí arrastra el control,
  * mira la página real, y el panel emite el valor exacto y el archivo donde va.
  *
+ * Desde el 2026-10-02 tiene tres herramientas para el clic dentro de la página:
+ * navegar, editar textos y señalar un elemento cualquiera (tamaño, margen, color,
+ * ocultar, nota). Más colores del tema con su contraste y orden de secciones.
+ *
  * No escribe en el repositorio. El borrador vive en `localStorage`.
  */
 ---
@@ -39,6 +43,12 @@
             <button id="copiar" type="button" class="principal">Copiar informe</button>
             <button id="guardar-instantanea" type="button" class="menor">Guardar instantánea</button>
             <button id="restablecer" type="button" class="menor">Restablecer</button>
+          </div>
+          <!-- Qué hace un clic dentro de la página. Fija arriba: se cambia a cada rato. -->
+          <div id="herramientas" class="fila botones herramientas" role="group" aria-label="Qué hace un clic en la página">
+            <button type="button" class="menor activo" data-herramienta="navegar">navegar</button>
+            <button type="button" class="menor" data-herramienta="textos">editar textos</button>
+            <button type="button" class="menor" data-herramienta="senalar">señalar elemento</button>
           </div>
         </header>
 
@@ -114,6 +124,20 @@
         overflow-y: auto;
         border-right: 1px solid var(--borde);
         padding: 14px;
+      }
+
+      .cabecera {
+        position: sticky;
+        top: -14px;
+        z-index: 2;
+        margin: -14px -14px 0;
+        border-bottom: 1px solid var(--borde);
+        padding: 14px 14px 4px;
+        background: var(--fondo);
+      }
+
+      .herramientas button {
+        flex: 1;
       }
 
       .cabecera h1 {
@@ -259,6 +283,12 @@
         padding-top: 6px;
       }
 
+      /* Que la cabecera fija no tape la ficha al saltar a ella. */
+      .ficha-elegida {
+        scroll-margin-top: 180px;
+        scroll-margin-bottom: 12px;
+      }
+
       .subtitulo {
         margin: 0 0 4px;
         font-size: 12px;
@@ -270,6 +300,46 @@
         align-items: center;
         gap: 8px;
         cursor: pointer;
+      }
+
+      button:disabled {
+        opacity: 0.35;
+        cursor: default;
+      }
+
+      .fila.color {
+        align-items: center;
+        flex-wrap: nowrap;
+      }
+
+      input[type='color'] {
+        width: 34px;
+        height: 24px;
+        border: 1px solid var(--borde);
+        border-radius: 4px;
+        padding: 0;
+        background: none;
+      }
+
+      .rotulo-color {
+        flex: 1;
+        font:
+          11px/1.4 ui-monospace,
+          monospace;
+        color: var(--tinta);
+      }
+
+      .diagnostico-pares {
+        margin: 4px 0 0;
+        padding-left: 16px;
+        font:
+          11px/1.5 ui-monospace,
+          monospace;
+        color: var(--tinta-suave);
+      }
+
+      .diagnostico-pares .falla {
+        color: #ff9d9d;
       }
 
       textarea {
