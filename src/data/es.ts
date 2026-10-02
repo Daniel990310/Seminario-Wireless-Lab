@@ -268,7 +268,7 @@ export const es = {
       consultas: 'Consultas',
       cargarMapa: 'Cargar mapa interactivo',
       abrirEnGoogleMaps: 'Abrir en Google Maps',
-      avisoMapa: 'Al cargar el mapa se solicita contenido a OpenStreetMap.',
+      avisoMapa: 'Al cargar el mapa se solicita contenido a Google Maps.',
       tituloMapa: 'Mapa de la sede',
     },
 

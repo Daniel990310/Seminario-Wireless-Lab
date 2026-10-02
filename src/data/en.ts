@@ -235,7 +235,7 @@ export const en = {
       consultas: 'Enquiries',
       cargarMapa: 'Load interactive map',
       abrirEnGoogleMaps: 'Open in Google Maps',
-      avisoMapa: 'Loading the map requests content from OpenStreetMap.',
+      avisoMapa: 'Loading the map requests content from Google Maps.',
       tituloMapa: 'Map of the venue',
     },
 

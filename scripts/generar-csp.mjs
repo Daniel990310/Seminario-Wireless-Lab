@@ -39,7 +39,7 @@ const BASE = join(RAIZ, 'public', '_headers');
 const SALIDA = join(DIST, '_headers');
 
 /** Único tercero del sitio: el mapa de la sede, cargado solo bajo demanda (RNF-4.2). */
-const MAPA = 'https://www.openstreetmap.org';
+const MAPA = 'https://www.google.com';
 
 const sha256 = (texto) => `'sha256-${createHash('sha256').update(texto, 'utf8').digest('base64')}'`;
 
