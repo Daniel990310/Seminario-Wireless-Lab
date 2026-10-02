@@ -114,10 +114,9 @@ export const es = {
   about: {
     lead: 'Encuentro internacional dedicado a la detección inalámbrica en bandas de ondas milimétricas y sub-terahertz, y a su papel en las redes de comunicación futuras.',
     paragraphs: [
-      'Las bandas mmWave y sub-THz abren la posibilidad de que una misma infraestructura inalámbrica no solo transmita información, sino que además perciba el entorno: detectar presencia y movimiento, estimar distancias, caracterizar materiales y reconstruir escenas. Esta convergencia entre comunicación y detección es uno de los ejes de las redes 6G.',
-      'El seminario reúne a investigadores de Estados Unidos y Chile para discutir modelos de propagación, mediciones experimentales, arquitecturas de sensado conjunto y los desafíos abiertos de llevar estas tecnologías a despliegues reales.',
-      'Existe para que quienes miden, modelan y diseñan las redes del futuro conversen en un mismo lugar, y para que los estudiantes de postgrado de Chile conozcan de primera mano el trabajo de investigadores de referencia internacional.',
-      'Lo dirige el Dr. Mauricio Rodríguez Guzmán, profesor de la Escuela de Ingeniería Eléctrica de la PUCV y director del Doctorado en Ingeniería Eléctrica. Doctor en Ingeniería Electrónica por la Universidad Técnica Federico Santa María, investiga telecomunicaciones inalámbricas, propagación electromagnética y diseño de sistemas de microondas, y dirige el Laboratorio de Comunicaciones Inalámbricas. Convocó a los expositores y encabeza la organización del encuentro.',
+      'Las bandas mmWave y sub-THz permiten que una misma infraestructura inalámbrica no solo transmita información, sino que perciba el entorno: detectar presencia y movimiento, estimar distancias y reconstruir escenas. Esa convergencia entre comunicación y detección es uno de los ejes de las redes 6G.',
+      'El seminario reúne a investigadores de Chile y del extranjero para discutir propagación, mediciones y sensado conjunto, y para acercar a los estudiantes de postgrado al trabajo de referentes internacionales. Se realiza en el marco de dos proyectos que lo financian: FOVI250222, de ANID, y 525RT0175, de CYTED.',
+      'Lo dirige el Dr. Mauricio Rodríguez Guzmán, profesor de la Escuela de Ingeniería Eléctrica de la PUCV y director del Doctorado en Ingeniería Eléctrica, quien convocó a los expositores. Investiga telecomunicaciones inalámbricas, propagación y microondas, y dirige el Laboratorio de Comunicaciones Inalámbricas.',
     ],
   },
 

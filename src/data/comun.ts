@@ -17,6 +17,7 @@ import pucvOscuro from '~/assets/logos/pucv-oscuro.png';
  * Procedencia y criterios en RF-10, enmienda del 2026-10-01.
  */
 import eieInstitucional from '~/assets/logos/eie-institucional.jpg';
+import cytedLogo from '~/assets/logos/cyted-40-anos.png';
 /*
  * ═══ COLUMBIA Y USACH VUELVEN, POR DECISIÓN DE LA ORGANIZACIÓN ═══
  *
@@ -617,9 +618,11 @@ export const comun = {
    * **Nada de esto se traduce**, por lo mismo que la mención de ANID: el nombre de una red
    * CYTED es su nombre oficial, en español, y traducirlo produciría una red que no existe.
    *
-   * `logo` es opcional y hoy **está vacío**: CYTED no publica un archivo utilizable —solo un
-   * JPEG sin transparencia y una marca conmemorativa de 40 años `[medido: 2026-09-25]`—.
-   * Cuando llegue el archivo bueno es una línea aquí.
+   * `logo` es opcional. Desde el 2026-10-01 lleva **la marca conmemorativa de 40 años**
+   * (PNG 300×298, fondo negro opaco), que Daniel entregó y pidió usar: CYTED no publica
+   * otro archivo utilizable `[medido: 2026-09-25]`. Es una marca de aniversario, no el
+   * logotipo permanente; cuando llegue el archivo institucional es cambiar esta línea.
+   * El fondo negro se conserva tal cual, como el JPG de la EIE: no se recolorea la marca.
    */
   financiadores: [
     {
@@ -627,6 +630,7 @@ export const comun = {
         name: 'Programa Iberoamericano de Ciencia y Tecnología para el Desarrollo',
         shortName: 'CYTED',
         url: 'https://www.cyted.org',
+        logo: cytedLogo,
       },
       project: {
         code: '525RT0175',

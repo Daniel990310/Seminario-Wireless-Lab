@@ -7,6 +7,7 @@
  * que un cambio de composición no puede aplicarse a un idioma y olvidarse en el
  * otro.
  */
+import { Image } from 'astro:assets';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import SiteHeader from '~/components/SiteHeader.astro';
 import Hero from '~/components/Hero.astro';
@@ -398,9 +399,20 @@ const hasProgram = program.days.length > 0;
                   como un texto suelto: el hueco mide lo mismo que el logo de ANID, así que
                   cuando llegue el archivo la composición no se mueve.
                 */}
-                <span class="flex h-16 items-center font-display text-2xl font-semibold tracking-tight text-foreground sm:h-20 sm:text-3xl">
-                  {f.agency.shortName}
-                </span>
+                {f.agency.logo ? (
+                  <Image
+                    src={f.agency.logo}
+                    alt={f.agency.name}
+                    height={160}
+                    class="h-16 w-auto rounded-md object-contain sm:h-20"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <span class="flex h-16 items-center font-display text-2xl font-semibold tracking-tight text-foreground sm:h-20 sm:text-3xl">
+                    {f.agency.shortName}
+                  </span>
+                )}
               </a>
               <div class="min-w-0">
                 <p class="font-display text-base font-semibold text-foreground">

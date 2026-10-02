@@ -100,10 +100,9 @@ export const en = {
   about: {
     lead: 'An international meeting on wireless sensing in millimetre-wave and sub-terahertz bands, and its role in future communication networks.',
     paragraphs: [
-      'The mmWave and sub-THz bands make it possible for a single wireless infrastructure not only to carry information but also to perceive its surroundings: detecting presence and motion, estimating range, characterising materials and reconstructing scenes. This convergence of communication and sensing is one of the pillars of 6G networks.',
-      'The seminar brings together researchers from the United States and Chile to discuss propagation models, experimental measurements, joint sensing architectures and the open challenges of taking these technologies to real deployments.',
-      'It exists so that those who measure, model and design the networks of the future can talk in one place, and so that postgraduate students in Chile can learn first-hand from internationally recognised researchers.',
-      'It is directed by Dr. Mauricio Rodríguez Guzmán, a professor at the PUCV School of Electrical Engineering and director of the PhD in Electrical Engineering. He holds a PhD in Electronics Engineering from Universidad Técnica Federico Santa María, researches wireless telecommunications, electromagnetic propagation and microwave systems design, and heads the Wireless Communications Laboratory. He invited the speakers and leads the organisation of the event.',
+      'The mmWave and sub-THz bands let a single wireless infrastructure not only carry information but also perceive its surroundings: detecting presence and motion, estimating range and reconstructing scenes. This convergence of communication and sensing is one of the pillars of 6G networks.',
+      'The seminar brings together researchers from Chile and abroad to discuss propagation, measurements and joint sensing, and to bring postgraduate students closer to internationally recognised work. It is held within two projects that fund it: FOVI250222, from ANID, and 525RT0175, from CYTED.',
+      'It is directed by Dr. Mauricio Rodríguez Guzmán, a professor at the PUCV School of Electrical Engineering and director of the PhD in Electrical Engineering, who invited the speakers. He researches wireless telecommunications, propagation and microwaves, and heads the Wireless Communications Laboratory.',
     ],
   },
 
