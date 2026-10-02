@@ -16,7 +16,7 @@ const seminar = c;
 const lang = c.lang as Idioma;
 
 const {
-  title = `${c.title} — ${c.dates.shortLabel}`,
+  title = c.tituloDocumento,
   description = c.seo.description,
 } = Astro.props;
 
