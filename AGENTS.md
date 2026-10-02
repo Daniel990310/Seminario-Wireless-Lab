@@ -419,7 +419,12 @@ también nombres `<h4>`, enlaces y botones; el informe dice `archivo:línea` don
 **señalar elemento** (tamaño de letra, peso, márgenes, alineación, color por token con su
 contraste, ocultar y nota libre; el informe trae selector, clases de hoy y valores en px).
 Se sumaron **colores del tema** por token con el contraste de cada par en vivo, **orden de
-secciones**, y **foto de prueba** por retrato con el aviso de RF-11.1. El informe abre con el
+secciones**, y el **encuadre de retratos dentro del círculo**: arrastrar la foto, Mayús +
+rueda para el zoom, guías de coronilla y mentón comunes a los ocho, y carga del original
+para alejar. El informe da el recorte cuadrado en píxeles del archivo de partida, que es como
+se implementa (re-exportar a 560×560). El encuadre anterior movía `object-position` y no hacía
+nada: los archivos ya son cuadrados y el círculo es el propio `<img>`, sin un píxel que
+desplazar `[medido: 2026-10-02]`. El informe abre con el
 pedido listo para pegar (rama, no desplegar, `verify:todo`). Código repartido en
 `src/dev/`: `panel.ts` orquesta; `modelo.ts`, `ui.ts`, `color.ts`, `textos.ts`,
 `seleccion.ts`, `colores.ts`.

@@ -49,8 +49,17 @@ export interface AjusteSeccion {
 export interface AjusteRetrato {
   x: number;
   y: number;
-  /** Foto de prueba. Publicarla exige la autorización de RF-11.1. */
+  /** 1 = la foto llena el círculo justo; menos de 1 deja aire alrededor. */
+  zoom: number;
+  /** El original o una foto nueva. Una nueva exige la autorización de RF-11.1. */
   imagen: ImagenCargada | null;
+}
+
+/** Líneas de referencia comunes a todos los retratos, en % del alto del círculo. */
+export interface GuiasDeRetrato {
+  activas: boolean;
+  coronilla: number;
+  menton: number;
 }
 
 /**
@@ -110,6 +119,7 @@ export interface Ajustes {
   franja: AjusteFranja;
   secciones: Record<string, AjusteSeccion>;
   retratos: Record<string, AjusteRetrato>;
+  guias: GuiasDeRetrato;
   /** Clave: `claveDeTexto`. */
   textos: Record<string, CambioTexto>;
   /** Clave: el selector del elemento. */
@@ -146,6 +156,7 @@ export function porOmision(): Ajustes {
     franja: { ...FRANJA_ACTUAL },
     secciones: {},
     retratos: {},
+    guias: { activas: false, coronilla: 15, menton: 70 },
     textos: {},
     elementos: {},
     colores: { light: {}, dark: {} },
@@ -187,10 +198,10 @@ function migrarTextos(crudos: Record<string, Partial<CambioTexto>> | undefined):
 export function mezclar(guardado: Partial<Ajustes>): Ajustes {
   const base = porOmision();
   const retratos: Record<string, AjusteRetrato> = {};
-  // Un borrador anterior al 2026-10-02 trae retratos sin `imagen`.
+  // Un borrador anterior al 2026-10-02 trae retratos sin `imagen` ni `zoom`.
   const viejos = (guardado.retratos ?? {}) as Record<string, Partial<AjusteRetrato>>;
   for (const [clave, r] of Object.entries(viejos)) {
-    retratos[clave] = { x: 50, y: 50, imagen: null, ...r };
+    retratos[clave] = { x: 50, y: 50, zoom: 1, imagen: null, ...r };
   }
   return {
     ...base,
@@ -199,6 +210,7 @@ export function mezclar(guardado: Partial<Ajustes>): Ajustes {
     franja: { ...base.franja, ...(guardado.franja ?? {}) },
     secciones: guardado.secciones ?? {},
     retratos,
+    guias: { ...base.guias, ...guardado.guias },
     textos: migrarTextos(guardado.textos),
     elementos: guardado.elementos ?? {},
     colores: { light: { ...guardado.colores?.light }, dark: { ...guardado.colores?.dark } },

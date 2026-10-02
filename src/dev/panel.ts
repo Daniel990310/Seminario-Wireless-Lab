@@ -37,6 +37,7 @@ import {
   type ModoFondo,
   type Tema,
 } from './modelo';
+import { aplicarRetratos, avisosRetratos, grupoRetratos, informeRetratos, prepararRetratos } from './retratos';
 import { cssDeElementos, grupoElementos, informeElementos, prepararSenalar } from './seleccion';
 import { aplicarTextos, informeTextos, prepararEdicion } from './textos';
 import { REFUERZO, boton, cargadorDeImagen, casilla, comoElemento, crear, ctx, deslizador, grupo, opciones } from './ui';
@@ -250,15 +251,10 @@ function aplicar(): void {
   const imgFranja = d.querySelector<HTMLImageElement>('.franja-sede__imagen');
   if (imgFranja) cambiarFuente(imgFranja, ajustes.franja.imagen);
 
-  for (const [clave, r] of Object.entries(ajustes.retratos)) {
-    const img = d.querySelector<HTMLImageElement>(`[data-retrato="${CSS.escape(clave)}"]`);
-    if (!img) continue;
-    img.style.objectPosition = `${r.x}% ${r.y}%`;
-    cambiarFuente(img, r.imagen);
-  }
-
   aplicarOrden(d);
   aplicarTextos(d);
+  // Después de los textos: la clave de un retrato es el nombre original de su `<h4>`.
+  aplicarRetratos(d);
   pintarDiagnostico();
   // Tras un cambio de altura hay que dejar maquetar antes de medir la franja.
   requestAnimationFrame(pintarNotaRelacion);
@@ -289,11 +285,7 @@ function diagnostico(): string[] {
       );
     }
   }
-  for (const [clave, r] of Object.entries(ajustes.retratos)) {
-    if (r.imagen) {
-      problemas.push(`${clave}: foto de prueba. Publicarla exige su autorización expresa (RF-11.1).`);
-    }
-  }
+  problemas.push(...avisosRetratos());
   return problemas;
 }
 
@@ -389,17 +381,7 @@ function informe(): string {
     l.push('');
   }
 
-  const retratos = Object.entries(ajustes.retratos).filter(([, r]) => r.x !== 50 || r.y !== 50 || r.imagen);
-  if (retratos.length > 0) {
-    l.push('## Retratos (src/components/SpeakerCard.astro, hoy sin `object-position`)');
-    for (const [clave, r] of retratos) {
-      l.push(`- ${clave}: "${r.x}% ${r.y}%"`);
-      if (r.imagen) l.push(`    foto de prueba: ${r.imagen.nombre} · publicarla exige autorización expresa (RF-11.1)`);
-    }
-    l.push('');
-  }
-
-  l.push(...informeTextos(), ...informeColores(), ...informeElementos());
+  l.push(...informeRetratos(), ...informeTextos(), ...informeColores(), ...informeElementos());
 
   const problemas = diagnostico();
   if (problemas.length > 0) {
@@ -501,8 +483,11 @@ function montarControles(): void {
   );
   controlesEl.append(gFranja);
 
-  /* --- elementos señalados y colores: lo más usado en una revisión, arriba --- */
-  controlesEl.append(grupoElementos(), grupoColores());
+  /* --- lo más usado en una revisión, arriba --- */
+  controlesEl.append(grupoElementos());
+  const gRetratos = grupoRetratos(d);
+  if (gRetratos) controlesEl.append(gRetratos);
+  controlesEl.append(grupoColores());
 
   /* --- orden de secciones --- */
   const gOrden = grupo('Orden de secciones', ajustes.orden.length > 0);
@@ -553,31 +538,6 @@ function montarControles(): void {
       deslizador({ etiqueta: 'velo', min: 0, max: 100, paso: 1, unidad: '%', leer: () => s.velo, escribir: (v) => (s.velo = v) }),
       deslizador({ etiqueta: 'desenfoque', min: 0, max: 20, paso: 1, unidad: 'px', leer: () => s.desenfoque, escribir: (v) => (s.desenfoque = v) }),
     );
-    controlesEl.append(g);
-  }
-
-  /* --- retratos --- */
-  const retratos = [...d.querySelectorAll<HTMLImageElement>('#expositores img')];
-  if (retratos.length > 0) {
-    const g = grupo('Retratos de expositores', false);
-    retratos.forEach((img, i) => {
-      // El nombre va en el `<h4>` de la ficha. Hasta el 2026-10-02 se buscaba `h3`,
-      // no había ninguno y los ocho salían como «retrato 1…8» `[medido]`.
-      // Con el nombre *original*: si se editó el `<h4>`, la clave no puede cambiar con él.
-      const nombre = img.closest('article')?.querySelector<HTMLElement>('h4, h3');
-      const clave = (nombre?.dataset.panelOriginal ?? nombre?.textContent)?.trim() || `retrato ${i + 1}`;
-      img.dataset.retrato = clave;
-      ajustes.retratos[clave] ??= { x: 50, y: 50, imagen: null };
-      const r = ajustes.retratos[clave];
-      const sub = crear('div', 'subgrupo');
-      sub.append(
-        crear('p', 'subtitulo', clave),
-        deslizador({ etiqueta: '↔', min: 0, max: 100, paso: 1, unidad: '%', leer: () => r.x, escribir: (v) => (r.x = v) }),
-        deslizador({ etiqueta: '↕', min: 0, max: 100, paso: 1, unidad: '%', leer: () => r.y, escribir: (v) => (r.y = v) }),
-        cargadorDeImagen('otra foto (prueba)', (nueva) => (r.imagen = nueva)),
-      );
-      g.append(sub);
-    });
     controlesEl.append(g);
   }
 
@@ -666,6 +626,7 @@ function prepararMarco(d: Document): void {
 
   prepararSenalar(d);
   prepararEdicion(d);
+  prepararRetratos(d);
 }
 
 /* ------------------------------------------------------------ instantáneas */
