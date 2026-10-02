@@ -413,6 +413,33 @@ grupos de controles, el encuadre mueve la fotografía real (`50% 50%` → `50% 7
 informe emite el valor y el archivo, el marco a 390 px activa el diseño móvil de verdad, el
 borrador sobrevive a recargar y el aviso de accesibilidad aparece. `[medido]`
 
+**Desde el 2026-10-02** el clic dentro de la página tiene tres herramientas, en la cabecera
+fija del panel: **navegar**, **editar textos** (cualquier texto hoja de barra, página y pie,
+también nombres `<h4>`, enlaces y botones; el informe dice `archivo:línea` donde vive) y
+**señalar elemento** (tamaño de letra, peso, márgenes, alineación, color por token con su
+contraste, ocultar y nota libre; el informe trae selector, clases de hoy y valores en px).
+Se sumaron **colores del tema** por token con el contraste de cada par en vivo, **orden de
+secciones**, y el **encuadre de retratos dentro del círculo**: arrastrar la foto, Mayús +
+rueda para el zoom, guías de coronilla y mentón comunes a los ocho, y carga del original
+para alejar. El informe da el recorte cuadrado en píxeles del archivo de partida, que es como
+se implementa (re-exportar a 560×560). El encuadre anterior movía `object-position` y no hacía
+nada: los archivos ya son cuadrados y el círculo es el propio `<img>`, sin un píxel que
+desplazar `[medido: 2026-10-02]`. El informe abre con el
+pedido listo para pegar (rama, no desplegar, `verify:todo`). Código repartido en
+`src/dev/`: `panel.ts` orquesta; `modelo.ts`, `ui.ts`, `color.ts`, `textos.ts`,
+`seleccion.ts`, `colores.ts`.
+
+Defectos del panel anterior, reproducidos antes de corregirlos `[medido: 2026-10-02]`:
+un texto editado en español aparecía en `/en/` (la clave no llevaba idioma); Enter metía un
+`<div>` en el párrafo, pegaba palabras en el informe y corría de nodo todos los cambios
+siguientes al recargar (la clave era la posición); un enlace externo dejaba el marco en
+blanco (Google Forms no se deja enmarcar); y los ocho retratos salían como «retrato 1…8»
+porque el nombre está en `<h4>` y se buscaba `<h3>`.
+
+**Trampa: `instanceof Element` no reconoce los nodos del marco.** Son de la ventana del
+iframe, cuyo `Element` es otro objeto, y la comprobación da `false` siempre. Así falló
+«señalar» en su primera versión. Usar `comoElemento()` de `ui.ts`, que mira `nodeType`.
+
 ## Git
 
 **`main` es el tronco, y `main` es lo que sirve producción.** Desde el 2026-09-22 no

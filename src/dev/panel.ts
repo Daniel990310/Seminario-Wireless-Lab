@@ -16,116 +16,31 @@
  * ancho del *viewport*, y el de un iframe es su propio ancho. Así el control de
  * ancho reproduce de verdad el móvil, en vez de encoger un contenedor y dejar
  * aplicado el diseño de escritorio.
+ *
+ * Este archivo orquesta. Cada herramienta vive en su módulo: `textos.ts`,
+ * `seleccion.ts` (señalar elementos), `colores.ts`; el borrador en `modelo.ts` y
+ * los controles comunes en `ui.ts`.
  */
-
-type Idioma = 'es' | 'en';
-type Tema = 'light' | 'dark';
-type ModoFondo = 'solido' | 'imagen';
-
-interface ImagenCargada {
-  nombre: string;
-  /** `data:` URL ya reducida; ver `reducir`. */
-  datos: string;
-  /** Medidas del archivo original, para saber con qué se cuenta al instalarlo. */
-  ancho?: number;
-  altoPx?: number;
-}
-
-interface AjusteFranja {
-  x: number;
-  y: number;
-  escala: number;
-  velo: number;
-  alto: number;
-  /**
-   * Con `relacionFija`, la altura pasa a ser `100vw / relacion` y el recorte que
-   * se ve es **el mismo en toda pantalla**. Sin ella rige el `clamp` de hoy, que
-   * mantiene la relación solo entre 686 y 1219 px de ancho `[medido: 2026-09-22]`.
-   */
-  relacionFija: boolean;
-  relacion: number;
-  /** Fracción superior de la banda que cubre el degradado hacia la barra. */
-  desvanecido: number;
-  imagen: ImagenCargada | null;
-}
-
-interface AjusteSeccion {
-  modo: ModoFondo;
-  x: number;
-  y: number;
-  velo: number;
-  desenfoque: number;
-  imagen: ImagenCargada | null;
-}
-
-interface AjusteRetrato {
-  x: number;
-  y: number;
-}
-
-interface CambioTexto {
-  seccion: string;
-  etiqueta: string;
-  original: string;
-  nuevo: string;
-}
-
-interface Ajustes {
-  vista: { ancho: number; tema: Tema; idioma: Idioma };
-  franja: AjusteFranja;
-  secciones: Record<string, AjusteSeccion>;
-  retratos: Record<string, AjusteRetrato>;
-  textos: Record<string, CambioTexto>;
-}
-
-const CLAVE_ACTUAL = 'panel-ajuste:actual';
-const CLAVE_INSTANTANEAS = 'panel-ajuste:instantaneas';
-
-/** Los valores de partida son los que hoy están en el repositorio, no ceros. */
-const FRANJA_ACTUAL: AjusteFranja = {
-  x: 50,
-  y: 50,
-  escala: 1,
-  velo: 18,
-  alto: 1,
-  relacionFija: false,
-  relacion: 7.33, // la que ya rige entre 686 y 1219 px `[medido: 2026-09-22]`
-  desvanecido: 18,
-  imagen: null,
-};
-
-function seccionPorOmision(): AjusteSeccion {
-  return { modo: 'solido', x: 50, y: 50, velo: 100, desenfoque: 0, imagen: null };
-}
-
-function porOmision(): Ajustes {
-  return {
-    vista: { ancho: 0, tema: 'light', idioma: 'es' },
-    franja: { ...FRANJA_ACTUAL },
-    secciones: {},
-    retratos: {},
-    textos: {},
-  };
-}
-
-function cargar(): Ajustes {
-  try {
-    const crudo = localStorage.getItem(CLAVE_ACTUAL);
-    const base = porOmision();
-    if (!crudo) return base;
-    // Mezcla por nivel y no superficial: un borrador guardado antes de que
-    // existiera una perilla nueva se queda sin ella y `undefined` se cuela en el CSS.
-    const guardado = JSON.parse(crudo) as Partial<Ajustes>;
-    return {
-      ...base,
-      ...guardado,
-      vista: { ...base.vista, ...(guardado.vista ?? {}) },
-      franja: { ...base.franja, ...(guardado.franja ?? {}) },
-    };
-  } catch {
-    return porOmision();
-  }
-}
+import { cssDeColores, grupoColores, informeColores } from './colores';
+import {
+  CLAVE_ACTUAL,
+  CLAVE_INSTANTANEAS,
+  FRANJA_ACTUAL,
+  cargar,
+  mezclar,
+  porOmision,
+  seccionPorOmision,
+  type Ajustes,
+  type Herramienta,
+  type ImagenCargada,
+  type Idioma,
+  type ModoFondo,
+  type Tema,
+} from './modelo';
+import { aplicarRetratos, avisosRetratos, grupoRetratos, informeRetratos, prepararRetratos } from './retratos';
+import { cssDeElementos, grupoElementos, informeElementos, prepararSenalar } from './seleccion';
+import { aplicarTextos, informeTextos, prepararEdicion } from './textos';
+import { REFUERZO, boton, cargadorDeImagen, casilla, comoElemento, crear, ctx, deslizador, grupo, opciones } from './ui';
 
 let ajustes = cargar();
 
@@ -148,14 +63,24 @@ const avisoEl = document.getElementById('aviso') as HTMLElement;
 const informeEl = document.getElementById('informe') as HTMLTextAreaElement;
 const diagnosticoEl = document.getElementById('diagnostico') as HTMLElement;
 const controlesEl = document.getElementById('controles') as HTMLElement;
+const herramientasEl = document.getElementById('herramientas') as HTMLElement;
 
-function avisar(texto: string): void {
+let temporizadorAviso = 0;
+
+function avisar(texto: string, ms = 0): void {
+  window.clearTimeout(temporizadorAviso);
   avisoEl.textContent = texto;
   avisoEl.hidden = texto === '';
+  if (ms > 0) temporizadorAviso = window.setTimeout(() => avisar(''), ms);
 }
 
+/** `null` también cuando el marco salió del sitio: un documento ajeno no se lee. */
 function pagina(): Document | null {
-  return marco.contentDocument;
+  try {
+    return marco.contentDocument;
+  } catch {
+    return null;
+  }
 }
 
 /** Nota viva bajo el control de relación; se rellena en `aplicar`. */
@@ -216,9 +141,12 @@ function construirCss(): string {
    * vi diferencia al mover el velo» `[2026-09-22]`.
    *
    * Regla para quien añada perillas: si la propiedad la declara un componente en su
-   * propio `<style>`, la inyección necesita `!important`. Y la prueba que lo cubre
-   * tiene que comparar **píxeles**, no el texto del CSS; la que había comparaba el
-   * informe, que era justo lo único que sí cambiaba.
+   * propio `<style>`, la inyección necesita ganarle en especificidad. Las reglas
+   * nuevas usan `REFUERZO` (`ui.ts`), que da especificidad de id sin `!important`;
+   * estas cuatro lo conservan porque así están medidas, y la de `object-position`
+   * compite con un estilo en línea, que solo `!important` supera. Y la prueba que lo
+   * cubre tiene que comparar **píxeles**, no el texto del CSS; la que había
+   * comparaba el informe, que era justo lo único que sí cambiaba.
    */
   const lineas: string[] = [
     `:root { --alto-franja: ${alturaFranja} !important; }`,
@@ -227,6 +155,10 @@ function construirCss(): string {
     // `style` del propio `<img>`, y un estilo en línea gana a cualquier hoja.
     `.franja-sede__imagen { object-position: ${f.x}% ${f.y}% !important;` +
       ` transform: scale(${f.escala}); transform-origin: ${f.x}% ${f.y}%; }`,
+    // La barra de desarrollo de Astro tapa el pie de la vista previa y se dejaba señalar.
+    `${REFUERZO} astro-dev-toolbar { display: none; }`,
+    // Qué se puede editar, a la vista solo mientras la herramienta está activa.
+    `${REFUERZO}[data-panel-herramienta="textos"] [data-panel-atado] { outline: 1px dashed rgba(220,120,40,.75); outline-offset: 3px; cursor: text; }`,
   ];
 
   for (const [id, s] of Object.entries(ajustes.secciones)) {
@@ -242,7 +174,52 @@ function construirCss(): string {
     );
   }
 
+  lineas.push(...cssDeColores(), ...cssDeElementos());
   return lineas.join('\n');
+}
+
+/**
+ * Cambia la fuente de un `<img>` por la del borrador, o la devuelve a la suya. Se
+ * hace por DOM y no por CSS: `<img>` es un elemento reemplazado, y sustituir su
+ * fuente conserva `object-fit` y las medidas ya calculadas. `srcset` hay que
+ * vaciarlo, o gana al `src`.
+ */
+function cambiarFuente(img: HTMLImageElement, imagen: ImagenCargada | null): void {
+  if (img.dataset.fuenteOriginal === undefined) {
+    img.dataset.fuenteOriginal = img.getAttribute('src') ?? '';
+    img.dataset.conjuntoOriginal = img.getAttribute('srcset') ?? '';
+  }
+  if (imagen) {
+    img.removeAttribute('srcset');
+    if (img.src !== imagen.datos) img.src = imagen.datos;
+  } else if (img.getAttribute('src') !== img.dataset.fuenteOriginal) {
+    img.src = img.dataset.fuenteOriginal;
+    if (img.dataset.conjuntoOriginal) img.srcset = img.dataset.conjuntoOriginal;
+  }
+}
+
+/** Secciones que se pueden reordenar: todas menos el hero, que abre la página. */
+function seccionesMovibles(d: Document): HTMLElement[] {
+  return [...d.querySelectorAll<HTMLElement>('main > section[id]')].filter((s) => s.id !== 'top');
+}
+
+function ordenDeseado(d: Document): string[] {
+  const actuales = seccionesMovibles(d).map((s) => s.id);
+  return [...ajustes.orden.filter((id) => actuales.includes(id)), ...actuales.filter((id) => !ajustes.orden.includes(id))];
+}
+
+/** Recoloca las secciones en los mismos huecos que ocupan, para no mover nada más. */
+function aplicarOrden(d: Document): void {
+  if (ajustes.orden.length === 0) return;
+  const secciones = seccionesMovibles(d);
+  const porId = new Map(secciones.map((s) => [s.id, s]));
+  const deseado = ordenDeseado(d);
+  const huecos = secciones.map((s) => {
+    const marca = d.createComment('panel');
+    s.before(marca);
+    return marca;
+  });
+  huecos.forEach((h, i) => h.replaceWith(porId.get(deseado[i])!));
 }
 
 function aplicar(): void {
@@ -261,6 +238,7 @@ function aplicar(): void {
     /* modo privado: el atributo de abajo basta para esta sesión */
   }
   d.documentElement.dataset.theme = ajustes.vista.tema;
+  d.documentElement.dataset.panelHerramienta = ctx.herramienta;
 
   let hoja = d.getElementById('ajustes-del-panel') as HTMLStyleElement | null;
   if (!hoja) {
@@ -270,90 +248,17 @@ function aplicar(): void {
   }
   hoja.textContent = construirCss();
 
-  // La imagen de la franja se cambia por DOM y no por CSS: `<img>` es un elemento
-  // reemplazado, y sustituir su fuente conserva `object-fit` y las medidas ya
-  // calculadas. `srcset` hay que vaciarlo, o gana al `src`.
   const imgFranja = d.querySelector<HTMLImageElement>('.franja-sede__imagen');
-  if (imgFranja) {
-    if (imgFranja.dataset.fuenteOriginal === undefined) {
-      imgFranja.dataset.fuenteOriginal = imgFranja.getAttribute('src') ?? '';
-      imgFranja.dataset.conjuntoOriginal = imgFranja.getAttribute('srcset') ?? '';
-    }
-    if (ajustes.franja.imagen) {
-      imgFranja.removeAttribute('srcset');
-      imgFranja.src = ajustes.franja.imagen.datos;
-    } else {
-      imgFranja.src = imgFranja.dataset.fuenteOriginal;
-      if (imgFranja.dataset.conjuntoOriginal) imgFranja.srcset = imgFranja.dataset.conjuntoOriginal;
-    }
-  }
+  if (imgFranja) cambiarFuente(imgFranja, ajustes.franja.imagen);
 
-  for (const [clave, r] of Object.entries(ajustes.retratos)) {
-    const img = d.querySelector<HTMLImageElement>(`[data-retrato="${CSS.escape(clave)}"]`);
-    if (img) img.style.objectPosition = `${r.x}% ${r.y}%`;
-  }
-
+  aplicarOrden(d);
   aplicarTextos(d);
+  // Después de los textos: la clave de un retrato es el nombre original de su `<h4>`.
+  aplicarRetratos(d);
   pintarDiagnostico();
   // Tras un cambio de altura hay que dejar maquetar antes de medir la franja.
   requestAnimationFrame(pintarNotaRelacion);
   informeEl.value = informe();
-}
-
-/* ------------------------------------------------------------------ textos */
-
-const SELECTOR_TEXTO = 'main h1, main h2, main h3, main p, main li, main .eyebrow';
-
-/** Nodos de texto «hoja»: sin hijos elemento, para no romper marcado al editar. */
-function nodosDeTexto(d: Document): HTMLElement[] {
-  return [...d.querySelectorAll<HTMLElement>(SELECTOR_TEXTO)].filter((n) => n.children.length === 0);
-}
-
-function claveDe(n: HTMLElement, indice: number): string {
-  const seccion = n.closest('section[id]')?.id ?? 'sin-seccion';
-  return `${seccion}|${n.tagName.toLowerCase()}|${indice}`;
-}
-
-function aplicarTextos(d: Document): void {
-  nodosDeTexto(d).forEach((n, i) => {
-    const cambio = ajustes.textos[claveDe(n, i)];
-    if (cambio && n.textContent !== cambio.nuevo) n.textContent = cambio.nuevo;
-  });
-}
-
-let editandoTextos = false;
-
-function alternarEdicionDeTextos(activo: boolean): void {
-  editandoTextos = activo;
-  const d = pagina();
-  if (!d) return;
-
-  nodosDeTexto(d).forEach((n, i) => {
-    n.contentEditable = activo ? 'true' : 'false';
-    n.style.outline = activo ? '1px dashed rgba(220,120,40,.75)' : '';
-    n.style.outlineOffset = activo ? '3px' : '';
-    if (!activo) return;
-
-    if (n.dataset.panelAtado === 'si') return;
-    n.dataset.panelAtado = 'si';
-    const clave = claveDe(n, i);
-    const original = ajustes.textos[clave]?.original ?? n.textContent ?? '';
-    n.addEventListener('input', () => {
-      const nuevo = n.textContent ?? '';
-      if (nuevo === original) {
-        delete ajustes.textos[clave];
-      } else {
-        ajustes.textos[clave] = {
-          seccion: n.closest('section[id]')?.id ?? 'sin-seccion',
-          etiqueta: n.tagName.toLowerCase(),
-          original,
-          nuevo,
-        };
-      }
-      guardar();
-      informeEl.value = informe();
-    });
-  });
 }
 
 /* ------------------------------------------------------------- diagnóstico */
@@ -380,6 +285,7 @@ function diagnostico(): string[] {
       );
     }
   }
+  problemas.push(...avisosRetratos());
   return problemas;
 }
 
@@ -387,11 +293,7 @@ function pintarDiagnostico(): void {
   const problemas = diagnostico();
   diagnosticoEl.hidden = problemas.length === 0;
   diagnosticoEl.textContent = '';
-  for (const p of problemas) {
-    const li = document.createElement('li');
-    li.textContent = p;
-    diagnosticoEl.append(li);
-  }
+  for (const p of problemas) diagnosticoEl.append(crear('li', '', p));
 }
 
 /* ----------------------------------------------------------------- informe */
@@ -401,6 +303,12 @@ function informe(): string {
   const l: string[] = [];
   l.push(`# Ajustes del panel · ${new Date().toLocaleString('es-CL')}`);
   l.push('');
+  l.push(
+    'Pedido: implementar estos ajustes siguiendo AGENTS.md, en una rama `ajustes/<asunto>` nacida de ' +
+      'origin/main. No desplegar. Antes del pull request: npm run check, npm run build y npm run verify:todo.',
+  );
+  l.push('');
+  const cabecera = l.length;
   l.push(
     `Vista usada: ancho ${ajustes.vista.ancho === 0 ? 'completo' : `${ajustes.vista.ancho} px`} · ` +
       `tema ${ajustes.vista.tema} · idioma ${ajustes.vista.idioma}`,
@@ -417,12 +325,12 @@ function informe(): string {
   }
 
   const franjaCambiada =
-    f.x !== 50 ||
-    f.y !== 50 ||
-    f.escala !== 1 ||
-    f.velo !== 18 ||
-    f.desvanecido !== 18 ||
-    f.alto !== 1 ||
+    f.x !== FRANJA_ACTUAL.x ||
+    f.y !== FRANJA_ACTUAL.y ||
+    f.escala !== FRANJA_ACTUAL.escala ||
+    f.velo !== FRANJA_ACTUAL.velo ||
+    f.desvanecido !== FRANJA_ACTUAL.desvanecido ||
+    f.alto !== FRANJA_ACTUAL.alto ||
     f.relacionFija ||
     f.imagen !== null;
   if (franjaCambiada) {
@@ -465,227 +373,67 @@ function informe(): string {
     l.push('');
   }
 
-  const retratos = Object.entries(ajustes.retratos).filter(([, r]) => r.x !== 50 || r.y !== 50);
-  if (retratos.length > 0) {
-    l.push('## Retratos (src/components/SpeakerCard.astro, hoy sin `object-position`)');
-    for (const [clave, r] of retratos) l.push(`- ${clave}: "${r.x}% ${r.y}%"`);
+  if (ajustes.orden.length > 0) {
+    const d = pagina();
+    l.push('## Orden de secciones (src/components/PaginaSeminario.astro)');
+    l.push(`- ${d ? ordenDeseado(d).map((id) => `#${id}`).join(' → ') : ajustes.orden.join(' → ')}`);
+    l.push('    La navegación de la barra lleva su propio orden (SiteHeader.astro): moverla también.');
     l.push('');
   }
 
-  const textos = Object.values(ajustes.textos);
-  if (textos.length > 0) {
-    l.push('## Textos (van en src/data/es.ts y su par en en.ts)');
-    for (const t of textos) {
-      l.push(`- #${t.seccion} <${t.etiqueta}>`);
-      l.push(`    antes: ${t.original}`);
-      l.push(`    ahora: ${t.nuevo}`);
-    }
-    l.push('');
-  }
+  l.push(...informeRetratos(), ...informeTextos(), ...informeColores(), ...informeElementos());
 
   const problemas = diagnostico();
   if (problemas.length > 0) {
-    l.push('## Avisos de accesibilidad');
+    l.push('## Avisos de accesibilidad y permisos');
     for (const p of problemas) l.push(`- ${p}`);
     l.push('');
   }
 
-  if (l.length <= 4) l.push('(todavía sin cambios)');
+  if (l.length <= cabecera + 4) l.push('(todavía sin cambios)');
   return l.join('\n');
 }
 
 /* --------------------------------------------------------------- controles */
 
-function crear<K extends keyof HTMLElementTagNameMap>(
-  etiqueta: K,
-  clase = '',
-  texto = '',
-): HTMLElementTagNameMap[K] {
-  const el = document.createElement(etiqueta);
-  if (clase) el.className = clase;
-  if (texto) el.textContent = texto;
-  return el;
-}
-
-function alCambiar(): void {
-  aplicar();
-  guardar();
-}
-
-function marcarActivo(contenedor: HTMLElement, boton: HTMLElement): void {
-  for (const b of contenedor.querySelectorAll('button')) b.classList.remove('activo');
-  boton.classList.add('activo');
-}
-
-interface OpcionesDeslizador {
-  etiqueta: string;
-  min: number;
-  max: number;
-  paso: number;
-  unidad?: string;
-  leer: () => number;
-  escribir: (v: number) => void;
-}
-
-function deslizador(o: OpcionesDeslizador): HTMLElement {
-  const fila = crear('div', 'fila');
-  const rotulo = crear('label', 'rotulo');
-  const nombre = crear('span', '', o.etiqueta);
-  const valor = crear('span', 'valor', `${o.leer()}${o.unidad ?? ''}`);
-  rotulo.append(nombre, valor);
-
-  const entrada = crear('input');
-  entrada.type = 'range';
-  entrada.min = String(o.min);
-  entrada.max = String(o.max);
-  entrada.step = String(o.paso);
-  entrada.value = String(o.leer());
-  entrada.addEventListener('input', () => {
-    const v = Number(entrada.value);
-    o.escribir(v);
-    valor.textContent = `${v}${o.unidad ?? ''}`;
-    alCambiar();
-  });
-
-  rotulo.append(entrada);
-  fila.append(rotulo);
-  return fila;
-}
-
 /**
- * Reduce la imagen antes de guardarla. Sin esto, una fotografía de cámara o de
- * Gemini —3,58 MB, 2752×1536 en el caso que lo motivó— no cabe en `localStorage`
- * y el borrador se pierde en cada recarga. 1800 px de ancho sobran: la franja
- * nunca pinta más de 166 px de alto `[medido: 2026-09-22]`.
- *
- * Es solo para *ver*. El archivo que se instale en `src/assets/fondos/` sale del
- * original, no de esta reducción.
+ * Se reconstruye tras cada carga del marco —las secciones se leen de la página—
+ * y cuando una herramienta cambia lo que hay que mostrar. Conserva qué grupos
+ * estaban abiertos y dónde estaba el desplazamiento, o cada clic en la página
+ * devolvería el panel arriba del todo.
  */
-function reducir(archivo: File): Promise<ImagenCargada> {
-  return new Promise((resolver, rechazar) => {
-    const img = new Image();
-    const url = URL.createObjectURL(archivo);
-    img.addEventListener('load', () => {
-      const ANCHO_MAX = 1800;
-      const escala = Math.min(1, ANCHO_MAX / img.naturalWidth);
-      const lienzo = document.createElement('canvas');
-      lienzo.width = Math.round(img.naturalWidth * escala);
-      lienzo.height = Math.round(img.naturalHeight * escala);
-      lienzo.getContext('2d')?.drawImage(img, 0, 0, lienzo.width, lienzo.height);
-      URL.revokeObjectURL(url);
-      resolver({
-        nombre: archivo.name,
-        datos: lienzo.toDataURL('image/webp', 0.82),
-        ancho: img.naturalWidth,
-        altoPx: img.naturalHeight,
-      });
-    });
-    img.addEventListener('error', () => {
-      URL.revokeObjectURL(url);
-      rechazar(new Error('no se pudo leer la imagen'));
-    });
-    img.src = url;
-  });
-}
-
-function cargadorDeImagen(etiqueta: string, alCargar: (img: ImagenCargada | null) => void): HTMLElement {
-  const fila = crear('div', 'fila');
-  fila.append(crear('span', 'rotulo', etiqueta));
-
-  const entrada = crear('input');
-  entrada.type = 'file';
-  entrada.accept = 'image/*';
-  entrada.addEventListener('change', () => {
-    const archivo = entrada.files?.[0];
-    if (!archivo) return;
-    void reducir(archivo)
-      .then((img) => {
-        alCargar(img);
-        alCambiar();
-        avisar(
-          `${img.nombre}: ${img.ancho}×${img.altoPx} px, reducida a 1800 px de ancho para el borrador. ` +
-            'El archivo que se instale saldrá del original.',
-        );
-        setTimeout(() => avisar(''), 5000);
-      })
-      .catch(() => avisar(`No se pudo leer ${archivo.name}.`));
-  });
-
-  const quitar = crear('button', 'menor', 'quitar');
-  quitar.type = 'button';
-  quitar.addEventListener('click', () => {
-    entrada.value = '';
-    alCargar(null);
-    alCambiar();
-  });
-
-  fila.append(entrada, quitar);
-  return fila;
-}
-
-function grupo(titulo: string): HTMLDetailsElement {
-  const d = crear('details', 'grupo');
-  d.open = true;
-  d.append(crear('summary', '', titulo));
-  return d;
-}
-
-/** Se construye tras cada carga del marco: las secciones se leen de la página. */
 function montarControles(): void {
   const d = pagina();
   if (!d) return;
+  const abiertos = new Map(
+    [...controlesEl.querySelectorAll<HTMLDetailsElement>(':scope > details')].map((g) => [g.querySelector('summary')?.textContent, g.open]),
+  );
+  const desplazamiento = controlesEl.parentElement?.scrollTop ?? 0;
   controlesEl.textContent = '';
 
   /* --- vista --- */
   const gVista = grupo('Vista');
-  const anchos: Array<[string, number]> = [
-    ['móvil 390', 390],
-    ['tableta 768', 768],
-    ['portátil 1280', 1280],
-    ['completo', 0],
-  ];
-  const filaAnchos = crear('div', 'fila botones');
-  for (const [nombre, valor] of anchos) {
-    const b = crear('button', 'menor', nombre);
-    b.type = 'button';
-    if (ajustes.vista.ancho === valor) b.classList.add('activo');
-    b.addEventListener('click', () => {
-      ajustes.vista.ancho = valor;
-      alCambiar();
-      marcarActivo(filaAnchos, b);
-    });
-    filaAnchos.append(b);
-  }
-  gVista.append(filaAnchos);
-
-  const filaTema = crear('div', 'fila botones');
-  for (const t of ['light', 'dark'] as Tema[]) {
-    const b = crear('button', 'menor', t === 'light' ? 'claro' : 'oscuro');
-    b.type = 'button';
-    if (ajustes.vista.tema === t) b.classList.add('activo');
-    b.addEventListener('click', () => {
+  gVista.append(
+    opciones(
+      [['móvil 390', 390], ['tableta 768', 768], ['portátil 1280', 1280], ['completo', 0]] as const,
+      ajustes.vista.ancho as number,
+      (v) => {
+        ajustes.vista.ancho = v;
+        alCambiar();
+      },
+    ),
+    opciones([['claro', 'light'], ['oscuro', 'dark']] as ReadonlyArray<readonly [string, Tema]>, ajustes.vista.tema, (t) => {
       ajustes.vista.tema = t;
       alCambiar();
-      marcarActivo(filaTema, b);
-    });
-    filaTema.append(b);
-  }
-  gVista.append(filaTema);
-
-  const filaIdioma = crear('div', 'fila botones');
-  for (const i of ['es', 'en'] as Idioma[]) {
-    const b = crear('button', 'menor', i.toUpperCase());
-    b.type = 'button';
-    if (ajustes.vista.idioma === i) b.classList.add('activo');
-    b.addEventListener('click', () => {
+      // Los colores del tema se leen de la página: hay que volver a medirlos.
+      requestAnimationFrame(montarControles);
+    }),
+    opciones([['ES', 'es'], ['EN', 'en']] as ReadonlyArray<readonly [string, Idioma]>, ajustes.vista.idioma, (i) => {
       ajustes.vista.idioma = i;
       guardar();
-      marcarActivo(filaIdioma, b);
       marco.src = i === 'es' ? '/' : '/en/';
-    });
-    filaIdioma.append(b);
-  }
-  gVista.append(filaIdioma);
+    }),
+  );
   controlesEl.append(gVista);
 
   /* --- franja de la sede --- */
@@ -710,15 +458,10 @@ function montarControles(): void {
   );
 
   // Relación fija: la perilla que contesta «que se vea lo mismo en toda pantalla».
-  const fijar = crear('label', 'fila interruptor');
-  const casillaFija = crear('input');
-  casillaFija.type = 'checkbox';
-  casillaFija.checked = f.relacionFija;
-  casillaFija.addEventListener('change', () => {
-    f.relacionFija = casillaFija.checked;
+  const fijar = casilla('relación fija (mismo recorte en toda pantalla)', f.relacionFija, (v) => {
+    f.relacionFija = v;
     alCambiar();
   });
-  fijar.append(casillaFija, crear('span', '', 'relación fija (mismo recorte en toda pantalla)'));
   notaRelacion = crear('p', 'nota');
   gFranja.append(
     fijar,
@@ -732,35 +475,60 @@ function montarControles(): void {
       escribir: (v) => {
         f.relacion = v;
         f.relacionFija = true;
-        casillaFija.checked = true;
+        const entrada = fijar.querySelector('input');
+        if (entrada) entrada.checked = true;
       },
     }),
     notaRelacion,
   );
   controlesEl.append(gFranja);
 
+  /* --- lo más usado en una revisión, arriba --- */
+  controlesEl.append(grupoElementos());
+  const gRetratos = grupoRetratos(d);
+  if (gRetratos) controlesEl.append(gRetratos);
+  controlesEl.append(grupoColores());
+
+  /* --- orden de secciones --- */
+  const gOrden = grupo('Orden de secciones', ajustes.orden.length > 0);
+  const orden = ordenDeseado(d);
+  orden.forEach((id, i) => {
+    const mover = (destino: number): void => {
+      const nuevo = [...orden];
+      [nuevo[i], nuevo[destino]] = [nuevo[destino], nuevo[i]];
+      ajustes.orden = nuevo;
+      alCambiar();
+      montarControles();
+    };
+    const fila = crear('div', 'fila botones');
+    const subir = boton('↑', () => mover(i - 1));
+    const bajar = boton('↓', () => mover(i + 1));
+    subir.disabled = i === 0;
+    bajar.disabled = i === orden.length - 1;
+    fila.append(crear('span', 'rotulo-color', `#${id}`), subir, bajar);
+    gOrden.append(fila);
+  });
+  gOrden.append(
+    boton('orden original', () => {
+      ajustes.orden = [];
+      guardar();
+      // Las secciones ya se movieron en el DOM: solo una recarga las devuelve.
+      marco.contentWindow?.location.reload();
+    }),
+  );
+  controlesEl.append(gOrden);
+
   /* --- fondos de sección --- */
   for (const seccion of d.querySelectorAll<HTMLElement>('main > section[id]')) {
     const id = seccion.id;
     ajustes.secciones[id] ??= seccionPorOmision();
     const s = ajustes.secciones[id];
-    const g = grupo(`Fondo de #${id}`);
-
-    const filaModo = crear('div', 'fila botones');
-    for (const modo of ['solido', 'imagen'] as ModoFondo[]) {
-      const b = crear('button', 'menor', modo === 'solido' ? 'color sólido' : 'imagen');
-      b.type = 'button';
-      if (s.modo === modo) b.classList.add('activo');
-      b.addEventListener('click', () => {
-        s.modo = modo;
-        alCambiar();
-        marcarActivo(filaModo, b);
-      });
-      filaModo.append(b);
-    }
-
+    const g = grupo(`Fondo de #${id}`, s.modo === 'imagen');
     g.append(
-      filaModo,
+      opciones([['color sólido', 'solido'], ['imagen', 'imagen']] as ReadonlyArray<readonly [string, ModoFondo]>, s.modo, (m) => {
+        s.modo = m;
+        alCambiar();
+      }),
       cargadorDeImagen('imagen de fondo', (img) => {
         s.imagen = img;
         if (img) s.modo = 'imagen';
@@ -773,48 +541,92 @@ function montarControles(): void {
     controlesEl.append(g);
   }
 
-  /* --- retratos --- */
-  const retratos = [...d.querySelectorAll<HTMLImageElement>('#expositores img')];
-  if (retratos.length > 0) {
-    const g = grupo('Retratos de expositores');
-    retratos.forEach((img, i) => {
-      const clave =
-        img.closest('article, li, div')?.querySelector('h3, h2')?.textContent?.trim() || `retrato ${i + 1}`;
-      img.dataset.retrato = clave;
-      ajustes.retratos[clave] ??= { x: 50, y: 50 };
-      const r = ajustes.retratos[clave];
-      const sub = crear('div', 'subgrupo');
-      sub.append(
-        crear('p', 'subtitulo', clave),
-        deslizador({ etiqueta: '↔', min: 0, max: 100, paso: 1, unidad: '%', leer: () => r.x, escribir: (v) => (r.x = v) }),
-        deslizador({ etiqueta: '↕', min: 0, max: 100, paso: 1, unidad: '%', leer: () => r.y, escribir: (v) => (r.y = v) }),
-      );
-      g.append(sub);
-    });
-    controlesEl.append(g);
+  for (const g of controlesEl.querySelectorAll<HTMLDetailsElement>(':scope > details')) {
+    const antes = abiertos.get(g.querySelector('summary')?.textContent);
+    if (antes !== undefined) g.open = antes;
   }
-
-  /* --- textos --- */
-  const gTextos = grupo('Textos');
-  const interruptor = crear('label', 'fila interruptor');
-  const casilla = crear('input');
-  casilla.type = 'checkbox';
-  casilla.checked = editandoTextos;
-  casilla.addEventListener('change', () => alternarEdicionDeTextos(casilla.checked));
-  interruptor.append(casilla, crear('span', '', 'editar textos en la página'));
-  gTextos.append(
-    interruptor,
-    crear(
-      'p',
-      'nota',
-      'Con esto activo, hacé clic sobre cualquier título o párrafo de la página y escribí encima. ' +
-        'Cada cambio queda anotado en el informe junto a su texto original.',
-    ),
-  );
-  controlesEl.append(gTextos);
+  if (controlesEl.parentElement) controlesEl.parentElement.scrollTop = desplazamiento;
 
   aplicar();
-  if (editandoTextos) alternarEdicionDeTextos(true);
+}
+
+function alCambiar(): void {
+  aplicar();
+  guardar();
+}
+
+/* --------------------------------------------------------------- herramienta */
+
+const AYUDA: Record<Herramienta, string> = {
+  navegar: '',
+  textos:
+    'Hacé clic en cualquier texto y escribí encima. Los enlaces y botones no se activan mientras tanto: ' +
+    'para editar dentro de un desplegable (una reseña, el menú), abrilo antes con «navegar».',
+  senalar: 'Hacé clic en cualquier elemento para cambiarle tamaño, margen o color, ocultarlo o dejarle una nota.',
+};
+
+function elegirHerramienta(h: Herramienta): void {
+  ctx.herramienta = h;
+  for (const b of herramientasEl.querySelectorAll<HTMLButtonElement>('button')) {
+    b.classList.toggle('activo', b.dataset.herramienta === h);
+  }
+  avisar(AYUDA[h], 6000);
+  const d = pagina();
+  if (!d) return;
+  prepararEdicion(d);
+  montarControles();
+}
+
+/**
+ * Lo que hay que hacer con cada documento nuevo del marco, antes de pintar nada:
+ * sus escuchas no sobreviven a una navegación.
+ */
+function prepararMarco(d: Document): void {
+  // Si la carga se cuenta dos veces —ver el arranque—, la segunda no duplica escuchas:
+  // un clic en un enlace externo abriría dos pestañas.
+  if (d.documentElement.dataset.panelPreparado === 'si') return;
+  d.documentElement.dataset.panelPreparado = 'si';
+
+  // El idioma lo dice la ruta y no el borrador: el selector de idioma del propio
+  // sitio cambia de página sin pasar por el panel, y los textos editados se
+  // anotarían en el idioma equivocado.
+  const idioma: Idioma = d.location.pathname.startsWith('/en') ? 'en' : 'es';
+  if (ajustes.vista.idioma !== idioma) {
+    ajustes.vista.idioma = idioma;
+    guardar();
+  }
+
+  d.addEventListener(
+    'click',
+    (e) => {
+      const objetivo = comoElemento(e.target);
+      if (!objetivo) return;
+      if (ctx.herramienta === 'textos') {
+        // Para escribir en un botón o un enlace hay que poder hacer clic sin activarlo,
+        // ni el enlace ni el guion del sitio que lo escucha (menú, tema, idioma).
+        if (objetivo.closest('a[href], button, summary, label')) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        return;
+      }
+      if (ctx.herramienta !== 'navegar') return;
+      const enlace = objetivo.closest<HTMLAnchorElement>('a[href]');
+      if (!enlace) return;
+      // Un enlace a otro sitio dentro del marco lo deja en blanco —Google Forms no se
+      // deja enmarcar— y el panel pierde la página. Se abre aparte.
+      const url = new URL(enlace.href, d.baseURI);
+      if (url.origin === location.origin) return;
+      e.preventDefault();
+      window.open(url.href, '_blank', 'noopener');
+      avisar(`${url.host} se abrió en otra pestaña: el marco no puede salir del sitio.`, 4000);
+    },
+    true,
+  );
+
+  prepararSenalar(d);
+  prepararEdicion(d);
+  prepararRetratos(d);
 }
 
 /* ------------------------------------------------------------ instantáneas */
@@ -825,6 +637,13 @@ function instantaneas(): Record<string, Ajustes> {
   } catch {
     return {};
   }
+}
+
+/** Lleva el marco al idioma del borrador; la carga monta los controles. */
+function irAlIdiomaDelBorrador(): void {
+  const ruta = ajustes.vista.idioma === 'en' ? '/en/' : '/';
+  if (new URL(marco.src, location.href).pathname === ruta) marco.contentWindow?.location.reload();
+  else marco.src = ruta;
 }
 
 function pintarInstantaneas(): void {
@@ -838,22 +657,23 @@ function pintarInstantaneas(): void {
   }
   for (const nombre of nombres) {
     const fila = crear('div', 'fila botones');
-    const abrir = crear('button', 'menor crecer', nombre);
-    abrir.type = 'button';
-    abrir.addEventListener('click', () => {
-      ajustes = { ...porOmision(), ...todas[nombre] };
-      guardar();
-      montarControles();
-    });
-    const borrar = crear('button', 'menor', '✕');
-    borrar.type = 'button';
-    borrar.title = `Borrar «${nombre}»`;
-    borrar.addEventListener('click', () => {
+    const abrir = boton(
+      nombre,
+      () => {
+        // Misma mezcla que al cargar: una instantánea vieja no trae las perillas nuevas.
+        ajustes = mezclar(todas[nombre]);
+        guardar();
+        irAlIdiomaDelBorrador();
+      },
+      'menor crecer',
+    );
+    const borrar = boton('✕', () => {
       const resto = instantaneas();
       delete resto[nombre];
       localStorage.setItem(CLAVE_INSTANTANEAS, JSON.stringify(resto));
       pintarInstantaneas();
     });
+    borrar.title = `Borrar «${nombre}»`;
     fila.append(abrir, borrar);
     lista.append(fila);
   }
@@ -861,7 +681,34 @@ function pintarInstantaneas(): void {
 
 /* ---------------------------------------------------------------- arranque */
 
-marco.addEventListener('load', montarControles);
+Object.assign(ctx, {
+  ajustes: () => ajustes,
+  pagina,
+  alCambiar,
+  guardar: () => {
+    guardar();
+    informeEl.value = informe();
+  },
+  remontar: montarControles,
+  avisar,
+});
+
+function alCargarMarco(): void {
+  const d = pagina();
+  if (!d) {
+    controlesEl.textContent = '';
+    avisar('El marco salió del sitio. Volvé con «ES» o «EN» en «Vista».');
+    return;
+  }
+  prepararMarco(d);
+  montarControles();
+}
+
+marco.addEventListener('load', alCargarMarco);
+
+for (const b of herramientasEl.querySelectorAll<HTMLButtonElement>('button')) {
+  b.addEventListener('click', () => elegirHerramienta(b.dataset.herramienta as Herramienta));
+}
 
 document.getElementById('guardar-instantanea')?.addEventListener('click', () => {
   const nombre = prompt('Nombre de la instantánea');
@@ -871,35 +718,46 @@ document.getElementById('guardar-instantanea')?.addEventListener('click', () => 
   try {
     localStorage.setItem(CLAVE_INSTANTANEAS, JSON.stringify(todas));
     pintarInstantaneas();
-    avisar(`Instantánea «${nombre}» guardada.`);
-    setTimeout(() => avisar(''), 2500);
+    avisar(`Instantánea «${nombre}» guardada.`, 2500);
   } catch {
     avisar('No cabe: alguna instantánea tiene fotografías demasiado grandes. Borrá una vieja y reintentá.');
   }
 });
 
 document.getElementById('copiar')?.addEventListener('click', () => {
-  void navigator.clipboard.writeText(informe()).then(() => {
-    avisar('Informe copiado. Pegalo en el chat.');
-    setTimeout(() => avisar(''), 2500);
-  });
+  const texto = informe();
+  navigator.clipboard.writeText(texto).then(
+    () => avisar('Informe copiado. Pegalo en el chat.', 2500),
+    () => {
+      // Sin permiso de portapapeles: queda seleccionado para copiarlo a mano.
+      const desplegable = informeEl.closest('details');
+      if (desplegable) desplegable.open = true;
+      informeEl.value = texto;
+      informeEl.select();
+      avisar('El navegador no dejó copiar. El informe quedó seleccionado: Ctrl+C.');
+    },
+  );
 });
 
 document.getElementById('restablecer')?.addEventListener('click', () => {
-  const seguro = confirm(
-    'Se descarta el borrador actual. Las instantáneas guardadas no se tocan. ¿Seguir?',
-  );
+  const seguro = confirm('Se descarta el borrador actual. Las instantáneas guardadas no se tocan. ¿Seguir?');
   if (!seguro) return;
   ajustes = porOmision();
-  editandoTextos = false;
   guardar();
-  marco.contentWindow?.location.reload();
+  elegirHerramienta('navegar');
+  irAlIdiomaDelBorrador();
 });
 
 pintarInstantaneas();
 
 // El marco arranca en `/` porque es lo que dice su atributo `src`. Si el borrador
-// venia en ingles, se corrige aqui, antes de que nadie toque un control.
+// venía en inglés, se corrige aquí, antes de que nadie toque un control. Va antes
+// de leer la página ya cargada: esa lectura toma el idioma de la ruta, `/`, y
+// borraría el inglés del borrador.
 if (ajustes.vista.idioma === 'en' && !new URL(marco.src, location.href).pathname.startsWith('/en')) {
   marco.src = '/en/';
+} else {
+  // Un módulo corre diferido: si el marco ya terminó de cargar, su `load` pasó sin nadie escuchando.
+  const yaCargada = pagina();
+  if (yaCargada?.readyState === 'complete' && yaCargada.location.href !== 'about:blank') alCargarMarco();
 }
