@@ -146,7 +146,7 @@ es el estado por defecto y no un hueco.
 
 ---
 
-## Charlas recibidas · 2 de 8
+## Charlas recibidas · 3 de 8 (más la de Toledo, sin el archivo)
 
 **El sitio todavía no tiene dónde ponerlas.** `program.days` está vacío y las
 fichas de expositor no llevan título de charla. Ver «Decisión pendiente» al final.
@@ -206,9 +206,41 @@ así no se puede publicar, porque no la tenemos.
 latest paper». La ficha conserva la reseña compuesta desde su perfil público y la
 fotografía que ya estaba autorizada.
 
-### Faltan seis
+### Gustavo Siles `[confirmado, del autor]` · recibido el 2026-09-30
 
-Zussman, Du, Siringo, Siles, Gutiérrez y Toledo, con plazo **28 de septiembre**.
+> **Title:** Earth–space and terrestrial atmospheric propagation experiments and
+> opportunities for meteorological sensing
+>
+> **Abstract:** Radiowave propagation through the atmosphere is usually viewed as a
+> source of impairments for communication systems. However, the same propagation
+> effects can also contain information about the environment. This talk presents
+> both perspectives through an overview of approximately three decades of
+> atmospheric propagation experiments carried out at the Universidad Politécnica de
+> Madrid (UPM). The first part will review UPM measurement campaigns over
+> Earth–space and terrestrial paths at frequencies above 30 GHz, with particular
+> attention to the long-term 39.4 GHz Q-band beacon experiment in Madrid using the
+> Alphasat satellite. The second part will introduce, from a theoretical
+> perspective and drawing on published literature, the opportunistic use of
+> communication links for meteorological sensing, focusing on the retrieval of
+> rainfall rate and atmospheric water vapour from propagation attenuation.
+
+Envió **reseña propia** (unas 170 palabras, sobre las 100–150 pedidas) y
+fotografía (`foto_GSiles_USRS.jpg`). La reseña de la ficha se reescribió con su
+texto el 2026-10-02: la anterior afirmaba bandas V y W y mediciones «a más de
+4.000 m», que él no declara. La fotografía **ya está publicada** (recorte
+560×560); el envío al organizador para la web se toma como autorización (RF-11.1).
+
+### Karel Toledo · recibido el 2026-09-27, **solo la foto está en el repo**
+
+Mandó su material como `Seminar_PUCV_2026.docx` y la foto `kt.jpg`. La foto está
+publicada. **El `.docx` no está en el repositorio**, así que su charla no está en
+`charlas.ts` y su reseña actual (Fondecyt de Iniciación, drones) no se ha
+contrastado con la suya.
+
+### Faltan cuatro, más el `.docx` de Toledo
+
+Zussman, Du, Siringo y Gutiérrez no han enviado nada que esté en el rastro del
+proyecto; el plazo era el **28 de septiembre**.
 
 ---
 
