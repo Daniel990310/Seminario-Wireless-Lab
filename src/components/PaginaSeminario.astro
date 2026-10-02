@@ -395,9 +395,9 @@ const hasProgram = program.days.length > 0;
                 title={f.agency.name}
               >
                 {/*
-                  Sin archivo de marca, la sigla ocupa su lugar **a tamaño de marca**, no
-                  como un texto suelto: el hueco mide lo mismo que el logo de ANID, así que
-                  cuando llegue el archivo la composición no se mueve.
+                  Si el financiador no trae logo, la sigla ocupa su lugar **a tamaño de marca**
+                  (`h-16 sm:h-20`, igual que el logo), para que la composición no cambie
+                  cuando llegue el archivo.
                 */}
                 {f.agency.logo ? (
                   <Image

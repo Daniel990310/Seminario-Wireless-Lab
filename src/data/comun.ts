@@ -1,8 +1,8 @@
 /*
- * Los dos únicos logos ráster del proyecto se importan, no se referencian por ruta.
+ * Los logos ráster del proyecto se importan, no se referencian por ruta.
  *
- * PUCV no publica SVG de su escudo —el paquete `logos_pucv` de Normas Gráficas trae PNG—,
- * así que son los dos únicos archivos que el optimizador de Astro puede mejorar. Importarlos
+ * PUCV no publica SVG de su escudo —el paquete `logos_pucv` de Normas Gráficas trae PNG—, y
+ * la EIE y CYTED entregaron JPG/PNG: son los archivos que el optimizador de Astro puede mejorar. Importarlos
  * desde `src/assets` es lo que le permite emitir formatos modernos y declarar las
  * dimensiones intrínsecas. Los demás logos son SVG y siguen en `/public`, porque para
  * vectores el optimizador no hace nada y el flujo de sustituir el archivo por su nombre es
