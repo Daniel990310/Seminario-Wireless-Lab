@@ -7,10 +7,10 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-09-25** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
-ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-09-25**, versión
-`809d7a09`, en `https://bcsensing.org`, con la inscripción abierta y enlazada desde la
-barra fija, el menú móvil y el hero.
+Actualizado: **2026-10-02** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
+ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-10-02**, versión
+`b0d566cd`, desde `main` en `f3d8a32`, en `https://bcsensing.org`. Detalle en
+«Despliegues del 2026-10-02», abajo.
 · **Publicado en <https://bcsensing.org> el 2026-09-22, versión `830dafb9`. Primer
 despliegue indexable. Pendientes en «EMPIEZA AQUÍ»: Search Console y el token de
 Hostinger sin revocar.**
@@ -19,7 +19,53 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
-## Logo EIE y flyer · 2026-10-01 · cambio local sin desplegar
+## Despliegues del 2026-10-02 · lo que está en vivo
+
+Daniel pidió fusionar y desplegar él mismo desde estas sesiones; se hizo desde `main`
+con `SITE_URL="https://bcsensing.org" npm run build && npx wrangler deploy`, y se
+comprobó en vivo con `npm run verify:publicado -- https://bcsensing.org`.
+
+| Versión | `main` | Qué llevó |
+| ------- | ------ | --------- |
+| `c978005e` | `ccf0e6f` | PR #6 y #7 (logo EIE, Siles y Toledo, mapa, favicon en la raíz) y #8 |
+| `b0d566cd` | `f3d8a32` | PR #9 (logo EIE sin fondo, de la otra sesión; **no revisado desde aquí**) y #10 |
+
+Contenido que salió:
+- **Expositores:** retratos de Siles, Toledo y Siringo (este reencuadrado: 15 % más
+  cerca, 20 % más abajo, sin el original; el hueco superior es relleno liso). Charla
+  de Siles en `charlas.ts`, que **ninguna página importa todavía**.
+- **Financiadores:** logo de CYTED (la marca conmemorativa de **40 años**, PNG con fondo
+  negro opaco, no el logotipo permanente; reemplazable por el institucional). La rama
+  de sigla sin logo sigue en `PaginaSeminario.astro` como respaldo.
+- **«El seminario»:** tres párrafos en vez de cuatro; dice que se realiza «en el marco
+  de dos proyectos que lo financian»: **FOVI250222 (ANID)** y **525RT0175 (CYTED)**.
+  Se escribió *financian* y no *adscrito a*: ya hubo que corregir ese error. Mauricio
+  Rodríguez sale como quien lo dirige y convocó a los expositores. **La frase del
+  propósito («acercar a los estudiantes de postgrado al trabajo de referentes
+  internacionales») sigue siendo borrador mío y Mauricio no la ha aprobado.**
+- **`<title>`:** «Beyond Connectivity: Wireless Sensing in mmWave/Sub-THz Bands», sin
+  fecha (~61 caracteres), nuevo campo `tituloDocumento` en `comun.ts`. Google mostraba
+  la fecha como título en los resultados; con el título anterior de ~85 caracteres
+  `[probable]` que lo reescribía por largo. El `<h1>`, `og:title` y el schema.org
+  conservan «mmWave and Sub-THz», el nombre oficial. Cómo lo muestra Google no se
+  controla; pedir reindexado en Search Console.
+- **Favicon:** ya está en la raíz (`/favicon.ico`) y el PNG de 192 px. Google tarda días
+  o semanas en cambiarlo; no se puede forzar.
+
+**Pendiente tras estos despliegues**
+1. **Razón del seminario**, en palabras de Mauricio.
+2. **Toledo:** falta su `Seminar_PUCV_2026.docx` (27-sep) para cargar su charla y
+   contrastar su reseña. **Zussman, Du, Siringo y Gutiérrez** no han enviado título ni
+   resumen que esté en el rastro del proyecto.
+3. **Search Console:** solicitar indexación de `/` y `/en/`; el favicon y el título
+   dependen del próximo rastreo.
+4. **Revisión sin hacer:** `npm run verify:todo` no se corrió en #8 ni #10 (solo `verify`
+   y `verify:seo`). El PR #9 no pasó por estas sesiones.
+5. **Reseña de Mauricio acortada**: se quitó su doctorado de la UTFSM por pedido de
+   Daniel. No consta que Mauricio lo haya visto; confirmarlo.
+6. **Flyer:** se hace aparte, fuera del repositorio.
+
+## Logo EIE y flyer · 2026-10-01 · (desplegado el 2026-10-02; ver arriba)
 
 [verificado] Daniel entregó el logo institucional cuadrado de la EIE en el chat de
 Codex y pidió usarlo también en la página. `comun.ts` ahora importa
@@ -30,10 +76,9 @@ El requisito quedó registrado en RF-10, enmienda del 2026-10-01.
 (`eie-institucional.png`, con variante `-oscuro` que aclara solo el anillo de texto)
 y el enlace pasó a `https://eie.pucv.cl`. El JPG original ya no está en el repo.
 El flyer refinado se guarda en el directorio de outputs del chat, fuera del sitio.
-No se ha desplegado ni modificado Cloudflare.
 
 
-## Siles y Toledo · 2026-10-01 · en la rama, sin empujar ni desplegar
+## Siles y Toledo · 2026-10-01 · (fusionado y desplegado el 2026-10-02)
 
 [verificado] Del correo de Mauricio (reenvíos del 30-sep): charla de Siles en `charlas.ts`
 (recibida 2026-09-30); retratos de Siles (`foto_GSiles_USRS.jpg`) y Toledo (`kt.jpg`),
@@ -44,10 +89,10 @@ W, a más de 4.000 m», que él no afirma. `npm run verify` en verde, anti-slop 
 sin él falta su charla y su reseña actual (Fondecyt, drones) no está contrastada. Tampoco
 han llegado Zussman, Du, Siringo y Gutiérrez. El flyer se hace aparte.
 
-## Reseña de Mauricio, foto de Siringo · 2026-10-01 · esta sesión termina aquí, sigue otra
+## Reseña de Mauricio, foto de Siringo · 2026-10-01 · (superado: desplegado el 2026-10-02)
 
-Esta sesión de Claude Code se cierra y Daniel continúa en otra. Lo que queda hecho, en
-la rama `ajustes/logo-eie-organizacion`, sin desplegar ni empujar:
+Esta sesión de Claude Code se cerró y Daniel continuó en otra. Lo que quedó hecho, en
+la rama `ajustes/logo-eie-organizacion`; **«El seminario» se recortó después, ver arriba**:
 
 - **«El seminario»** (`about.paragraphs` en `es.ts` y `en.ts`) lleva dos párrafos nuevos.
   El primero es la **razón del seminario y es un texto de ejemplo mío, no de Mauricio**:
