@@ -384,7 +384,7 @@ public/og/                       # imágenes para compartir, versionadas
   cuando animan desde JavaScript, así que la red de colaboración consulta
   `useReducedMotion` y detiene el haz explícitamente.
 - **Privacidad.** Sin analítica, sin fuentes remotas y sin cookies. El mapa de
-  la sede solo se solicita a OpenStreetMap si la persona pulsa el botón.
+  la sede solo se solicita a Google Maps si la persona pulsa el botón.
 - **Idioma.** Interfaz en español y título oficial en inglés, según lo pedido.
   Si más adelante se necesita una versión completa en inglés, Astro resuelve
   esto con enrutamiento i18n y un segundo archivo de datos.

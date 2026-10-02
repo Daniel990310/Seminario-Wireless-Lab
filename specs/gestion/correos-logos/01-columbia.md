@@ -1,7 +1,75 @@
 # 01 · Columbia University — Gil Zussman
 
+> ✉️ **ENVIADO el 2026-09-24. Contestado el mismo día.** Columbia Creative deriva el archivo
+> a Zussman; **todavía falta la autorización explícita**. Lo que contestaron y qué sigue, en
+> [`respuestas/`](respuestas/README.md). Los dos textos siguientes —para Zussman y para
+> Geoffrey Allen— son los que quedan por mandar; el cuerpo original se conserva más abajo
+> como referencia de lo que se pidió.
+>
+> ⚠️ **`licensing@columbia.edu` no existe: rebotó con `550 5.1.1 User Unknown`.** Salía de
+> un resumen de buscador y no de la página del titular. No volver a ponerla.
+
+---
+
+## A enviar ahora · 1 de 2 · a Gil Zussman
+
+**Para:** `gil.zussman@columbia.edu`
+**Asunto:** Columbia Engineering logo for the seminar website — a small favour
+
+> Dear Prof. Zussman,
+>
+> A quick request about the seminar website, https://bcsensing.org.
+>
+> The site has a section listing the institutions of the participating researchers. We do
+> not publish any institutional mark without permission from its owner, so that section
+> currently shows placeholders.
+>
+> We wrote to Columbia Creative asking for permission and for the correct file, and they
+> replied that **faculty can download the Columbia Engineering trademark** from
+> https://downloads.visualidentity.columbia.edu/ — which we cannot access.
+>
+> Would you be able to download it and send it to us? Ideally in **SVG**, and in the
+> variants authorised for **light and dark backgrounds**: the site has both themes and we do
+> not recolour institutional marks.
+>
+> It would be shown unmodified, linked to columbia.edu, with no implication of endorsement.
+>
+> Thank you very much, and looking forward to your talk in October.
+>
+> **Daniel Caignet González**
+> Organising committee, *Beyond Connectivity 2026*
+> Escuela de Ingeniería Eléctrica, Pontificia Universidad Católica de Valparaíso
+> contact@bcsensing.org · https://bcsensing.org
+
+## A enviar ahora · 2 de 2 · respuesta a Columbia Creative
+
+**Responder sobre el hilo** a `geoffrey.allen@columbia.edu`.
+
+> Dear Geoffrey,
+>
+> Thank you — that is very helpful, and it also confirms the point we flagged: Columbia
+> Engineering (SEAS) is indeed the right mark, not the CUSPS one we happened to hold. We are
+> asking Prof. Zussman for the file.
+>
+> One last thing, so that we have it on record: could you confirm in writing that we may
+> **display the Columbia Engineering trademark on the seminar website**, in a section
+> listing the institutions of the participating researchers, shown unmodified, linked to
+> columbia.edu, and with no implication of endorsement or sponsorship by Columbia?
+>
+> We will not publish the mark until we have that confirmation.
+>
+> With thanks,
+>
+> **Daniel Caignet González**
+> Organising committee, *Beyond Connectivity 2026*
+> contact@bcsensing.org · https://bcsensing.org
+
+---
+
+## El correo original, ya enviado
+
 **Para:** `creative@columbia.edu` — Columbia Creative
-**Cc:** `licensing@columbia.edu` — Trademark and Licensing Program
+**Cc:** ~~`licensing@columbia.edu`~~ — **rebotó, no existe**
 **Cc:** `gil.zussman@columbia.edu` *(opcional: el expositor, para que sepa que se pidió)*
 **Asunto:** Permission to display Columbia University marks — academic seminar website (PUCV, Chile)
 

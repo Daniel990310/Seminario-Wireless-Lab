@@ -11,41 +11,39 @@
 import pucvClaro from '~/assets/logos/pucv.png';
 import pucvOscuro from '~/assets/logos/pucv-oscuro.png';
 /*
- * Submarca oficial de la Escuela de Ingeniería Eléctrica, del paquete `logos_submarca` de
- * Normas Gráficas PUCV. Instalada el 2026-08-07.
- *
- * El rastreo del 2026-08-03 la dejó pendiente porque la descarga se cortó dos veces; se
- * cortó una tercera y salió con reanudación por rangos. El paquete pesa **186,1 MB**, que es
- * la razón de los cortes.
- *
- * Variante `AZUL` para fondo claro y `BLANCO` para fondo oscuro, que son las dos que el
- * manual autoriza para cada fondo. No se recolorea ninguna (RF-10.4). El paquete de
- * submarcas **sí** trae versión para fondo oscuro, a diferencia del paquete del escudo
- * principal, que no la tiene y sigue pedida.
+ * Logo EIE entregado por Daniel el 2026-10-01 para sustituir la submarca
+ * horizontal anterior. Se conserva el JPG original, incluido su fondo blanco,
+ * en los dos temas: no se inventa una variante oscura ni se recolorea la marca.
+ * Procedencia y criterios en RF-10, enmienda del 2026-10-01.
  */
-import eieClaro from '~/assets/logos/eie-pucv.png';
-import eieOscuro from '~/assets/logos/eie-pucv-oscuro.png';
+import eieInstitucional from '~/assets/logos/eie-institucional.jpg';
 /*
- * ═══ AQUÍ ESTABAN LOS IMPORTS DE COLUMBIA Y USACH ═══
+ * ═══ COLUMBIA Y USACH VUELVEN, POR DECISIÓN DE LA ORGANIZACIÓN ═══
  *
- * Retirados el 2026-08-25 con las marcas que alimentaban (ver `participants`). Se quitan
- * los imports y no solo su uso porque `astro check` los reportaría como código muerto, y
- * este proyecto lo mantiene en 0 avisos.
+ * Repuestos el **2026-09-25**. Estuvieron fuera desde el 2026-08-25 porque no había
+ * autorización de su titular, y **siguen sin tenerla**: lo que cambió no es el permiso,
+ * es la decisión. Mauricio Rodríguez, director del programa y del seminario, asumió la
+ * responsabilidad de publicar las marcas disponibles públicamente, y Daniel lo instruyó
+ * así. Queda escrito en RF-22 con fecha y nombre, porque una decisión de este tipo no
+ * puede vivir solo en un chat.
  *
- * **Los archivos siguen en `src/assets/logos/`**: `columbia.png`, `columbia-oscuro.png` y
- * `usach.png`. Reponer una marca autorizada es volver a poner su `import` y su línea
- * `logo:`. Lo que hay que saber al hacerlo:
+ * Dos cosas que **no** cambian por esa decisión, y que hay que seguir sabiendo:
  *
- * · **Columbia está con la marca equivocada.** Los archivos son `CUSPS_logo_simple_RGB_*`,
- *   la submarca de la School of Professional Studies, y Gil Zussman es de SEAS. Se
- *   nombraron `columbia.png` / `columbia-oscuro.png` a propósito, para que sustituir el
- *   archivo por el correcto no obligue a tocar código. Originales en `marcas/columbia/`.
- *   Variantes del paquete: `dkblue` para fondo claro, `white` para oscuro.
- * · **USACH no tiene variante para fondo oscuro y hace falta.** Su tinta es negra pura
- *   —`rgb(0,0,0)` en los píxeles opacos `[medido]`— y sobre `#0a1020` desaparece. No se
- *   resuelve recoloreando: alterar el color de una marca va contra el manual de su dueño
- *   (RF-10.4). Está pedida a `imagen@usach.cl`.
+ * · **Columbia está con la marca equivocada, y ahora lo sabemos de su propia boca.** Los
+ *   archivos son `CUSPS_logo_simple_RGB_*`, la submarca de la School of Professional
+ *   Studies; Gil Zussman es de SEAS. El 2026-09-24 Columbia Creative nos respondió que la
+ *   que corresponde es la de **Columbia Engineering** y que Zussman puede descargarla.
+ *   O sea: esto no es «la marca sin permiso», es **la marca de otra facultad**, y a
+ *   cualquiera de Columbia que la vea le va a parecer un error, porque lo es. Se sustituye
+ *   el archivo conservando el nombre en cuanto Zussman mande el correcto, sin tocar código.
+ * · **USACH desaparece en tema oscuro.** Tinta negra pura —`rgb(0,0,0)` en los píxeles
+ *   opacos `[medido]`— que sobre el fondo oscuro da **1,10:1**, por debajo de cualquier
+ *   umbral. Va montada **solo con `logo`**, sin `logoOscuro`, así que en tema oscuro se
+ *   pinta igual y no se ve. Lo arregla una variante blanca derivada del original.
  */
+import columbiaClaro from '~/assets/logos/columbia.png';
+import columbiaOscuro from '~/assets/logos/columbia-oscuro.png';
+import usachClaro from '~/assets/logos/usach.png';
 
 /*
  * Retratos de los expositores, normalizados el 2026-08-09.
@@ -66,8 +64,10 @@ import fotoZussman from '~/assets/expositores/zussman.webp';
 import fotoDu from '~/assets/expositores/du.webp';
 import fotoValenzuela from '~/assets/expositores/valenzuela.webp';
 import fotoFeick from '~/assets/expositores/feick.webp';
+import fotoSiles from '~/assets/expositores/siles.webp';
 import fotoGutierrez from '~/assets/expositores/gutierrez.webp';
 import fotoToledo from '~/assets/expositores/toledo.webp';
+import fotoSiringo from '~/assets/expositores/siringo.webp';
 import { acceso } from './acceso';
 
 /**
@@ -289,30 +289,19 @@ export const comun = {
        * confirmados que envió Mauricio Rodríguez. Ver
        * `specs/gestion/programa-y-expositores.md`.
        *
-       * **Ninguno de los dos tiene retrato**, y es el estado correcto: una foto solo se
-       * publica con autorización expresa de la persona (RF-11.1). Hasta que llegue, la
-       * ficha muestra el monograma de iniciales (RF-11.2).
+       * El retrato de Siles entró el 2026-10-01: él mismo lo envió (`foto_GSiles_USRS.jpg`,
+       * correo del 2026-09-30) para la sección de expositores del sitio, que es la
+       * autorización de RF-11.1. 560×560, recorte cuadrado centrado en la cara y revisado
+       * con la máscara circular. El de Siringo entró el mismo día: Daniel confirmó que
+       * autoriza su publicación (RF-11.1).
        *
-       * Siringo va en el bloque «internacionales» aunque **trabaje en Chile**: el Joint
-       * ALMA Observatory es un consorcio internacional —ESO, NSF y NINS— y así lo agrupó
-       * el organizador. Por lo mismo se queda **sin `country`**: ninguna etiqueta de país
-       * describe una organización intergubernamental, y el campo es opcional justamente
-       * para no tener que inventar una. Si la organización decide que lleve «Chile», se
-       * añade `country: 'CL'` y no hay que tocar nada más.
-       *
-       * La afiliación es la cadena que confirmó el organizador. Matiz que conviene saber
-       * antes de «corregirla»: la página oficial de ALMA lo lista como *Front-End
-       * Technical Lead* del **Joint ALMA Observatory**, y ESO es uno de los tres socios
-       * de ALMA, no su empleador directo.
+       * Siles es el único internacional de los dos: la Universidad Privada Boliviana está
+       * en Bolivia y por eso entra `BO` en `CodigoPais`. **Siringo se movió al bloque
+       * nacional el 2026-09-25**, por decisión de Daniel; el porqué está junto a su ficha.
        */
       {
-        id: 'siringo',
-        name: 'Giorgio Siringo',
-        affiliation: 'ALMA / European Southern Observatory',
-        perfil: 'https://www.almaobservatory.org/en/team/giorgio-siringo/',
-      },
-      {
         id: 'siles',
+        foto: fotoSiles,
         name: 'Gustavo A. Siles Soria',
         affiliation: 'Universidad Privada Boliviana',
         country: 'BO',
@@ -320,6 +309,31 @@ export const comun = {
       },
     ],
     national: [
+      /*
+       * **Nacional, no internacional.** Estuvo tres días en el bloque de internacionales
+       * porque el organizador lo listó junto a los de Estados Unidos y porque el Joint ALMA
+       * Observatory es un consorcio intergubernamental —ESO, NSF y NINS—. Daniel lo corrigió
+       * el 2026-09-25 con el criterio que manda aquí: **el expositor trabaja en Chile**, en
+       * el observatorio de Atacama, y el bloque agrupa por dónde está la persona y no por la
+       * nacionalidad de su empleador.
+       *
+       * Con eso el `country` deja de ser un problema y pasa a ser `CL`: antes se omitía
+       * justamente porque ninguna etiqueta de país describe a un consorcio, pero la etiqueta
+       * describe a la persona.
+       *
+       * La afiliación es la cadena que confirmó el organizador. Matiz que conviene saber
+       * antes de «corregirla»: la página oficial de ALMA lo lista como *Front-End Technical
+       * Lead* del **Joint ALMA Observatory**, y ESO es uno de los tres socios de ALMA, no su
+       * empleador directo.
+       */
+      {
+        id: 'siringo',
+        foto: fotoSiringo,
+        name: 'Giorgio Siringo',
+        affiliation: 'ALMA / European Southern Observatory',
+        country: 'CL',
+        perfil: 'https://www.almaobservatory.org/en/team/giorgio-siringo/',
+      },
       /*
        * Afiliación confirmada el 2026-09-22: el organizador lo lista como **CCTVal** en
        * la nómina oficial de expositores. Cierra A3, que llevaba abierta desde julio
@@ -381,8 +395,7 @@ export const comun = {
     {
       name: 'Escuela de Ingeniería Eléctrica PUCV',
       shortName: 'EIE PUCV',
-      logo: eieClaro,
-      logoOscuro: eieOscuro,
+      logo: eieInstitucional,
       url: 'https://www.eie.ucv.cl',
     },
   ],
@@ -416,33 +429,137 @@ export const comun = {
    * para que la marca no cambie de forma al cambiar de tema.
    */
   participants: [
+    /*
+     * Las dos variantes tienen la misma proporción —2,56, `viewBox` 303,1 × 118,5— así que
+     * la marca no cambia de forma al cambiar de tema. Se eligieron por proporción y no por
+     * el número del archivo: en el paquete de la UC el `-04` azul mide 2,56 y el `-04`
+     * blanco 3,87; el blanco equivalente es el `-03`.
+     *
+     * `escalaOptica: 1.28` es un juicio a ojo y se declara como tal: su escudo es pequeño
+     * sobre una línea de texto fina, casi todo aire, así que a igual área se ve más liviano
+     * que las demás. Contraste `[medido]`: 3,58:1 el azul sobre claro, 19,13:1 el blanco
+     * sobre oscuro. Autorización pedida a `mhola@uc.cl`, **sin respuesta**.
+     */
     {
       name: 'Pontificia Universidad Católica de Chile',
       shortName: 'UC',
-      // Autorización pedida a `mhola@uc.cl`. Archivos listos: `/logos/uc.svg` y
-      // `/logos/uc-oscuro.svg`, con `escalaOptica: 1.28`.
+      logo: '/logos/uc.svg',
+      logoOscuro: '/logos/uc-oscuro.svg',
+      escalaOptica: 1.28,
       url: 'https://www.uc.cl',
     },
+    /*
+     * ⚠️ **Sin `logoOscuro`, y eso se ve.** Su paquete no trae variante blanca y la tinta
+     * negra da **1,10:1** sobre el fondo del tema oscuro `[medido]`: la marca está ahí y no
+     * se distingue. `LogoWall` usa `logo` en los dos temas cuando falta `logoOscuro`, así
+     * que no se rompe nada, simplemente no se ve.
+     *
+     * La salida es derivar la variante blanca del original —negate conservando el alfa, lo
+     * mismo que se hizo con el escudo PUCV—. **Está pendiente**, y hasta entonces esta marca
+     * solo cumple en tema claro. Autorización pedida a `imagen@usach.cl`, **sin respuesta**.
+     *
+     * `escalaOptica: 0.82` porque su imagotipo llena la caja más que los demás y a igual
+     * área se ve más pesado.
+     */
     {
       name: 'Universidad de Santiago de Chile',
       shortName: 'USACH',
-      // Autorización pedida a `imagen@usach.cl`, junto con la variante blanca que su
-      // paquete no trae. Al reponer: `logo: usachClaro` con `escalaOptica: 0.82`.
+      logo: usachClaro,
+      escalaOptica: 0.82,
       url: 'https://www.usach.cl',
     },
+    /*
+     * ═══ LA PRIMERA MARCA DE TERCERO AUTORIZADA ═══
+     *
+     * Concedida por escrito el **2026-09-24** por Cristian Reyes Sandoval, Jefe del Área
+     * de Diseño de la Sub Dirección de Imagen Corporativa de la UTFSM, en respuesta a la
+     * solicitud del comité. Los dos archivos los envió él. Copia del hilo en
+     * `specs/gestion/correos-logos/respuestas/`.
+     *
+     * **Es la marca institucional USM, no la submarca del CCTVal.** Se le preguntó cuál
+     * correspondía —Feick participa por su afiliación al centro— y respondió enviando la
+     * institucional, así que esa es la que se usa. Si más adelante prefieren la submarca,
+     * se sustituyen los dos archivos conservando el nombre y no hay que tocar código.
+     *
+     * Las dos variantes tienen **el mismo `viewBox`** —305,85 × 61,76, proporción 4,95—
+     * así que la marca no cambia de forma al cambiar de tema, que es el defecto que tiene
+     * la UC. Una sola tinta cada una: `#1d1d1b` la clara y `#fff` la oscura `[medido]`.
+     *
+     * **Nos autorizó además a recolorearla** para ajustarla al azul del sitio —«si desean
+     * hacer el cambio de color para mantener la paleta cromática del sitio no veo ningún
+     * problema»—. **No se ejercita ese permiso**, y no por inercia: con las dos variantes
+     * ya cubrimos los dos fondos, así que recolorear no resolvería nada que no esté
+     * resuelto, y una marca en un color que su dueño no usa se ve como un error aunque
+     * esté permitida. El permiso queda registrado por si alguna vez hace falta.
+     *
+     * **Pendiente que nace con esto:** pidieron ver la integración —«quedamos atentos a la
+     * integración para ver que esté utilizada de manera correcta»—. Hay que escribirle a
+     * Cristian con el enlace cuando esté desplegada.
+     */
+    {
+      name: 'Universidad Técnica Federico Santa María',
+      shortName: 'UTFSM',
+      logo: '/logos/utfsm.svg',
+      logoOscuro: '/logos/utfsm-oscuro.svg',
+      url: 'https://www.usm.cl',
+    },
+    /*
+     * Un solo archivo para los dos temas, y esta vez no es una carencia: su tinta es el azul
+     * `#005aff`, que da **4,69:1** sobre el fondo claro y **3,56:1** sobre el oscuro
+     * `[medido]`. Las dos por encima del umbral de objeto gráfico, así que la marca se ve
+     * bien en ambos sin necesitar variante.
+     *
+     * Sus términos de uso dicen que el acceso al sitio **no concede derecho a usar ninguna
+     * marca** y exigen consentimiento escrito previo. No lo tenemos: de los siete titulares,
+     * este es el que lo niega de forma más explícita.
+     */
     {
       name: 'Nokia Bell Labs',
       shortName: 'Nokia Bell Labs',
-      // Sus términos: el acceso al sitio no concede derecho a usar ninguna marca.
-      // Archivo listo: `/logos/nokia-bell-labs.svg`.
+      logo: '/logos/nokia-bell-labs.svg',
       url: 'https://www.bell-labs.com',
     },
+    /*
+     * Columbia contestó el 2026-09-24 y **el archivo hay que pedírselo a Zussman**:
+     * Geoffrey Allen, de Columbia Creative, responde que cualquier docente puede
+     * descargar la marca de Columbia Engineering desde `downloads.visualidentity.columbia.edu`.
+     *
+     * Confirma de paso que teníamos razón en el error que les señalamos: la marca que
+     * corresponde es la de **Columbia Engineering (SEAS)**, no la de CUSPS que teníamos.
+     *
+     * Lo que **todavía no hay** es una autorización explícita por escrito para mostrarla
+     * en un sitio de terceros. Contestaron nuestra petición —que describía el uso
+     * completo— indicándonos cómo conseguir el archivo, lo que se lee razonablemente como
+     * consentimiento; pero una línea suya diciéndolo cuesta nada y vale mucho más que esa
+     * lectura nuestra. Ver `specs/gestion/correos-logos/respuestas/`.
+     */
     {
       name: 'Columbia University',
       shortName: 'Columbia',
-      // Requiere permiso de su Office of General Counsel. **Y hay que pedirles el
-      // archivo correcto**: el que tenemos es de CUSPS, no de SEAS.
+      // ⚠️ Estos archivos son de CUSPS, no de SEAS. Ver el bloque de imports: es la marca
+      // de otra facultad, y Columbia nos lo confirmó por escrito el 2026-09-24. Sustituir
+      // por el archivo de Columbia Engineering en cuanto Zussman lo mande.
+      logo: columbiaClaro,
+      logoOscuro: columbiaOscuro,
       url: 'https://www.columbia.edu',
+    },
+    /*
+     * Las dos instituciones que entraron con la nómina definitiva. Ninguna tiene todavía
+     * autorización ni archivo, así que pintan el marcador de posición, igual que las
+     * demás. Ver `specs/gestion/correos-logos/`.
+     */
+    {
+      name: 'ALMA / European Southern Observatory',
+      shortName: 'ALMA',
+      // Su aviso de copyright exige consentimiento escrito previo para el logo. Pedido a
+      // `copyright@alma.cl`.
+      url: 'https://www.almaobservatory.org',
+    },
+    {
+      name: 'Universidad Privada Boliviana',
+      shortName: 'UPB',
+      // No publica contacto de marca; la vía es el propio Dr. Siles.
+      url: 'https://www.upb.edu',
     },
   ],
 
@@ -482,6 +599,43 @@ export const comun = {
     /** La fórmula exacta que exige ANID. Se compone con `concurso`. */
     mencion: 'Financiado por la Agencia Nacional de Investigación y Desarrollo, ANID',
   },
+
+  /**
+   * Los demás financiadores del seminario, **al mismo nivel que ANID**.
+   *
+   * Incorporado el 2026-09-25 por indicación de Mauricio Rodríguez. La primera versión de
+   * ese día lo puso como «red a la que el seminario se adscribe», en tipografía menor y
+   * debajo del proyecto: **estaba mal y Daniel lo corrigió el mismo día**. CYTED financia,
+   * no acoge. Se deja escrito porque el error es fácil de repetir: el código lleva `RT` de
+   * *Red Temática* y eso invita a leerlo como pertenencia en vez de como financiamiento.
+   *
+   * Por qué ANID sigue aparte y no entra en esta lista: su mención tiene **nomenclatura
+   * obligatoria** —la fórmula exacta que exige su manual (RNF-8.1)— y su bloque la compone
+   * con `concurso`. Meterlos en la misma estructura obligaría a que ANID renunciara a su
+   * fórmula o a que los demás cargaran con un campo que no usan.
+   *
+   * **Nada de esto se traduce**, por lo mismo que la mención de ANID: el nombre de una red
+   * CYTED es su nombre oficial, en español, y traducirlo produciría una red que no existe.
+   *
+   * `logo` es opcional y hoy **está vacío**: CYTED no publica un archivo utilizable —solo un
+   * JPEG sin transparencia y una marca conmemorativa de 40 años `[medido: 2026-09-25]`—.
+   * Cuando llegue el archivo bueno es una línea aquí.
+   */
+  financiadores: [
+    {
+      agency: {
+        name: 'Programa Iberoamericano de Ciencia y Tecnología para el Desarrollo',
+        shortName: 'CYTED',
+        url: 'https://www.cyted.org',
+      },
+      project: {
+        code: '525RT0175',
+        acronimo: 'DISeCom',
+        name: 'Gemelos digitales integrando la detección y las comunicaciones inalámbricas en Iberoamérica',
+        periodo: '2025–2028',
+      },
+    },
+  ],
 
   /**
    * Inscripción (RF-3). **Un enlace saliente a un formulario de Google**, no un

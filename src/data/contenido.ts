@@ -129,6 +129,10 @@ export function contenido(lang: Idioma) {
       mencion: `${comun.funding.mencion} / ${comun.funding.concurso}`,
     },
 
+    // Los demás financiadores viajan tal cual: nombre oficial, sigla y código no se
+    // traducen, por lo mismo que la mención de ANID.
+    financiadores: comun.financiadores,
+
     network: {
       hub: { ...comun.network.hub, detail: t.network.hubDetail, role: t.network.hubRole },
       foreign: comun.network.foreign.map(nodo),

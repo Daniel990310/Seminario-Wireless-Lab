@@ -19,6 +19,58 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Logo EIE y flyer · 2026-10-01 · cambio local sin desplegar
+
+[verificado] Daniel entregó el logo institucional cuadrado de la EIE en el chat de
+Codex y pidió usarlo también en la página. `comun.ts` ahora importa
+`src/assets/logos/eie-institucional.jpg`; el original conserva su fondo blanco en
+ambos temas y reemplaza las dos variantes de la submarca horizontal anterior.
+El requisito quedó registrado en RF-10, enmienda del 2026-10-01.
+El flyer refinado se guarda en el directorio de outputs del chat, fuera del sitio.
+No se ha desplegado ni modificado Cloudflare.
+
+
+## Siles y Toledo · 2026-10-01 · en la rama, sin empujar ni desplegar
+
+[verificado] Del correo de Mauricio (reenvíos del 30-sep): charla de Siles en `charlas.ts`
+(recibida 2026-09-30); retratos de Siles (`foto_GSiles_USRS.jpg`) y Toledo (`kt.jpg`),
+ambos enviados por ellos al organizador, a 560×560 con máscara circular revisada. La
+reseña de Siles (ES/EN) se reescribió con **su propia bio**: la anterior decía «Ka, Q, V y
+W, a más de 4.000 m», que él no afirma. `npm run verify` en verde, anti-slop sin altos.
+**Pendiente:** el `.docx` de Toledo (`Seminar_PUCV_2026.docx`, 27-sep) no está en el repo;
+sin él falta su charla y su reseña actual (Fondecyt, drones) no está contrastada. Tampoco
+han llegado Zussman, Du, Siringo y Gutiérrez. El flyer se hace aparte.
+
+## Reseña de Mauricio, foto de Siringo · 2026-10-01 · esta sesión termina aquí, sigue otra
+
+Esta sesión de Claude Code se cierra y Daniel continúa en otra. Lo que queda hecho, en
+la rama `ajustes/logo-eie-organizacion`, sin desplegar ni empujar:
+
+- **«El seminario»** (`about.paragraphs` en `es.ts` y `en.ts`) lleva dos párrafos nuevos.
+  El primero es la **razón del seminario y es un texto de ejemplo mío, no de Mauricio**:
+  [supuesto] hay que mostrárselo y cambiarlo por la suya. El segundo es la reseña de
+  Mauricio Rodríguez Guzmán: profesor de la EIE, director del Doctorado en Ingeniería
+  Eléctrica, doctor en Ingeniería Electrónica (UTFSM), líneas de telecomunicaciones
+  inalámbricas, propagación y microondas, y director del Laboratorio de Comunicaciones
+  Inalámbricas. [verificado] en <https://eie.pucv.cl/nuestro-equipo/mauricio-rodriguez-guzman/>,
+  salvo «dirige el laboratorio», que Daniel confirmó de palabra.
+- **Foto de Giorgio Siringo** (`src/assets/expositores/siringo.webp`, 560×560, recorte
+  centrado en la cara, cabeza completa bajo la máscara circular). Daniel confirmó que
+  autoriza publicarla (RF-11.1). Falta saber si pide crédito. [supuesto] que la imagen es
+  suya: la entregó Daniel y no se pudo comprobar.
+- `astro build` y el scanner anti-slop en verde. **No se corrió `npm run verify`.**
+
+**Pendiente**
+1. Foto de Gustavo A. Siles Soria (autoriza; falta el archivo). Cuando llegue: guardarla
+   como `siles.webp` en `src/assets/expositores/`, importarla en `comun.ts` y repetir la
+   revisión con la máscara circular.
+2. Razón del seminario: que Mauricio la dicte o apruebe.
+3. Flyer: Mauricio lo pidió para difusión e impresión. El de la sesión de Codex está en
+   el directorio de outputs de ese chat, fuera del repositorio; no se vio desde aquí.
+4. Mauricio también sugirió reforzar su protagonismo; se resolvió con la reseña y no con
+   una página de comité organizador (le pareció «más operacional»).
+5. `npm run verify` antes de desplegar. Nadie despliega salvo Daniel.
+
 ## ⚠️ Lo primero, si llegas nuevo
 
 Lee [`ONBOARDING.md`](ONBOARDING.md). Dice qué leer y en qué orden, cómo montar el
@@ -163,7 +215,105 @@ textuales de los resúmenes, en **[`specs/gestion/programa-y-expositores.md`](sp
 dejó de cubrir nada. T7 fallaba **desde el mismo despliegue que se dio por verde**. Ya
 está corregido con un patrón de correo genérico.
 
-### Correos de logos, listos para enviar · `specs/gestion/correos-logos/`
+## Segundo financiamiento y un expositor que cambia de bloque · 2026-09-25
+
+**CYTED financia, al mismo nivel que ANID**: *DISeCom — Gemelos digitales integrando la
+detección y las comunicaciones inalámbricas en Iberoamérica*, **525RT0175**, 2025–2028.
+
+La primera versión de ese día lo puso como «red a la que el seminario se adscribe», en letra
+pequeña y debajo del proyecto FOVI. **Estaba mal y Daniel lo corrigió el mismo día.** Era un
+error de fondo y no de maqueta: CYTED paga, no acoge. Queda escrito porque es fácil de
+repetir —el código lleva `RT` de *Red Temática* y eso invita a leerlo como pertenencia—.
+
+Vive en `comun.financiadores`, que es una **lista**: un tercer financiador es una línea de
+datos y no tocar el marcado. ANID sigue aparte porque su mención tiene **nomenclatura
+obligatoria** y su bloque la compone con el concurso; meterlos en la misma estructura
+obligaría a que ANID renunciara a su fórmula. El nombre del proyecto CYTED no se traduce,
+por lo mismo que la mención de ANID.
+
+**Falta el logo de CYTED, y no por descuido**: no publican un archivo utilizable. En su sitio
+solo hay un **JPEG sin transparencia** y una marca conmemorativa de 40 años `[medido]`, y
+ninguna de las dos sirve para un sitio con tema claro y oscuro. Mientras tanto el hueco lo
+ocupa la sigla **a tamaño de marca**, así que cuando llegue el archivo la composición no se
+mueve.
+
+**Falta también el logo del CCTVal**, que pidió Mauricio. Ese sí tiene camino conocido: el
+kit digital de la USM dice que las **submarcas institucionales se piden a Cristian Reyes**,
+que es quien ya nos autorizó la marca institucional. Va en el mismo correo que el acuse de
+integración.
+
+⚠️ **`cctval.usm.cl` tiene el certificado TLS vencido** `[medido: 2026-09-25]`. Se topó al
+buscar su logo. No nos afecta —no enlazamos ese dominio— pero es la institución de un
+expositor y conviene que alguien de allá lo sepa.
+
+**Giorgio Siringo pasa a expositor nacional**, por decisión de Daniel. Estuvo tres días
+entre los internacionales porque el organizador lo listó junto a los de Estados Unidos y
+porque ALMA es un consorcio intergubernamental. Manda dónde trabaja la persona: Atacama. Con
+eso su `country` deja de ser un problema y pasa a `CL` —se omitía porque ninguna etiqueta de
+país describe a un consorcio, pero sí describe a alguien—.
+
+## ⛔ RF-22 derogada · las marcas se publican sin autorización · 2026-09-25
+
+**Decisión de Mauricio Rodríguez**, que asumió la responsabilidad por escrito; Daniel
+instruyó aplicarla. UC, USACH, Nokia y Columbia pasan de marcador de posición a marca
+publicada **sin permiso de ninguno de los cuatro**. El registro completo, con lo que la
+decisión no puede cambiar, está en el encabezado de RF-22.
+
+**Cómo quedó la pared:** cinco marcas pintadas —UTFSM (la única autorizada), UC, Nokia,
+Columbia, USACH— y dos marcadores, ALMA y la UPB. `verify:todo` en verde.
+
+Tres defectos que se publican a sabiendas, y conviene tenerlos a la vista:
+
+| Qué | Por qué |
+|---|---|
+| **Columbia sale con la marca de otra facultad** | el archivo es de CUSPS y Zussman es de SEAS; Columbia nos lo dijo por escrito el 24 |
+| **USACH no se ve en tema oscuro** | tinta negra pura, **1,10:1** `[medido]`; falta derivar la variante blanca |
+| **ALMA y UPB siguen sin logo** | no es la regla: **no hay archivo**. De ALMA, ESO solo publica la variante blanca, invisible en tema claro |
+
+Lo que arregla el primero es un correo de un día: que Zussman mande el archivo de Columbia
+Engineering, que él sí puede descargar.
+
+## ✅ Primera marca de tercero autorizada y publicada · 2026-09-25
+
+**La UTFSM autorizó el uso de su marca y mandó los archivos**, el 2026-09-24, menos de tres
+horas después de pedírselo. Es la primera de las siete: desde agosto el sitio mostraba
+marcador de posición en todas.
+
+| Qué | Dónde queda |
+|---|---|
+| `/logos/utfsm.svg` y `/logos/utfsm-oscuro.svg`, vector puro, una tinta cada uno | contraste **14,7:1** y **19,1:1** `[medido]`, muy por encima del umbral |
+| Mismo `viewBox` en las dos variantes | la marca no cambia de forma al cambiar de tema, que es el defecto del paquete de la UC |
+| **UTFSM, ALMA y la UPB** entran en la pared de logos | faltaban: eran cuatro instituciones para ocho expositores |
+| Autorizaron **recolorear** la marca y **no se ejerce** | con las dos variantes no hace falta; RF-10.4 sigue intacta |
+
+**Lo que contestó cada titular está en
+[`specs/gestion/correos-logos/respuestas/`](specs/gestion/correos-logos/respuestas/README.md)**,
+que es el respaldo de cada marca publicada.
+
+### Lo que queda abierto
+
+- **El acuse de integración a Cristian Reyes lo manda Daniel.** Ellos lo pidieron —«quedamos
+  atentos a la integración para ver que esté utilizada de manera correcta»—, así que no es
+  pedirles nada: es enseñarles cómo quedó. Texto al final del archivo 05.
+
+- **Columbia deriva el archivo a Zussman** y **todavía no autoriza explícitamente**. Hay dos
+  textos listos en el archivo 01: uno para Zussman pidiéndole el archivo, otro de una línea
+  para que Columbia Creative confirme por escrito. **Hasta esa línea, la marca no se
+  publica**, aunque tengamos el archivo.
+
+### Y un error propio, para no repetirlo
+
+`licensing@columbia.edu` **rebotó**: `550 5.1.1 User Unknown`. La puse yo desde un resumen
+de buscador en vez de la página del titular — justo lo que este proyecto dice no hacer. La
+que sí salía de la guía de marca, `creative@columbia.edu`, contestó en seis horas.
+
+De paso, `verify:idioma` volvió a fallar por la misma clase de agujero de siempre: al entrar
+ALMA en la pared de logos, su forma corta aparecía igual en los dos idiomas y T7 la marcó
+como traducción olvidada. **Es la tercera vez que ese verificador cae al añadir un dato**;
+si vuelve a pasar, conviene que la lista de coincidencias legítimas lea los nombres propios
+desde `comun.ts` en lugar de repetirlos a mano.
+
+### Correos de logos · `specs/gestion/correos-logos/`
 
 Ocho archivos, uno por institución, **para copiar y pegar**: destinatario, asunto y cuerpo
 con la firma puesta, la dirección del sitio y los ocho expositores. Índice y estado de cada
@@ -2114,3 +2264,13 @@ repositorio, y en particular:
   antes; ver la advertencia del artefacto de 67 nodos en `specs/fuentes.md`.
 - No implementar nada que no esté en `requirements.md`. Si hace falta algo nuevo,
   primero se escribe el requisito.
+
+### Validación del logo EIE · 2026-10-01
+
+[medido] Rama local `ajustes/logo-eie-organizacion`, creada desde el HEAD existente
+para conservar sus cinco commits locales. `astro check`: 0 errores, 0 advertencias,
+6 sugerencias existentes. Build con `SITE_URL=https://bcsensing.org` y generación
+CSP completados; los siete verificadores de `verify:todo` terminaron en verde.
+[medido] Capturas revisadas a 390 y 1440 px, temas claro y oscuro: el nuevo logo
+carga en los cuatro casos y mantiene proporción (106,5625 × 107 px). La copia JPG
+coincide byte por byte con el adjunto. Cambio local, sin commit, push ni despliegue.

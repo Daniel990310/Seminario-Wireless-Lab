@@ -106,3 +106,45 @@ enviar.
   pegarle además el contenido de cada archivo, porque el repositorio no le sirve de nada.
 - **Los dos mensajes son peticiones, no avisos.** Ninguno de los nueve correos de esta
   carpeta se envía solo, y ese era el agujero: estaban listos y no había nadie asignado.
+
+---
+
+## C · Para Mauricio · puesta al día del 2026-09-25
+
+Reemplaza al mensaje A si ese todavía no se mandó: dice lo mismo sobre los logos, pero ya
+con lo que contestaron la UTFSM y Columbia, y con el plazo del 28 encima.
+
+```
+Profesor, le cuento cómo va el sitio.
+
+Ya está en bcsensing.org con los ocho expositores, con su afiliación y su reseña.
+Feick quedó como CCTVal, que era lo que faltaba confirmar.
+
+De los logos institucionales: la UTFSM autorizó el uso y mandó los archivos, así
+que su marca ya está publicada; fue la primera de las siete. Columbia también
+contestó, pero el archivo solo lo pueden descargar sus académicos, así que se lo
+voy a pedir directamente al profesor Zussman.
+
+Las dos que siguen sin puerta de entrada son Nokia Bell Labs y la Universidad
+Privada Boliviana: ninguna publica a quién pedirle el permiso. Ahí sí necesito que
+la petición salga de usted, en el mismo correo que ya les mandó a los ocho. Le pasé
+un párrafo en inglés listo para pegar; si no alcanzó a mandarlo, se lo reenvío.
+
+Y un par de cosas del plazo del lunes 28:
+
+- Faltan seis resúmenes: Zussman, Du, Siringo, Siles, Gutiérrez y Toledo. Solo
+  llegaron los de Valenzuela y Feick.
+- Faltan las fotos de Siringo y Siles, que son los únicos dos que hoy aparecen con
+  monograma en vez de retrato.
+- ¿Me puede reenviar el archivo de la foto de Valenzuela? Venía adjunta a su correo
+  (RAV Photo.jpg) y no me llegó el original, solo la miniatura.
+
+Cualquier cosa me dice.
+```
+
+### Notas
+
+- **Es una puesta al día, no una petición sola.** Tiene tres peticiones concretas —el
+  párrafo de logos, el plazo, la foto de Valenzuela— y ninguna es genérica.
+- **La foto de Valenzuela es la petición más barata de las tres y la más fácil de olvidar**:
+  ya tiene la autorización del retratado, lo único que falta es el archivo.

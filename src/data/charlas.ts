@@ -56,7 +56,8 @@ export const FORMATO_SESION = { charlaMin: 45, preguntasMin: 15 } as const;
 export const PLAZO_MATERIAL_ISO = '2026-09-28';
 
 /**
- * Dos de ocho. Faltan Zussman, Du, Siringo, Siles, Gutiérrez y Toledo.
+ * Tres de ocho. Faltan Zussman, Du, Siringo, Gutiérrez y Toledo (el de Toledo llegó el
+ * 2026-09-27 como .docx adjunto, que no está en el repositorio).
  *
  * Es `Partial` a propósito: lo normal es que falten, y obligar a que estén las ocho
  * dejaría el archivo sin compilar durante toda la semana de espera.
@@ -75,5 +76,12 @@ export const charlasConfirmadas: Partial<Record<IdExpositor, Charla>> = {
     abstract:
       'We present empirically-based statistical wireless channel models, with an emphasis on our recent work at mmWave frequencies. Accuracy and robustness of our results are achieved thanks to massive amounts of data collected in a wide range of settings. We show how this has been achieved using our own custom-designed portable channel sounders, built specifically to accurately measure path-loss with high sampling rates and a very large link budget. Our work has spanned frequency bands from 3.5 GHz to 140 GHz and includes most critical parameters needed for wireless service planning such as propagation loss versus distance, antenna gain degradation from multipath and fade margins. We also include recent results on backscatter power, relevant when evaluating the feasibility of joint communication and sensing.',
     recibida: '2026-09-22',
+  },
+  siles: {
+    title:
+      'Earth–space and terrestrial atmospheric propagation experiments and opportunities for meteorological sensing',
+    abstract:
+      'Radiowave propagation through the atmosphere is usually viewed as a source of impairments for communication systems. However, the same propagation effects can also contain information about the environment. This talk presents both perspectives through an overview of approximately three decades of atmospheric propagation experiments carried out at the Universidad Politécnica de Madrid (UPM). The first part will review UPM measurement campaigns over Earth–space and terrestrial paths at frequencies above 30 GHz, with particular attention to the long-term 39.4 GHz Q-band beacon experiment in Madrid using the Alphasat satellite. The second part will introduce, from a theoretical perspective and drawing on published literature, the opportunistic use of communication links for meteorological sensing, focusing on the retrieval of rainfall rate and atmospheric water vapour from propagation attenuation.',
+    recibida: '2026-09-30',
   },
 };

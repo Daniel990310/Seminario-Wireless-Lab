@@ -608,7 +608,7 @@ estilos.
    > política como más estricta de lo que es. El resto sí queda cerrado: sin
    > `'unsafe-inline'` en `script-src`, `object-src 'none'`, `form-action 'none'` —el
    > sitio no tiene formularios `[medido]`— y `frame-src` limitado a
-   > `https://www.openstreetmap.org`, que es el único tercero del sitio y solo se carga
+   > `https://www.google.com`, que es el único tercero del sitio y solo se carga
    > por acción explícita (RNF-4.2).
    >
    > `frame-ancestors` se declara `'self'` para **concordar** con el

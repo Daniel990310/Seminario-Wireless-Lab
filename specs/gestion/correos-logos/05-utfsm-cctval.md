@@ -1,5 +1,15 @@
 # 05 · CCTVal · Universidad Técnica Federico Santa María — Rodolfo Feick
 
+> ✅ **RESUELTO el 2026-09-24, en menos de tres horas.** Cristian Reyes autorizó el uso y
+> envió los dos archivos; están publicados como `/logos/utfsm.svg` y `/logos/utfsm-oscuro.svg`.
+> **Es la primera marca de tercero autorizada del proyecto.** Detalle, medidas y las tres
+> decisiones que trajo, en [`respuestas/`](respuestas/README.md).
+>
+> **Queda el acuse de integración, y lo manda Daniel.** Lo pidieron ellos; el texto está al
+> final de este archivo.
+
+---
+
 **Para:** `cristian.reyessa@usm.cl` — Cristian Reyes, Dirección General de Comunicaciones
 **Cc:** `rodolfo.feick@usm.cl` *(opcional: el expositor)*
 **Asunto:** Solicitud de autorización de uso de marca USM y submarca CCTVal — seminario Beyond Connectivity (PUCV, FOVI250222)
@@ -69,3 +79,52 @@ contact@bcsensing.org · https://bcsensing.org
   propio lineamiento advierte que puede denegarse.
 - Tienen además un **formulario en esa misma página** para enviar piezas gráficas a
   autorización. Si prefieren esa vía a la del correo, se usa ese y se adjunta la captura.
+
+---
+
+## A enviar · acuse de integración · lo manda Daniel
+
+Lo pidieron ellos: *«Quedamos atentos a la integración para ver que esté utilizada de manera
+correcta»*. Ya está desplegado, así que puede mirarlo cuando quiera. **Responder sobre el
+mismo hilo**, no abrir uno nuevo.
+
+> Estimado Cristian:
+>
+> Muchas gracias por la rapidez y por los archivos.
+>
+> La marca ya está integrada en el sitio: **https://bcsensing.org**, en la sección de
+> instituciones, al final de la página.
+>
+> Le cuento cómo quedó, por si quieren revisarlo:
+>
+> - Se usan **sus dos variantes tal cual**, sin recolorear. Finalmente no ejercimos el
+>   permiso de cambio de color que nos dio: con las dos versiones quedan cubiertos los dos
+>   temas del sitio, y preferimos mostrar la marca en su color.
+> - La versión `_N` va sobre el tema claro y la `_B` sobre el oscuro. El contraste medido es
+>   de 14,7:1 y 19,1:1 respectivamente, bastante por encima del mínimo de accesibilidad.
+> - Se muestra sin alterar, enlazada a usm.cl, y sin ningún texto que sugiera patrocinio.
+> - El sitio tiene un selector de tema arriba a la derecha, por si quiere ver las dos.
+>
+> Si algo no está como corresponde, dígamelo y lo corregimos.
+>
+> Cordialmente,
+>
+> **Daniel Caignet González**
+> Comité organizador, *Beyond Connectivity 2026*
+> Escuela de Ingeniería Eléctrica, Pontificia Universidad Católica de Valparaíso
+> contact@bcsensing.org · https://bcsensing.org
+
+> **Añadir a ese mismo correo: la submarca del CCTVal.** Mauricio la pidió el 2026-09-25.
+> Cristian ya contestó la pregunta de «¿cuál corresponde?» enviando la institucional, así
+> que esto es una petición nueva y explícita, no una repregunta. El kit digital de la USM
+> dice que **las submarcas institucionales se solicitan justamente a él**, así que el canal
+> es el correcto. Párrafo para intercalar antes de la despedida:
+>
+> > Una última cosa, si es posible: el comité nos pidió incorporar además **la submarca del
+> > CCTVal**, porque es el centro por el que participa el Dr. Feick. ¿Nos la podría facilitar
+> > por esta misma vía, también en sus variantes para fondo claro y oscuro? Entiendo por el
+> > kit digital que las submarcas institucionales se solicitan a usted.
+> >
+> > Y un aviso que puede serles útil, de paso: al revisar el sitio del CCTVal nos encontramos
+> > con que **`cctval.usm.cl` tiene el certificado TLS vencido**, así que el navegador
+> > muestra advertencia de seguridad al entrar. Se lo comentamos por si no lo tenían visto.

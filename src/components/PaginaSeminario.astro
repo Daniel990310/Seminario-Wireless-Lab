@@ -26,7 +26,7 @@ interface Props {
 }
 
 const c = contenido(Astro.props.lang);
-const { program, speakers, topics, venue, organizers, participants, funding, about, ui } = c;
+const { program, speakers, topics, venue, organizers, participants, funding, financiadores, about, ui } = c;
 
 /*
  * Dimensiones intrínsecas de un SVG de `/public`, leídas de su `viewBox` en el build.
@@ -371,6 +371,51 @@ const hasProgram = program.days.length > 0;
               </p>
             </div>
           </div>
+
+          {/*
+            Los demás financiadores, **al mismo nivel que ANID y no debajo suyo**.
+
+            La primera versión los puso dentro del bloque de ANID, en letra pequeña y con
+            el rótulo «Adscrito a la red». Era un error de fondo, no de maqueta: CYTED
+            financia el seminario igual que ANID, y ponerlo como pertenencia lo degradaba
+            a nota al pie. Corregido el mismo día.
+
+            Por eso cada uno repite la estructura del bloque de arriba —hueco de marca a la
+            izquierda, texto a la derecha— y va separado por un filete, que es lo que dice
+            «otro financiador» sin necesidad de un segundo encabezado.
+          */}
+          {financiadores.map((f) => (
+            <div class="mt-8 grid gap-8 border-t border-border pt-8 sm:grid-cols-[auto_1fr] sm:items-center sm:gap-10">
+              <a
+                href={f.agency.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="block opacity-80 transition-opacity hover:opacity-100"
+                title={f.agency.name}
+              >
+                {/*
+                  Sin archivo de marca, la sigla ocupa su lugar **a tamaño de marca**, no
+                  como un texto suelto: el hueco mide lo mismo que el logo de ANID, así que
+                  cuando llegue el archivo la composición no se mueve.
+                */}
+                <span class="flex h-16 items-center font-display text-2xl font-semibold tracking-tight text-foreground sm:h-20 sm:text-3xl">
+                  {f.agency.shortName}
+                </span>
+              </a>
+              <div class="min-w-0">
+                <p class="font-display text-base font-semibold text-foreground">
+                  {ui.organizacion.financia} {f.agency.shortName} — {f.agency.name}
+                </p>
+                <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {ui.organizacion.proyecto}{' '}
+                  <span class="font-mono text-primary">{f.project.code}</span>,
+                  <span class="font-semibold text-foreground"> {f.project.acronimo}</span>:
+                  <span class="italic"> {f.project.name}</span>{' '}
+                  <span class="whitespace-nowrap">({f.project.periodo})</span>.
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </Section>

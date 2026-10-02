@@ -199,6 +199,7 @@ export interface ContenidoIdioma {
       participantes: string;
       financia: string;
       proyecto: string;
+
       /**
        * Leyenda del marcador de una marca sin autorización todavía. Obligatoria en los dos
        * idiomas a propósito: un marcador que en inglés saliera en español leería como un

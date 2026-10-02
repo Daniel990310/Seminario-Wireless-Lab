@@ -457,6 +457,47 @@ costó 11 nodos.
 
 ## RF-22 · Una marca de tercero no se publica sin autorización de su titular
 
+> ## ⛔ DEROGADA EL 2026-09-25 POR DECISIÓN DE LA ORGANIZACIÓN
+>
+> **Quién:** Mauricio Rodríguez, director del programa de doctorado y del seminario, que
+> asumió por escrito la responsabilidad de publicar las marcas disponibles públicamente.
+> Daniel Caignet instruyó aplicarlo y declaró descargada su propia responsabilidad.
+>
+> **Qué cambia en el sitio:** UC, USACH, Nokia Bell Labs y Columbia pasan de marcador de
+> posición a marca publicada, **sin autorización de ninguno de los cuatro**. La UTFSM no
+> entra en esto: ella sí autorizó, el 2026-09-24.
+>
+> **Esto no se borra, se deroga.** El requisito queda entero más abajo porque describe una
+> medición real y un razonamiento que sigue siendo correcto; lo que cambió no es el análisis
+> sino la decisión sobre el riesgo, que es de la organización y no del código. Reponer la
+> regla es volver a quitar las líneas `logo:` de esas cuatro entradas en `comun.ts`.
+>
+> ### Lo que la derogación no puede cambiar, y hay que seguir sabiendo
+>
+> 1. **La distinción que sostenía el requisito sigue siendo cierta**: que alguien asuma la
+>    responsabilidad cubre el riesgo de quien la asume, **no convierte a nadie en dueño de
+>    una marca ajena**, y la exposición queda en la PUCV por ser su sitio. Está dicho y no
+>    se repite.
+> 2. **Columbia se publica con la marca equivocada, y no por falta de permiso.** El archivo
+>    es el de CUSPS —School of Professional Studies— y Zussman es de SEAS. El **2026-09-24**
+>    Columbia Creative nos respondió que la que corresponde es la de **Columbia Engineering**
+>    y que Zussman puede descargarla. O sea: el error es conocido, está documentado y sigue
+>    publicado. Se arregla sustituyendo el archivo, sin tocar código.
+> 3. **USACH no se ve en tema oscuro.** Tinta negra pura, **1,10:1** sobre el fondo oscuro
+>    `[medido]`. Va sin `logoOscuro`, así que en ese tema está y no se distingue. Pendiente
+>    derivar la variante blanca.
+> 4. **Nokia es el titular que más explícitamente lo niega**: sus términos dicen que el
+>    acceso a su sitio no concede derecho sobre ninguna marca y exigen consentimiento escrito
+>    previo.
+> 5. **ALMA y la UPB siguen con marcador de posición**, y no por la regla: **no tenemos
+>    archivo**. De ALMA, ESO solo publica la variante de contorno blanco, que sobre el tema
+>    claro —el de por defecto— no se vería. De la UPB no hay archivo localizable.
+>
+> Lo que cada titular contestó está en
+> [`../../gestion/correos-logos/respuestas/`](../../gestion/correos-logos/respuestas/README.md).
+> Las solicitudes enviadas y sin respuesta —UC y USACH— no se retiran: si alguna contesta
+> negando el permiso, esa marca sale.
+
 Origen: Daniel, 2026-08-25. Se escribe **después** del código, y se declara así, como se
 hizo con RF-7, RF-8 y RNF-7. Lo que lo motivó no fue una idea de diseño sino una medición.
 
@@ -541,3 +582,21 @@ Lo que ya se sabe que habrá que medir, venga la dirección que venga:
   `PropagationFigure` y `CollaborationNetwork`.
 - **Que cada cadena nueva exista en `es.ts` y `en.ts`**, o `verify:idioma` falla.
 - **Zoom de texto al 200 % sin desbordamiento horizontal** en los dos anchos.
+
+
+## RF-10 · Sustitución del logo EIE indicada por Daniel · 2026-10-01
+
+[verificado] Daniel entregó en el chat de Codex el logo cuadrado azul y rojo de la
+Escuela de Ingeniería Eléctrica e indicó sustituirlo en el sitio y en el flyer.
+La imagen adjunta es la fuente; no se reconstruye ni recolorea la marca.
+
+| Criterio | Comprobación |
+| --- | --- |
+| La EIE usa `src/assets/logos/eie-institucional.jpg`, copiado sin alterar del adjunto, en ambas versiones de idioma | identidad del archivo y build |
+| Ambos temas muestran el mismo original con su fondo blanco, conservando proporciones; se retira la variante de la submarca anterior | inspección del dato y capturas en claro/oscuro a 390 y 1440 px |
+| Las otras instituciones y el destino del enlace EIE no cambian | diff |
+| La sustitución compila, no introduce errores de tipos y pasa los verificadores del sitio | `check`, `build`, `verify:todo` |
+
+El adjunto mide 366 × 367 px [medido: PIL]. Esta entrega no aporta una variante
+transparente ni una versión blanca: se conserva el original sobre blanco también
+en tema oscuro. La sustitución local no implica un despliegue.

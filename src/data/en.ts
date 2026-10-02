@@ -68,8 +68,8 @@ export const en = {
     },
     siles: {
       resena:
-        'Director of the Radiocommunications Laboratory at Universidad Privada Boliviana and research professor. PhD in Communication Systems and Technologies from Universidad Politécnica de Madrid. He works on radio propagation, satellite communications and atmospheric attenuation in the Ka, Q, V and W bands, measured above 4,000 m of altitude.',
-      linea: 'Atmospheric propagation and satellite communications',
+        'Senior research professor and director of the Radiocommunications Laboratory at Universidad Privada Boliviana, and IEEE AP-S Bolivia Chapter Chair. PhD in Telecommunications Systems and Technologies from Universidad Politécnica de Madrid (2012), where he was a research assistant until 2015; he then worked at the Bolivian Space Agency. He has taken part in satellite propagation experiments with UPM using Ka- and Q-band beacons. His interests are radiowave propagation, wireless communications and radiometeorology.',
+      linea: 'Atmospheric propagation and radiometeorology',
     },
     feick: {
       resena:
@@ -102,6 +102,8 @@ export const en = {
     paragraphs: [
       'The mmWave and sub-THz bands make it possible for a single wireless infrastructure not only to carry information but also to perceive its surroundings: detecting presence and motion, estimating range, characterising materials and reconstructing scenes. This convergence of communication and sensing is one of the pillars of 6G networks.',
       'The seminar brings together researchers from the United States and Chile to discuss propagation models, experimental measurements, joint sensing architectures and the open challenges of taking these technologies to real deployments.',
+      'It exists so that those who measure, model and design the networks of the future can talk in one place, and so that postgraduate students in Chile can learn first-hand from internationally recognised researchers.',
+      'It is directed by Dr. Mauricio Rodríguez Guzmán, a professor at the PUCV School of Electrical Engineering and director of the PhD in Electrical Engineering. He holds a PhD in Electronics Engineering from Universidad Técnica Federico Santa María, researches wireless telecommunications, electromagnetic propagation and microwave systems design, and heads the Wireless Communications Laboratory. He invited the speakers and leads the organisation of the event.',
     ],
   },
 
@@ -233,7 +235,7 @@ export const en = {
       consultas: 'Enquiries',
       cargarMapa: 'Load interactive map',
       abrirEnGoogleMaps: 'Open in Google Maps',
-      avisoMapa: 'Loading the map requests content from OpenStreetMap.',
+      avisoMapa: 'Loading the map requests content from Google Maps.',
       tituloMapa: 'Map of the venue',
     },
 

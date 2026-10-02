@@ -82,8 +82,8 @@ export const es = {
     },
     siles: {
       resena:
-        'Director del Laboratorio de Radiocomunicaciones de la Universidad Privada Boliviana y profesor investigador. Doctor en Sistemas y Tecnologías de la Comunicación por la Universidad Politécnica de Madrid. Trabaja en propagación radioeléctrica, comunicaciones por satélite y caracterización de la atenuación atmosférica en bandas Ka, Q, V y W, medida a más de 4.000 m de altitud.',
-      linea: 'Propagación atmosférica y comunicaciones por satélite',
+        'Profesor investigador titular y director del Laboratorio de Radiocomunicaciones de la Universidad Privada Boliviana, y presidente del capítulo IEEE AP-S Bolivia. Doctor en Sistemas y Tecnologías de Telecomunicaciones por la Universidad Politécnica de Madrid (2012), donde fue investigador hasta 2015; luego pasó por la Agencia Espacial Boliviana. Ha participado en experimentos de propagación satelital con balizas en bandas Ka y Q junto a la UPM. Sus intereses son la propagación radioeléctrica, las comunicaciones inalámbricas y la radiometeorología.',
+      linea: 'Propagación atmosférica y radiometeorología',
     },
     feick: {
       resena:
@@ -116,6 +116,8 @@ export const es = {
     paragraphs: [
       'Las bandas mmWave y sub-THz abren la posibilidad de que una misma infraestructura inalámbrica no solo transmita información, sino que además perciba el entorno: detectar presencia y movimiento, estimar distancias, caracterizar materiales y reconstruir escenas. Esta convergencia entre comunicación y detección es uno de los ejes de las redes 6G.',
       'El seminario reúne a investigadores de Estados Unidos y Chile para discutir modelos de propagación, mediciones experimentales, arquitecturas de sensado conjunto y los desafíos abiertos de llevar estas tecnologías a despliegues reales.',
+      'Existe para que quienes miden, modelan y diseñan las redes del futuro conversen en un mismo lugar, y para que los estudiantes de postgrado de Chile conozcan de primera mano el trabajo de investigadores de referencia internacional.',
+      'Lo dirige el Dr. Mauricio Rodríguez Guzmán, profesor de la Escuela de Ingeniería Eléctrica de la PUCV y director del Doctorado en Ingeniería Eléctrica. Doctor en Ingeniería Electrónica por la Universidad Técnica Federico Santa María, investiga telecomunicaciones inalámbricas, propagación electromagnética y diseño de sistemas de microondas, y dirige el Laboratorio de Comunicaciones Inalámbricas. Convocó a los expositores y encabeza la organización del encuentro.',
     ],
   },
 
@@ -266,7 +268,7 @@ export const es = {
       consultas: 'Consultas',
       cargarMapa: 'Cargar mapa interactivo',
       abrirEnGoogleMaps: 'Abrir en Google Maps',
-      avisoMapa: 'Al cargar el mapa se solicita contenido a OpenStreetMap.',
+      avisoMapa: 'Al cargar el mapa se solicita contenido a Google Maps.',
       tituloMapa: 'Mapa de la sede',
     },
 
