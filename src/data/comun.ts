@@ -231,6 +231,13 @@ export interface DiaPrograma {
 export const comun = {
   /** Título oficial: se mantiene en inglés en toda la web (RF-1.2). */
   title: 'Beyond Connectivity: Wireless Sensing in mmWave and Sub-THz Bands',
+  /**
+   * `<title>` del documento, la pestaña y el buscador: variante de `title` (RF-1.2), corta
+   * a propósito (~61 caracteres), sin la fecha, que va en la descripción, y con «/» en vez
+   * de « and ». El `<h1>` sigue usando `title`; si el nombre oficial cambia, actualizar
+   * las dos.
+   */
+  tituloDocumento: 'Beyond Connectivity: Wireless Sensing in mmWave/Sub-THz Bands',
   /** Forma corta para la barra, donde el título completo no cabe. Tampoco se traduce. */
   tituloCorto: 'Beyond Connectivity',
   subtitle:

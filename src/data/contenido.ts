@@ -78,6 +78,7 @@ export function contenido(lang: Idioma) {
     nombre: t.nombre,
 
     title: comun.title,
+    tituloDocumento: comun.tituloDocumento,
     tituloCorto: comun.tituloCorto,
     subtitle: comun.subtitle,
 
