@@ -26,6 +26,9 @@ Codex y pidió usarlo también en la página. `comun.ts` ahora importa
 `src/assets/logos/eie-institucional.jpg`; el original conserva su fondo blanco en
 ambos temas y reemplaza las dos variantes de la submarca horizontal anterior.
 El requisito quedó registrado en RF-10, enmienda del 2026-10-01.
+**2026-10-02:** por pedido de Daniel se quitó el fondo blanco exterior
+(`eie-institucional.png`, con variante `-oscuro` que aclara solo el anillo de texto)
+y el enlace pasó a `https://eie.pucv.cl`. El JPG original ya no está en el repo.
 El flyer refinado se guarda en el directorio de outputs del chat, fuera del sitio.
 No se ha desplegado ni modificado Cloudflare.
 

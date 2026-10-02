@@ -12,11 +12,13 @@ import pucvClaro from '~/assets/logos/pucv.png';
 import pucvOscuro from '~/assets/logos/pucv-oscuro.png';
 /*
  * Logo EIE entregado por Daniel el 2026-10-01 para sustituir la submarca
- * horizontal anterior. Se conserva el JPG original, incluido su fondo blanco,
- * en los dos temas: no se inventa una variante oscura ni se recolorea la marca.
- * Procedencia y criterios en RF-10, enmienda del 2026-10-01.
+ * horizontal anterior. El 2026-10-02 se le quitó el fondo blanco exterior (PNG con
+ * alfa; el interior blanco de la caja se conserva). Sobre fondo oscuro el texto del
+ * anillo, en azul marino, no se lee, así que `eie-institucional-oscuro.png` lo pasa a
+ * claro y deja intacta la caja y el rojo. Procedencia y criterios en RF-10.
  */
-import eieInstitucional from '~/assets/logos/eie-institucional.jpg';
+import eieInstitucional from '~/assets/logos/eie-institucional.png';
+import eieInstitucionalOscuro from '~/assets/logos/eie-institucional-oscuro.png';
 import cytedLogo from '~/assets/logos/cyted-40-anos.png';
 /*
  * ═══ COLUMBIA Y USACH VUELVEN, POR DECISIÓN DE LA ORGANIZACIÓN ═══
@@ -397,7 +399,8 @@ export const comun = {
       name: 'Escuela de Ingeniería Eléctrica PUCV',
       shortName: 'EIE PUCV',
       logo: eieInstitucional,
-      url: 'https://www.eie.ucv.cl',
+      logoOscuro: eieInstitucionalOscuro,
+      url: 'https://eie.pucv.cl',
     },
   ],
 
