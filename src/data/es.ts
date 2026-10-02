@@ -82,8 +82,8 @@ export const es = {
     },
     siles: {
       resena:
-        'Director del Laboratorio de Radiocomunicaciones de la Universidad Privada Boliviana y profesor investigador. Doctor en Sistemas y Tecnologías de la Comunicación por la Universidad Politécnica de Madrid. Trabaja en propagación radioeléctrica, comunicaciones por satélite y caracterización de la atenuación atmosférica en bandas Ka, Q, V y W, medida a más de 4.000 m de altitud.',
-      linea: 'Propagación atmosférica y comunicaciones por satélite',
+        'Profesor investigador titular y director del Laboratorio de Radiocomunicaciones de la Universidad Privada Boliviana, y presidente del capítulo IEEE AP-S Bolivia. Doctor en Sistemas y Tecnologías de Telecomunicaciones por la Universidad Politécnica de Madrid (2012), donde fue investigador hasta 2015; luego pasó por la Agencia Espacial Boliviana. Ha participado en experimentos de propagación satelital con balizas en bandas Ka y Q junto a la UPM. Sus intereses son la propagación radioeléctrica, las comunicaciones inalámbricas y la radiometeorología.',
+      linea: 'Propagación atmosférica y radiometeorología',
     },
     feick: {
       resena:

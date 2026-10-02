@@ -64,6 +64,7 @@ import fotoZussman from '~/assets/expositores/zussman.webp';
 import fotoDu from '~/assets/expositores/du.webp';
 import fotoValenzuela from '~/assets/expositores/valenzuela.webp';
 import fotoFeick from '~/assets/expositores/feick.webp';
+import fotoSiles from '~/assets/expositores/siles.webp';
 import fotoGutierrez from '~/assets/expositores/gutierrez.webp';
 import fotoToledo from '~/assets/expositores/toledo.webp';
 import fotoSiringo from '~/assets/expositores/siringo.webp';
@@ -288,11 +289,11 @@ export const comun = {
        * confirmados que envió Mauricio Rodríguez. Ver
        * `specs/gestion/programa-y-expositores.md`.
        *
-       * **Siles sigue sin retrato**, y es el estado correcto: una foto solo se publica con
-       * autorización expresa de la persona (RF-11.1). Hasta que llegue, la ficha muestra el
-       * monograma de iniciales (RF-11.2). El retrato de Siringo entró el 2026-10-01: Daniel
-       * confirmó que autoriza su publicación (RF-11.1), a 560×560 con recorte cuadrado
-       * centrado en la cara y revisado con la máscara circular, como los seis anteriores.
+       * El retrato de Siles entró el 2026-10-01: él mismo lo envió (`foto_GSiles_USRS.jpg`,
+       * correo del 2026-09-30) para la sección de expositores del sitio, que es la
+       * autorización de RF-11.1. 560×560, recorte cuadrado centrado en la cara y revisado
+       * con la máscara circular. El de Siringo entró el mismo día: Daniel confirmó que
+       * autoriza su publicación (RF-11.1).
        *
        * Siles es el único internacional de los dos: la Universidad Privada Boliviana está
        * en Bolivia y por eso entra `BO` en `CodigoPais`. **Siringo se movió al bloque
@@ -300,6 +301,7 @@ export const comun = {
        */
       {
         id: 'siles',
+        foto: fotoSiles,
         name: 'Gustavo A. Siles Soria',
         affiliation: 'Universidad Privada Boliviana',
         country: 'BO',

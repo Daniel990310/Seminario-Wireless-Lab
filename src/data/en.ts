@@ -68,8 +68,8 @@ export const en = {
     },
     siles: {
       resena:
-        'Director of the Radiocommunications Laboratory at Universidad Privada Boliviana and research professor. PhD in Communication Systems and Technologies from Universidad Politécnica de Madrid. He works on radio propagation, satellite communications and atmospheric attenuation in the Ka, Q, V and W bands, measured above 4,000 m of altitude.',
-      linea: 'Atmospheric propagation and satellite communications',
+        'Senior research professor and director of the Radiocommunications Laboratory at Universidad Privada Boliviana, and IEEE AP-S Bolivia Chapter Chair. PhD in Telecommunications Systems and Technologies from Universidad Politécnica de Madrid (2012), where he was a research assistant until 2015; he then worked at the Bolivian Space Agency. He has taken part in satellite propagation experiments with UPM using Ka- and Q-band beacons. His interests are radiowave propagation, wireless communications and radiometeorology.',
+      linea: 'Atmospheric propagation and radiometeorology',
     },
     feick: {
       resena:

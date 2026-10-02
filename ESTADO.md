@@ -30,6 +30,17 @@ El flyer refinado se guarda en el directorio de outputs del chat, fuera del siti
 No se ha desplegado ni modificado Cloudflare.
 
 
+## Siles y Toledo · 2026-10-01 · en la rama, sin empujar ni desplegar
+
+[verificado] Del correo de Mauricio (reenvíos del 30-sep): charla de Siles en `charlas.ts`
+(recibida 2026-09-30); retratos de Siles (`foto_GSiles_USRS.jpg`) y Toledo (`kt.jpg`),
+ambos enviados por ellos al organizador, a 560×560 con máscara circular revisada. La
+reseña de Siles (ES/EN) se reescribió con **su propia bio**: la anterior decía «Ka, Q, V y
+W, a más de 4.000 m», que él no afirma. `npm run verify` en verde, anti-slop sin altos.
+**Pendiente:** el `.docx` de Toledo (`Seminar_PUCV_2026.docx`, 27-sep) no está en el repo;
+sin él falta su charla y su reseña actual (Fondecyt, drones) no está contrastada. Tampoco
+han llegado Zussman, Du, Siringo y Gutiérrez. El flyer se hace aparte.
+
 ## Reseña de Mauricio, foto de Siringo · 2026-10-01 · esta sesión termina aquí, sigue otra
 
 Esta sesión de Claude Code se cierra y Daniel continúa en otra. Lo que queda hecho, en
