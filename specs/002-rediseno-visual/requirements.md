@@ -592,9 +592,9 @@ La imagen adjunta es la fuente; no se reconstruye ni recolorea la marca.
 
 | Criterio | Comprobación |
 | --- | --- |
-| La EIE usa `src/assets/logos/eie-institucional.jpg`, copiado sin alterar del adjunto, en ambas versiones de idioma | identidad del archivo y build |
-| Ambos temas muestran el mismo original con su fondo blanco, conservando proporciones; se retira la variante de la submarca anterior | inspección del dato y capturas en claro/oscuro a 390 y 1440 px |
-| Las otras instituciones y el destino del enlace EIE no cambian | diff |
+| La EIE usa `src/assets/logos/eie-institucional.png`, el adjunto sin su fondo blanco exterior (enmienda del 2026-10-02, a pedido de Daniel), en ambas versiones de idioma | identidad del archivo y build |
+| El tema claro muestra el PNG transparente; el oscuro, `eie-institucional-oscuro.png`, que solo pasa a claro el texto y el trazo del anillo exterior (el azul marino no se lee sobre fondo oscuro) y deja intactos la caja y el rojo; se conservan proporciones | inspección del dato y capturas en claro/oscuro a 390 y 1440 px |
+| Las otras instituciones no cambian; el enlace de la EIE pasa a `https://eie.pucv.cl` (2026-10-02) | diff |
 | La sustitución compila, no introduce errores de tipos y pasa los verificadores del sitio | `check`, `build`, `verify:todo` |
 
 El adjunto mide 366 × 367 px [medido: PIL]. Esta entrega no aporta una variante
