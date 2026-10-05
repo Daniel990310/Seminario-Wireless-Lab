@@ -109,6 +109,7 @@ export function contenido(lang: Idioma) {
       esDemostracion: PROGRAMA_DEMOSTRATIVO && t.program.days.length === 0,
     },
     about: t.about,
+    director: { ...comun.director, ...t.about.director },
     topics: t.topics,
 
     speakers: {

@@ -19,6 +19,23 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Reunión con Mauricio · 2026-10-04 · qué pidió y en qué está
+
+Lo trajo Daniel, en sus palabras. **Motivo del seminario según Mauricio:** mostrar la
+investigación de la PUCV junto con sus colaboradores en la temática del seminario. Cierra
+el pendiente «razón del seminario»: el borrador mío («acercar a los estudiantes de
+postgrado…») se reemplazó por esto en `es.ts` y `en.ts`.
+
+| Pedido | Estado |
+| ------ | ------ |
+| Cambiar «UC» por «PUC» | Hecho: `shortName` en `comun.ts` (lo muestra el muro de logos) |
+| Nombre de Mauricio más corto | Hecho como **«Mauricio Rodríguez»** en el pie y en «El seminario». [supuesto] que esa es la forma que quiere; confirmarlo |
+| Cambiar logo EIE | Hecho: vuelve la submarca horizontal anterior (`eie-pucv.png`). Enmienda de RF-10 |
+| Poner logos que faltan | Hecho, **de internet y bajo responsabilidad de Mauricio** (enmienda de RF-22): ALMA (ESO), UPB (upb.edu) y Columbia University en lugar de CUSPS. De paso, USACH tiene variante oscura |
+| Foto de Mauricio como organizador | Hecho: franja «Dirige el seminario» con su retrato al final de «El seminario» (RF-23). Foto de su ficha en eie.pucv.cl |
+| Flyer tipo pancarta, largo, con fotos de expositores y Mauricio | Fuera del sitio. Falta medida y orientación |
+| Fotos de expositores de tamaño similar | Daniel lo trabajó en `/ajustar`; falta que pegue el **informe** («Copiar informe»): la instantánea vive en su navegador |
+
 ## Despliegues del 2026-10-02 · lo que está en vivo
 
 Daniel pidió fusionar y desplegar él mismo desde estas sesiones; se hizo desde `main`

@@ -86,6 +86,13 @@ export interface ContenidoIdioma {
   about: {
     lead: string;
     paragraphs: string[];
+    /** Franja del director con su retrato (RF-23). El nombre va en `comun.ts`. */
+    director: {
+      epigrafe: string;
+      cargo: string;
+      texto: string;
+      verPerfil: string;
+    };
   };
 
   topics: Array<{ title: string; description: string }>;

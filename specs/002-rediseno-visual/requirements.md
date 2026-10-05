@@ -600,3 +600,45 @@ La imagen adjunta es la fuente; no se reconstruye ni recolorea la marca.
 El adjunto mide 366 × 367 px [medido: PIL]. Esta entrega no aporta una variante
 transparente ni una versión blanca: se conserva el original sobre blanco también
 en tema oscuro. La sustitución local no implica un despliegue.
+
+### Enmienda del 2026-10-04 · vuelve la submarca horizontal
+
+Mauricio Rodríguez, en la reunión del 2026-10-04 (lo trajo Daniel): la EIE vuelve al
+archivo que estaba antes de esta sustitución, la submarca horizontal
+`eie-pucv.png` / `eie-pucv-oscuro.png`. El logo cuadrado queda en `src/assets/logos/` sin
+referenciar. El enlace sigue en `https://eie.pucv.cl`.
+
+## Enmienda de RF-22 · los logos que faltaban, de internet · 2026-10-04
+
+**Quién:** Mauricio Rodríguez, director del programa y del seminario, en la reunión del
+2026-10-04, por boca de Daniel. Extiende la derogación del 2026-09-25: los logos que
+faltaban se toman **de internet**, y **Columbia cambia de archivo**, bajo su
+responsabilidad. La distinción del punto 1 de la derogación sigue valiendo.
+
+| Criterio | Comprobación |
+| --- | --- |
+| **ALMA** lleva el logotipo de color de ESO (`eso.org/public/products/logos/alma-logo`, JPG de 495 × 701 pasado a PNG). Es una placa azul opaca: se lee igual en los dos temas y va sin `logoOscuro` | captura en claro y oscuro |
+| **UPB** lleva el logo de su sitio (`upb.edu`), publicado solo en blanco con alfa. Esa es la variante oscura; la clara es la misma silueta en `#1d1d1b`, como las demás marcas de una tinta | captura en claro y oscuro |
+| **Columbia** lleva el logotipo institucional de **Columbia University**, el nombre de la ficha, tomado del SVG de Wikipedia (`Columbia_University_1754.svg`, una tinta `#000d74`) y rasterizado a PNG, con la variante oscura en blanco. Los archivos de CUSPS se borran: eran de otra facultad | inspección de `comun.ts` y capturas |
+| Ninguna institución queda con marcador de posición | `verify` |
+| Ningún SVG de terceros entra al sitio: los tres se publican como PNG rasterizado, sin guiones ni referencias externas que revisar | inspección de `src/assets/logos/` |
+
+Lo que esta enmienda no cambia: el aviso de ALMA exige consentimiento escrito previo y
+sigue sin respuesta; a Zussman le corresponde la marca de **Columbia Engineering**, que no
+está publicada con texto: si la manda, se sustituye el archivo.
+
+## RF-23 · El director del seminario, con retrato, en «El seminario» · 2026-10-04
+
+Origen: Mauricio Rodríguez, en la reunión del 2026-10-04, por boca de Daniel: quiere
+aparecer en la sección del seminario con su foto, como **protagonista** del evento. En
+septiembre una página de comité organizador le pareció «más operacional»; esto es otra
+cosa: una franja dentro de la sección, no una página.
+
+| Criterio | Comprobación |
+| --- | --- |
+| RF-23.1 · La sección «El seminario» cierra con una franja propia, fuera de la retícula de dos columnas: retrato, epígrafe «Dirige el seminario», nombre, cargo, texto y enlace a su perfil institucional | captura a 1440 y 390 px |
+| RF-23.2 · El retrato es mayor que el de un expositor (14 rem en escritorio frente a 13 rem de tope) y usa el mismo marco circular | inspección de clases |
+| RF-23.3 · El retrato lleva `alt=""` y `aria-hidden`: el nombre está en el `<h3>` contiguo | `verify` |
+| RF-23.4 · El nombre vive en `comun.ts` (no se traduce); epígrafe, cargo, texto y rótulo del enlace en `es.ts` y `en.ts`, con la paridad que vigila `tipos.ts` | `check`, `verify:idioma` |
+| RF-23.5 · El párrafo que lo presentaba dentro de «El seminario» pasa a la franja; no se repite | inspección de `es.ts`/`en.ts` |
+| RF-23.6 · Autorización de la foto (RF-11.1): la pidió él mismo. Es la de su ficha en `eie.pucv.cl`, 1080 × 1080 reducida a 800 | procedencia en `comun.ts` |
