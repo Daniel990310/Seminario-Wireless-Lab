@@ -453,7 +453,8 @@ export const comun = {
      */
     {
       name: 'Pontificia Universidad Católica de Chile',
-      shortName: 'UC',
+      // «PUC» y no «UC», por indicación de Mauricio Rodríguez en la reunión del 2026-10-04.
+      shortName: 'PUC',
       logo: '/logos/uc.svg',
       logoOscuro: '/logos/uc-oscuro.svg',
       escalaOptica: 1.28,
@@ -683,7 +684,8 @@ export const comun = {
    * Si alguno de los dos está mal, se corrige aquí y aparece en los dos idiomas.
    */
   committee: [
-    { nombre: 'Mauricio Alejandro Rodríguez Guzmán', grado: 'doctor' },
+    // Nombre corto por pedido suyo en la reunión del 2026-10-04.
+    { nombre: 'Mauricio Rodríguez', grado: 'doctor' },
     { nombre: 'Daniel Caignet González', grado: 'candidato' },
     // `satisfies` y no una anotación: conserva los tipos literales de `grado` —que
     // es lo que permite indexar `ui.pie.grados` sin castear— y a la vez falla aquí

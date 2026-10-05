@@ -19,6 +19,23 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Reunión con Mauricio · 2026-10-04 · qué pidió y en qué está
+
+Lo trajo Daniel, en sus palabras. **Motivo del seminario según Mauricio:** mostrar la
+investigación de la PUCV junto con sus colaboradores en la temática del seminario. Cierra
+el pendiente «razón del seminario»: el borrador mío («acercar a los estudiantes de
+postgrado…») se reemplazó por esto en `es.ts` y `en.ts`.
+
+| Pedido | Estado |
+| ------ | ------ |
+| Cambiar «UC» por «PUC» | Hecho: `shortName` en `comun.ts` (lo muestra el muro de logos) |
+| Nombre de Mauricio más corto | Hecho como **«Mauricio Rodríguez»** en el pie y en «El seminario». [supuesto] que esa es la forma que quiere; confirmarlo |
+| Cambiar logo EIE | **Falta el archivo nuevo.** El instalado es `eie-institucional.png` (2026-10-02) |
+| Poner logos que faltan | Sin logo hoy: **ALMA/ESO** y **UPB**. Faltan los archivos. Columbia sigue con la submarca equivocada (CUSPS en vez de Columbia Engineering) |
+| Foto de Mauricio como organizador | **Falta la foto.** Dónde va es capacidad nueva: requisito antes de implementar. En septiembre una página de comité le pareció «más operacional» |
+| Flyer tipo pancarta, largo, con fotos de expositores y Mauricio | Fuera del sitio. Falta medida y orientación, y la foto de Mauricio |
+| Fotos de expositores de tamaño similar | Con el panel `/ajustar` → «Retratos» (guías de cabeza). Alejar exige los originales |
+
 ## Despliegues del 2026-10-02 · lo que está en vivo
 
 Daniel pidió fusionar y desplegar él mismo desde estas sesiones; se hizo desde `main`
