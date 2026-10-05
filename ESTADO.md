@@ -9,7 +9,8 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 Actualizado: **2026-10-05** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
 ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-10-05**, versión
-`20a555ca`, desde `main` en `dceaaa8` (PR #13, pedidos de la reunión con Mauricio), en
+`aac04b64`, desde `main` en `ac843f1` (PR #15, retratos del mismo tamaño); antes, el mismo
+día, `20a555ca` desde `dceaaa8` (PR #13, pedidos de la reunión con Mauricio), en
 `https://bcsensing.org`. `verify:todo` en verde antes y `verify:publicado` con todos los
 criterios cumplidos después `[medido: 2026-10-05]`. Thermos dispensado por Daniel en #12 y
 #13 (registrado con `--sin-thermos`). El anterior: 2026-10-02, versión `b0d566cd`.
@@ -23,7 +24,8 @@ Hostinger sin revocar.**
 
 ## Reunión con Mauricio · 2026-10-04 · qué pidió y en qué está
 
-**En vivo desde el 2026-10-05** (versión `20a555ca`), salvo el flyer y los retratos.
+**En vivo desde el 2026-10-05** (versiones `20a555ca` y `aac04b64`, retratos incluidos),
+salvo el flyer.
 
 Lo trajo Daniel, en sus palabras. **Motivo del seminario según Mauricio:** mostrar la
 investigación de la PUCV junto con sus colaboradores en la temática del seminario. Cierra
