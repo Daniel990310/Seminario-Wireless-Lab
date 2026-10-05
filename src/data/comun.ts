@@ -11,14 +11,12 @@
 import pucvClaro from '~/assets/logos/pucv.png';
 import pucvOscuro from '~/assets/logos/pucv-oscuro.png';
 /*
- * Logo EIE entregado por Daniel el 2026-10-01 para sustituir la submarca
- * horizontal anterior. El 2026-10-02 se le quitó el fondo blanco exterior (PNG con
- * alfa; el interior blanco de la caja se conserva). Sobre fondo oscuro el texto del
- * anillo, en azul marino, no se lee, así que `eie-institucional-oscuro.png` lo pasa a
- * claro y deja intacta la caja y el rojo. Procedencia y criterios en RF-10.
+ * Logo EIE: vuelve la submarca horizontal, la que estaba antes del 2026-10-01, por
+ * indicación de Mauricio en la reunión del 2026-10-04. El logo institucional cuadrado
+ * (`eie-institucional*.png`) queda en `src/assets/logos/` sin usar. Ver RF-10.
  */
-import eieInstitucional from '~/assets/logos/eie-institucional.png';
-import eieInstitucionalOscuro from '~/assets/logos/eie-institucional-oscuro.png';
+import eieClaro from '~/assets/logos/eie-pucv.png';
+import eieOscuro from '~/assets/logos/eie-pucv-oscuro.png';
 import cytedLogo from '~/assets/logos/cyted-40-anos.png';
 /*
  * ═══ COLUMBIA Y USACH VUELVEN, POR DECISIÓN DE LA ORGANIZACIÓN ═══
@@ -30,23 +28,38 @@ import cytedLogo from '~/assets/logos/cyted-40-anos.png';
  * así. Queda escrito en RF-22 con fecha y nombre, porque una decisión de este tipo no
  * puede vivir solo en un chat.
  *
- * Dos cosas que **no** cambian por esa decisión, y que hay que seguir sabiendo:
+ * El 2026-10-04 Mauricio extendió esa decisión: los logos que faltaban (ALMA, UPB) se
+ * toman de internet y Columbia cambia de archivo, bajo su responsabilidad (RF-22).
  *
- * · **Columbia está con la marca equivocada, y ahora lo sabemos de su propia boca.** Los
- *   archivos son `CUSPS_logo_simple_RGB_*`, la submarca de la School of Professional
- *   Studies; Gil Zussman es de SEAS. El 2026-09-24 Columbia Creative nos respondió que la
- *   que corresponde es la de **Columbia Engineering** y que Zussman puede descargarla.
- *   O sea: esto no es «la marca sin permiso», es **la marca de otra facultad**, y a
- *   cualquiera de Columbia que la vea le va a parecer un error, porque lo es. Se sustituye
- *   el archivo conservando el nombre en cuanto Zussman mande el correcto, sin tocar código.
- * · **USACH desaparece en tema oscuro.** Tinta negra pura —`rgb(0,0,0)` en los píxeles
- *   opacos `[medido]`— que sobre el fondo oscuro da **1,10:1**, por debajo de cualquier
- *   umbral. Va montada **solo con `logo`**, sin `logoOscuro`, así que en tema oscuro se
- *   pinta igual y no se ve. Lo arregla una variante blanca derivada del original.
+ * · **Columbia: la marca de la universidad, no la de CUSPS.** Los archivos anteriores eran
+ *   de la School of Professional Studies y se retiraron. Ahora va el logotipo institucional
+ *   de Columbia University, que es el nombre de la ficha; se tomó del SVG de Wikipedia
+ *   (`Columbia_University_1754.svg`, una sola tinta `#000d74`) y se rasterizó a PNG, con la
+ *   variante oscura en blanco. Columbia Creative indicó que a Zussman le corresponde la de
+ *   Columbia Engineering, que no está publicada con texto; si él la manda, se sustituye.
+ * · **USACH desaparecía en tema oscuro.** Tinta negra pura —`rgb(0,0,0)` en los píxeles
+ *   opacos `[medido]`—, **1,10:1** sobre el fondo oscuro. Desde el 2026-10-04 lleva
+ *   `usach-oscuro.png`, la misma silueta en blanco derivada del original.
  */
-import columbiaClaro from '~/assets/logos/columbia.png';
-import columbiaOscuro from '~/assets/logos/columbia-oscuro.png';
+import columbiaClaro from '~/assets/logos/columbia-university.png';
+import columbiaOscuro from '~/assets/logos/columbia-university-oscuro.png';
 import usachClaro from '~/assets/logos/usach.png';
+import usachOscuro from '~/assets/logos/usach-oscuro.png';
+/*
+ * ALMA: el logotipo de color que publica ESO (`eso.org/public/products/logos/alma-logo`),
+ * una placa azul opaca que se lee igual en los dos temas, así que va sin variante.
+ * UPB: el de su sitio, `upb.edu`, que solo está en blanco con alfa; esa es la variante
+ * oscura, y la clara es la misma silueta en `#1d1d1b`, como las demás marcas de una tinta.
+ */
+import almaLogo from '~/assets/logos/alma.png';
+import upbClaro from '~/assets/logos/upb.png';
+import upbOscuro from '~/assets/logos/upb-oscuro.png';
+/*
+ * Retrato de Mauricio Rodríguez para «El seminario» (RF-23). Lo pidió él, a través de
+ * Daniel, el 2026-10-04: eso es la autorización de RF-11.1. Es la foto de su ficha en
+ * `eie.pucv.cl/nuestro-equipo/mauricio-rodriguez-guzman/`, 1080×1080 reducida a 800.
+ */
+import fotoRodriguez from '~/assets/organizacion/rodriguez.webp';
 
 /*
  * Retratos de los expositores, normalizados el 2026-08-09.
@@ -405,8 +418,8 @@ export const comun = {
     {
       name: 'Escuela de Ingeniería Eléctrica PUCV',
       shortName: 'EIE PUCV',
-      logo: eieInstitucional,
-      logoOscuro: eieInstitucionalOscuro,
+      logo: eieClaro,
+      logoOscuro: eieOscuro,
       url: 'https://eie.pucv.cl',
     },
   ],
@@ -477,6 +490,9 @@ export const comun = {
       name: 'Universidad de Santiago de Chile',
       shortName: 'USACH',
       logo: usachClaro,
+      // Variante oscura derivada el 2026-10-04: la misma silueta en blanco. El original es
+      // tinta negra pura `[medido]` y en tema oscuro no se veía (1,10:1).
+      logoOscuro: usachOscuro,
       escalaOptica: 0.82,
       url: 'https://www.usach.cl',
     },
@@ -548,29 +564,30 @@ export const comun = {
     {
       name: 'Columbia University',
       shortName: 'Columbia',
-      // ⚠️ Estos archivos son de CUSPS, no de SEAS. Ver el bloque de imports: es la marca
-      // de otra facultad, y Columbia nos lo confirmó por escrito el 2026-09-24. Sustituir
-      // por el archivo de Columbia Engineering en cuanto Zussman lo mande.
+      // Logotipo institucional de la universidad desde el 2026-10-04; ver el bloque de imports.
       logo: columbiaClaro,
       logoOscuro: columbiaOscuro,
       url: 'https://www.columbia.edu',
     },
     /*
-     * Las dos instituciones que entraron con la nómina definitiva. Ninguna tiene todavía
-     * autorización ni archivo, así que pintan el marcador de posición, igual que las
-     * demás. Ver `specs/gestion/correos-logos/`.
+     * Las dos instituciones que entraron con la nómina definitiva. Sin autorización de su
+     * titular: se publican por la decisión de Mauricio del 2026-10-04 (RF-22). El aviso de
+     * copyright de ALMA exige consentimiento escrito previo para su logo, pedido a
+     * `copyright@alma.cl` sin respuesta; la UPB no publica contacto de marca.
      */
     {
       name: 'ALMA / European Southern Observatory',
       shortName: 'ALMA',
-      // Su aviso de copyright exige consentimiento escrito previo para el logo. Pedido a
-      // `copyright@alma.cl`.
+      logo: almaLogo,
       url: 'https://www.almaobservatory.org',
     },
     {
       name: 'Universidad Privada Boliviana',
       shortName: 'UPB',
-      // No publica contacto de marca; la vía es el propio Dr. Siles.
+      logo: upbClaro,
+      logoOscuro: upbOscuro,
+      // Juicio a ojo: a igual área su silueta maciza pesaba más que el resto del muro.
+      escalaOptica: 0.78,
       url: 'https://www.upb.edu',
     },
   ],
@@ -691,6 +708,16 @@ export const comun = {
     // es lo que permite indexar `ui.pie.grados` sin castear— y a la vez falla aquí
     // mismo si alguien escribe un grado que no existe en los dos idiomas.
   ] satisfies ReadonlyArray<{ nombre: string; grado: GradoAcademico }>,
+
+  /**
+   * Quien dirige el seminario, con retrato, en la sección «El seminario» (RF-23). El
+   * nombre no se traduce; el cargo y el texto viven en `about.director` de cada idioma.
+   */
+  director: {
+    nombre: 'Mauricio Rodríguez',
+    foto: fotoRodriguez,
+    perfil: 'https://eie.pucv.cl/nuestro-equipo/mauricio-rodriguez-guzman/',
+  },
 
   /** Quien construyó el sitio. Separado del comité: son dos papeles distintos. */
   developer: { nombre: 'Daniel Caignet González' },

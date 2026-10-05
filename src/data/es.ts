@@ -116,8 +116,14 @@ export const es = {
     paragraphs: [
       'Las bandas mmWave y sub-THz permiten que una misma infraestructura inalámbrica no solo transmita información, sino que perciba el entorno: detectar presencia y movimiento, estimar distancias y reconstruir escenas. Esa convergencia entre comunicación y detección es uno de los ejes de las redes 6G.',
       'El seminario reúne a investigadores de Chile y del extranjero para discutir propagación, mediciones y sensado conjunto, y para mostrar la investigación de la PUCV junto a la de sus colaboradores en estos temas. Se realiza en el marco de dos proyectos que lo financian: FOVI250222, de ANID, y 525RT0175, de CYTED.',
-      'Lo dirige el Dr. Mauricio Rodríguez, profesor de la Escuela de Ingeniería Eléctrica de la PUCV y director del Doctorado en Ingeniería Eléctrica, quien convocó a los expositores. Investiga telecomunicaciones inalámbricas, propagación y microondas, y dirige el Laboratorio de Comunicaciones Inalámbricas.',
     ],
+    director: {
+      epigrafe: 'Dirige el seminario',
+      cargo: 'Escuela de Ingeniería Eléctrica · PUCV',
+      texto:
+        'Profesor de la Escuela de Ingeniería Eléctrica de la PUCV y director del Doctorado en Ingeniería Eléctrica, convocó a los expositores de este encuentro. Investiga telecomunicaciones inalámbricas, propagación y microondas, y dirige el Laboratorio de Comunicaciones Inalámbricas.',
+      verPerfil: 'Perfil institucional',
+    },
   },
 
   topics: [

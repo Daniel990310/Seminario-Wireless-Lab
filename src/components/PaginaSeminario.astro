@@ -27,7 +27,7 @@ interface Props {
 }
 
 const c = contenido(Astro.props.lang);
-const { program, speakers, topics, venue, organizers, participants, funding, financiadores, about, ui } = c;
+const { program, speakers, topics, venue, organizers, participants, funding, financiadores, about, director, ui } = c;
 
 /*
  * Dimensiones intrínsecas de un SVG de `/public`, leídas de su `viewBox` en el build.
@@ -125,6 +125,43 @@ const hasProgram = program.days.length > 0;
             ))
           }
         </ul>
+      </div>
+
+      <!--
+        Quien dirige el seminario, con retrato (RF-23). Mauricio pidió el 2026-10-04 aparecer
+        como protagonista del evento: por eso va en franja propia, fuera de la retícula de dos
+        columnas, con la foto más grande que la de un expositor. Mismo marco circular y
+        `alt=""` que en `SpeakerCard`: el nombre está en el `<h3>` de al lado.
+      -->
+      <div
+        class="reveal mt-16 grid items-center gap-8 border-t hairline pt-12 sm:grid-cols-[auto_1fr] sm:gap-12 lg:mt-20"
+      >
+        <Image
+          src={director.foto}
+          width={448}
+          height={448}
+          alt=""
+          aria-hidden="true"
+          class="aspect-square w-44 rounded-full object-cover sm:w-52 lg:w-56"
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="min-w-0 max-w-2xl">
+          <p class="eyebrow text-accent">{director.epigrafe}</p>
+          <h3 class="mt-3 font-display text-2xl leading-tight font-semibold text-foreground sm:text-3xl">
+            {director.nombre}
+          </h3>
+          <p class="mt-2 text-sm text-muted-foreground">{director.cargo}</p>
+          <p class="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">{director.texto}</p>
+          <a
+            href={director.perfil}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-5 inline-block text-sm text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary"
+          >
+            {director.verPerfil}
+          </a>
+        </div>
       </div>
     </Section>
 

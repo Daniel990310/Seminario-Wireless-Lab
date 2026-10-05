@@ -69,8 +69,9 @@ const COINCIDENCIA_LEGITIMA = [
   /^International Seminar on Wireless/, // Subtítulo, parte del título oficial
   // Nombres institucionales, incluidas sus formas abreviadas de uso corriente.
   /Universidad|University|Nokia Bell Labs|Columbia|PUCV|PUC de Chile|U\. de Santiago|USACH|ANID|Agencia Nacional/,
-  // Nombres de personas. Siringo y Siles entran el 2026-09-22 con la nómina confirmada.
-  /Gil Zussman|Jinfeng Du|Reinaldo|Giorgio Siringo|Gustavo A\. Siles|Rodolfo Feick|Miguel Gutiérrez|Karel Toledo/,
+  // Nombres de personas. Siringo y Siles entran el 2026-09-22 con la nómina confirmada;
+  // Mauricio Rodríguez, el 2026-10-04, con la franja del director (RF-23).
+  /Gil Zussman|Jinfeng Du|Reinaldo|Giorgio Siringo|Gustavo A\. Siles|Rodolfo Feick|Miguel Gutiérrez|Karel Toledo|^Mauricio Rodríguez$/,
   // ALMA y ESO son nombres propios. El patrón cubre la afiliación de Siringo en su ficha
   // —«ALMA / European Southern Observatory»— **y la forma corta sola** de la pared de
   // logos, que es la que se escapó al añadir la institución `[medido: 2026-09-25]`.
