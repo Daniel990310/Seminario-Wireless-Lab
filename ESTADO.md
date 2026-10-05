@@ -7,10 +7,12 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-10-02** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
-ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-10-02**, versión
-`b0d566cd`, desde `main` en `f3d8a32`, en `https://bcsensing.org`. Detalle en
-«Despliegues del 2026-10-02», abajo.
+Actualizado: **2026-10-05** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
+ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-10-05**, versión
+`20a555ca`, desde `main` en `dceaaa8` (PR #13, pedidos de la reunión con Mauricio), en
+`https://bcsensing.org`. `verify:todo` en verde antes y `verify:publicado` con todos los
+criterios cumplidos después `[medido: 2026-10-05]`. Thermos dispensado por Daniel en #12 y
+#13 (registrado con `--sin-thermos`). El anterior: 2026-10-02, versión `b0d566cd`.
 · **Publicado en <https://bcsensing.org> el 2026-09-22, versión `830dafb9`. Primer
 despliegue indexable. Pendientes en «EMPIEZA AQUÍ»: Search Console y el token de
 Hostinger sin revocar.**
@@ -20,6 +22,8 @@ Hostinger sin revocar.**
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
 ## Reunión con Mauricio · 2026-10-04 · qué pidió y en qué está
+
+**En vivo desde el 2026-10-05** (versión `20a555ca`), salvo el flyer y los retratos.
 
 Lo trajo Daniel, en sus palabras. **Motivo del seminario según Mauricio:** mostrar la
 investigación de la PUCV junto con sus colaboradores en la temática del seminario. Cierra
