@@ -38,7 +38,7 @@ postgrado…») se reemplazó por esto en `es.ts` y `en.ts`.
 | Poner logos que faltan | Hecho, **de internet y bajo responsabilidad de Mauricio** (enmienda de RF-22): ALMA (ESO), UPB (upb.edu) y Columbia University en lugar de CUSPS. De paso, USACH tiene variante oscura |
 | Foto de Mauricio como organizador | Hecho: franja «Dirige el seminario» con su retrato al final de «El seminario» (RF-23). Foto de su ficha en eie.pucv.cl |
 | Flyer tipo pancarta, largo, con fotos de expositores y Mauricio | Fuera del sitio. Falta medida y orientación |
-| Fotos de expositores de tamaño similar | Daniel lo trabajó en `/ajustar`; falta que pegue el **informe** («Copiar informe»): la instantánea vive en su navegador |
+| Fotos de expositores de tamaño similar | Hecho el 2026-10-05 desde el informe de `/ajustar` de Daniel: 7 retratos re-recortados (Siles queda igual) con guías de coronilla 17 % y mentón 82 %; cada archivo es el recorte indicado llevado a 560×560 WebP q90. Los recortes acercan, así que se interpola: Gutiérrez (lado 329 px, ×1,7) y Zussman (cuyo original ya era de 260 px) se ven más blandos. Si llegan originales mayores, conviene rehacerlos |
 
 ## Despliegues del 2026-10-02 · lo que está en vivo
 
