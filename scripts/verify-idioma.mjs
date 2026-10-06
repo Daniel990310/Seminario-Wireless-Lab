@@ -255,12 +255,29 @@ for (const [idioma, page] of Object.entries(paginas)) {
         // Un texto que declara su propio idioma va así a propósito en las dos versiones:
         // los títulos y resúmenes de las charlas (RF-32). Vacío y no fuera de la lista,
         // para no desalinear la comparación por posición.
-        .map((el) => (el.closest('[lang]') === document.documentElement ? el : null))
         // Sin filtrar por longitud: filtrar aquí desalinearía la comparación
         // por posición, porque un rótulo corto en un idioma puede ser largo en
         // el otro («Red» → «Network»). El filtro se aplica al reportar.
-        .map((el) => el?.textContent?.replace(/\s+/g, ' ').trim() ?? ''),
+        .map((el) =>
+          el.closest('[lang]') === document.documentElement
+            ? (el.textContent?.replace(/\s+/g, ' ').trim() ?? '')
+            : '',
+        ),
     );
+
+  // La excepción de arriba solo vale si las charlas declaran de verdad su idioma:
+  // título y resumen de cada una, en las dos versiones (RF-32.3).
+  for (const [idioma, page] of Object.entries(paginas)) {
+    const { charlas, enIngles } = await page.evaluate(() => ({
+      charlas: document.querySelectorAll('[data-charlas] details').length,
+      enIngles: document.querySelectorAll('[data-charlas] details [lang="en"]').length,
+    }));
+    check(
+      `RF-32.3 · ${idioma}: título y resumen de cada charla declaran lang="en"`,
+      charlas > 0 && enIngles === charlas * 2,
+      `${charlas} charlas, ${enIngles} elementos con lang="en"`,
+    );
+  }
 
   const [textosEs, textosEn] = await Promise.all([extraer(paginas.es), extraer(paginas.en)]);
 

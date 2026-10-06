@@ -2,49 +2,60 @@
 /**
  * Charlas confirmadas dentro de «Programa», cada una en un desplegable (RF-32).
  *
- * Mientras no haya parrilla horaria es la única forma de saber de qué trata cada charla;
- * cuando llegue, cada una pasa a su hora en `program.days` y esta lista sobra.
- *
- * `<details>` nativo, como la reseña de `SpeakerCard` y por las mismas razones: el
- * contenido sigue accesible sin JavaScript y no cuesta un byte. Título y resumen van en
- * inglés en las dos versiones, como los envió cada autor, y por eso llevan `lang="en"`:
- * un lector de pantalla los pronuncia en inglés también en la página española.
+ * `<details>` nativo, como la reseña de `SpeakerCard` y el resumen de `ProgramaJornadas`:
+ * se abre sin JavaScript y no carga ninguno. Rótulo y flecha son los de esos dos, para
+ * que los tres desplegables de la página se lean igual. `lang="en"` en título y resumen:
+ * el lector de pantalla los pronuncia en inglés también en la página española (el porqué
+ * del inglés está en `charlas.ts`).
  */
 import type { Contenido } from '~/data/contenido';
 
 interface Props {
   c: Contenido;
+  /** Con la parrilla publicada, la promesa de horarios sobra. */
+  hasProgram: boolean;
 }
 
-const { c } = Astro.props;
+const { c, hasProgram } = Astro.props;
 const { charlas, ui } = c;
 ---
 
 {
   charlas.length > 0 && (
-    <div class="mt-14 border-t hairline pt-8">
+    <div class="mt-14 border-t hairline pt-8" data-charlas>
       <h3 class="font-display text-xl font-semibold text-foreground sm:text-2xl">{ui.programa.charlas.titulo}</h3>
-      <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">{ui.programa.charlas.nota}</p>
+      <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+        {ui.programa.charlas.nota}
+        {!hasProgram && ` ${ui.programa.charlas.sinHorario}`}
+      </p>
       <ul class="mt-6 divide-y divide-border border-y border-border">
         {charlas.map((charla) => (
           <li>
             <details class="desplegable-suave group">
-              <summary class="flex cursor-pointer list-none items-start justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden">
-                <span class="min-w-0">
-                  <span class="block text-sm font-semibold text-foreground">{charla.speaker}</span>
-                  <span class="block text-sm text-muted-foreground">{charla.affiliation}</span>
-                  <span lang="en" class="mt-2 block font-display text-lg leading-snug text-foreground">
-                    {charla.title}
-                  </span>
+              <summary class="group/fila block cursor-pointer list-none py-5 [&::-webkit-details-marker]:hidden">
+                <span class="block text-sm font-semibold text-foreground">{charla.speaker}</span>
+                <span class:list={['block text-sm text-muted-foreground', charla.affiliationPending && 'italic']}>
+                  {charla.affiliation}
                 </span>
-                {/* Gira al abrir: indica el estado sin depender solo del texto. */}
-                <svg
-                  class="mt-1 size-4 shrink-0 text-primary transition-transform group-open:rotate-180"
-                  viewBox="0 0 12 12"
-                  aria-hidden="true"
+                <span
+                  lang="en"
+                  class="mt-2 block font-display text-lg leading-snug text-foreground transition-colors group-hover/fila:text-primary"
                 >
-                  <path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" />
-                </svg>
+                  {charla.title}
+                </span>
+                <span class="mt-3 inline-flex items-center gap-2 text-sm text-primary underline decoration-primary/40 underline-offset-4 transition-colors group-hover/fila:decoration-primary">
+                  {ui.programa.verResumen}
+                  <svg
+                    class="size-3 transition-transform group-open:rotate-180"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    aria-hidden="true"
+                  >
+                    <path d="M2.5 4.5 6 8l3.5-3.5" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
               </summary>
               <p lang="en" class="max-w-3xl pb-6 text-base leading-relaxed text-muted-foreground">
                 {charla.abstract}

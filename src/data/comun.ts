@@ -64,9 +64,9 @@ import cpsRtcOscuro from '~/assets/logos/cps-rtc-oscuro.png';
  * Retrato de Mauricio Rodríguez para «El seminario» (RF-31). Lo pidió él, a través de
  * Daniel, el 2026-10-04: eso es la autorización de RF-11.1. Desde el 2026-10-06 es la foto
  * de estudio que entregó Daniel (`Mauricio_Rodriguez.png`, 1024×1536, fondo gris): recorte
- * cuadrado de 1336 px con la cabeza a la altura de la de los expositores, y el fondo gris
- * extendido 160 px por lado y 90 arriba copiando el borde. 800×800 WebP. La anterior era
- * la de su ficha en `eie.pucv.cl`.
+ * cuadrado con la cabeza a la altura de la de los expositores, con el fondo gris extendido
+ * a los lados y arriba copiando el borde, porque el original es más angosto que el
+ * cuadrado. Sale a 800×800 WebP. La anterior era la de su ficha en `eie.pucv.cl`.
  */
 import fotoRodriguez from '~/assets/organizacion/rodriguez.webp';
 
@@ -454,11 +454,6 @@ export const comun = {
    * Reponer una marca cuando llegue su autorización es **volver a poner su línea
    * `logo:`**, con la variante por tema si la tiene. El trámite y su estado están en
    * `specs/gestion/correos-instituciones.md`.
-   *
-   * Nota para quien reponga la UC: **la numeración de sus archivos no significa lo
-   * mismo entre variantes.** El `-04` azul tiene proporción 2,56 y el `-04` blanco
-   * 3,87; el blanco equivalente es el `-03`. Se eligen por proporción, no por número,
-   * para que la marca no cambie de forma al cambiar de tema.
    */
   participants: [
     /*
@@ -608,6 +603,12 @@ export const comun = {
      * el blanco convertido en transparencia (tinta `rgb(3, 90, 130)` [medido]); la variante
      * oscura es la silueta en blanco. La del CPS-RTC pasa a claro solo lo gris, sin tocar
      * el azul de la marca.
+     *
+     * Autorización: Gutiérrez las mandó para el sitio («Recuerda usar los logos de ComSoc
+     * Chile, del centro y de la UC (dejé 2 tipos) para poder usar fondos si fuera
+     * necesario», correo a Mauricio del 2026-09-10) `[verificado]`. Las variantes oscuras
+     * son derivadas nuestras y en el CPS-RTC eso toca colores, lo que RF-10.4 evita;
+     * Mauricio asumió la responsabilidad de publicarlas así (Daniel, 2026-10-06).
      */
     {
       name: 'IEEE Communications Society, Chile Section',

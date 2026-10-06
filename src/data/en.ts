@@ -251,7 +251,8 @@ export const en = {
       verResumen: 'Abstract',
       charlas: {
         titulo: 'Confirmed talks',
-        nota: 'Titles and abstracts as sent by the speakers. Times will be published with the programme.',
+        nota: 'Titles and abstracts as sent by the speakers.',
+        sinHorario: 'Times will be published with the programme.',
       },
     },
 

@@ -78,7 +78,7 @@ export const es = {
     siringo: {
       resena:
         'Ingeniero sénior de radiofrecuencia, líder técnico del front-end y gestor del espectro de ALMA, como miembro del personal internacional del Observatorio Europeo Austral (ESO). Licenciado en Física por la Universidad La Sapienza de Roma, con una tesis en cosmología experimental, y doctor en Astronomía por la Universidad de Bonn, con una tesis sobre polarización submilimétrica en regiones de formación estelar. Llegó a Chile con ESO como astrónomo de operaciones del radiotelescopio APEX y se unió a ALMA como científico de pruebas durante su construcción.',
-      linea: 'Receptores en mm y submm y gestión del espectro',
+      linea: 'Receptores en mm y submm; gestión del espectro',
     },
     siles: {
       resena:
@@ -283,7 +283,8 @@ export const es = {
       verResumen: 'Resumen',
       charlas: {
         titulo: 'Charlas confirmadas',
-        nota: 'Títulos y resúmenes en inglés, tal como los enviaron los expositores. Los horarios se publicarán con el programa.',
+        nota: 'Títulos y resúmenes en inglés, tal como los enviaron los expositores.',
+        sinHorario: 'Los horarios se publicarán con el programa.',
       },
     },
 

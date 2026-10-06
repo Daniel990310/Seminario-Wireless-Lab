@@ -45,8 +45,7 @@ export const FORMATO_SESION = { charlaMin: 45, preguntasMin: 15 } as const;
 export const PLAZO_MATERIAL_ISO = '2026-09-28';
 
 /**
- * Cinco de ocho. Faltan Zussman, Du y Gutiérrez. El de Toledo llegó el 2026-09-27 como
- * `Seminar_PUCV_2026.docx` y entró el 2026-10-06, cuando Daniel lo subió.
+ * Cuáles faltan y cuándo llegó cada una: `specs/gestion/programa-y-expositores.md`.
  *
  * Es `Partial` a propósito: lo normal es que falten, y obligar a que estén las ocho
  * dejaría el archivo sin compilar durante toda la semana de espera.

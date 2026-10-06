@@ -181,9 +181,8 @@ Lo que sigue es la copia **congelada tal como llegó al correo**. Si alguien edi
 > a special focus on sensing-based applications and relevant technology advances.
 
 Envió además **reseña propia y fotografía** (`RAV Photo.jpg`, 44 kB). La reseña ya
-está incorporada —ver «Reseña de Valenzuela» más arriba—. La fotografía **no**:
-
-La foto ya está publicada (`src/assets/expositores/valenzuela.webp`).
+está incorporada —ver «Reseña de Valenzuela» más arriba—, y la fotografía también
+(`src/assets/expositores/valenzuela.webp`).
 
 ### Rodolfo Feick `[confirmado, del autor]`
 

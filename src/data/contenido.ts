@@ -111,14 +111,23 @@ export function contenido(lang: Idioma) {
     },
     about: t.about,
     /*
-     * Charlas confirmadas, en el orden de la nómina (RF-32). Título y resumen no se
-     * traducen: van en inglés en los dos idiomas, como los envió cada autor.
+     * Charlas confirmadas, en el orden de la nómina (RF-32). Nombre y afiliación salen de
+     * `expositor()`, la misma regla que las fichas; título y resumen, de `charlas.ts`.
      */
     charlas: [...comun.speakers.international, ...comun.speakers.national].flatMap((e) => {
       const charla = charlasConfirmadas[e.id];
-      return charla
-        ? [{ id: e.id, speaker: e.name, affiliation: e.affiliation ?? t.afiliacionPorConfirmar, ...charla }]
-        : [];
+      if (!charla) return [];
+      const s = expositor(e);
+      return [
+        {
+          id: s.id,
+          speaker: s.name,
+          affiliation: s.affiliation,
+          affiliationPending: s.affiliationPending,
+          title: charla.title,
+          abstract: charla.abstract,
+        },
+      ];
     }),
     director: { ...comun.director, ...t.about.director },
     topics: t.topics,
