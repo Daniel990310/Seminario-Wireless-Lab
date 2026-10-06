@@ -77,8 +77,8 @@ export const es = {
     },
     siringo: {
       resena:
-        'Líder técnico del front-end de ALMA, el conjunto de receptores con que el observatorio capta las bandas milimétricas y submilimétricas desde Atacama. Doctor por la Universidad de Bonn con una tesis sobre PolKa, un polarímetro sintonizable para arreglos de bolómetros submilimétricos que después se instaló en el telescopio APEX. Antes fue científico del Observatorio Europeo Austral. Sus intereses técnicos abarcan detectores de mm y submm, interferometría y polarización, y formación y reducción de imágenes.',
-      linea: 'Receptores e instrumentación en mm y submm',
+        'Ingeniero sénior de radiofrecuencia, líder técnico del front-end y gestor del espectro de ALMA, como miembro del personal internacional del Observatorio Europeo Austral (ESO). Licenciado en Física por la Universidad La Sapienza de Roma, con una tesis en cosmología experimental, y doctor en Astronomía por la Universidad de Bonn, con una tesis sobre polarización submilimétrica en regiones de formación estelar. Llegó a Chile con ESO como astrónomo de operaciones del radiotelescopio APEX y se unió a ALMA como científico de pruebas durante su construcción.',
+      linea: 'Receptores en mm y submm y gestión del espectro',
     },
     siles: {
       resena:
@@ -97,7 +97,7 @@ export const es = {
     },
     toledo: {
       resena:
-        'Profesor asistente del Departamento de Ingeniería Eléctrica de la Universidad de Santiago de Chile. Dirige un proyecto Fondecyt de Iniciación sobre redes inalámbricas adaptativas con drones autónomos como estaciones base móviles, con aplicación a ondas milimétricas en 5G y 6G.',
+        'Profesor asistente del Departamento de Ingeniería Eléctrica de la Universidad de Santiago de Chile, donde se doctoró en Ciencias de la Ingeniería, mención Automática. Ingeniero en Telecomunicaciones y magíster en Sistemas Digitales por la Universidad Tecnológica de La Habana (CUJAE), donde fue profesor. Fue investigador postdoctoral en el Centro Científico Tecnológico de Valparaíso (CCTVal) de la Universidad Técnica Federico Santa María. Sus intereses son los sistemas de comunicación inalámbrica, el internet de las cosas, la eficiencia energética, la optimización y el procesamiento digital de señales.',
       linea: 'Redes asistidas por drones y eficiencia energética',
     },
   },

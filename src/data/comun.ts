@@ -353,10 +353,9 @@ export const comun = {
        * justamente porque ninguna etiqueta de país describe a un consorcio, pero la etiqueta
        * describe a la persona.
        *
-       * La afiliación es la cadena que confirmó el organizador. Matiz que conviene saber
-       * antes de «corregirla»: la página oficial de ALMA lo lista como *Front-End Technical
-       * Lead* del **Joint ALMA Observatory**, y ESO es uno de los tres socios de ALMA, no su
-       * empleador directo.
+       * La afiliación es la cadena que confirmó el organizador, y su firma del 2026-10-06 la
+       * respalda: «Senior RF Engineer, ALMA» e «International Staff Member, ESO». ESO sí es
+       * su empleador; trabaja destinado en ALMA.
        */
       {
         id: 'siringo',

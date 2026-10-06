@@ -45,8 +45,8 @@ export const FORMATO_SESION = { charlaMin: 45, preguntasMin: 15 } as const;
 export const PLAZO_MATERIAL_ISO = '2026-09-28';
 
 /**
- * Cuatro de ocho. Faltan Zussman, Du, Siringo y Gutiérrez. El de Toledo llegó el
- * 2026-09-27 como `Seminar_PUCV_2026.docx` y entró el 2026-10-06, cuando Daniel lo subió.
+ * Cinco de ocho. Faltan Zussman, Du y Gutiérrez. El de Toledo llegó el 2026-09-27 como
+ * `Seminar_PUCV_2026.docx` y entró el 2026-10-06, cuando Daniel lo subió.
  *
  * Es `Partial` a propósito: lo normal es que falten, y obligar a que estén las ocho
  * dejaría el archivo sin compilar durante toda la semana de espera.
@@ -65,6 +65,12 @@ export const charlasConfirmadas: Partial<Record<IdExpositor, Charla>> = {
     abstract:
       'We present empirically-based statistical wireless channel models, with an emphasis on our recent work at mmWave frequencies. Accuracy and robustness of our results are achieved thanks to massive amounts of data collected in a wide range of settings. We show how this has been achieved using our own custom-designed portable channel sounders, built specifically to accurately measure path-loss with high sampling rates and a very large link budget. Our work has spanned frequency bands from 3.5 GHz to 140 GHz and includes most critical parameters needed for wireless service planning such as propagation loss versus distance, antenna gain degradation from multipath and fade margins. We also include recent results on backscatter power, relevant when evaluating the feasibility of joint communication and sensing.',
     recibida: '2026-09-22',
+  },
+  siringo: {
+    title: 'Spectrum management and RFI monitoring at the Atacama Large Millimeter/submillimeter Array',
+    abstract:
+      'The Atacama Large Millimeter/submillimeter Array, ALMA, operates ten radio frequency bands at the Chajnantor plateau under exceptional natural conditions and limited radio-frequency interference (RFI) protection granted by the national administration on the Chilean territory. I report about spectrum management efforts in an increasingly crowded spectrum due to the development of new facilities on the Chajnantor plateau, self-generated interference, and satellite constellations. The integration of ALMA Band-2 receiver (67-90 GHz) in the array required a new assessment of the RFI environment. A one-week campaign using the Yebes 72-90 GHz portable RFI monitoring receiver temporarily installed at the ALMA site confirmed a largely clean environment, while identifying localized Band 2 RFI threats that require prevention measures.',
+    recibida: '2026-10-06',
   },
   siles: {
     title:

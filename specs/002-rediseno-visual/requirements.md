@@ -658,5 +658,5 @@ tenía dónde ponerlos.
 | RF-32.4 · Solo se listan las charlas recibidas, en el orden de la nómina; sin ninguna, la lista no se pinta | inspección de `contenido.ts` |
 | RF-32.5 · Rótulo y nota de la lista viven en `es.ts` y `en.ts` | `verify:idioma` (RF-1.7) |
 
-Estado al 2026-10-06: cuatro de ocho (Valenzuela, Feick, Siles y Toledo). Faltan Zussman,
-Du, Siringo y Gutiérrez.
+Estado al 2026-10-06: cinco de ocho (Valenzuela, Feick, Siringo, Siles y Toledo). Faltan
+Zussman, Du y Gutiérrez.
