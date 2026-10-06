@@ -101,7 +101,7 @@ export const en = {
     lead: 'An international meeting on wireless sensing in millimetre-wave and sub-terahertz bands, and its role in future communication networks.',
     paragraphs: [
       'The mmWave and sub-THz bands let a single wireless infrastructure not only carry information but also perceive its surroundings: detecting presence and motion, estimating range and reconstructing scenes. This convergence of communication and sensing is one of the pillars of 6G networks.',
-      'The seminar brings together researchers from Chile and abroad to discuss propagation, measurements and joint sensing, and to showcase PUCV research alongside that of its collaborators in these fields. It is held within two projects that fund it: FOVI250222, from ANID, and 525RT0175, from CYTED.',
+      'The seminar brings together researchers from Chile and abroad to discuss propagation, measurements and joint sensing, and to showcase PUCV research alongside that of its collaborators in these fields. It is held within three projects that fund it: FOVI250222 and Fondecyt Regular 1250951, from ANID, and 525RT0175, from CYTED.',
     ],
     director: {
       epigrafe: 'Seminar director',

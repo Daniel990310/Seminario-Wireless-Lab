@@ -122,6 +122,7 @@ const year = new Date().getFullYear();
       <p class="font-mono">
         {c.ui.pie.financiadoPor} {c.funding.agency.shortName} · {c.ui.pie.proyecto}{' '}
         {c.funding.project.code}
+        {c.funding.otrosProyectos.map((p) => ` · ${p.instrumento} ${p.code}`)}
       </p>
     </div>
   </div>

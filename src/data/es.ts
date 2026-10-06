@@ -115,7 +115,7 @@ export const es = {
     lead: 'Encuentro internacional dedicado a la detección inalámbrica en bandas de ondas milimétricas y sub-terahertz, y a su papel en las redes de comunicación futuras.',
     paragraphs: [
       'Las bandas mmWave y sub-THz permiten que una misma infraestructura inalámbrica no solo transmita información, sino que perciba el entorno: detectar presencia y movimiento, estimar distancias y reconstruir escenas. Esa convergencia entre comunicación y detección es uno de los ejes de las redes 6G.',
-      'El seminario reúne a investigadores de Chile y del extranjero para discutir propagación, mediciones y sensado conjunto, y para mostrar la investigación de la PUCV junto a la de sus colaboradores en estos temas. Se realiza en el marco de dos proyectos que lo financian: FOVI250222, de ANID, y 525RT0175, de CYTED.',
+      'El seminario reúne a investigadores de Chile y del extranjero para discutir propagación, mediciones y sensado conjunto, y para mostrar la investigación de la PUCV junto a la de sus colaboradores en estos temas. Se realiza en el marco de tres proyectos que lo financian: FOVI250222 y Fondecyt Regular 1250951, de ANID, y 525RT0175, de CYTED.',
     ],
     director: {
       epigrafe: 'Dirige el seminario',

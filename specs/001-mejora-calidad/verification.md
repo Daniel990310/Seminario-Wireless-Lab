@@ -2,7 +2,7 @@
 
 Generado por `npm run verify`. **No editar a mano**: se sobrescribe en cada corrida.
 
-**Fecha:** 2026-10-06 · **Commit:** `f60c727`
+**Fecha:** 2026-10-06 · **Commit:** `799cf28`
 **Resultado:** todos los presupuestos cumplidos
 
 Método: axe-core sobre el build servido localmente, en 1440×900 y 390×844,
@@ -25,7 +25,7 @@ de ese orden respecto de la línea base no indica un cambio real.
 | RNF-1.4 | Secciones sin nombre accesible | 7 | 0 | 0 | cumple |
 | RNF-1.5 | Saltos de nivel en encabezados | 0 | 0 | 0 | cumple |
 | RNF-2.1 | JavaScript comprimido | 109.3 kB | 4.5 kB | 115.0 kB | cumple |
-| RNF-2.2 | Primera carga comprimida | 241.2 kB | 173.6 kB | 260.0 kB | cumple |
+| RNF-2.2 | Primera carga comprimida | 241.2 kB | 173.7 kB | 260.0 kB | cumple |
 | RNF-2.6 | Tipografías | 110.9 kB | 122.6 kB | 125.0 kB | cumple |
 
 En RNF-1.1 y RNF-1.3 la columna «Actual» **suma todas las corridas**, mientras que
@@ -43,16 +43,16 @@ el desglose por corrida más abajo.
 | HTML (incluye los scripts en línea) | 38.5 kB |
 | CSS en hojas enlazadas | 12.6 kB |
 | Imágenes SVG | 104.0 kB |
-| **Primera carga** | **173.6 kB** |
+| **Primera carga** | **173.7 kB** |
 
-Medido sobre `/`, la **más pesada** de las auditadas, que es contra la que se juzga el presupuesto.
+Las 2 páginas auditadas pesan lo mismo. El presupuesto se juzga contra la más pesada; hoy no hay diferencia entre idiomas.
 
 Primera carga por página:
 
 | Página | Primera carga |
 | ------ | ------------- |
-| `/en/` | 173.6 kB |
-| `/` | 173.6 kB |
+| `/en/` | 173.7 kB |
+| `/` | 173.7 kB |
 
 Solo se cuenta lo que la página referencia. Archivos generados que **ningún archivo
 de `dist` menciona**, y que por tanto ningún navegador descarga:
