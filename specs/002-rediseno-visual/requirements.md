@@ -146,7 +146,7 @@ de los proyectos?», kit digital]`
 | RNF-8.1 | La mención usa la nomenclatura exacta: «Financiado por la Agencia Nacional de Investigación y Desarrollo, ANID / Instrumento (concurso)» | **No cumple.** Dice «Financiado por … / Proyecto FOVI250222», sin el instrumento en la posición indicada |
 | RNF-8.2 | El logo es el conjunto **Ministerio de Ciencia + ANID**, en su versión 2026 | **No cumple.** El marcador es de la marca ANID sola |
 | RNF-8.3 | La mención existe en las dos versiones de idioma | Por definir con la agencia: la fórmula está redactada en español |
-| RNF-8.4 | Cada proyecto ANID que financia el seminario aparece con instrumento y folio en el bloque de ANID, en el pie y en el párrafo de «El seminario». Desde el 2026-10-06: **Fondecyt Regular 1250951**, de Mauricio Rodríguez, pedido por él | Cumple en el sitio. Las láminas del flyer siguen con el FOVI solo |
+| RNF-8.4 | Cada proyecto ANID que se suma al FOVI aparece con instrumento y folio en el bloque de ANID, en el pie y en el párrafo de «El seminario». Desde el 2026-10-06: **Fondecyt Regular 1250951**, de Mauricio Rodríguez, pedido por él. El FOVI sigue bajo RNF-8.1 y A11 | Cumple en el sitio `[verificado: 2026-10-06, el folio está en los tres lugares de dist/index.html y dist/en/index.html]`. Las láminas del flyer siguen con el FOVI solo |
 
 Bloqueado por **A11**: hay que confirmar con la organización cómo se nombra el concurso de
 `FOVI250222`. Escribirlo a ojo sería inventar un dato institucional, que es justo lo que

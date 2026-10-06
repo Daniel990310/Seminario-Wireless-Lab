@@ -629,7 +629,8 @@ export const comun = {
     mencion: 'Financiado por la Agencia Nacional de Investigación y Desarrollo, ANID',
     /**
      * Otros proyectos de ANID que financian el seminario (RNF-8.4). El Fondecyt Regular de
-     * Mauricio Rodríguez lo pidió él, a través de Daniel, el 2026-10-06. Solo instrumento y
+     * Mauricio Rodríguez lo pidió él, a través de Daniel, el 2026-10-06 `[supuesto: dado por
+     * él, no cotejado con el repositorio de ANID]`. Solo instrumento y
      * folio: el título del proyecto no llegó y no se publica uno buscado por nuestra cuenta.
      * Instrumento y folio no se traducen, como la mención.
      */
