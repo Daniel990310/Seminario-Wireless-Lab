@@ -249,6 +249,10 @@ export const en = {
         'Sample programme. These sessions are fictional and only show the format: none has been agreed with the speakers.',
       jornadas: 'Seminar days',
       verResumen: 'Abstract',
+      charlas: {
+        titulo: 'Confirmed talks',
+        nota: 'Titles and abstracts as sent by the speakers. Times will be published with the programme.',
+      },
     },
 
     sede: {

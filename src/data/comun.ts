@@ -54,10 +54,19 @@ import usachOscuro from '~/assets/logos/usach-oscuro.png';
 import almaLogo from '~/assets/logos/alma.png';
 import upbClaro from '~/assets/logos/upb.png';
 import upbOscuro from '~/assets/logos/upb-oscuro.png';
+import pucClaro from '~/assets/logos/puc.png';
+import pucOscuro from '~/assets/logos/puc-oscuro.png';
+import comsocClaro from '~/assets/logos/comsoc-chile.png';
+import comsocOscuro from '~/assets/logos/comsoc-chile-oscuro.png';
+import cpsRtcClaro from '~/assets/logos/cps-rtc.png';
+import cpsRtcOscuro from '~/assets/logos/cps-rtc-oscuro.png';
 /*
  * Retrato de Mauricio Rodríguez para «El seminario» (RF-31). Lo pidió él, a través de
- * Daniel, el 2026-10-04: eso es la autorización de RF-11.1. Es la foto de su ficha en
- * `eie.pucv.cl/nuestro-equipo/mauricio-rodriguez-guzman/`, 1080×1080 reducida a 800.
+ * Daniel, el 2026-10-04: eso es la autorización de RF-11.1. Desde el 2026-10-06 es la foto
+ * de estudio que entregó Daniel (`Mauricio_Rodriguez.png`, 1024×1536, fondo gris): recorte
+ * cuadrado de 1336 px con la cabeza a la altura de la de los expositores, y el fondo gris
+ * extendido 160 px por lado y 90 arriba copiando el borde. 800×800 WebP. La anterior era
+ * la de su ficha en `eie.pucv.cl`.
  */
 import fotoRodriguez from '~/assets/organizacion/rodriguez.webp';
 
@@ -454,23 +463,20 @@ export const comun = {
    */
   participants: [
     /*
-     * Las dos variantes tienen la misma proporción —2,56, `viewBox` 303,1 × 118,5— así que
-     * la marca no cambia de forma al cambiar de tema. Se eligieron por proporción y no por
-     * el número del archivo: en el paquete de la UC el `-04` azul mide 2,56 y el `-04`
-     * blanco 3,87; el blanco equivalente es el `-03`.
-     *
-     * `escalaOptica: 1.28` es un juicio a ojo y se declara como tal: su escudo es pequeño
-     * sobre una línea de texto fina, casi todo aire, así que a igual área se ve más liviano
-     * que las demás. Contraste `[medido]`: 3,58:1 el azul sobre claro, 19,13:1 el blanco
-     * sobre oscuro. Autorización pedida a `mhola@uc.cl`, **sin respuesta**.
+     * Desde el 2026-10-06, el escudo con «Pontificia Universidad Católica de Chile» debajo
+     * (`PUC-11.png`, entregado por Daniel), y no el `uc.svg` anterior. Entre los archivos
+     * que llegaron estaba también el logotipo vigente «UC | Chile», pero dice «UC» en
+     * grande, justo lo que Mauricio pidió cambiar por «PUC» (reunión del 2026-10-04).
+     * Este dice el nombre completo y su tinta gris oscura se lee mejor que el azul claro
+     * del anterior (3,58:1). La variante oscura es la misma silueta en blanco.
+     * Autorización pedida a `mhola@uc.cl`, sin respuesta: publicada por la decisión de RF-22.
      */
     {
       name: 'Pontificia Universidad Católica de Chile',
       // «PUC» y no «UC», por indicación de Mauricio Rodríguez en la reunión del 2026-10-04.
       shortName: 'PUC',
-      logo: '/logos/uc.svg',
-      logoOscuro: '/logos/uc-oscuro.svg',
-      escalaOptica: 1.28,
+      logo: pucClaro,
+      logoOscuro: pucOscuro,
       url: 'https://www.uc.cl',
     },
     /*
@@ -589,6 +595,32 @@ export const comun = {
       // Juicio a ojo: a igual área su silueta maciza pesaba más que el resto del muro.
       escalaOptica: 0.78,
       url: 'https://www.upb.edu',
+    },
+    /*
+     * Las dos marcas que llegaron con Miguel Gutiérrez Gaitán, entregadas por Daniel el
+     * 2026-10-06. [supuesto] que entran como colaboradoras por él: el CPS-RTC es el centro
+     * de investigación aplicada de la PUC financiado por ANID (convocatoria 2025) que
+     * dirige Felipe Núñez y del que Gutiérrez es investigador principal; el capítulo
+     * chileno de IEEE ComSoc es el que él presidió. Sin `url`: ninguna de las dos tiene
+     * una dirección confirmada.
+     *
+     * ComSoc venía en dos archivos: el original opaco sobre blanco y uno sin fondo hecho
+     * con una herramienta automática, que dejó la tinta translúcida. Se usa el original con
+     * el blanco convertido en transparencia (tinta `rgb(3, 90, 130)` [medido]); la variante
+     * oscura es la silueta en blanco. La del CPS-RTC pasa a claro solo lo gris, sin tocar
+     * el azul de la marca.
+     */
+    {
+      name: 'IEEE Communications Society, Chile Section',
+      shortName: 'IEEE ComSoc Chile',
+      logo: comsocClaro,
+      logoOscuro: comsocOscuro,
+    },
+    {
+      name: 'Cyber-Physical Systems Research and Technology Center',
+      shortName: 'CPS-RTC',
+      logo: cpsRtcClaro,
+      logoOscuro: cpsRtcOscuro,
     },
   ],
 

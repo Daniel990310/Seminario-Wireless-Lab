@@ -281,6 +281,10 @@ export const es = {
         'Programa de ejemplo. Estas sesiones son ficticias y sirven solo para mostrar el formato: ninguna ha sido acordada con los expositores.',
       jornadas: 'Jornadas del seminario',
       verResumen: 'Resumen',
+      charlas: {
+        titulo: 'Charlas confirmadas',
+        nota: 'Títulos y resúmenes en inglés, tal como los enviaron los expositores. Los horarios se publicarán con el programa.',
+      },
     },
 
     sede: {

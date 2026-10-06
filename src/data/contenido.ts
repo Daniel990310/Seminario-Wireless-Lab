@@ -19,6 +19,7 @@ import {
 import { es } from './es';
 import { en } from './en';
 import { programaDemoEs, programaDemoEn } from './programa-demo';
+import { charlasConfirmadas } from './charlas';
 
 export const IDIOMAS = ['es', 'en'] as const;
 export type Idioma = (typeof IDIOMAS)[number];
@@ -109,6 +110,16 @@ export function contenido(lang: Idioma) {
       esDemostracion: PROGRAMA_DEMOSTRATIVO && t.program.days.length === 0,
     },
     about: t.about,
+    /*
+     * Charlas confirmadas, en el orden de la nómina (RF-32). Título y resumen no se
+     * traducen: van en inglés en los dos idiomas, como los envió cada autor.
+     */
+    charlas: [...comun.speakers.international, ...comun.speakers.national].flatMap((e) => {
+      const charla = charlasConfirmadas[e.id];
+      return charla
+        ? [{ id: e.id, speaker: e.name, affiliation: e.affiliation ?? t.afiliacionPorConfirmar, ...charla }]
+        : [];
+    }),
     director: { ...comun.director, ...t.about.director },
     topics: t.topics,
 
