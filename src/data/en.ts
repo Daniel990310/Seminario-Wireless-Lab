@@ -63,8 +63,8 @@ export const en = {
     },
     siringo: {
       resena:
-        'Front-End Technical Lead at ALMA, in charge of the receiver system the observatory uses to capture millimetre and submillimetre bands from Atacama. PhD from the University of Bonn with a thesis on PolKa, a tunable polarimeter for submillimetre bolometer arrays later installed on the APEX telescope. He was previously a scientist at the European Southern Observatory. His technical interests cover mm/submm detectors, interferometry and polarisation, imaging and data reduction.',
-      linea: 'mm/submm receivers and instrumentation',
+        'Senior RF Engineer, Front-End Technical Lead and Spectrum Manager at ALMA, as an international staff member of the European Southern Observatory (ESO). Degree in physics from La Sapienza University of Rome, with a thesis in experimental cosmology, and PhD in astronomy from the University of Bonn, with a thesis on submillimetre polarisation in star-forming regions. He came to Chile with ESO as operations astronomer at the APEX radio telescope, then joined ALMA as a Test Scientist during its construction.',
+      linea: 'mm/submm receivers and spectrum management',
     },
     siles: {
       resena:
@@ -83,7 +83,7 @@ export const en = {
     },
     toledo: {
       resena:
-        'Assistant professor in the Electrical Engineering Department at Universidad de Santiago de Chile. He leads a Fondecyt Initiation project on adaptive wireless networks using autonomous drones as mobile base stations, applied to millimetre waves in 5G and 6G.',
+        'Assistant professor in the Electrical Engineering Department at Universidad de Santiago de Chile, where he received his PhD in Engineering Sciences, mention in Automation. BSc in Telecommunication Engineering and MSc in Digital Systems from the Technological University of Havana (CUJAE), where he was a professor. He was a postdoctoral researcher at the Valparaíso science and technology centre (CCTVal), Universidad Técnica Federico Santa María. His interests are wireless communication systems, the Internet of Things, energy efficiency, optimisation and digital signal processing.',
       linea: 'Drone-assisted networks and energy efficiency',
     },
   },
@@ -249,6 +249,11 @@ export const en = {
         'Sample programme. These sessions are fictional and only show the format: none has been agreed with the speakers.',
       jornadas: 'Seminar days',
       verResumen: 'Abstract',
+      charlas: {
+        titulo: 'Confirmed talks',
+        nota: 'Titles and abstracts as sent by the speakers.',
+        sinHorario: 'Times will be published with the programme.',
+      },
     },
 
     sede: {

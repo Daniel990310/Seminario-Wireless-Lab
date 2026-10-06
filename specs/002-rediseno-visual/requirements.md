@@ -641,4 +641,22 @@ cosa: una franja dentro de la sección, no una página.
 | RF-31.3 · El retrato lleva `alt=""` y `aria-hidden`: el nombre está en el `<h3>` contiguo | `verify` |
 | RF-31.4 · El nombre vive en `comun.ts` (no se traduce); epígrafe, cargo, texto y rótulo del enlace en `es.ts` y `en.ts`, con la paridad que vigila `tipos.ts` | `check`, `verify:idioma` |
 | RF-31.5 · El párrafo que lo presentaba dentro de «El seminario» pasa a la franja; no se repite | inspección de `es.ts`/`en.ts` |
-| RF-31.6 · Autorización de la foto (RF-11.1): la pidió él mismo. Es la de su ficha en `eie.pucv.cl`, 1080 × 1080 reducida a 800 | procedencia en `comun.ts` |
+| RF-31.6 · Autorización de la foto (RF-11.1): la pidió él mismo. Desde el 2026-10-06 es la foto de estudio que entregó Daniel (antes, la de su ficha en `eie.pucv.cl`) | procedencia en `comun.ts` |
+
+## RF-32 · Las charlas confirmadas, desplegables dentro de «Programa» · 2026-10-06
+
+Origen: Daniel, 2026-10-06: «las charlas van en una sección desplegable dentro del
+programa para ver de qué trata la charla». Resuelve la pregunta abierta de
+`src/data/charlas.ts`, que guardaba títulos y resúmenes sin publicarlos porque el sitio no
+tenía dónde ponerlos.
+
+| Criterio | Comprobación |
+| --- | --- |
+| RF-32.1 · Dentro de la sección «Programa», bajo el aviso provisional (o bajo las jornadas cuando existan), una lista «Charlas confirmadas» con una fila por charla: expositor, afiliación y título | captura |
+| RF-32.2 · Cada fila es un `<details>` nativo: el resumen se abre sin JavaScript | `verify:interaccion`, inspección |
+| RF-32.3 · Título y resumen van **en inglés en las dos versiones**, como los envió cada autor, y su marcado lo declara con `lang="en"`. `verify:idioma` no los cuenta como traducciones olvidadas | `verify:idioma` |
+| RF-32.4 · Solo se listan las charlas recibidas, en el orden de la nómina; sin ninguna, la lista no se pinta | inspección de `contenido.ts` |
+| RF-32.5 · Rótulo y nota de la lista viven en `es.ts` y `en.ts` | `verify:idioma` (RF-1.7) |
+
+Estado al 2026-10-06: cinco de ocho (Valenzuela, Feick, Siringo, Siles y Toledo). Faltan
+Zussman, Du y Gutiérrez.

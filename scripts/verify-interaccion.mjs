@@ -177,6 +177,28 @@ const check = (nombre, ok, detalle = '') => resultados.push({ nombre, ok, detall
 }
 
 // ---------------------------------------------------------------------------
+// RF-32.2 · Las charlas confirmadas se abren sin JavaScript
+// ---------------------------------------------------------------------------
+{
+  const ctxSin = await browser.newContext({ javaScriptEnabled: false });
+  const sinJs = await ctxSin.newPage();
+  await sinJs.goto(BASE, { waitUntil: 'domcontentloaded' });
+  const fila = sinJs.locator('[data-charlas] details').first();
+  const hay = (await fila.count()) > 0;
+  let detalle = 'no hay ninguna charla en la página';
+  let ok = false;
+  if (hay) {
+    await fila.locator('summary').click();
+    ok = await fila.evaluate(
+      (d) => d.open && d.querySelector('p[lang="en"]').checkVisibility(),
+    );
+    detalle = ok ? 'el resumen queda visible tras un clic' : 'el resumen no se ve tras el clic';
+  }
+  check('RF-32.2 · el resumen de una charla se abre sin JavaScript', ok, detalle);
+  await ctxSin.close();
+}
+
+// ---------------------------------------------------------------------------
 // RF-6 · Pestañas por jornada, con mejora progresiva
 // ---------------------------------------------------------------------------
 {

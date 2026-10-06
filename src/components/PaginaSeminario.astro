@@ -15,6 +15,7 @@ import Section from '~/components/Section.astro';
 import SpeakerCard from '~/components/SpeakerCard.astro';
 import ProgramPending from '~/components/ProgramPending.astro';
 import ProgramaJornadas from '~/components/ProgramaJornadas.astro';
+import CharlasConfirmadas from '~/components/CharlasConfirmadas.astro';
 import LogoWall from '~/components/LogoWall.astro';
 import VenueLocator from '~/components/VenueLocator.astro';
 import SiteFooter from '~/components/SiteFooter.astro';
@@ -205,6 +206,7 @@ const hasProgram = program.days.length > 0;
             </div>
           )
         }
+        <CharlasConfirmadas c={c} hasProgram={hasProgram} />
       </div>
     </Section>
 

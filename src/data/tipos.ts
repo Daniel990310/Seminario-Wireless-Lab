@@ -215,6 +215,13 @@ export interface ContenidoIdioma {
       jornadas: string;
       /** Abre el resumen de una sesión. */
       verResumen: string;
+      /** Lista de charlas confirmadas, cada una desplegable (RF-32). */
+      charlas: {
+        titulo: string;
+        nota: string;
+        /** Se muestra solo mientras no haya parrilla horaria. */
+        sinHorario: string;
+      };
     };
 
     sede: {
