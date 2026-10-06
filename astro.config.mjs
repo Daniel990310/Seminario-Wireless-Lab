@@ -125,11 +125,12 @@ export default defineConfig({
     // `i18n` en el sitemap emite las alternativas por idioma en cada URL (RF-1.8).
     sitemap({
       i18n: { defaultLocale: 'es', locales: { es: 'es', en: 'en' } },
-      // `/og/` son los lienzos de los que se capturan las imágenes para
-      // compartir: no son páginas para visitar y no deben indexarse. Y
+      // `/og/` y `/flyer/` son los lienzos de los que se capturan las imágenes para
+      // compartir y para redes: no son páginas para visitar y no deben indexarse. Y
       // `/robots.txt` es un endpoint, no una página: listarlo en el sitemap sería
       // pedirle al buscador que indexe el archivo que le da las instrucciones.
-      filter: (pagina) => !pagina.includes('/og/') && !pagina.endsWith('/robots.txt'),
+      filter: (pagina) =>
+        !pagina.includes('/og/') && !pagina.includes('/flyer/') && !pagina.endsWith('/robots.txt'),
     }),
     // Solo se activa con `astro dev`; ver la nota sobre `panelDeAjuste` arriba.
     panelDeAjuste(),

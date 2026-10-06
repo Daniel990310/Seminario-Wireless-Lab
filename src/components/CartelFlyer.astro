@@ -1,0 +1,139 @@
+---
+/**
+ * Lienzo de las piezas de difusión en redes. Cada lámina (`src/components/flyer/`) va
+ * dentro, en el área útil.
+ *
+ * Hermano de `CartelOg.astro` y por la misma razón: es una página real del proyecto,
+ * con sus tokens, sus tipografías y su figura, así que no se desincroniza del sitio.
+ * `scripts/generar-flyer.mjs` lo captura a PNG y a PDF vectorial; el PDF es el que se
+ * abre en Illustrator.
+ *
+ * ── TEMA OSCURO, CON FRANJA BLANCA PARA LAS MARCAS ─────────────────────────────
+ *
+ * El fondo es el del tema oscuro del sitio: en un feed blanco como el de LinkedIn un
+ * cartel claro se confunde con la interfaz, y el oscuro con el cobre del acento se
+ * despega. Por eso el logo del seminario va en su variante `-blanco`, la que el manual
+ * de marca 5.2 indica sobre fondo oscuro (`specs/marca-beyond-connectivity.md`). Las
+ * marcas institucionales, en cambio, van sobre blanco (ver `flyer/Marcas.astro`).
+ *
+ * El texto alternativo llega como `alt` y viaja en un `<meta>`: el lienzo no se navega,
+ * y el generador lo escribe junto al PNG para pegarlo al publicar.
+ */
+import { Font, Image } from 'astro:assets';
+import PropagationFigure from './PropagationFigure.astro';
+import fotoSede from '~/assets/fondos/sede-acceso.webp';
+import { contenido, type Idioma } from '~/data/contenido';
+import { FORMATOS_FLYER, type FormatoFlyer } from '~/data/flyer';
+import '~/styles/global.css';
+
+interface Props {
+  lang: Idioma;
+  formato: FormatoFlyer;
+  alt: string;
+  /** Altura del emisor de la figura bajo el inicio del contenido. Ver el comentario de la figura. */
+  emisor?: number;
+  /**
+   * Lo que la lámina debe contener, para los criterios de `specs/003-difusion-redes`
+   * (`scripts/lib/criterios-flyer.mjs`). Viaja en `data-flyer-esperado` del `<body>`.
+   */
+  esperado: Record<string, unknown>;
+}
+
+const { lang, formato, alt, emisor = 410, esperado } = Astro.props;
+const c = contenido(lang);
+const { ancho, alto, seguro } = FORMATOS_FLYER[formato];
+/* `9x16` reserva las franjas que tapa la interfaz; `4x5` usa el lienzo entero. */
+const altoUtil = alto - seguro.arriba - seguro.abajo;
+
+/*
+ * Posición de la figura. El emisor está en (148, 322) de un `viewBox` de 820 × 640
+ * (`PropagationFigure.astro`); espejada, queda en x = 672. La caja lleva la proporción
+ * exacta del `viewBox`, así que `slice` no recorta, y se coloca para que el emisor —el
+ * centro de los arcos— caiga **en el borde derecho** del lienzo, a la altura `emisor`.
+ * Pedido por Daniel el 2026-10-01: con el emisor dentro del lienzo quedaba un vacío azul
+ * a la derecha que nada llenaba; desde el borde, los arcos cruzan toda la lámina.
+ * Escala 1,4: los arcos alcanzan 672 × 1,4 = 941 px, casi todo el ancho; a 1,75 cruzaban
+ * el lienzo entero pero tan espaciados que apenas se leían.
+ */
+const ESCALA_FIGURA = 1.4;
+const figura = {
+  left: ancho - 672 * ESCALA_FIGURA,
+  top: seguro.arriba + emisor - 322 * ESCALA_FIGURA,
+  width: 820 * ESCALA_FIGURA,
+  height: 640 * ESCALA_FIGURA,
+};
+---
+
+<!doctype html>
+<html lang={c.lang} data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <title>{c.title}</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="flyer-alt" content={alt} />
+    {/* Sin `<Font>` la captura sale con la tipografía de reserva. Ver `CartelOg.astro`. */}
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-body" preload />
+    <Font cssVariable="--font-mono" />
+    <style define:vars={{ ancho: `${ancho}px`, alto: `${alto}px` }}>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: var(--ancho);
+        height: var(--alto);
+        overflow: hidden;
+      }
+      /* El PDF tiene que medir lo mismo que el PNG: sin márgenes de impresión. */
+      @page {
+        size: var(--ancho) var(--alto);
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body data-flyer-esperado={JSON.stringify(esperado)}>
+    <div class="relative overflow-hidden bg-background" style={`width:${ancho}px;height:${alto}px`}>
+      {/*
+        La figura del sitio, espejada: el emisor en el borde derecho y los frentes de onda
+        cruzando hacia el contenido. Al 65 %: el logo, que también dibuja ondas, está a la
+        izquierda y no se superponen; al 45 %, desde el borde, los arcos casi no se veían.
+      */}
+      <div
+        class="pointer-events-none absolute -scale-x-100 opacity-[0.65]"
+        style={`left:${figura.left}px;top:${figura.top}px;width:${figura.width}px;height:${figura.height}px`}
+      >
+        <PropagationFigure titulo={c.ui.hero.figuraTitulo} descripcion={c.ui.hero.figuraDescripcion} />
+      </div>
+
+      <div
+        data-flyer-contenido
+        class="absolute inset-x-0 flex flex-col px-[72px]"
+        style={`top:${seguro.arriba}px;height:${altoUtil}px;padding-top:${seguro.arriba ? 40 : 72}px`}
+      >
+        <slot />
+      </div>
+
+      {/*
+        Historias: la franja de abajo que tapa la interfaz (RF-23.2) la ocupa la fotografía
+        de la sede, la misma del sitio (RF-21): ahí no puede ir contenido, y vacía se leía
+        como un hueco (Daniel, 2026-10-01: primero en azul, después en blanco). La foto no
+        pierde nada si la barra la tapa, y dice dónde es el seminario. Su proporción,
+        4,38:1, es casi la de la franja, 1080 × 250 = 4,32:1, así que casi no se recorta.
+        Sin texto encima, como en el sitio.
+      */}
+      {
+        seguro.abajo > 0 && (
+          <Image
+            src={fotoSede}
+            alt=""
+            width={1080}
+            height={seguro.abajo}
+            class="absolute inset-x-0 bottom-0 w-full object-cover"
+            style={`height:${seguro.abajo}px`}
+            data-flyer-foto-sede
+          />
+        )
+      }
+    </div>
+  </body>
+</html>

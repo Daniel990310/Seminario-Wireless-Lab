@@ -55,7 +55,7 @@ import almaLogo from '~/assets/logos/alma.png';
 import upbClaro from '~/assets/logos/upb.png';
 import upbOscuro from '~/assets/logos/upb-oscuro.png';
 /*
- * Retrato de Mauricio Rodríguez para «El seminario» (RF-23). Lo pidió él, a través de
+ * Retrato de Mauricio Rodríguez para «El seminario» (RF-31). Lo pidió él, a través de
  * Daniel, el 2026-10-04: eso es la autorización de RF-11.1. Es la foto de su ficha en
  * `eie.pucv.cl/nuestro-equipo/mauricio-rodriguez-guzman/`, 1080×1080 reducida a 800.
  */
@@ -710,7 +710,7 @@ export const comun = {
   ] satisfies ReadonlyArray<{ nombre: string; grado: GradoAcademico }>,
 
   /**
-   * Quien dirige el seminario, con retrato, en la sección «El seminario» (RF-23). El
+   * Quien dirige el seminario, con retrato, en la sección «El seminario» (RF-31). El
    * nombre no se traduce; el cargo y el texto viven en `about.director` de cada idioma.
    */
   director: {

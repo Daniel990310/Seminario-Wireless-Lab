@@ -205,6 +205,21 @@ export const es = {
         'Representación esquemática de un emisor de radio cuyos frentes de onda se propagan sobre una retícula polar de rango que cambia de relieve e intensidad al interactuar.',
     },
 
+    flyer: {
+      expositores: 'Expositores',
+      inscripciones: 'Inscripciones en',
+      qr: 'Formulario de inscripción',
+      organiza: 'Organiza',
+      financian: 'Financian',
+      // Sin «→»: Illustrator no mapea esa glifa del subconjunto incrustado y la sustituye por Myriad.
+      desliza: 'Desliza: expositores e inscripción',
+      inscripcion: 'Inscripción',
+      escanea: 'Escanea el código o entra a',
+      sticker: 'Inscríbete en el enlace',
+      grupoInternacional: 'Internacionales',
+      grupoNacional: 'Nacionales',
+    },
+
     secciones: {
       seminario: {
         eyebrow: 'El seminario',

@@ -192,6 +192,22 @@ export const en = {
         'Schematic view of a radio emitter whose wavefronts propagate across a polar range grid that changes relief and intensity when interacting.',
     },
 
+    flyer: {
+      expositores: 'Speakers',
+      inscripciones: 'Register at',
+      qr: 'Registration form',
+      organiza: 'Organised by',
+      financian: 'Funded by',
+      // Sin «→»: ver el comentario en `es.ts`.
+      desliza: 'Swipe: speakers and registration',
+      inscripcion: 'Registration',
+      escanea: 'Scan the code or go to',
+      sticker: 'Register via the link',
+      grupoInternacional: 'International',
+      // No «Chilean»: el grupo es por institución con sede en Chile, no por nacionalidad.
+      grupoNacional: 'Based in Chile',
+    },
+
     secciones: {
       seminario: {
         eyebrow: 'The seminar',

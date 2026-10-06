@@ -22,6 +22,26 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Flyers de redes, traídos a `main` · 2026-10-06
+
+Las piezas de `difusion/flyer/` (spec `003-difusion-redes`: carrusel, historias y pieza
+única, en ES y EN) vivían **sin commitear** en el worktree
+`.claude/worktrees/bcsensing-flyer-design-b96358`, sobre el `main` del 2026-10-02, y por
+eso salían con la foto equivocada de Siringo, «UC», el nombre largo de Mauricio y el logo
+EIE cuadrado. Se trajeron a `main` en la rama `difusion/flyers-en-main`: los archivos
+nuevos tal cual y los cambios a archivos compartidos con `git apply -3`, sin conflictos.
+Como leen los datos del sitio, al regenerarlas (`npm run build && npm run flyer`) toman
+solas lo de la reunión con Mauricio; la franja de marcas usa ahora la submarca EIE del
+sitio. **12 piezas, 21 criterios medibles en verde**; falta RF-30, la revisión humana.
+
+- Los `.ai` no se versionan (`.gitignore`) y los del worktree estaban desactualizados: se
+  borraron. Se regeneran desde el PDF con `scripts/illustrator/abrir-flyer.ps1`, que abre
+  Illustrator CC 2019 (instalado en el PC de Daniel).
+- La franja del director del sitio se llamaba RF-23 en el spec 002; el spec 003 ya usaba
+  RF-23 a RF-30, así que pasó a **RF-31**.
+- El worktree sigue en disco con su trabajo sin commitear; todo lo que tenía ya está en
+  esta rama. Se puede borrar.
+
 ## Foto nueva de Giorgio Siringo · 2026-10-06
 
 Daniel entregó una foto nueva de Siringo (637 × 603, selfie frente a las antenas de ALMA)
@@ -54,7 +74,7 @@ postgrado…») se reemplazó por esto en `es.ts` y `en.ts`.
 | Nombre de Mauricio más corto | Hecho como **«Mauricio Rodríguez»** en el pie y en «El seminario». [supuesto] que esa es la forma que quiere; confirmarlo |
 | Cambiar logo EIE | Hecho: vuelve la submarca horizontal anterior (`eie-pucv.png`). Enmienda de RF-10 |
 | Poner logos que faltan | Hecho, **de internet y bajo responsabilidad de Mauricio** (enmienda de RF-22): ALMA (ESO), UPB (upb.edu) y Columbia University en lugar de CUSPS. De paso, USACH tiene variante oscura |
-| Foto de Mauricio como organizador | Hecho: franja «Dirige el seminario» con su retrato al final de «El seminario» (RF-23). Foto de su ficha en eie.pucv.cl |
+| Foto de Mauricio como organizador | Hecho: franja «Dirige el seminario» con su retrato al final de «El seminario» (RF-31). Foto de su ficha en eie.pucv.cl |
 | Flyer tipo pancarta, largo, con fotos de expositores y Mauricio | Fuera del sitio. Falta medida y orientación |
 | Fotos de expositores de tamaño similar | Hecho el 2026-10-05 desde el informe de `/ajustar` de Daniel: 7 retratos re-recortados (Siles queda igual) con guías de coronilla 17 % y mentón 82 %; cada archivo es el recorte indicado llevado a 560×560 WebP q90. Los recortes acercan, así que se interpola: Gutiérrez (lado 329 px, ×1,7) y Zussman (cuyo original ya era de 260 px) se ven más blandos. Si llegan originales mayores, conviene rehacerlos |
 

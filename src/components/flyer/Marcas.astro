@@ -1,0 +1,80 @@
+---
+/**
+ * Franja de marcas al pie de una lámina, sobre blanco y a sangre lateral.
+ *
+ * ── SOLO LAS CUATRO QUE DANIEL AUTORIZÓ PARA ESTAS PIEZAS (2026-10-01) ─────────
+ *
+ * PUCV, EIE, CYTED y ANID. Las demás instituciones aparecen como texto, en la afiliación
+ * de cada expositor. Que el sitio publique otras marcas no se extiende aquí: un cartel en
+ * redes es otra publicación, de más alcance.
+ *
+ * Van sobre blanco porque es el fondo para el que sus dueños las diseñaron, y así no hay
+ * que elegir variante oscura —el manual de ANID restringe la «pluma» a colores planos
+ * (`specs/gestion/anid-normas-2026.md` §1.2)—.
+ *
+ * Orden y peso según ANID §1.1: las no gubernamentales a la izquierda de ANID y con el
+ * mismo peso visual. PUCV (1,97:1), EIE y ANID (1,86:1) van a la misma altura. La EIE es la
+ * submarca horizontal, la misma del sitio desde la reunión con Mauricio del 2026-10-04
+ * (antes, el escudo cuadrado que Daniel entregó el 2026-10-01). CYTED usa la marca de 40 años, cuadrada, **con fondo blanco** por pedido de Daniel
+ * (2026-10-02): el original de `comun.ts` trae fondo negro opaco y en la franja blanca era
+ * un cuadrado negro. La variante `cyted-40-anos-fondo-blanco.png` cambia solo el fondo: la
+ * tinta es verde (72, 156, 67) y azul, sin blanco `[medido]`, así que cada píxel cuyo canal
+ * más alto no llega a 140 se compone sobre blanco con su borde suavizado, y los 19 565
+ * píxeles de tinta plena quedan idénticos. El sitio sigue con el original.
+ *
+ * La mención de financiamiento va **siempre** que va la franja (Daniel, 2026-10-01: estaba
+ * en unas láminas y en otras no): la fórmula de ANID (RNF-8.1) y la red CYTED con su
+ * código. A 31 px, el piso.
+ */
+import { Image } from 'astro:assets';
+import submarcaEie from '~/assets/logos/eie-pucv.png';
+import cytedFondoBlanco from '~/assets/logos/cyted-40-anos-fondo-blanco.png';
+import type { Contenido } from '~/data/contenido';
+
+interface Props {
+  c: Contenido;
+}
+
+const { c } = Astro.props;
+const t = c.ui.flyer;
+const [pucv] = c.organizers;
+const anid = c.funding.agency;
+const [cyted] = c.financiadores;
+---
+
+{/*
+  `pt-[40px]` en el envoltorio es el aire mínimo entre el contenido y la franja: sin él,
+  en la historia de expositores el último retrato quedaba pegado al blanco (Daniel,
+  2026-10-01). El generador exige al menos 32 px en todas las láminas (RF-24.4).
+
+  Cada marca lleva `data-marca`: el generador comprueba cuáles hay, su orden y su peso
+  (RF-26.3 a RF-26.5), y que no haya ninguna imagen más en la franja.
+*/}
+<div class="mt-auto pt-[40px]">
+<footer
+  data-flyer-marcas
+  class="-mx-[72px] bg-[var(--pure-white)] px-[72px] pt-[24px] pb-[28px] text-[var(--navy-900)]"
+>
+  <div class="flex items-end justify-between">
+    <div>
+      <p class="eyebrow text-[31px] text-[var(--slate-600)]">{t.organiza}</p>
+      <div class="mt-[8px] flex h-[101px] items-center gap-[36px]">
+        <Image src={pucv.logo} alt="" width={284} height={144} class="h-[72px] w-auto" data-marca="pucv" />
+        <Image src={submarcaEie} alt="" height={144} class="h-[72px] w-auto" data-marca="eie" />
+      </div>
+    </div>
+    <div class="text-right">
+      <p class="eyebrow text-[31px] text-[var(--slate-600)]">{t.financian}</p>
+      <div class="mt-[8px] flex h-[101px] items-center justify-end gap-[36px]">
+        <Image src={cytedFondoBlanco} alt="" width={202} height={201} class="size-[101px]" data-marca="cyted" />
+        {/* 134 × 72: el `viewBox` del SVG, 470,89 × 252,78, llevado a 72 de alto. */}
+        <img src={anid.logo} alt="" width="134" height="72" class="h-[72px] w-auto" data-marca="anid" />
+      </div>
+    </div>
+  </div>
+  <p data-flyer-mencion class="mt-[16px] text-[31px] leading-[1.25] text-pretty text-[var(--slate-600)]">
+    {c.funding.mencion} · {c.funding.project.code}.<br />
+    {cyted.agency.shortName} {cyted.project.code} · {cyted.project.acronimo}.
+  </p>
+</footer>
+</div>

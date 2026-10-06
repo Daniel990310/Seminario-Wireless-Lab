@@ -363,14 +363,14 @@ if (!existsSync(DIST)) {
 }
 
 /*
- * Se auditan las páginas del sitio, no los lienzos de `/og/`: esos son el
- * origen de las imágenes para compartir, miden 1200×630 fijos, nadie los visita
- * y no llevan navegación. Incluirlos ensuciaría las cifras de accesibilidad con
- * un documento que no es una página.
+ * Se auditan las páginas del sitio, no los lienzos de `/og/` ni de `/flyer/`: esos
+ * son el origen de las imágenes para compartir y para redes, miden un tamaño fijo,
+ * nadie los visita y no llevan navegación. Incluirlos ensuciaría las cifras de
+ * accesibilidad con un documento que no es una página.
  */
 const paginas = (await listarArchivos(DIST))
   .filter((f) => f.endsWith('index.html'))
-  .filter((f) => !rutaWeb(f).includes('og/'))
+  .filter((f) => !rutaWeb(f).includes('og/') && !rutaWeb(f).includes('flyer/'))
   .map((f) => rutaWeb(relative(DIST, f)))
   .sort();
 

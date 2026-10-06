@@ -1,0 +1,56 @@
+---
+/** Lienzos de las piezas de difusión en redes. Ver `CartelFlyer.astro` y `src/data/flyer.ts`. */
+import CartelFlyer from '~/components/CartelFlyer.astro';
+import LaminaExpositores from '~/components/flyer/LaminaExpositores.astro';
+import LaminaInscripcion from '~/components/flyer/LaminaInscripcion.astro';
+import LaminaUnica from '~/components/flyer/LaminaUnica.astro';
+import Portada from '~/components/flyer/Portada.astro';
+import { altFlyer, datosFlyer } from '~/components/flyer/datos';
+import { contenido } from '~/data/contenido';
+import { PIEZAS_FLYER } from '~/data/flyer';
+
+export function getStaticPaths() {
+  return PIEZAS_FLYER.map(({ pieza, idioma, formato, lamina }) => ({
+    params: { pieza },
+    props: { idioma, formato, lamina },
+  }));
+}
+
+const { idioma, formato, lamina } = Astro.props;
+const c = contenido(idioma);
+const historia = formato === '9x16';
+
+/*
+ * Altura del emisor de la figura (borde derecho) bajo el inicio del contenido: el centro
+ * del hueco que cada lámina deja a la derecha. Medido sobre las capturas de 2026-10-01.
+ */
+const EMISOR = { unica: 230, portada: 700, historia: 900, expositores: 700, inscripcion: 820 } as const;
+
+/*
+ * Lo que la lámina debe contener, para los criterios de `specs/003-difusion-redes`. Se
+ * declara aquí, junto a la decisión de qué lámina es, y no se deduce del HTML.
+ */
+const { dominio, organizador } = datosFlyer(c);
+const conFranja = lamina !== 'expositores';
+const esperado = {
+  dominio,
+  fecha: c.dates.shortLabel,
+  organizador: ['unica', 'portada', 'historia'].includes(lamina) ? organizador : null,
+  marcas: conFranja ? ['pucv', 'eie', 'cyted', 'anid'] : [],
+  mencion: conFranja ? c.funding.mencion : null,
+};
+---
+
+<CartelFlyer
+  lang={idioma}
+  formato={formato}
+  alt={altFlyer(c, lamina)}
+  emisor={EMISOR[lamina]}
+  esperado={esperado}
+>
+  {lamina === 'unica' && <LaminaUnica c={c} />}
+  {lamina === 'portada' && <Portada c={c} cierre="desliza" />}
+  {lamina === 'historia' && <Portada c={c} cierre="sticker" />}
+  {lamina === 'expositores' && <LaminaExpositores c={c} historia={historia} />}
+  {lamina === 'inscripcion' && <LaminaInscripcion c={c} />}
+</CartelFlyer>

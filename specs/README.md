@@ -15,6 +15,8 @@ condición medible.
 | [`002-rediseno-visual/requirements.md`](002-rediseno-visual/requirements.md) | Plan abierto: rediseño visual y movimiento. **En especificación, sin requisitos acordados** |
 | [`002-rediseno-visual/baseline/hero-2026-08-03.md`](002-rediseno-visual/baseline/hero-2026-08-03.md) | Línea base del hero, con capturas y los seis defectos medidos |
 | [`002-rediseno-visual/referencia/`](002-rediseno-visual/referencia/) | El prototipo de rediseño que llegó de fuera, y qué de él no se sigue |
+| [`003-difusion-redes/requirements.md`](003-difusion-redes/requirements.md) | Piezas para redes: qué deben cumplir antes de declararlas listas. Se valida con `npm run flyer` |
+| [`003-difusion-redes/verification.md`](003-difusion-redes/verification.md) | Última validación de las piezas. **Generado por `npm run flyer`, no editar** |
 | [`baseline/auditoria-2026-07-29.md`](baseline/auditoria-2026-07-29.md) | Medición previa: la referencia contra la que se compara |
 | [`fuentes.md`](fuentes.md) | **Registro de procedencia**: de dónde sale cada cifra |
 | [`habilidades.md`](habilidades.md) | Qué skills usar, cuándo y con qué precauciones |

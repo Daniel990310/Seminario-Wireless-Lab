@@ -137,6 +137,49 @@ Salvo shadcn/ui, que con D6 pasó a ser dependencia, los demás solo se consulta
 
 Las dos primeras son `devDependencies`: no llegan al sitio publicado.
 
+### Piezas de difusión en redes e Illustrator (2026-10-01)
+
+`npm run build && npm run flyer` escribe en `difusion/flyer/` un PNG, un PDF vectorial y
+el texto alternativo por pieza: carrusel de 3 láminas y pieza única en 4:5, y dos historias
+en 9:16, en ES y EN (12 piezas). Lista en `src/data/flyer.ts`, láminas en
+`src/components/flyer/`. Llevan el **logo del seminario** (kit de marca 5.2, verificado
+idéntico al favicon publicado). **Qué deben cumplir antes de publicarse está en
+[`003-difusion-redes/requirements.md`](003-difusion-redes/requirements.md)**, y
+`npm run flyer` lo valida y escribe su `verification.md`.
+
+- **Plugins.** "UI Designer" (ccplugins, autor Michael Galpert, un solo prompt sin código)
+  se probó como subagente sobre el flyer el 2026-10-01: sus hallazgos útiles salieron de
+  mirar las imágenes, y lo que aporta su prompt son valores por defecto de Tailwind que
+  chocan con los tokens del sitio. No se instala. Playwright MCP es redundante (el repo ya
+  tiene Playwright); el editor SVG de Microsoft Store no tiene integración verificable.
+- **Illustrator CC 2019 se maneja por COM** (`Illustrator.Application`):
+  `scripts/illustrator/abrir-flyer.ps1` abre cada PDF, guarda el `.ai` y lo cierra.
+  **Chromium parte el texto en muchos marcos pequeños** (150–470 por pieza): corregir una
+  frase es más rápido en `src/data/` y regenerar; Illustrator sirve para color, posición
+  y ajustes finos.
+- **Fuentes.** El PDF se compone con las TTF estáticas de Crimson Pro, Atkinson
+  Hyperlegible Next y JetBrains Mono (OFL, Regular y SemiBold), inyectadas como `data:`
+  desde `%LOCALAPPDATA%\Microsoft\Windows\Fonts`: con las `woff2` variables del sitio
+  Chromium escribe Type3 e Illustrator abre curvas (0 marcos, `[medido]`). El generador
+  falla si el PDF trae Type3 o le falta una familia.
+- **⚠️ Illustrator 2019 no lee fuentes instaladas por usuario.** Con las seis en
+  `%LOCALAPPDATA%` abría con «Missing Fonts (5)» `[medido: captura de Daniel, 2026-10-01]`.
+  Hay que instalarlas **para todos los usuarios** (pide administrador). Un primer informe
+  dijo «fuentes correctas» y era falso: Illustrator conserva el nombre de la fuente que
+  falta, y hasta la lista en `app.textFonts`. El `.ps1` ahora lo comprueba contra el
+  registro del sistema y se niega a seguir si faltan.
+- **QR al formulario de inscripción**, pedido por Daniel. Tres `devDependencies` fijadas,
+  ninguna llega al sitio: `qrcode` 1.5.4 (MIT) lo dibuja como SVG en el build,
+  `@types/qrcode` 1.5.6 y `jsqr` 1.4.0 (Apache-2.0), con el que el generador decodifica
+  el QR del PNG final a escala 1 y 0,5 y falla si no devuelve la URL del formulario.
+- **Marcas de estas piezas**: solo PUCV, EIE, CYTED (sigla, sin archivo) y ANID, por
+  decisión de Daniel del 2026-10-01. La de EIE es el escudo circular que él entregó
+  (`src/assets/logos/eie-institucional.jpg`, el mismo archivo que usa el sitio desde la
+  rama `ajustes/logo-eie-organizacion`; JPEG con fondo blanco: solo sobre blanco).
+- **Retratos de Siles y Siringo, el nuevo de Toledo y la marca CYTED de 40 años** vienen
+  de esa misma rama (commits `e20bef6`, `b13b9c3` y `3fedccb`): se aplicó su cambio de
+  `comun.ts` y de `src/assets/` tal cual, para que la fusión de las dos ramas no choque.
+
 ## 5. Cómo decidir si una habilidad aplica
 
 En orden:
