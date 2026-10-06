@@ -1,0 +1,36 @@
+---
+/**
+ * Lámina de inscripción: tercera del carrusel. Es donde el QR tiene sentido —quien ve el
+ * carrusel en LinkedIn desde el computador lo escanea con el teléfono— y donde cabe la
+ * fórmula de ANID completa a tamaño legible.
+ */
+import type { Contenido } from '~/data/contenido';
+import Cabecera from './Cabecera.astro';
+import Marcas from './Marcas.astro';
+import Qr from './Qr.astro';
+import { datosFlyer } from './datos';
+
+interface Props {
+  c: Contenido;
+}
+
+const { c } = Astro.props;
+const t = c.ui.flyer;
+const { dominio } = datosFlyer(c);
+---
+
+<Cabecera c={c} />
+<h2 class="mt-[36px] font-display text-[84px] leading-none font-semibold text-foreground">{t.inscripcion}</h2>
+
+<div class="mt-[44px] flex items-start gap-[48px]">
+  {c.registro.url && <Qr url={c.registro.url} tamano={420} rotulo={t.qr} />}
+  <div class="min-w-0 pt-[8px]">
+    <p class="text-[36px] leading-[1.25] text-foreground">{t.escanea}</p>
+    <p class="mt-[8px] text-[52px] leading-none font-semibold text-accent">{dominio}</p>
+    <p class="mt-[40px] text-[36px] leading-[1.25] text-balance text-muted-foreground">
+      {c.venue.name}, {c.venue.country}
+    </p>
+  </div>
+</div>
+
+<Marcas c={c} />

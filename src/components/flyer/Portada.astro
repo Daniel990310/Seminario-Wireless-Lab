@@ -1,0 +1,61 @@
+---
+/**
+ * Portada: primera lámina del carrusel (`cierre="desliza"`) y primera historia
+ * (`cierre="sticker"`).
+ *
+ * En el carrusel el pie dice que hay más láminas y qué traen: sin eso, quien ve la
+ * portada en el feed no sabe que los expositores y el QR están a un gesto.
+ *
+ * En la historia, el QR no sirve —se ve en el mismo teléfono—: el enlace al formulario va
+ * en el sticker de enlace que se pega al publicar. La lámina le deja un hueco vacío,
+ * `data-flyer-sticker`, de 600 × 170 px, y el generador comprueba que nada lo invada.
+ */
+import type { Contenido } from '~/data/contenido';
+import Encabezado from './Encabezado.astro';
+import Marcas from './Marcas.astro';
+import { datosFlyer } from './datos';
+
+interface Props {
+  c: Contenido;
+  cierre: 'desliza' | 'sticker';
+}
+
+const { c, cierre } = Astro.props;
+const t = c.ui.flyer;
+const { dominio } = datosFlyer(c);
+/*
+ * Logo a 780 y no a 936: la caja del SVG trae su margen de respeto, y a 936 ese margen
+ * salía del recorte 3:4 de la grilla de Instagram (RF-23.3, lo detectó el generador).
+ *
+ * La historia va con el encabezado compacto y menos aire: con la mención de
+ * financiamiento en la franja (Daniel, 2026-10-01) y el hueco del sticker, desbordaba
+ * 130 px en inglés, donde el organizador ocupa dos líneas `[medido]`.
+ */
+const historia = cierre === 'sticker';
+---
+
+{/*
+  El bloque principal se centra en el alto que queda libre. Pegado arriba dejaba un
+  hueco de unos 400 px entre la URL y el cierre: en el teléfono se leía como una lámina
+  a medio hacer.
+*/}
+<div class:list={['flex flex-1 flex-col justify-center', !historia && 'pb-[36px]']}>
+  <Encabezado c={c} anchoLogo={780} compacto={historia} />
+  <p class:list={['text-[52px] leading-none text-foreground', historia ? 'mt-[32px]' : 'mt-[48px]']}>
+    {t.inscripciones} <span class="font-semibold text-accent">{dominio}</span>
+  </p>
+</div>
+
+<div>
+  {
+    cierre === 'desliza' ? (
+      <p class="eyebrow text-[31px] text-accent">{t.desliza}</p>
+    ) : (
+      <>
+        <p class="mt-[24px] text-[36px] text-foreground">{t.sticker}</p>
+        <div data-flyer-sticker class="mt-[16px] h-[170px] w-[600px]" />
+      </>
+    )
+  }
+  <Marcas c={c} />
+</div>

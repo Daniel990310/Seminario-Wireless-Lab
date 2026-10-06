@@ -86,7 +86,7 @@ export interface ContenidoIdioma {
   about: {
     lead: string;
     paragraphs: string[];
-    /** Franja del director con su retrato (RF-23). El nombre va en `comun.ts`. */
+    /** Franja del director con su retrato (RF-31). El nombre va en `comun.ts`. */
     director: {
       epigrafe: string;
       cargo: string;
@@ -160,6 +160,31 @@ export interface ContenidoIdioma {
       /** Descripción accesible de la figura de propagación. */
       figuraTitulo: string;
       figuraDescripcion: string;
+    };
+
+    /** Piezas de difusión en redes (`CartelFlyer.astro`). No se publican como página. */
+    flyer: {
+      expositores: string;
+      /** Antecede a la URL del sitio. No dice «gratuita»: eso no está confirmado. */
+      inscripciones: string;
+      /** Rótulo del QR, que apunta al formulario y no al sitio. */
+      qr: string;
+      organiza: string;
+      financian: string;
+      /** Pie de la portada del carrusel: dice que hay más láminas y qué traen. */
+      desliza: string;
+      /** Título de la lámina de inscripción del carrusel. */
+      inscripcion: string;
+      /** Antecede a la URL, junto al QR. */
+      escanea: string;
+      /** Historia: va sobre el hueco donde se pega el sticker de enlace al publicar. */
+      sticker: string;
+      /**
+       * Rótulos de grupo bajo el título «Expositores». Cortos a propósito: los del sitio
+       * repiten la palabra y en la lámina se leía «Expositores / Expositores internacionales».
+       */
+      grupoInternacional: string;
+      grupoNacional: string;
     };
 
     secciones: {

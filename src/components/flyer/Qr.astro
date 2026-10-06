@@ -1,0 +1,34 @@
+---
+/**
+ * QR al formulario de inscripción. Pedido por Daniel.
+ *
+ * Sirve a quien ve la pieza en otra pantalla —LinkedIn en el computador, un afiche
+ * proyectado o impreso—; quien la ve en el mismo teléfono no puede escanearla, y para esa
+ * persona está el dominio escrito. Negro sobre blanco y con zona de silencio de cuatro
+ * módulos, que es lo que pide la norma del QR y no una elección de color.
+ * `generar-flyer.mjs` lo decodifica en el PNG final, a escala 1 y 0,5.
+ *
+ * `anchoRotulo` existe porque el rótulo va al piso de 31 px y, ceñido al ancho de un QR
+ * chico, «Formulario de inscripción» ocupaba tres líneas y empujaba la lámina 46 px.
+ */
+import QRCode from 'qrcode';
+
+interface Props {
+  url: string;
+  tamano: number;
+  rotulo: string;
+  anchoRotulo?: number;
+  /** Lado hacia el que se alinean QR y rótulo: el borde de la lámina donde está el QR. */
+  lado?: 'izquierda' | 'derecha';
+}
+
+const { url, tamano, rotulo, anchoRotulo = tamano, lado = 'izquierda' } = Astro.props;
+const svg = await QRCode.toString(url, { type: 'svg', errorCorrectionLevel: 'M', margin: 4 });
+const ancho = Math.max(tamano, anchoRotulo);
+const derecha = lado === 'derecha';
+---
+
+<figure data-flyer-qr={url} class:list={['shrink-0', derecha && 'text-right']} style={`width:${ancho}px`}>
+  <div class:list={['bg-[var(--pure-white)] [&>svg]:size-full', derecha && 'ml-auto']} style={`width:${tamano}px;height:${tamano}px`} set:html={svg} />
+  <figcaption class="eyebrow mt-[12px] text-[31px] leading-snug">{rotulo}</figcaption>
+</figure>

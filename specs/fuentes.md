@@ -361,3 +361,19 @@ No pueden sustentar una decisión cerrada. Cada uno tiene tarea asociada.
 | Crimson Pro y Atkinson Hyperlegible Next combinan bien en la práctica | Hay que volver atrás tras rehacer la tipografía | T4, con la alternativa «Academic/Archival» ya identificada |
 | Mover la figura a columnas propias resuelve los 28 nodos indeterminados | El contraste sobre fondo no uniforme sigue sin poder determinarse | T5, cuya comprobación es que `verify` reporte cero indeterminados |
 | El presupuesto de 260 kB alcanza con tres familias tipográficas más React y Radix | Habría que renunciar a JetBrains Mono o a alguna primitiva de Radix | T4 y T10: proyección de ~247 kB `[medido]`, con solo 13 kB de margen |
+
+## Piezas de difusión en redes (`003-difusion-redes`) `[verificado]`
+
+Consultado el 2026-10-01. Las guías de tamaños son de terceros que recopilan lo que las
+plataformas publican; donde dos coinciden se toma el dato, y donde discrepan se dice.
+
+| Dato | Valor | Fuente |
+| ---- | ----- | ------ |
+| Feed de Instagram | 4:5 a 1080 × 1350 | [growthscribe.com](https://growthscribe.com/instagram-vertical-dimensions/), [postsyncer.com](https://postsyncer.com/tips/instagram-image-sizes-complete-guide) |
+| Grilla del perfil | recorte 3:4 central (1012 × 1350) desde enero de 2025 | las mismas |
+| Historias: zona que tapa la interfaz | 250 px arriba y 250 abajo | las mismas. La guía de Meta para **anuncios** dice 340 abajo; no se adopta porque estas piezas no llevan botón |
+| Mínimo de texto en iOS | 11 pt | Apple HIG, Typography, vía [median.co](https://median.co/blog/apples-ui-dos-and-donts-typography) y [uxdesign.cc](https://uxdesign.cc/a-five-minute-guide-to-better-typography-for-ios-4e3c2715ceb4) |
+| Escala del lienzo en el teléfono | 390 / 1080 = 0,361 | `[medido]`: ancho de pantalla de 390 pt, simulado con Playwright |
+| Documento PDF de LinkedIn | 1080 × 1350 recomendado, 100 MB máximo | [metricool.com](https://metricool.com/linkedin-pdf-carousels/), [postnitro.ai](https://postnitro.ai/blog/post/linkedin-carousel-pdf-size-and-format-complete-guide-2024) |
+| Texto alternativo de Instagram | hasta 1000 caracteres por la API; las historias no lo admiten | [adaptlypost.com](https://adaptlypost.com/blog/instagram-api-alt-text-character-limit), [caniplaythat.com](https://caniplaythat.com/2021/09/27/facebook-and-instagram-seemingly-remove-alt-text-character-limitations/) |
+| Buenas prácticas de piezas | jerarquía en tres niveles, un solo llamado a la acción, dos o tres familias, aire | [northwestern.edu](https://northwestern.edu/brand/applying-the-brand/signage-environmental-branding/flyers.html), [visme.co](https://visme.co/blog/event-flyers/), [wix.com](https://www.wix.com/wixel/resources/how-to-make-a-flyer) |

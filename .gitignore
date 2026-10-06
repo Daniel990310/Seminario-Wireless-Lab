@@ -56,3 +56,16 @@ __pycache__/
 # metería cientos de archivos ajenos en un repositorio que se clona en varios sitios.
 .agents/
 .codex/
+
+# Los .ai de las piezas de difusión se derivan del PDF versionado con
+# `scripts/illustrator/abrir-flyer.ps1` (~1,8 MB cada uno). Si uno se retoca a mano
+# en Illustrator, ese retoque pasa a ser la fuente y entonces sí se versiona,
+# con otro nombre y forzando el `git add`.
+difusion/flyer/*.ai
+
+# Hojas de contacto para la revisión humana de RF-30 (specs/003-difusion-redes): se
+# regeneran en cada `npm run flyer` y solo sirven para mirarlas antes de publicar.
+difusion/revision/
+
+# Respaldo de los .ai del 2026-10-03, quizá retocados a mano: no se versionan ni se tocan.
+difusion/ai-anteriores-*/

@@ -23,55 +23,20 @@
  *
  * Uso: `npm run build && npm run og`.
  */
-import { chromium } from 'playwright';
-import { createServer } from 'node:http';
-import { readFile, mkdir } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
-import { join, extname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { mkdir } from 'node:fs/promises';
+import { join } from 'node:path';
 import { OG_VERSION } from '../src/data/og.ts';
+import { RAIZ, abrirDist } from './lib/servir-dist.mjs';
 
-const RAIZ = fileURLToPath(new URL('..', import.meta.url)).replace(/[\\/]$/, '');
-const DIST = join(RAIZ, 'dist');
 const SALIDA = join(RAIZ, 'public', 'og');
 
 const ANCHO = 1200;
 const ALTO = 630;
 
-if (!existsSync(DIST)) {
-  console.error('No existe dist/. Corré `npm run build` antes.');
-  process.exit(1);
-}
-
-const chromiumFijo = '/opt/pw-browsers/chromium';
-const opcionesNavegador = { args: ['--no-sandbox'] };
-if (existsSync(chromiumFijo)) opcionesNavegador.executablePath = chromiumFijo;
-
-const TIPOS = {
-  '.html': 'text/html; charset=utf-8',
-  '.css': 'text/css; charset=utf-8',
-  '.js': 'text/javascript; charset=utf-8',
-  '.svg': 'image/svg+xml',
-  '.woff2': 'font/woff2',
-};
-
-const server = createServer(async (req, res) => {
-  let r = new URL(req.url, 'http://x').pathname;
-  if (r.endsWith('/')) r += 'index.html';
-  try {
-    const b = await readFile(join(DIST, r));
-    res.writeHead(200, { 'content-type': TIPOS[extname(r)] ?? 'text/plain' });
-    res.end(b);
-  } catch {
-    res.writeHead(404).end();
-  }
-});
-await new Promise((ok) => server.listen(0, '127.0.0.1', ok));
-const BASE = `http://127.0.0.1:${server.address().port}`;
+const { base: BASE, navegador, cerrar } = await abrirDist();
 
 await mkdir(SALIDA, { recursive: true });
 
-const navegador = await chromium.launch(opcionesNavegador);
 const generadas = [];
 
 for (const idioma of ['es', 'en']) {
@@ -157,8 +122,7 @@ Todo lo legible tiene que caber entre x=${CUADRADO.izq} y x=${CUADRADO.der}.
   await ctx.close();
 }
 
-await navegador.close();
-server.close();
+await cerrar();
 
 console.log(`\nImágenes para compartir (${ANCHO}×${ALTO}):\n`);
 for (const g of generadas) console.log(`  ✓ ${g}`);

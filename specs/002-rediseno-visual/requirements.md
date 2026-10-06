@@ -627,7 +627,7 @@ Lo que esta enmienda no cambia: el aviso de ALMA exige consentimiento escrito pr
 sigue sin respuesta; a Zussman le corresponde la marca de **Columbia Engineering**, que no
 está publicada con texto: si la manda, se sustituye el archivo.
 
-## RF-23 · El director del seminario, con retrato, en «El seminario» · 2026-10-04
+## RF-31 · El director del seminario, con retrato, en «El seminario» · 2026-10-04
 
 Origen: Mauricio Rodríguez, en la reunión del 2026-10-04, por boca de Daniel: quiere
 aparecer en la sección del seminario con su foto, como **protagonista** del evento. En
@@ -636,9 +636,9 @@ cosa: una franja dentro de la sección, no una página.
 
 | Criterio | Comprobación |
 | --- | --- |
-| RF-23.1 · La sección «El seminario» cierra con una franja propia, fuera de la retícula de dos columnas: retrato, epígrafe «Dirige el seminario», nombre, cargo, texto y enlace a su perfil institucional | captura a 1440 y 390 px |
-| RF-23.2 · El retrato es mayor que el de un expositor (14 rem en escritorio frente a 13 rem de tope) y usa el mismo marco circular | inspección de clases |
-| RF-23.3 · El retrato lleva `alt=""` y `aria-hidden`: el nombre está en el `<h3>` contiguo | `verify` |
-| RF-23.4 · El nombre vive en `comun.ts` (no se traduce); epígrafe, cargo, texto y rótulo del enlace en `es.ts` y `en.ts`, con la paridad que vigila `tipos.ts` | `check`, `verify:idioma` |
-| RF-23.5 · El párrafo que lo presentaba dentro de «El seminario» pasa a la franja; no se repite | inspección de `es.ts`/`en.ts` |
-| RF-23.6 · Autorización de la foto (RF-11.1): la pidió él mismo. Es la de su ficha en `eie.pucv.cl`, 1080 × 1080 reducida a 800 | procedencia en `comun.ts` |
+| RF-31.1 · La sección «El seminario» cierra con una franja propia, fuera de la retícula de dos columnas: retrato, epígrafe «Dirige el seminario», nombre, cargo, texto y enlace a su perfil institucional | captura a 1440 y 390 px |
+| RF-31.2 · El retrato es mayor que el de un expositor (14 rem en escritorio frente a 13 rem de tope) y usa el mismo marco circular | inspección de clases |
+| RF-31.3 · El retrato lleva `alt=""` y `aria-hidden`: el nombre está en el `<h3>` contiguo | `verify` |
+| RF-31.4 · El nombre vive en `comun.ts` (no se traduce); epígrafe, cargo, texto y rótulo del enlace en `es.ts` y `en.ts`, con la paridad que vigila `tipos.ts` | `check`, `verify:idioma` |
+| RF-31.5 · El párrafo que lo presentaba dentro de «El seminario» pasa a la franja; no se repite | inspección de `es.ts`/`en.ts` |
+| RF-31.6 · Autorización de la foto (RF-11.1): la pidió él mismo. Es la de su ficha en `eie.pucv.cl`, 1080 × 1080 reducida a 800 | procedencia en `comun.ts` |
