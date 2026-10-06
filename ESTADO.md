@@ -22,6 +22,22 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Foto nueva de Giorgio Siringo · 2026-10-06
+
+Daniel entregó una foto nueva de Siringo (637 × 603, selfie frente a las antenas de ALMA)
+y pidió cambiarla en todos los lugares. En el sitio solo está en
+`src/assets/expositores/siringo.webp`; los flyers de `difusion/flyer/` (rama
+`claude/bcsensing-flyer-design-b96358`) lo nombran pero no llevan fotos. Recorte cuadrado
+de 630 px con la cabeza entre las guías comunes (coronilla 17 %, mentón 82 %): la foto no
+alcanzaba arriba, así que se extendió 60 px de cielo copiando el borde superior y 12 px a
+la izquierda. 560×560 WebP q90. [supuesto] que Siringo autoriza esta foto como la anterior
+(RF-11.1): la entregó Daniel.
+
+**Desplegada con urgencia desde la rama, antes de fusionar** (versión `97b43263`,
+2026-10-06): Daniel pidió sacar ya la foto anterior, que no era de Siringo. El build y
+`verify:todo` en verde eran de esa rama; el PR se fusionó justo después, así que `main`
+y producción vuelven a coincidir.
+
 ## Reunión con Mauricio · 2026-10-04 · qué pidió y en qué está
 
 **En vivo desde el 2026-10-05** (versiones `20a555ca` y `aac04b64`, retratos incluidos),
