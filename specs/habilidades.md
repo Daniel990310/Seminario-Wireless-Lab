@@ -153,10 +153,12 @@ idéntico al favicon publicado). **Qué deben cumplir antes de publicarse está 
   chocan con los tokens del sitio. No se instala. Playwright MCP es redundante (el repo ya
   tiene Playwright); el editor SVG de Microsoft Store no tiene integración verificable.
 - **Illustrator CC 2019 se maneja por COM** (`Illustrator.Application`):
-  `scripts/illustrator/abrir-flyer.ps1` abre cada PDF, guarda el `.ai` y lo cierra.
-  **Chromium parte el texto en muchos marcos pequeños** (150–470 por pieza): corregir una
-  frase es más rápido en `src/data/` y regenerar; Illustrator sirve para color, posición
-  y ajustes finos.
+  `scripts/illustrator/abrir-flyer.ps1` abre cada PDF, une los renglones, lo ordena en
+  capas y grupos con nombre (RF-29.5), guarda el `.ai` y lo cierra. Chromium parte el
+  texto letra por letra; tras unir, cada renglón es un marco y los párrafos que Illustrator
+  corta igual, texto de área. Corregir el contenido sigue siendo más rápido en `src/data/`
+  y regenerar; el `.ai` sirve para mover y escalar logos y retratos, retocar texto y
+  colocar logos de la capa «Logos para colocar».
 - **Fuentes.** El PDF se compone con las TTF estáticas de Crimson Pro, Atkinson
   Hyperlegible Next y JetBrains Mono (OFL, Regular y SemiBold), inyectadas como `data:`
   desde `%LOCALAPPDATA%\Microsoft\Windows\Fonts`: con las `woff2` variables del sitio
