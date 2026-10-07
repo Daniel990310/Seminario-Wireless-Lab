@@ -63,11 +63,11 @@ llega de fuera.
 
 ### Giorgio Siringo · dos matices que conviene saber
 
-1. **La afiliación publicada es la cadena del organizador**, no la del empleador.
-   Su página oficial lo lista como *Front-End Technical Lead* del **Joint ALMA
-   Observatory** `[verificado]`, y ESO es uno de los tres socios de ALMA —con NSF
-   y NINS—, no su empleador directo. Si la organización prefiere precisión sobre
-   la forma del programa, se cambia la cadena en `comun.ts`.
+1. **La afiliación publicada es la cadena del organizador**, y desde el 2026-10-06
+   la respalda su propia firma: «Senior RF Engineer, ALMA» e «International Staff
+   Member, ESO» `[verificado, del autor]`. ESO sí es su empleador; trabaja
+   destinado en ALMA. (Antes este punto decía lo contrario, deducido de la página
+   del Joint ALMA Observatory.)
 2. **Va en el bloque «internacionales» y sin país.** Trabaja en Chile, pero ALMA
    es un consorcio intergubernamental y ninguna etiqueta de país lo describe. El
    campo `country` es opcional justamente para eso. Si se decide que lleve
@@ -88,6 +88,12 @@ pueda rastrear sin volver a buscarlo.
 | Doctorado en la Universidad de Bonn, tesis *PolKa: a Polarimeter for Submillimeter Bolometer Arrays* (2003) | repositorio institucional de Bonn, <https://bonndoc.ulb.uni-bonn.de/xmlui/handle/20.500.11811/1899> | `[verificado]` |
 | PolKa se instaló en el telescopio APEX | actas SPIE alojadas en eso.org, <https://www.eso.org/sci/libraries/SPIE2010/7741-7.pdf> | `[verificado]` |
 | Antes, científico del Observatorio Europeo Austral | la misma publicación de ESO lo firma con esa afiliación | `[verificado]` |
+
+**Superada el 2026-10-06** por la reseña que él envió, igual que con Valenzuela y
+Siles. Cambios de fondo: la tesis de Bonn la describe él como *sub-millimeter
+polarization in star-forming regions*, no por el instrumento PolKa; añade sus cargos
+de Senior RF Engineer y Spectrum Manager, la licenciatura en Física de La Sapienza y
+su paso por APEX y por la construcción de ALMA. La tabla queda como rastro.
 
 Descartado a propósito: lo que aportan LinkedIn y los agregadores comerciales de
 contactos. No son fuente institucional y no hacía falta ninguno — todo lo anterior
@@ -146,15 +152,12 @@ es el estado por defecto y no un hueco.
 
 ---
 
-## Charlas recibidas · 3 de 8 (más la de Toledo, sin el archivo)
+## Charlas recibidas · 5 de 8
 
-**El sitio todavía no tiene dónde ponerlas.** `program.days` está vacío y las
-fichas de expositor no llevan título de charla. Ver «Decisión pendiente» al final.
-
-Para no tener que transcribirlas otra vez el día que lleguen los horarios, el
-texto vive ya como dato en **[`src/data/charlas.ts`](../../src/data/charlas.ts)**,
-junto con el formato de sesión y el plazo. Ese archivo **no lo importa ninguna
-página**: es material en espera, no contenido publicado.
+**Publicadas desde el 2026-10-06** (RF-32) en la sección «Programa», cada una en un
+desplegable. El texto vive como dato en
+**[`src/data/charlas.ts`](../../src/data/charlas.ts)**, junto con el formato de
+sesión y el plazo.
 
 Lo que sigue es la copia **congelada tal como llegó al correo**. Si alguien edita
 `charlas.ts`, aquí sigue el original contra el que comparar.
@@ -178,12 +181,8 @@ Lo que sigue es la copia **congelada tal como llegó al correo**. Si alguien edi
 > a special focus on sensing-based applications and relevant technology advances.
 
 Envió además **reseña propia y fotografía** (`RAV Photo.jpg`, 44 kB). La reseña ya
-está incorporada —ver «Reseña de Valenzuela» más arriba—. La fotografía **no**:
-
-**La foto no está en el repositorio.** Llegó adjunta al correo; en el PDF solo
-viene la miniatura, que es inservible. Hay que pedirle a Mauricio el archivo
-original. Es la única de las ocho que ya tiene autorización del retratado y aun
-así no se puede publicar, porque no la tenemos.
+está incorporada —ver «Reseña de Valenzuela» más arriba—, y la fotografía también
+(`src/assets/expositores/valenzuela.webp`).
 
 ### Rodolfo Feick `[confirmado, del autor]`
 
@@ -230,21 +229,80 @@ texto el 2026-10-02: la anterior afirmaba bandas V y W y mediciones «a más de
 4.000 m», que él no declara. La fotografía **ya está publicada** (recorte
 560×560); el envío al organizador para la web se toma como autorización (RF-11.1).
 
-### Karel Toledo · recibido el 2026-09-27, **solo la foto está en el repo**
+### Karel Toledo `[confirmado, del autor]` · recibido el 2026-09-27, cargado el 2026-10-06
 
-Mandó su material como `Seminar_PUCV_2026.docx` y la foto `kt.jpg`. La foto está
-publicada. **El `.docx` no está en el repositorio**, así que su charla no está en
-`charlas.ts` y su reseña actual (Fondecyt de Iniciación, drones) no se ha
-contrastado con la suya.
+> **Title:** Intelligent UAV-Assisted Wireless Networks: Trajectory Planning,
+> Cooperation, and Decisions Under Uncertainty
+>
+> **Abstract:** Unmanned aerial vehicles (UAVs) can provide flexible wireless
+> coverage as users move and network conditions change. Their usefulness, however,
+> depends on decisions about where to fly, how to serve users, and how to balance
+> communication performance against limited onboard energy. This talk examines
+> these questions through recent work on UAV-assisted 5G and 6G networks. It begins
+> with trajectory adaptation for highway vehicular communications, where a UAV
+> responds to changing traffic and link conditions. It then considers
+> energy-efficient path planning under uncertain user locations and network
+> conditions, using belief structures to guide decisions. Finally, it explores
+> cooperative deployment of multiple UAVs through multi-agent reinforcement
+> learning. Together, these studies show how trajectory optimization,
+> uncertainty-aware reasoning, and learned coordination can support more adaptive
+> aerial wireless networks, while revealing the trade-offs involved in moving from
+> a single UAV to cooperative systems.
 
-### Faltan cuatro, más el `.docx` de Toledo
+Llegó como `Seminar_PUCV_2026.docx`, con reseña propia, y la foto `kt.jpg` (ya
+publicada). La reseña de la ficha se reescribió con su texto el 2026-10-06: la
+anterior hablaba de un proyecto Fondecyt de Iniciación sobre drones que él no
+menciona. Ahora: doctorado en la USACH (mención Automática), pregrado y magíster en
+la CUJAE de La Habana, posdoctorado en el CCTVal.
 
-Zussman, Du, Siringo y Gutiérrez no han enviado nada que esté en el rastro del
-proyecto; el plazo era el **28 de septiembre**.
+### Giorgio Siringo `[confirmado, del autor]` · recibido el 2026-10-06
+
+> **Title:** Spectrum management and RFI monitoring at the Atacama Large
+> Millimeter/submillimeter Array
+>
+> **Abstract:** The Atacama Large Millimeter/submillimeter Array, ALMA, operates
+> ten radio frequency bands at the Chajnantor plateau under exceptional natural
+> conditions and limited radio-frequency interference (RFI) protection granted by
+> the national administration on the Chilean territory. I report about spectrum
+> management efforts in an increasingly crowded spectrum due to the development of
+> new facilities on the Chajnantor plateau, self-generated interference, and
+> satellite constellations. The integration of ALMA Band-2 receiver (67-90 GHz) in
+> the array required a new assessment of the RFI environment. A one-week campaign
+> using the Yebes 72-90 GHz portable RFI monitoring receiver temporarily installed
+> at the ALMA site confirmed a largely clean environment, while identifying
+> localized Band 2 RFI threats that require prevention measures.
+
+Envió además reseña propia (ya en la ficha, ver arriba) y la foto
+`Giorgio_Siringo.jpg` (publicada en el PR #17). **Horario:** Mauricio le confirmó
+el **jueves 22 de octubre en la mañana** y él lo aceptó. Es el primer dato de
+parrilla; se usa cuando se arme `program.days`.
+
+### Faltan tres
+
+Zussman, Du y Gutiérrez no han enviado nada que esté en el rastro del proyecto; el
+plazo era el **28 de septiembre**.
+
+### Correo de Gutiérrez del 10-sep (reenviado el 2026-10-06)
+
+Respuesta a la invitación a la visita a ALMA. Lo que toca al sitio y lo que no:
+
+| Punto | Estado |
+| --- | --- |
+| Logos de ComSoc Chile, CPS-RTC y UC (dos versiones) | **hecho** el 2026-10-06 en `comun.ts` |
+| Visita al Observatorio Manuel Foster (UC, cerro San Cristóbal) guiada por Leonardo Vanzi | logística del organizador; no va al sitio salvo que se confirme y se pida |
+| Invitar a la decana | ídem |
+| ¿Sesión de pósters con alumnos? | sin decidir; si se confirma, es un requisito nuevo |
+
+La **visita a ALMA** (22 al 25 de octubre, opcional y a costo de cada participante)
+tampoco está en el sitio; sigue sujeta a confirmación de ALMA.
 
 ---
 
-## Decisión pendiente · dónde van los títulos y resúmenes
+## Decisión · dónde van los títulos y resúmenes (resuelta el 2026-10-06)
+
+**Resuelta por Daniel con una tercera vía:** dentro de «Programa», en una lista
+desplegable aparte, sin esperar a la parrilla y sin cargar las fichas (RF-32). Lo
+que sigue es el análisis previo, como rastro.
 
 El sitio no tiene sitio para una charla. Las dos opciones, con lo que cuesta cada
 una:

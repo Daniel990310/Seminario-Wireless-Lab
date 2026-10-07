@@ -19,6 +19,7 @@ import {
 import { es } from './es';
 import { en } from './en';
 import { programaDemoEs, programaDemoEn } from './programa-demo';
+import { charlasConfirmadas } from './charlas';
 
 export const IDIOMAS = ['es', 'en'] as const;
 export type Idioma = (typeof IDIOMAS)[number];
@@ -109,6 +110,25 @@ export function contenido(lang: Idioma) {
       esDemostracion: PROGRAMA_DEMOSTRATIVO && t.program.days.length === 0,
     },
     about: t.about,
+    /*
+     * Charlas confirmadas, en el orden de la nómina (RF-32). Nombre y afiliación salen de
+     * `expositor()`, la misma regla que las fichas; título y resumen, de `charlas.ts`.
+     */
+    charlas: [...comun.speakers.international, ...comun.speakers.national].flatMap((e) => {
+      const charla = charlasConfirmadas[e.id];
+      if (!charla) return [];
+      const s = expositor(e);
+      return [
+        {
+          id: s.id,
+          speaker: s.name,
+          affiliation: s.affiliation,
+          affiliationPending: s.affiliationPending,
+          title: charla.title,
+          abstract: charla.abstract,
+        },
+      ];
+    }),
     director: { ...comun.director, ...t.about.director },
     topics: t.topics,
 
