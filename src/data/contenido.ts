@@ -149,6 +149,7 @@ export function contenido(lang: Idioma) {
        * ANID queda en un solo sitio (RNF-8.1). No se traduce, a propósito.
        */
       mencion: `${comun.funding.mencion} / ${comun.funding.concurso}`,
+      otrosProyectos: comun.funding.otrosProyectos,
     },
 
     // Los demás financiadores viajan tal cual: nombre oficial, sigla y código no se

@@ -409,6 +409,12 @@ const hasProgram = program.days.length > 0;
                 <span class="font-mono text-primary">{funding.project.code}</span>,
                 <span class="italic"> {funding.project.name}</span>.
               </p>
+              {funding.otrosProyectos.map((p) => (
+                <p class="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  {ui.organizacion.proyecto} {p.instrumento}{' '}
+                  <span class="font-mono text-primary">{p.code}</span>.
+                </p>
+              ))}
             </div>
           </div>
 
