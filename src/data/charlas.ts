@@ -22,7 +22,7 @@ import { comun } from './comun';
  * Identificador de expositor, derivado de `comun.ts`. Escribir aquí un `id` que no exista
  * en la nómina **no compila**, que es lo que impide que una charla quede huérfana.
  */
-type IdExpositor =
+export type IdExpositor =
   | (typeof comun.speakers.international)[number]['id']
   | (typeof comun.speakers.national)[number]['id'];
 

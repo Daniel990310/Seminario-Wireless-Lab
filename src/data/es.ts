@@ -6,7 +6,6 @@
  * no queden traducciones a medias.
  */
 import type { ContenidoIdioma } from './tipos';
-import type { DiaPrograma } from './comun';
 
 export const es = {
   lang: 'es',
@@ -32,7 +31,6 @@ export const es = {
     pendingNotice: 'Programa preliminar próximamente disponible.',
     pendingDetail:
       'Estamos coordinando la agenda de sesiones con los expositores. Esta sección se actualizará con el detalle de charlas, horarios y actividades.',
-    days: [] as DiaPrograma[],
   },
 
   afiliacionPorConfirmar: 'Afiliación por confirmar',
@@ -281,6 +279,22 @@ export const es = {
         'Programa de ejemplo. Estas sesiones son ficticias y sirven solo para mostrar el formato: ninguna ha sido acordada con los expositores.',
       jornadas: 'Jornadas del seminario',
       verResumen: 'Resumen',
+      dias: {
+        miercoles21: 'Miércoles 21 de octubre',
+        jueves22: 'Jueves 22 de octubre',
+      },
+      pausas: {
+        registro: 'Registro',
+        recepcion: 'Recepción',
+        bienvenidaIntro: 'Bienvenida e introducción',
+        bienvenida: 'Bienvenida',
+        cafe: 'Pausa para café',
+        almuerzo: 'Almuerzo y cóctel',
+        posters: 'Sesión de pósteres',
+        cierreDia: 'Cierre de la primera jornada',
+        cierre: 'Cierre del seminario',
+      },
+      charlaPorConfirmar: 'Título de la charla por confirmar',
       charlas: {
         titulo: 'Charlas confirmadas',
         nota: 'Títulos y resúmenes en inglés, tal como los enviaron los expositores.',

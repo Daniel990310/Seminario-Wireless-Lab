@@ -247,6 +247,8 @@ export interface DiaPrograma {
      * lo tienen, y forzarlo obligaría a inventar texto.
      */
     summary?: string;
+    /** Idioma de título y resumen cuando no es el de la página: las charlas van en inglés. */
+    lang?: 'en';
   }>;
 }
 
@@ -665,8 +667,17 @@ export const comun = {
      * él, no cotejado con el repositorio de ANID]`. Solo instrumento y
      * folio: el título del proyecto no llegó y no se publica uno buscado por nuestra cuenta.
      * Instrumento y folio no se traducen, como la mención.
+     *
+     * Los dos de Miguel Gutiérrez Gaitán los dio Daniel el 2026-10-07, igual sin cotejar.
+     * «Fondecyt 11241221»: el folio que empieza en 11 es el de Iniciación en Investigación
+     * `[probable: convención de folios de ANID]`. «CPS-RTC CIA250016»: el centro de
+     * investigación aplicada de la convocatoria ANID 2025 en que él es investigador principal.
      */
-    otrosProyectos: [{ instrumento: 'Fondecyt Regular', code: '1250951' }],
+    otrosProyectos: [
+      { instrumento: 'Fondecyt Regular', code: '1250951' },
+      { instrumento: 'Fondecyt de Iniciación', code: '11241221' },
+      { instrumento: 'Centro de Investigación Aplicada CPS-RTC', code: 'CIA250016' },
+    ],
   },
 
   /**

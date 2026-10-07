@@ -2,7 +2,7 @@
 
 Generado por `npm run verify`. **No editar a mano**: se sobrescribe en cada corrida.
 
-**Fecha:** 2026-10-07 · **Commit:** `9b31496`
+**Fecha:** 2026-10-07 · **Commit:** `79103d8`
 **Resultado:** todos los presupuestos cumplidos
 
 Método: axe-core sobre el build servido localmente, en 1440×900 y 390×844,
@@ -24,8 +24,8 @@ de ese orden respecto de la línea base no indica un cambio real.
 | RNF-1.3 | Nodos con contraste indeterminado | 28 | 0 | 0 | cumple |
 | RNF-1.4 | Secciones sin nombre accesible | 7 | 0 | 0 | cumple |
 | RNF-1.5 | Saltos de nivel en encabezados | 0 | 0 | 0 | cumple |
-| RNF-2.1 | JavaScript comprimido | 109.3 kB | 4.5 kB | 115.0 kB | cumple |
-| RNF-2.2 | Primera carga comprimida | 241.2 kB | 176.8 kB | 260.0 kB | cumple |
+| RNF-2.1 | JavaScript comprimido | 109.3 kB | 4.8 kB | 115.0 kB | cumple |
+| RNF-2.2 | Primera carga comprimida | 241.2 kB | 177.5 kB | 260.0 kB | cumple |
 | RNF-2.6 | Tipografías | 110.9 kB | 122.6 kB | 125.0 kB | cumple |
 
 En RNF-1.1 y RNF-1.3 la columna «Actual» **suma todas las corridas**, mientras que
@@ -37,13 +37,13 @@ el desglose por corrida más abajo.
 | Recurso | Comprimido |
 | ------- | ---------- |
 | JavaScript en archivos `.js` | 0.0 kB |
-| JavaScript en línea, dentro del HTML | 4.5 kB |
-| JavaScript total (RNF-2.1) | 4.5 kB |
+| JavaScript en línea, dentro del HTML | 4.8 kB |
+| JavaScript total (RNF-2.1) | 4.8 kB |
 | Tipografías | 122.6 kB |
-| HTML (incluye los scripts en línea) | 41.6 kB |
+| HTML (incluye los scripts en línea) | 42.3 kB |
 | CSS en hojas enlazadas | 12.6 kB |
 | Imágenes SVG | 70.4 kB |
-| **Primera carga** | **176.8 kB** |
+| **Primera carga** | **177.5 kB** |
 
 Medido sobre `/`, la **más pesada** de las auditadas, que es contra la que se juzga el presupuesto.
 
@@ -51,8 +51,8 @@ Primera carga por página:
 
 | Página | Primera carga |
 | ------ | ------------- |
-| `/en/` | 176.6 kB |
-| `/` | 176.8 kB |
+| `/en/` | 177.4 kB |
+| `/` | 177.5 kB |
 
 Solo se cuenta lo que la página referencia. Archivos generados que **ningún archivo
 de `dist` menciona**, y que por tanto ningún navegador descarga:
@@ -86,6 +86,6 @@ leer un total como si fuera un valor por pantalla.
 | Páginas auditadas | `/en/`, `/` |
 | Corridas | 8 |
 | Temas distinguibles | sí |
-| Secciones | 6 |
-| Encabezados | 28 |
+| Secciones | 8 |
+| Encabezados | 29 |
 | Idioma declarado | `en` |

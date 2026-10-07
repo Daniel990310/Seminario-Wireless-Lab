@@ -77,12 +77,13 @@ const COINCIDENCIA_LEGITIMA = [
   // logos, que es la que se escapó al añadir la institución `[medido: 2026-09-25]`.
   /^ALMA\b/,
   /^UPB$|^UTFSM$/, // Formas cortas de la pared de logos; siglas, no texto traducible
+  /^IEEE AP-S Chile$/, // Sesión del programa (2026-10-07): nombre propio de un capítulo IEEE
   /^Bolivia$/, // Se escribe igual en ambos idiomas, como Chile
   // Correo de contacto. Era `/@pucv\.cl/` y dejó de cubrir nada el 2026-09-22, cuando la
   // dirección pasó a `contact@bcsensing.org`: el verificador llevaba desde entonces
   // marcándola como traducción olvidada. Una dirección no se traduce, sea cual sea.
   /^[\w.+-]+@[\w.-]+\.\w+$/,
-  /FOVI\d+/, // Código de proyecto
+  /FOVI\d+|^CIA\d+$/, // Códigos de proyecto (CIA: centros de investigación aplicada de ANID)
   /*
    * Red CYTED DISeCom, referenciada desde el 2026-09-25. Su **nombre oficial es español**
    * —es una red iberoamericana— y traducirlo produciría una red que no existe, igual que
@@ -266,12 +267,16 @@ for (const [idioma, page] of Object.entries(paginas)) {
     );
 
   // La excepción de arriba solo vale si las charlas declaran de verdad su idioma:
-  // título y resumen de cada una, en las dos versiones (RF-32.3).
+  // título y resumen de cada una, en las dos versiones (RF-32.3). Están en la lista
+  // suelta mientras no hay horario y en su sesión del programa cuando lo hay (RF-32.8).
   for (const [idioma, page] of Object.entries(paginas)) {
-    const { charlas, enIngles } = await page.evaluate(() => ({
-      charlas: document.querySelectorAll('[data-charlas] details').length,
-      enIngles: document.querySelectorAll('[data-charlas] details [lang="en"]').length,
-    }));
+    const { charlas, enIngles } = await page.evaluate(() => {
+      const unidades = [...document.querySelectorAll('[data-charlas] details, [data-charla]')];
+      return {
+        charlas: unidades.length,
+        enIngles: unidades.reduce((n, u) => n + u.querySelectorAll('[lang="en"]').length, 0),
+      };
+    });
     check(
       `RF-32.3 · ${idioma}: título y resumen de cada charla declaran lang="en"`,
       charlas > 0 && enIngles === charlas * 2,

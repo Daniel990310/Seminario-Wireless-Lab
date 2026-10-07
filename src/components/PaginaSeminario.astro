@@ -206,7 +206,11 @@ const hasProgram = program.days.length > 0;
             </div>
           )
         }
-        <CharlasConfirmadas c={c} hasProgram={hasProgram} />
+        {/*
+          Con parrilla publicada cada charla está en su hora, con su resumen desplegable:
+          la lista suelta repetiría los cinco resúmenes. Queda para cuando no hay horario.
+        */}
+        {!hasProgram && <CharlasConfirmadas c={c} hasProgram={hasProgram} />}
       </div>
     </Section>
 

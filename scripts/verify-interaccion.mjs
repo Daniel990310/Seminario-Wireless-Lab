@@ -183,7 +183,8 @@ const check = (nombre, ok, detalle = '') => resultados.push({ nombre, ok, detall
   const ctxSin = await browser.newContext({ javaScriptEnabled: false });
   const sinJs = await ctxSin.newPage();
   await sinJs.goto(BASE, { waitUntil: 'domcontentloaded' });
-  const fila = sinJs.locator('[data-charlas] details').first();
+  // En la lista suelta, o en su sesión del programa cuando hay horario (RF-32.8).
+  const fila = sinJs.locator('[data-charlas] details, [data-charla] details').first();
   const hay = (await fila.count()) > 0;
   let detalle = 'no hay ninguna charla en la página';
   let ok = false;

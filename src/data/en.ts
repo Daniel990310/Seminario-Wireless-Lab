@@ -9,7 +9,6 @@
  * código del proyecto. Ver la nota de ese archivo.
  */
 import type { ContenidoIdioma } from './tipos';
-import type { DiaPrograma } from './comun';
 
 export const en = {
   lang: 'en',
@@ -35,7 +34,6 @@ export const en = {
     pendingNotice: 'Preliminary programme coming soon.',
     pendingDetail:
       'We are coordinating the session schedule with the speakers. This section will be updated with talks, times and activities.',
-    days: [] as DiaPrograma[],
   },
 
   afiliacionPorConfirmar: 'Affiliation to be confirmed',
@@ -249,6 +247,22 @@ export const en = {
         'Sample programme. These sessions are fictional and only show the format: none has been agreed with the speakers.',
       jornadas: 'Seminar days',
       verResumen: 'Abstract',
+      dias: {
+        miercoles21: 'Wednesday 21 October',
+        jueves22: 'Thursday 22 October',
+      },
+      pausas: {
+        registro: 'Registration',
+        recepcion: 'Reception',
+        bienvenidaIntro: 'Welcome and introduction',
+        bienvenida: 'Welcome',
+        cafe: 'Coffee break',
+        almuerzo: 'Lunch and cocktail',
+        posters: 'Poster session',
+        cierreDia: 'Close of day one',
+        cierre: 'Seminar close',
+      },
+      charlaPorConfirmar: 'Talk title to be confirmed',
       charlas: {
         titulo: 'Confirmed talks',
         nota: 'Titles and abstracts as sent by the speakers.',
