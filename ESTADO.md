@@ -7,13 +7,14 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-10-05** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
-ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-10-05**, versión
-`aac04b64`, desde `main` en `ac843f1` (PR #15, retratos del mismo tamaño); antes, el mismo
-día, `20a555ca` desde `dceaaa8` (PR #13, pedidos de la reunión con Mauricio), en
+Actualizado: **2026-10-06** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
+ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-10-06**, versión
+`b6bdd2dd`, desde `main` en `f2689a8` (PR #19, charlas confirmadas en «Programa», logos
+PUC/ComSoc/CPS-RTC y foto de Rodríguez; PR #20, Fondecyt Regular 1250951), en
 `https://bcsensing.org`. `verify:todo` en verde antes y `verify:publicado` con todos los
-criterios cumplidos después `[medido: 2026-10-05]`. Thermos dispensado por Daniel en #12 y
-#13 (registrado con `--sin-thermos`). El anterior: 2026-10-02, versión `b0d566cd`.
+criterios cumplidos después `[medido: 2026-10-06]`. Thermos dispensado por Daniel en #19 y
+#20 (registrado con `--sin-thermos`); `/slop-check pr` corrido en los dos. Antes:
+2026-10-05, `aac04b64` (PR #15) y `20a555ca` (PR #13); 2026-10-02, `b0d566cd`.
 · **Publicado en <https://bcsensing.org> el 2026-09-22, versión `830dafb9`. Primer
 despliegue indexable. Pendientes en «EMPIEZA AQUÍ»: Search Console y el token de
 Hostinger sin revocar.**
@@ -21,6 +22,20 @@ Hostinger sin revocar.**
 ---
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
+
+## Charlas, logos, Siringo y Fondecyt · 2026-10-06 · (en vivo, versión `b6bdd2dd`)
+
+- **Charlas confirmadas (RF-32):** 5 de 8 (Valenzuela, Feick, Siringo, Siles, Toledo),
+  desplegables dentro de «Programa». Faltan Zussman, Du y Gutiérrez. Siringo tiene
+  confirmado el **jueves 22 en la mañana**, primer dato de parrilla.
+- **Reseñas reescritas con el texto de cada autor:** Siringo y Toledo.
+- **Logos:** escudo PUC; entran IEEE ComSoc Chile y CPS-RTC (autorizados en el correo de
+  Gutiérrez del 10-sep; Mauricio asume las variantes oscuras derivadas).
+- **Financiamiento:** Fondecyt Regular 1250951 de Mauricio (RNF-8.4), solo folio; el
+  título del proyecto no llegó.
+- **Pendiente:** las láminas del flyer siguen con el FOVI solo; regenerarlas si
+  Mauricio quiere el Fondecyt ahí. Detalle de fuentes en
+  `specs/gestion/programa-y-expositores.md`.
 
 ## Flyers de redes, traídos a `main` · 2026-10-06
 
