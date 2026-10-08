@@ -175,11 +175,18 @@ const hasProgram = program.days.length > 0;
       ya aparece en el hero. Retirado el epígrafe, el título ya declara las fechas y el
       subtítulo no tenía nada que añadir. `[2026-08-06]`
     -->
+    <!--
+      Relleno inferior igual al superior, y no los 5–7rem de las demás secciones: el
+      programa termina en una fila de texto corta y el relleno común dejaba un bloque
+      vacío bajo «Cierre…» que Daniel marcó dos veces (2026-10-07). `!` porque el
+      relleno común lo pone `Section` y dos utilidades del mismo peso no deciden por orden.
+    -->
     <Section
       id="programa"
       eyebrow={ui.secciones.programa.eyebrow}
       title={ui.secciones.programa.title}
       tinted
+      class="pb-12! sm:pb-16!"
     >
       <div class="mt-12">
         {

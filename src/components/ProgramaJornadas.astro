@@ -68,7 +68,13 @@ const { program, ui } = c;
     }
   </div>
 
-  <div class="mt-10 space-y-12">
+  <!--
+    `flex gap-12` y no `space-y-12`: en Tailwind 4 `space-y` da margen inferior a todo
+    panel que no sea el último del DOM, aunque el siguiente esté oculto por la pestaña.
+    Con la primera jornada activa quedaban 48 px vacíos bajo su última sesión
+    `[medido: 2026-10-07]`. `gap` no cuenta los elementos con `display: none`.
+  -->
+  <div class="mt-10 flex flex-col gap-12">
     {
       program.days.map((day, i) => (
         <section
