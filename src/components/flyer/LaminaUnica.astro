@@ -26,13 +26,13 @@ const { dominio, internacionales, nacionales } = datosFlyer(c);
 const nombres = [...internacionales, ...nacionales].map((e) => e.name);
 ---
 
-<Encabezado c={c} anchoLogo={440} compacto />
+<Encabezado c={c} anchoLogo={416} compacto />
 
 {/*
   Con la franja estrecha (2026-10-08) sobraban unos 160 px. Se los llevan la fila de
   instituciones participantes que pidió Mauricio y el aire entre la lista y el llamado a
   inscribirse, que antes iba a 12 px del último nombre y se leía como un expositor más.
-  Logo de 400 a 440.
+  Logo de 400 a 416.
 */}
 <div class="mt-[24px] flex items-start justify-between gap-[40px]">
   <div class="min-w-0">
@@ -44,7 +44,7 @@ const nombres = [...internacionales, ...nacionales].map((e) => e.name);
   {c.registro.url && <Qr url={c.registro.url} tamano={220} rotulo={t.qr} anchoRotulo={340} lado="derecha" />}
 </div>
 
-<p class="mt-[24px] text-[44px] leading-none text-foreground">
+<p class="mt-[20px] text-[44px] leading-none text-foreground">
   {t.inscripciones} <span class="font-semibold text-accent">{dominio}</span>
 </p>
 

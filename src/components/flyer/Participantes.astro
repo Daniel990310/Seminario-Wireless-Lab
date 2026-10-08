@@ -44,7 +44,7 @@ const marcas: { nombre: string; logo: Logo; escala: number }[] = [
 ];
 ---
 
-<ul data-flyer-participantes class="flex flex-wrap items-center gap-x-[32px] gap-y-[16px]">
+<ul data-flyer-participantes class="flex flex-wrap items-center gap-x-[32px] gap-y-[12px]">
   {
     marcas.map(({ nombre, logo, escala }) => {
       const alto = alturaPorArea(logo, base, escala);

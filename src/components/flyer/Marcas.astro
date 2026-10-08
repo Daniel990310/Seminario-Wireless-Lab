@@ -23,10 +23,10 @@
  * píxeles de tinta plena quedan idénticos. El sitio sigue con el original.
  *
  * La mención de financiamiento va **siempre** que va la franja (Daniel, 2026-10-01: estaba
- * en unas láminas y en otras no). Desde el 2026-10-08 es **solo la fórmula de ANID**
- * (RNF-8.1), que es lo que exige «Cómo mencionar a ANID en productos 2026»: nombre completo
- * e instrumento (concurso), sin folio. Los folios FOVI, Fondecyt y CYTED salieron de las
- * piezas por decisión de Daniel; siguen en el sitio. CYTED queda en su marca.
+ * en unas láminas y en otras no): la fórmula de ANID (RNF-8.1) y **todos los proyectos con
+ * su folio** —FOVI, Fondecyt Regular y CYTED—, de corrido. ANID no exige el folio («Cómo
+ * mencionar a ANID en productos 2026»); van porque Mauricio lo pidió el 2026-10-08, después
+ * de una prueba de unas horas con la fórmula sola.
  *
  * ── FRANJA ESTRECHA, 2026-10-08 ──────────────────────────────────────────────────
  *
@@ -52,6 +52,7 @@ interface Props {
 const { c } = Astro.props;
 const [pucv] = c.organizers;
 const anid = c.funding.agency;
+const [cyted] = c.financiadores;
 ---
 
 {/*
@@ -79,7 +80,9 @@ const anid = c.funding.agency;
     </div>
   </div>
   <p data-flyer-mencion class="mt-[14px] text-[24px] leading-[1.3] text-pretty text-[var(--slate-600)]">
-    {c.funding.mencion}.
+    {c.funding.mencion} · {c.funding.project.code}.{' '}
+    {c.funding.otrosProyectos.map((p) => `${p.instrumento} ${p.code} · `)}{cyted.agency.shortName}{' '}
+    {cyted.project.code} · {cyted.project.acronimo}.
   </p>
 </footer>
 </div>
