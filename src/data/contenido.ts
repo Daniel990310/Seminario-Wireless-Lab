@@ -21,7 +21,7 @@ import { es } from './es';
 import { en } from './en';
 import { programaDemoEs, programaDemoEn } from './programa-demo';
 import { charlasConfirmadas } from './charlas';
-import { programa, type Jornada, type Sesion } from './programa';
+import { programa, ICONO_DE_PAUSA, type Jornada, type Sesion } from './programa';
 
 export const IDIOMAS = ['es', 'en'] as const;
 export type Idioma = (typeof IDIOMAS)[number];
@@ -77,14 +77,16 @@ export function contenido(lang: Idioma) {
    */
   const nomina = [...comun.speakers.international, ...comun.speakers.national];
   const sesion = (s: Sesion): DiaPrograma['sessions'][number] => {
-    if ('pausa' in s) return { time: s.hora, title: t.ui.programa.pausas[s.pausa] };
-    if ('nombre' in s) return { time: s.hora, title: s.nombre };
+    if ('pausa' in s) return { time: s.hora, title: t.ui.programa.pausas[s.pausa], icono: ICONO_DE_PAUSA[s.pausa] };
+    if ('nombre' in s) return { time: s.hora, title: s.nombre, icono: s.icono };
     const e = nomina.find((x) => x.id === s.expositor)!;
     const charla = charlasConfirmadas[s.expositor];
     return {
       time: s.hora,
+      icono: 'charla',
       title: charla?.title ?? t.ui.programa.charlaPorConfirmar,
       speaker: `${e.name} · ${e.affiliation ?? t.afiliacionPorConfirmar}`,
+      speakerId: e.id,
       summary: charla?.abstract,
       lang: charla ? 'en' : undefined,
     };
