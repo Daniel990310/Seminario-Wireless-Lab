@@ -5,8 +5,12 @@
  * Lleva todo lo esencial en una lámina, y para que quepa a tamaño legible renuncia a lo
  * que el carrusel sí muestra: los retratos. Quedan los nombres, que es lo que alguien
  * reconoce en un feed, en una columna con el QR al lado, y desde el 2026-10-08 (Daniel) la
- * institución de cada uno en gris, en el mismo renglón: la columna mide 676 px y el par
- * más largo, «Reinaldo A. Valenzuela Nokia Bell Labs», unos 570, así que no suma alto.
+ * institución de cada uno en gris, en el mismo renglón. Se separan por tamaño, peso y
+ * color —nombre a 33 px seminegrita, afiliación a 31 normal y gris— y por media eme de
+ * aire; no con un punto medio, que la guía de diseño marca como muletilla genérica. La
+ * afiliación no baja de 31: es el piso (RF-24.1). Para que el par más largo, «Reinaldo A.
+ * Valenzuela  Nokia Bell Labs», quepa en un renglón, el QR va sin rótulo: el llamado a
+ * inscribirse está justo debajo.
  *
  * Con nombres en dos columnas y el QR en su propia fila desbordaba 283 px en español
  * `[medido: 2026-10-01]`: es la medida de por qué el feed va en carrusel.
@@ -39,25 +43,25 @@ const expositores = [...internacionales, ...nacionales];
 <div class="mt-[24px] flex items-start justify-between gap-[40px]">
   <div class="min-w-0">
     <p class="eyebrow text-[31px]">{t.expositores}</p>
-    <ul class="mt-[8px]">
+    <ul class="mt-[4px]">
       {
         expositores.map((e) => (
-          <li class="text-[31px] leading-[1.08]">
-            <span class="font-semibold text-foreground">{e.name}</span>{' '}
-            <span class="text-muted-foreground">{e.afiliacionCorta}</span>
+          <li class="leading-[1.08] whitespace-nowrap">
+            <span class="text-[33px] font-semibold text-foreground">{e.name}</span>
+            <span class="ml-[0.5em] text-[31px] text-muted-foreground">{e.afiliacionCorta}</span>
           </li>
         ))
       }
     </ul>
   </div>
-  {c.registro.url && <Qr url={c.registro.url} tamano={220} rotulo={t.qr} anchoRotulo={340} lado="derecha" />}
+  {c.registro.url && <Qr url={c.registro.url} tamano={220} lado="derecha" />}
 </div>
 
-<p class="mt-[20px] text-[44px] leading-none text-foreground">
+<p class="mt-[14px] text-[44px] leading-none text-foreground">
   {t.inscripciones} <span class="font-semibold text-accent">{dominio}</span>
 </p>
 
-<div class="mt-[28px]">
+<div class="mt-[22px]">
   <Participantes c={c} />
 </div>
 

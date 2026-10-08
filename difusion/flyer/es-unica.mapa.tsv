@@ -4,32 +4,31 @@ logo	Logo CYTED	575.09	846.33	67.50	67.50	0
 logo	Logo ANID	666.59	856.08	89.41	48.00	0		
 logo	Logo del seminario	39.00	97.88	312.00	104.64	0		
 qr	QR de inscripción	591.00	417.59	165.00	165.00	0		
-foto	Retrato · sin nombre	54.00	730.15	77.87	30.00	0		
-foto	Retrato · sin nombre	155.87	728.27	24.11	33.75	0		
-foto	Retrato · sin nombre	203.98	736.52	85.42	17.25	0		
-foto	Retrato · sin nombre	313.39	734.65	61.76	21.00	0		
-foto	Retrato · sin nombre	399.15	732.77	51.97	24.75	0		
-foto	Retrato · sin nombre	475.13	736.52	112.77	17.25	0		
-foto	Retrato · sin nombre	611.89	729.77	21.70	30.75	0		
-foto	Retrato · sin nombre	657.60	738.40	57.45	13.50	0		
-foto	Retrato · sin nombre	54.00	771.02	51.71	24.75	0		
-foto	Retrato · sin nombre	129.71	771.77	79.20	23.25	0		
-foto	Retrato · sin nombre	232.91	774.40	68.19	18.00	0		
+foto	Retrato · sin nombre	54.00	731.09	77.87	30.00	0		
+foto	Retrato · sin nombre	155.87	729.21	24.11	33.75	0		
+foto	Retrato · sin nombre	203.98	737.46	85.42	17.25	0		
+foto	Retrato · sin nombre	313.39	735.59	61.76	21.00	0		
+foto	Retrato · sin nombre	399.15	733.71	51.97	24.75	0		
+foto	Retrato · sin nombre	475.13	737.46	112.77	17.25	0		
+foto	Retrato · sin nombre	611.89	730.71	21.70	30.75	0		
+foto	Retrato · sin nombre	657.60	739.34	57.45	13.50	0		
+foto	Retrato · sin nombre	54.00	771.96	51.71	24.75	0		
+foto	Retrato · sin nombre	129.71	772.71	79.20	23.25	0		
+foto	Retrato · sin nombre	232.91	775.34	68.19	18.00	0		
 figura	Figura	104.39	-165.60	861.00	672.00	0		
 texto	SEMINARIO INTERNACIONAL	54.00	54.00	702.00	34.88	1	izquierda	SEMINARIO INTERNACIONAL
 texto	in mmWave and Sub-THz Bands	54.00	208.51	702.00	42.89	1	izquierda	in mmWave and Sub-THz Bands
 texto	21–22 OCT 2026	54.00	269.40	702.00	48.00	1	izquierda	21–22 OCT 2026
 texto	Auditorio de la Sede PUCV Santiago, Chi…	54.00	329.40	702.00	32.39	1	izquierda	Auditorio de la Sede PUCV Santiago, Chile
 texto	Organiza: Dr. Mauricio Rodríguez	54.00	370.79	702.00	28.79	1	izquierda	Organiza: Dr. Mauricio Rodríguez
-texto	EXPOSITORES	54.00	417.59	410.12	34.88	1	izquierda	EXPOSITORES
-texto	Gil Zussman Columbia University	54.00	458.46	410.12	25.10	1	izquierda	Gil Zussman Columbia University
-texto	Jinfeng Du Nokia Bell Labs	54.00	483.56	410.12	25.10	1	izquierda	Jinfeng Du Nokia Bell Labs
-texto	Reinaldo A. Valenzuela Nokia Bell Labs	54.00	508.66	410.12	25.10	1	izquierda	Reinaldo A. Valenzuela Nokia Bell Labs
-texto	Gustavo A. Siles Soria UPB	54.00	533.77	410.12	25.10	1	izquierda	Gustavo A. Siles Soria UPB
-texto	Giorgio Siringo ALMA	54.00	558.87	410.12	25.10	1	izquierda	Giorgio Siringo ALMA
-texto	Rodolfo Feick CCTVal, UTFSM	54.00	583.97	410.12	25.10	1	izquierda	Rodolfo Feick CCTVal, UTFSM
-texto	Miguel Gutiérrez Gaitán PUC	54.00	609.07	410.12	25.10	1	izquierda	Miguel Gutiérrez Gaitán PUC
-texto	Karel Toledo de la Garza USACH	54.00	634.17	410.12	25.10	1	izquierda	Karel Toledo de la Garza USACH
-texto	FORMULARIO DE INSCRIPCIÓN	501.00	591.59	255.00	63.94	2	derecha	FORMULARIO DE INSCRIPCIÓN
-texto	Inscripciones en bcsensing.org	54.00	674.27	702.00	33.00	1	izquierda	Inscripciones en bcsensing.org
+texto	EXPOSITORES	54.00	417.59	431.02	34.88	1	izquierda	EXPOSITORES
+texto	Gil ZussmanColumbia University	54.00	455.46	431.02	26.72	1	izquierda	Gil ZussmanColumbia University
+texto	Jinfeng DuNokia Bell Labs	54.00	482.18	431.02	26.72	1	izquierda	Jinfeng DuNokia Bell Labs
+texto	Reinaldo A. ValenzuelaNokia Bell Labs	54.00	508.90	431.02	26.72	1	izquierda	Reinaldo A. ValenzuelaNokia Bell Labs
+texto	Gustavo A. Siles SoriaUPB	54.00	535.62	431.02	26.72	1	izquierda	Gustavo A. Siles SoriaUPB
+texto	Giorgio SiringoALMA	54.00	562.34	431.02	26.72	1	izquierda	Giorgio SiringoALMA
+texto	Rodolfo FeickCCTVal, UTFSM	54.00	589.05	431.02	26.72	1	izquierda	Rodolfo FeickCCTVal, UTFSM
+texto	Miguel Gutiérrez GaitánPUC	54.00	615.77	431.02	26.72	1	izquierda	Miguel Gutiérrez GaitánPUC
+texto	Karel Toledo de la GarzaUSACH	54.00	642.49	431.02	26.72	1	izquierda	Karel Toledo de la GarzaUSACH
+texto	Inscripciones en bcsensing.org	54.00	679.71	702.00	33.00	1	izquierda	Inscripciones en bcsensing.org
 texto	Financiado por la Agencia Nacional de I…	54.00	924.33	702.00	70.17	3	izquierda	Financiado por la Agencia Nacional de Investigación y Desarrollo, ANID / Concurso de Fomento a la Vinculación Internacional para Instituciones de Investigación 2025 · FOVI250222. Fondecyt Regular 1250951 · CYTED 525RT0175 · DISeCom.

@@ -1,6 +1,6 @@
 # Verificación de las piezas de difusión
 
-> **Generado por `npm run flyer` el 2026-10-08 17:05 UTC. No editar.** Criterios en
+> **Generado por `npm run flyer` el 2026-10-08 17:29 UTC. No editar.** Criterios en
 > [`requirements.md`](requirements.md). `n/a` = el criterio no aplica a esa pieza.
 
 **Todos los criterios medibles en verde.** Falta la revisión humana de RF-30 antes de publicar.

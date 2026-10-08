@@ -10,13 +10,16 @@
  *
  * `anchoRotulo` existe porque el rótulo va al piso de 31 px y, ceñido al ancho de un QR
  * chico, «Formulario de inscripción» ocupaba tres líneas y empujaba la lámina 46 px.
+ *
+ * Sin `rotulo`, el QR va solo: en la pieza única el llamado a inscribirse está justo
+ * debajo, y el rótulo le quitaba 340 px de ancho a la lista de expositores (2026-10-08).
  */
 import QRCode from 'qrcode';
 
 interface Props {
   url: string;
   tamano: number;
-  rotulo: string;
+  rotulo?: string;
   anchoRotulo?: number;
   /** Lado hacia el que se alinean QR y rótulo: el borde de la lámina donde está el QR. */
   lado?: 'izquierda' | 'derecha';
@@ -30,5 +33,5 @@ const derecha = lado === 'derecha';
 
 <figure data-flyer-qr={url} class:list={['shrink-0', derecha && 'text-right']} style={`width:${ancho}px`}>
   <div class:list={['bg-[var(--pure-white)] [&>svg]:size-full', derecha && 'ml-auto']} style={`width:${tamano}px;height:${tamano}px`} set:html={svg} />
-  <figcaption class="eyebrow mt-[12px] text-[31px] leading-snug">{rotulo}</figcaption>
+  {rotulo && <figcaption class="eyebrow mt-[12px] text-[31px] leading-snug">{rotulo}</figcaption>}
 </figure>
