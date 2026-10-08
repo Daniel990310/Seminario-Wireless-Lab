@@ -21,13 +21,20 @@ import { boton, cargadorDeImagen, casilla, comoElemento, crear, ctx, deslizador,
 const VACIO = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 const GUIA = 'rgba(224, 145, 58, 0.95)';
 
+/**
+ * Los ocho expositores y, desde el 2026-10-07, el retrato del director en «El seminario»
+ * (RF-31): Daniel pidió poder dejarlo igual que los demás.
+ */
 function listaRetratos(d: Document): HTMLImageElement[] {
-  return [...d.querySelectorAll<HTMLImageElement>('#expositores article img')];
+  return [...d.querySelectorAll<HTMLImageElement>('#expositores article img, #seminario img[aria-hidden="true"]')];
 }
 
-/** El nombre del `<h4>` de la ficha, el *original*: si se editó el texto, la clave no cambia. */
+/**
+ * El nombre del encabezado de la ficha —`<h4>` en un expositor, `<h3>` junto al director—,
+ * el *original*: si se editó el texto, la clave no cambia.
+ */
 function claveDe(img: HTMLImageElement, i: number): string {
-  const nombre = img.closest('article')?.querySelector<HTMLElement>('h4, h3');
+  const nombre = (img.closest('article') ?? img.parentElement)?.querySelector<HTMLElement>('h4, h3');
   return (nombre?.dataset.panelOriginal ?? nombre?.textContent)?.trim() || `retrato ${i + 1}`;
 }
 
@@ -257,7 +264,7 @@ export function informeRetratos(): string[] {
   if (cambiados.length === 0 || !d) return [];
   const porClave = new Map(listaRetratos(d).map((img, i) => [claveDe(img, i), img]));
   const l = [
-    '## Retratos (re-exportar cada archivo a 560×560 WebP desde el recorte indicado)',
+    '## Retratos (re-exportar cada archivo a su tamaño actual, en WebP, desde el recorte indicado)',
     'El recorte va en píxeles de la foto de partida: izquierda, arriba y lado del cuadrado.',
   ];
   for (const [clave, r] of cambiados) {

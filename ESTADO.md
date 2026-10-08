@@ -41,6 +41,14 @@ Hostinger sin revocar.**
   `verify:interaccion`), y RF-32.2/RF-32.3 buscan las charlas también en el programa.
 - Se trabajó en el worktree `.claude/worktrees/programa-miguel` porque otra sesión usaba
   la carpeta principal (rama `daniel/ai-editables`, PR #23).
+- Tras revisarlo en `/ajustar` (informe del 2026-10-07): recortes de Siles, Siringo y
+  Gutiérrez aplicados; epígrafes «Programa» y «Expositores» (su título ya no nombra la
+  sección; `sede` y `organizacion` siguen sin él); 40 px de más bajo el programa
+  quitados (`space-y` de Tailwind 4 con el `<script>` de último hijo). La «relación fija
+  7,33» del informe **no se aplicó**: era el valor por omisión, viejo, del panel; el sitio
+  ya usa 7,04:1 con tope por alto de ventana.
+- Panel: el retrato del director entra en «Retratos»; «señalar» suma relleno arriba y
+  abajo; la banda parte de la fórmula real de `global.css`.
 
 ## Charlas, logos, Siringo y Fondecyt · 2026-10-06 · (en vivo, versión `b6bdd2dd`)
 

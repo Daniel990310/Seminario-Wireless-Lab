@@ -249,9 +249,11 @@ export const es = {
        * hueco, que es peor que la repetición.
        */
       programa: {
+        eyebrow: 'Programa',
         title: 'Jornadas del 21 y 22 de octubre',
       },
       expositores: {
+        eyebrow: 'Expositores',
         title: 'Investigadores participantes',
         lead: 'Especialistas en propagación, detección inalámbrica y arquitecturas de redes de próxima generación.',
       },

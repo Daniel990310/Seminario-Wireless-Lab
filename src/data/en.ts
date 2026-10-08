@@ -217,9 +217,11 @@ export const en = {
        * La nota larga con el razonamiento está allí y no se duplica aquí a propósito.
        */
       programa: {
+        eyebrow: 'Programme',
         title: 'Sessions on 21 and 22 October',
       },
       expositores: {
+        eyebrow: 'Speakers',
         title: 'Participating researchers',
         lead: 'Specialists in propagation, wireless sensing and next-generation network architectures.',
       },

@@ -106,8 +106,8 @@ function pintarNotaRelacion(): void {
 
   if (!f.relacionFija) {
     notaRelacion.textContent =
-      `${ahora} Sin fijarla, el recorte solo se mantiene entre 686 y 1219 px de ancho; ` +
-      'fuera de ahí la altura se topa y se ve más o menos fotografía. [medido: 2026-09-22]';
+      `${ahora} Sin fijarla rige la del sitio: ${FRANJA_ACTUAL.relacion} : 1, con un tope por alto ` +
+      'de ventana que hace desaparecer la banda en un teléfono apaisado.';
     return;
   }
 
@@ -127,9 +127,10 @@ function construirCss(): string {
   // recorte visible deja de depender de la pantalla. Se sigue expresando como
   // **altura** y no como `aspect-ratio` a propósito: la contracción al hacer
   // scroll anima `height`, y animar desde `auto` no es lo mismo en todo navegador.
+  // Sin relación fija, la misma fórmula que `--alto-franja` en `global.css`, escalada por «alto».
   const alturaFranja = f.relacionFija
     ? `calc(100vw / ${f.relacion})`
-    : `calc(clamp(9rem, 21vw, 16rem) * 0.65 * ${f.alto})`;
+    : `max(0px, min(calc(100vw / ${FRANJA_ACTUAL.relacion} * ${f.alto}), calc(100vh - 32rem)))`;
   /*
    * `!important` en las propiedades personalizadas, y no es adorno.
    *
@@ -344,6 +345,7 @@ function informe(): string {
     }
     if (f.relacionFija) {
       l.push(`- relación FIJA: ${f.relacion.toFixed(2)} : 1  → src/styles/global.css, \`--alto-franja: calc(100vw / ${f.relacion.toFixed(2)})\``);
+      l.push('    ⚠ quita el tope por alto de ventana: en un teléfono apaisado la banda deja de desaparecer');
       l.push(
         `    alturas que resultan: ${ANCHOS_DE_REFERENCIA.map((w) => `${w}px → ${Math.round(w / f.relacion)}px`).join(' · ')}`,
       );

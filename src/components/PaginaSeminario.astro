@@ -177,13 +177,19 @@ const hasProgram = program.days.length > 0;
     -->
     <Section
       id="programa"
+      eyebrow={ui.secciones.programa.eyebrow}
       title={ui.secciones.programa.title}
       tinted
     >
       <div class="mt-12">
         {
           hasProgram ? (
-            <div class="space-y-10">
+            /*
+              `flex gap-10` y no `space-y-10`: en Tailwind 4 `space-y` pone margen inferior a
+              todo hijo que no sea el último, y el último es el `<script>` de las pestañas.
+              Las jornadas cargaban 40 px de más bajo la última sesión `[medido: 2026-10-07]`.
+            */
+            <div class="flex flex-col gap-10">
               {/*
                 Aviso obligatorio si las sesiones son de ejemplo. Va arriba del
                 todo, con `role="note"` para que un lector de pantalla lo anuncie
@@ -217,6 +223,7 @@ const hasProgram = program.days.length > 0;
     <!-- Expositores -->
     <Section
       id="expositores"
+      eyebrow={ui.secciones.expositores.eyebrow}
       title={ui.secciones.expositores.title}
       lead={ui.secciones.expositores.lead}
     >

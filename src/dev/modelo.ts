@@ -26,9 +26,10 @@ export interface AjusteFranja {
   velo: number;
   alto: number;
   /**
-   * Con `relacionFija`, la altura pasa a ser `100vw / relacion` y el recorte que
-   * se ve es **el mismo en toda pantalla**. Sin ella rige el `clamp` de hoy, que
-   * mantiene la relación solo entre 686 y 1219 px de ancho `[medido: 2026-09-22]`.
+   * Sin `relacionFija` rige la fórmula del sitio, `--alto-franja` en `global.css`: 7,04:1
+   * con un tope por alto de ventana (`100vh − 32rem`), que hace desaparecer la banda en un
+   * teléfono apaisado. Con `relacionFija`, la altura pasa a `100vw / relacion` **sin tope**.
+   * Hasta el 2026-10-07 el panel partía de un `clamp` y un 7,33 que el sitio ya no usaba.
    */
   relacionFija: boolean;
   relacion: number;
@@ -87,6 +88,8 @@ interface MedidasOriginales {
   peso: string;
   margenArriba: number;
   margenAbajo: number;
+  rellenoArriba: number;
+  rellenoAbajo: number;
   alineacion: string;
 }
 
@@ -103,6 +106,9 @@ export interface AjusteElemento {
   peso: string | null;
   margenArriba: number | null;
   margenAbajo: number | null;
+  /** Relleno interior: es lo que da el aire de una sección, y el margen no lo toca. */
+  rellenoArriba: number | null;
+  rellenoAbajo: number | null;
   alineacion: string | null;
   color: TokenDeTexto | null;
   oculto: boolean;
@@ -141,7 +147,7 @@ export const FRANJA_ACTUAL: AjusteFranja = {
   velo: 18,
   alto: 1,
   relacionFija: false,
-  relacion: 7.33, // la que ya rige entre 686 y 1219 px `[medido: 2026-09-22]`
+  relacion: 7.04, // la de `--alto-franja` en `global.css`
   desvanecido: 18,
   imagen: null,
 };
