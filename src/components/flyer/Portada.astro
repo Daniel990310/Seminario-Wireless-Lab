@@ -1,7 +1,6 @@
 ---
 /**
- * Portada: primera lámina del carrusel (`cierre="desliza"`) y primera historia
- * (`cierre="sticker"`).
+ * Portada: primera lámina del carrusel y primera historia (`historia`).
  *
  * En el carrusel no lleva pie propio: los puntos del carrusel ya dicen que hay más.
  *
@@ -12,15 +11,14 @@
 import type { Contenido } from '~/data/contenido';
 import Encabezado from './Encabezado.astro';
 import Marcas from './Marcas.astro';
-import Participantes from './Participantes.astro';
 import { datosFlyer } from './datos';
 
 interface Props {
   c: Contenido;
-  cierre: 'desliza' | 'sticker';
+  historia?: boolean;
 }
 
-const { c, cierre } = Astro.props;
+const { c, historia = false } = Astro.props;
 const t = c.ui.flyer;
 const { dominio } = datosFlyer(c);
 /*
@@ -31,7 +29,6 @@ const { dominio } = datosFlyer(c);
  * financiamiento en la franja (Daniel, 2026-10-01) y el hueco del sticker, desbordaba
  * 130 px en inglés, donde el organizador ocupa dos líneas `[medido]`.
  */
-const historia = cierre === 'sticker';
 ---
 
 {/*
@@ -40,29 +37,20 @@ const historia = cierre === 'sticker';
   a medio hacer.
 */}
 <div class:list={['flex flex-1 flex-col justify-center', !historia && 'pb-[36px]']}>
-  <Encabezado c={c} anchoLogo={780} compacto={historia} fechaGrande={!historia} />
+  <Encabezado c={c} anchoLogo={780} compacto={historia} />
   <p class:list={['text-[52px] leading-none text-foreground', historia ? 'mt-[32px]' : 'mt-[48px]']}>
     {t.inscripciones} <span class="font-semibold text-accent">{dominio}</span>
   </p>
 </div>
 
 <div>
-  {/*
-    Sin «Desliza: expositores e inscripción» desde el 2026-10-08 (Daniel lo quitó en su
-    versión del .ai): Instagram y LinkedIn ya marcan el carrusel con sus puntos, y la línea
-    le restaba alto a la lámina.
-  */}
   {
-    cierre === 'sticker' && (
+    historia && (
       <>
         <p class="mt-[24px] text-[36px] text-foreground">{t.sticker}</p>
         <div data-flyer-sticker class="mt-[16px] h-[170px] w-[600px]" />
       </>
     )
   }
-  {/* Instituciones participantes e IEEE AP-S (Mauricio, 2026-10-08), como en la pieza única. */}
-  <div class:list={[historia && 'mt-[40px]']}>
-    <Participantes c={c} base={36} />
-  </div>
-  <Marcas c={c} />
+  <Marcas c={c} participantes />
 </div>

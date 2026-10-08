@@ -20,7 +20,7 @@ export const esRaster = (logo: Logo): logo is ImageMetadata => typeof logo !== '
 /*
  * ═══ POR QUÉ NO SE ALINEAN POR ALTURA ═══
  *
- * Antes todos los logos compartían altura (`h-10 w-auto`) y la sección se veía descompuesta.
+ * En el muro del sitio todos los logos compartían altura (`h-10 w-auto`) y se veía descompuesto.
  * La causa es que **la altura es el normalizador equivocado cuando las proporciones difieren
  * tanto**: Columbia es 7,7 veces más ancho que alto y USACH es más alto que ancho (0,71). A
  * igual altura, Columbia ocupa **once veces más superficie** que USACH, así que uno grita y
@@ -53,11 +53,10 @@ export const proporcionDe = (logo: Logo): number => {
     /*
      * Desde `process.cwd()` y NO desde `import.meta.url`: en el build Astro compila
      * este código a `dist/.prerender/chunks/`, así que `import.meta.url` apunta
-     * ahí y `../../public` resolvía a `dist/public`. Este camino **nunca llegó a
-     * ejecutarse bien**; el `catch` devolvía la proporción de reserva en silencio y
-     * cualquier logo SVG habría salido con la altura equivocada sin avisar. Estaba
-     * dormido porque hoy ningún SVG pasa por este componente
-     * `[medido: 2026-09-22, en el gemelo de PaginaSeminario]`.
+     * ahí y `../../public` resolvía a `dist/public`. Hasta el 2026-09-22 el `catch`
+     * devolvía la proporción de reserva en silencio y un logo SVG habría salido con la
+     * altura equivocada sin avisar `[medido: 2026-09-22]`. Hoy sí pasan SVG: UTFSM y
+     * Nokia Bell Labs, en la fila de participantes del flyer.
      */
     const ruta = join(process.cwd(), 'public', logo.replace(/^\//, ''));
     const svg = readFileSync(ruta, 'utf8');

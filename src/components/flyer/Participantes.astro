@@ -1,62 +1,48 @@
 ---
 /**
- * Logos de las instituciones participantes, sobre el fondo oscuro de la lámina.
+ * Fila de logos de las instituciones participantes, sobre el fondo oscuro de la lámina.
+ * Qué marcas y con qué escala lo decide `datosFlyer` (`participantes`); aquí solo se
+ * dibujan. La compone `Marcas`, encima de la franja.
  *
- * Mauricio, por Daniel (2026-10-08): que los logos del sitio, más el de IEEE AP-S, estén
- * en el flyer. Hasta entonces la franja llevaba solo PUCV, EIE, CYTED y ANID (RF-26.3).
+ * Mauricio, por Daniel (2026-10-08): los logos del sitio más el de IEEE AP-S en el flyer.
+ * Van fuera de la franja blanca porque él mismo la pidió estrecha. Tamaño por área, como
+ * el muro del sitio (`~/lib/area-logos`).
  *
- * Van fuera de la franja blanca a propósito: él mismo pidió esa franja estrecha, y once
- * marcas más la habrían duplicado. Sobre oscuro se usa la variante oscura que ya publica el
- * sitio (`logoOscuro`), y donde no la hay, la de siempre: ALMA es una placa opaca y Nokia
- * Bell Labs da 3,56:1 sobre oscuro. Tamaño por área y escala óptica, como el muro del sitio.
- *
- * IEEE AP-S no está en el sitio: su logo viene de `ieeeaps.org` (`main-logo-2025.svg`,
- * rasterizado), y la variante oscura es la silueta en blanco, derivada bajo la misma
- * decisión de Mauricio que los demás logos de internet (RF-22).
+ * `<img>` y no `<Image />`: el lienzo se captura a PNG y a PDF, y el optimizador solo
+ * cambiaría el formato del archivo intermedio. Una institución sin logo no se dibuja y
+ * avisa en el build; el generador la echa en falta por nombre (RF-26.3).
  */
-import apsOscuro from '~/assets/logos/ieee-aps-oscuro.png';
-import type { Institucion, Logo } from '~/data/comun';
 import type { Contenido } from '~/data/contenido';
 import { alturaPorArea, esRaster, proporcionDe } from '~/lib/area-logos';
+import { datosFlyer } from './datos';
 
 interface Props {
   c: Contenido;
-  /** Alto, en px de lienzo, de una marca de proporción 2,2: las demás se igualan en área. */
-  base?: number;
 }
 
-const { c, base = 32 } = Astro.props;
+/** Alto, en px de lienzo, de una marca de proporción 2,2; las demás se igualan en área. */
+const BASE = 32;
 
-/*
- * ALMA a tres cuartos, solo aquí: es una placa azul opaca y, vertical como es, el área la
- * lleva al tope de 1,7×; en la fila densa del flyer pesaba más que cualquier otra marca.
- */
-const AJUSTE_FLYER: Record<string, number> = { ALMA: 0.75 };
-
-const participantes: readonly Institucion[] = c.participants;
-const marcas: { nombre: string; logo: Logo; escala: number }[] = [
-  ...participantes.flatMap((p) => {
-    const logo = p.logoOscuro ?? p.logo;
-    const escala = (p.escalaOptica ?? 1) * (AJUSTE_FLYER[p.shortName] ?? 1);
-    return logo ? [{ nombre: p.shortName, logo, escala }] : [];
-  }),
-  { nombre: 'IEEE AP-S', logo: apsOscuro, escala: 1 },
-];
+const { c } = Astro.props;
+const { participantes } = datosFlyer(c);
+for (const p of participantes.filter((x) => !x.logo)) {
+  console.warn(`[flyer] ${p.nombre} no tiene logo: queda fuera de la fila de participantes`);
+}
 ---
 
 <ul data-flyer-participantes class="flex flex-wrap items-center gap-x-[32px] gap-y-[12px]">
   {
-    marcas.map(({ nombre, logo, escala }) => {
-      const alto = alturaPorArea(logo, base, escala);
+    participantes.map(({ nombre, logo, escala }) => {
+      if (!logo) return null;
+      const alto = alturaPorArea(logo, BASE, escala);
       return (
         <li>
           <img
             src={esRaster(logo) ? logo.src : logo}
             alt=""
-            height={alto}
             width={Math.round(alto * proporcionDe(logo))}
-            class="block w-auto"
-            style={`height:${alto}px`}
+            height={alto}
+            class="block"
             data-participante={nombre}
           />
         </li>

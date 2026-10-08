@@ -24,9 +24,12 @@
  *
  * La mención de financiamiento va **siempre** que va la franja (Daniel, 2026-10-01: estaba
  * en unas láminas y en otras no): la fórmula de ANID (RNF-8.1) y **todos los proyectos con
- * su folio** —FOVI, Fondecyt Regular y CYTED—, de corrido. ANID no exige el folio («Cómo
- * mencionar a ANID en productos 2026»); van porque Mauricio lo pidió el 2026-10-08, después
- * de una prueba de unas horas con la fórmula sola.
+ * su folio** —FOVI, Fondecyt Regular y CYTED—, de corrido; la cadena la arma `datosFlyer`.
+ * ANID no exige el folio («Cómo mencionar a ANID en productos 2026»); van porque Mauricio
+ * lo pidió el 2026-10-08.
+ *
+ * Con `participantes`, la fila de instituciones participantes va justo encima de la
+ * franja. Este componente es el único dueño del pie: el aire, la fila y la franja.
  *
  * ── FRANJA ESTRECHA, 2026-10-08 ──────────────────────────────────────────────────
  *
@@ -44,26 +47,37 @@ import { Image } from 'astro:assets';
 import submarcaEie from '~/assets/logos/eie-pucv.png';
 import cytedFondoBlanco from '~/assets/logos/cyted-40-anos-fondo-blanco.png';
 import type { Contenido } from '~/data/contenido';
+import Participantes from './Participantes.astro';
+import { datosFlyer } from './datos';
 
 interface Props {
   c: Contenido;
+  /** Fila de instituciones participantes encima de la franja. */
+  participantes?: boolean;
 }
 
-const { c } = Astro.props;
+const { c, participantes = false } = Astro.props;
 const [pucv] = c.organizers;
 const anid = c.funding.agency;
-const [cyted] = c.financiadores;
+const { mencion } = datosFlyer(c);
 ---
 
 {/*
-  `pt-[40px]` en el envoltorio es el aire mínimo entre el contenido y la franja: sin él,
-  en la historia de expositores el último retrato quedaba pegado al blanco (Daniel,
-  2026-10-01). El generador exige al menos 32 px en todas las láminas (RF-24.4).
+  El aire de arriba separa el contenido del pie: 40 px hasta la franja (sin él un retrato
+  quedaba pegado al blanco, Daniel, 2026-10-01), o 24 hasta la fila de participantes, que
+  deja sus propios 40 hasta la franja. El generador exige al menos 32 px (RF-24.4).
 
   Cada marca lleva `data-marca`: el generador comprueba cuáles hay, su orden y su peso
   (RF-26.3 a RF-26.5), y que no haya ninguna imagen más en la franja.
 */}
-<div class="mt-auto pt-[40px]">
+<div class:list={['mt-auto', participantes ? 'pt-[24px]' : 'pt-[40px]']}>
+{
+  participantes && (
+    <div class="mb-[40px]">
+      <Participantes c={c} />
+    </div>
+  )
+}
 <footer
   data-flyer-marcas
   class="-mx-[72px] bg-[var(--pure-white)] px-[72px] pt-[22px] pb-[24px] text-[var(--navy-900)]"
@@ -80,9 +94,7 @@ const [cyted] = c.financiadores;
     </div>
   </div>
   <p data-flyer-mencion class="mt-[14px] text-[24px] leading-[1.3] text-pretty text-[var(--slate-600)]">
-    {c.funding.mencion} · {c.funding.project.code}.{' '}
-    {c.funding.otrosProyectos.map((p) => `${p.instrumento} ${p.code} · `)}{cyted.agency.shortName}{' '}
-    {cyted.project.code} · {cyted.project.acronimo}.
+    {mencion}
   </p>
 </footer>
 </div>
