@@ -105,6 +105,7 @@ figura son trazos finos al 65 %; su efecto sobre la lectura lo juzga RF-30.1.
 | RF-29.2 | El PDF trae texto vivo: **sin Type3** y con las tres familias incrustadas | `[medido]`: con Type3, Illustrator abría 0 marcos | generador |
 | RF-29.3 | El PDF mide lo mismo que el lienzo y pesa **menos de 100 MB**, el máximo de un documento de LinkedIn | `[verificado]` | generador |
 | RF-29.4 | Todas las imágenes cargaron | — | generador |
+| RF-29.5 | El `.ai` se edita sin bucear en grupos: capas Texto, Logos, QR, Fotos y Fondo; cada logo, retrato, QR y la figura en **un grupo con nombre**; sin máscaras que no recortan nada; los párrafos de varios renglones como **texto de área** cuando Illustrator los corta igual que el cartel; y una capa **«Logos para colocar»**, que no imprime, con todos los logos del proyecto incrustados. Ordenar no cambia el lienzo: **menos de 0,5 %** de píxeles distintos entre el PDF importado y el `.ai` ordenado | `[medido]` el 2026-10-07: importado del PDF, `es-unica` traía 15 grupos, 14 con máscara, y cada logo en trazados sueltos. Con el orden, 0,00–0,28 %, que es el corrimiento subpíxel del interlineado en los párrafos de área | `abrir-flyer.ps1` |
 
 ## RF-30 · Revisión humana, antes de publicar
 

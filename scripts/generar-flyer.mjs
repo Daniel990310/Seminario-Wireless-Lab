@@ -32,6 +32,7 @@ import { inflateSync } from 'node:zlib';
 import { FORMATOS_FLYER, PIEZAS_FLYER, PISO_FLYER } from '../src/data/flyer.ts';
 import { RAIZ, abrirDist } from './lib/servir-dist.mjs';
 import { medirLienzo } from './lib/criterios-flyer.mjs';
+import { mapaATsv, mapaLienzo } from './lib/mapa-flyer.mjs';
 
 const SALIDA = join(RAIZ, 'difusion', 'flyer');
 const REVISION = join(RAIZ, 'difusion', 'revision');
@@ -179,6 +180,8 @@ for (const { pieza, formato } of PIEZAS_FLYER) {
     .filter((x) => x.id === 'RF-24.3' && !x.ok)
     .map((x) => ({ ...x, detalle: `con las fuentes del PDF: ${x.detalle}` }));
   r.push(...enPdf);
+  // Con las fuentes del PDF, para que las cajas sean las del PDF (ver `lib/mapa-flyer.mjs`).
+  await writeFile(join(SALIDA, `${pieza}.mapa.tsv`), `${mapaATsv(await page.evaluate(mapaLienzo))}\n`, 'utf8');
 
   const rutaPdf = join(SALIDA, `${pieza}.pdf`);
   await page.emulateMedia({ media: 'screen' });

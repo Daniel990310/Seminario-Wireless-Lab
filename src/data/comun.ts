@@ -473,6 +473,9 @@ export const comun = {
       shortName: 'PUC',
       logo: pucClaro,
       logoOscuro: pucOscuro,
+      // Juicio a ojo: escudo de línea fina y texto pequeño, casi todo aire; a igual área
+      // se veía la más chica del muro.
+      escalaOptica: 1.35,
       url: 'https://www.uc.cl',
     },
     /*
@@ -623,6 +626,8 @@ export const comun = {
       shortName: 'CPS-RTC',
       logo: cpsRtcClaro,
       logoOscuro: cpsRtcOscuro,
+      // Juicio a ojo: el subtítulo en dos renglones finos se perdía a igual área.
+      escalaOptica: 1.2,
     },
   ],
 
