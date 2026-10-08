@@ -3,8 +3,10 @@
  * Pieza única 4:5, de respaldo: para WhatsApp o para publicar sin carrusel.
  *
  * Lleva todo lo esencial en una lámina, y para que quepa a tamaño legible renuncia a lo
- * que el carrusel sí muestra: los retratos y las afiliaciones. Quedan los nombres, que es
- * lo que alguien reconoce en un feed, en una columna con el QR al lado.
+ * que el carrusel sí muestra: los retratos. Quedan los nombres, que es lo que alguien
+ * reconoce en un feed, en una columna con el QR al lado, y desde el 2026-10-08 (Daniel) la
+ * institución de cada uno en gris, en el mismo renglón: la columna mide 676 px y el par
+ * más largo, «Reinaldo A. Valenzuela Nokia Bell Labs», unos 570, así que no suma alto.
  *
  * Con nombres en dos columnas y el QR en su propia fila desbordaba 283 px en español
  * `[medido: 2026-10-01]`: es la medida de por qué el feed va en carrusel.
@@ -23,7 +25,7 @@ interface Props {
 const { c } = Astro.props;
 const t = c.ui.flyer;
 const { dominio, internacionales, nacionales } = datosFlyer(c);
-const nombres = [...internacionales, ...nacionales].map((e) => e.name);
+const expositores = [...internacionales, ...nacionales];
 ---
 
 <Encabezado c={c} anchoLogo={416} compacto />
@@ -38,7 +40,14 @@ const nombres = [...internacionales, ...nacionales].map((e) => e.name);
   <div class="min-w-0">
     <p class="eyebrow text-[31px]">{t.expositores}</p>
     <ul class="mt-[8px]">
-      {nombres.map((n) => <li class="text-[31px] leading-[1.08] font-semibold text-foreground">{n}</li>)}
+      {
+        expositores.map((e) => (
+          <li class="text-[31px] leading-[1.08]">
+            <span class="font-semibold text-foreground">{e.name}</span>{' '}
+            <span class="text-muted-foreground">{e.afiliacionCorta}</span>
+          </li>
+        ))
+      }
     </ul>
   </div>
   {c.registro.url && <Qr url={c.registro.url} tamano={220} rotulo={t.qr} anchoRotulo={340} lado="derecha" />}
