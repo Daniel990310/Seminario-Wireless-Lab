@@ -86,15 +86,10 @@ export function medirLienzo({ seguro, ancho, alto, piso, pisoPie, grilla34 }) {
   );
   marca('RF-24.3', desborde <= 1 && !cortados.length, desborde > 1 ? `desborda ${desborde} px` : caso(cortados.map(nombre)));
 
-  /*
-   * RF-24.4 · aire mínimo entre el contenido y lo que cierra la lámina: la franja de
-   * marcas, o la foto de la sede en la historia que no lleva franja.
-   */
+  /* RF-24.4 · aire mínimo entre el contenido y la franja de marcas, donde la hay. */
   const franja = document.querySelector('[data-flyer-marcas]');
-  const foto = document.querySelector('[data-flyer-foto-sede]');
-  const cierre = franja ?? foto;
-  if (cierre) {
-    const borde = cierre.getBoundingClientRect().top;
+  if (franja) {
+    const borde = franja.getBoundingClientRect().top;
     const encima = visibles
       .filter((el) => !franja?.contains(el))
       .map((el) => el.getBoundingClientRect().bottom)

@@ -12,6 +12,7 @@
 import type { Contenido } from '~/data/contenido';
 import Encabezado from './Encabezado.astro';
 import Marcas from './Marcas.astro';
+import Participantes from './Participantes.astro';
 import Qr from './Qr.astro';
 import { datosFlyer } from './datos';
 
@@ -25,25 +26,30 @@ const { dominio, internacionales, nacionales } = datosFlyer(c);
 const nombres = [...internacionales, ...nacionales].map((e) => e.name);
 ---
 
-<Encabezado c={c} anchoLogo={400} compacto />
+<Encabezado c={c} anchoLogo={440} compacto />
 
 {/*
-  Espaciado al justo: con la mención de financiamiento completa en la franja —ANID y
-  CYTED, una línea más— la pieza desbordaba 39 px en inglés `[medido: 2026-10-02]`. Se
-  recuperó en interlineado y márgenes, sin bajar ningún texto del piso.
+  Con la franja estrecha (2026-10-08) sobraban unos 160 px. Se los llevan la fila de
+  instituciones participantes que pidió Mauricio y el aire entre la lista y el llamado a
+  inscribirse, que antes iba a 12 px del último nombre y se leía como un expositor más.
+  Logo de 400 a 440.
 */}
 <div class="mt-[24px] flex items-start justify-between gap-[40px]">
   <div class="min-w-0">
     <p class="eyebrow text-[31px]">{t.expositores}</p>
-    <ul class="mt-[6px]">
-      {nombres.map((n) => <li class="text-[31px] leading-[1.1] font-semibold text-foreground">{n}</li>)}
+    <ul class="mt-[8px]">
+      {nombres.map((n) => <li class="text-[31px] leading-[1.08] font-semibold text-foreground">{n}</li>)}
     </ul>
   </div>
   {c.registro.url && <Qr url={c.registro.url} tamano={220} rotulo={t.qr} anchoRotulo={340} lado="derecha" />}
 </div>
 
-<p class="mt-[12px] text-[40px] leading-none text-foreground">
+<p class="mt-[24px] text-[44px] leading-none text-foreground">
   {t.inscripciones} <span class="font-semibold text-accent">{dominio}</span>
 </p>
+
+<div class="mt-[28px]">
+  <Participantes c={c} />
+</div>
 
 <Marcas c={c} />

@@ -47,7 +47,7 @@ const CRITERIOS = {
   'RF-24.1': `Ningún texto bajo ${PISO_FLYER} px (11 pt en teléfono); ${PISO_PIE_FLYER} en la franja de marcas`,
   'RF-24.2': 'Contraste del texto 4,5:1, o 3:1 si es grande',
   'RF-24.3': 'Nada desborda ni se corta',
-  'RF-24.4': 'Al menos 32 px entre contenido y cierre (franja o foto)',
+  'RF-24.4': 'Al menos 32 px entre contenido y franja de marcas',
   'RF-25.1': 'Como mucho tres familias tipográficas',
   'RF-25.2': 'Dominio, fecha y, donde va, organizador',
   'RF-26.1': 'Logo del seminario, variante blanca, sobre su mínimo',

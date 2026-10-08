@@ -47,10 +47,9 @@ Seis láminas por idioma, en español e inglés (`src/data/flyer.ts`):
 > 250, y RF-23.2 se escribe con ese valor.
 
 **Qué ocupa esa franja.** Contenido, nunca: lo tapa la interfaz. Vacía, se leía como un
-hueco, primero en azul y después en blanco (Daniel, 2026-10-01 y 2026-10-02). La ocupa la
-fotografía de la sede, la misma del sitio (RF-21), sin texto encima: si la barra la tapa no
-se pierde nada, y si no la tapa dice dónde es el seminario. Su proporción, 4,38:1, es casi
-la de la franja (4,32:1).
+hueco, primero en azul y después en blanco (Daniel, 2026-10-01 y 2026-10-02). Del
+2026-10-02 al 2026-10-08 la ocupó la fotografía de la sede; **Daniel la descartó** al
+rehacer los flyers. Queda el fondo oscuro cruzado por los arcos de la figura.
 
 ## RF-24 · Legibilidad en el teléfono
 
@@ -59,7 +58,7 @@ la de la franja (4,32:1).
 | RF-24.1 | Ningún texto bajo **31 px de lienzo**: el lienzo de 1080 px se ve a unos 390 pt (escala 0,361), y 11 pt es el mínimo de texto de iOS. **Excepción desde el 2026-10-08:** la franja de marcas, que solo lleva la mención de financiamiento, tiene piso de **24 px** (8,7 pt): es letra legal, no el mensaje | `[verificado]` Apple HIG; escala `[medido]`; la excepción, Mauricio por Daniel: menos blanco abajo y financiamiento más pequeño | generador |
 | RF-24.2 | Contraste del texto contra su fondo **4,5:1**, o **3:1** si es texto grande (24 px, o 18,66 px en negrita, en el teléfono) | WCAG 2.1 AA, RNF-1 del proyecto | generador, sobre el fondo opaco más cercano |
 | RF-24.3 | Nada desborda su caja ni se corta, tanto con las fuentes del sitio (PNG) como con las del PDF | `[medido]`: las métricas cambian entre las dos | generador |
-| RF-24.4 | Al menos **32 px** entre el último contenido y lo que cierra la lámina: la franja de marcas o, en la historia de expositores, la foto de la sede | Daniel, 2026-10-01: retrato pegado a la franja | generador |
+| RF-24.4 | Al menos **32 px** entre el último contenido y la franja de marcas, donde la hay. Desde el 2026-10-08 las historias no llevan la foto de la sede abajo (Daniel la descartó) | Daniel, 2026-10-01: retrato pegado a la franja | generador |
 
 **Límite de RF-24.2:** mide el par texto/fondo de los tokens, no la figura de fondo. La
 figura son trazos finos al 65 %; su efecto sobre la lectura lo juzga RF-30.1.
@@ -78,7 +77,7 @@ figura son trazos finos al 65 %; su efecto sobre la lectura lo juzga RF-30.1.
 | - | --- | --- | --- |
 | RF-26.1 | Cada pieza lleva **un** logo del seminario, del kit de marca 5.2, en variante `-blanco` sobre el fondo oscuro y por encima del mínimo del manual: **400 px** el principal, **420** el horizontal | `specs/marca-beyond-connectivity.md` | generador |
 | RF-26.2 | Ninguna imagen se estira: proporción dibujada = proporción del archivo ± 2 % (los retratos, recortados en círculo, quedan fuera) | manual 5.2; RF-10.4 | generador |
-| RF-26.3 | En la franja van **solo PUCV, EIE, CYTED y ANID**, y ninguna otra imagen. CYTED con su marca de 40 años **sobre fondo blanco**: variante del original de `comun.ts` que cambia solo el fondo negro, con la tinta intacta (ver `Marcas.astro`) | decisión de Daniel, 2026-10-01 y 2026-10-02 | generador, por `data-marca` |
+| RF-26.3 | En la franja van **solo PUCV, EIE, CYTED y ANID**, y ninguna otra imagen. **Desde el 2026-10-08** (Mauricio, por Daniel) las instituciones participantes del sitio más IEEE AP-S van **fuera de la franja**, sobre el fondo oscuro, en su variante oscura y con tamaño por área (`Participantes.astro`); primero en la pieza única. CYTED con su marca de 40 años **sobre fondo blanco**: variante del original de `comun.ts` que cambia solo el fondo negro, con la tinta intacta (ver `Marcas.astro`) | decisión de Daniel, 2026-10-01 y 2026-10-02 | generador, por `data-marca` |
 | RF-26.4 | **ANID a la derecha** de las marcas no gubernamentales | manual ANID §1.1, `specs/gestion/anid-normas-2026.md` | generador |
 | RF-26.5 | Peso visual igualado: el área de cada marca entre **0,72× y 1,7×** la de ANID | RF-18.2 del proyecto; manual ANID §1.1 | generador |
 | RF-26.6 | **Toda lámina con franja de marcas lleva la mención de financiamiento**: la fórmula de ANID completa (RNF-8.1). **Desde el 2026-10-08, solo la fórmula**: «Cómo mencionar a ANID en productos 2026» exige nombre completo e instrumento (concurso), no folio, y Daniel eligió sacar los folios FOVI, Fondecyt y CYTED de las piezas para que el pie ocupe dos renglones (siguen en el sitio; CYTED queda en su marca). Sin rótulos «Organiza»/«Financian» en la franja: repetían lo que dicen el organizador de arriba y la mención. Las de expositores no llevan franja: son interiores | RNF-8.1; Daniel, 2026-10-02: estaba en unas láminas y en otras no | generador |
