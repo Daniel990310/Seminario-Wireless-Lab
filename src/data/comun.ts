@@ -61,6 +61,14 @@ import comsocOscuro from '~/assets/logos/comsoc-chile-oscuro.png';
 import cpsRtcClaro from '~/assets/logos/cps-rtc.png';
 import cpsRtcOscuro from '~/assets/logos/cps-rtc-oscuro.png';
 /*
+ * CCTVal: el logotipo horizontal de color de `cctval.cl` (`ORG_CCTVAL_Logotipo_…_Mesa-de-
+ * trabajo-1.png`, 4501 × 1697, recortado y llevado a 1400 px). Tinta `rgb(45, 48, 198)`:
+ * 8,55:1 sobre el fondo claro y 2,00:1 sobre el oscuro `[medido]`, así que la variante
+ * oscura es la silueta en blanco.
+ */
+import cctvalClaro from '~/assets/logos/cctval.png';
+import cctvalOscuro from '~/assets/logos/cctval-oscuro.png';
+/*
  * Retrato de Mauricio Rodríguez para «El seminario» (RF-31). Lo pidió él, a través de
  * Daniel, el 2026-10-04: eso es la autorización de RF-11.1. Desde el 2026-10-06 es la foto
  * de estudio que entregó Daniel (`Mauricio_Rodriguez.png`, 1024×1536, fondo gris): recorte
@@ -535,6 +543,20 @@ export const comun = {
       logo: '/logos/utfsm.svg',
       logoOscuro: '/logos/utfsm-oscuro.svg',
       url: 'https://www.usm.cl',
+    },
+    /*
+     * El centro por el que participa Feick, junto a la marca USM y no en su lugar: la USM
+     * autorizó la institucional, y la submarca que pidió Mauricio el 2026-09-25 nunca llegó.
+     * Se toma de internet por la decisión de Mauricio del 2026-10-04 (RF-22), que Daniel
+     * extendió al CCTVal el 2026-10-08. `cctval.cl` y no `cctval.usm.cl`, que tiene el
+     * certificado TLS vencido.
+     */
+    {
+      name: 'Centro Científico Tecnológico de Valparaíso',
+      shortName: 'CCTVal',
+      logo: cctvalClaro,
+      logoOscuro: cctvalOscuro,
+      url: 'https://cctval.cl',
     },
     /*
      * Un solo archivo para los dos temas, y esta vez no es una carencia: su tinta es el azul

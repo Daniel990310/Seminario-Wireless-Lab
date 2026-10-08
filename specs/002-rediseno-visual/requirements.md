@@ -621,6 +621,7 @@ responsabilidad. La distinción del punto 1 de la derogación sigue valiendo.
 | **ALMA** lleva el logotipo de color de ESO (`eso.org/public/products/logos/alma-logo`, JPG de 495 × 701 pasado a PNG). Es una placa azul opaca: se lee igual en los dos temas y va sin `logoOscuro` | captura en claro y oscuro |
 | **UPB** lleva el logo de su sitio (`upb.edu`), publicado solo en blanco con alfa. Esa es la variante oscura; la clara es la misma silueta en `#1d1d1b`, como las demás marcas de una tinta | captura en claro y oscuro |
 | **Columbia** lleva el logotipo institucional de **Columbia University**, el nombre de la ficha, tomado del SVG de Wikipedia (`Columbia_University_1754.svg`, una tinta `#000d74`) y rasterizado a PNG, con la variante oscura en blanco. Los archivos de CUSPS se borran: eran de otra facultad | inspección de `comun.ts` y capturas |
+| **CCTVal** (añadido el 2026-10-08, Daniel extiende esta decisión): logotipo horizontal de color de `cctval.cl`, recortado a PNG; la variante oscura es la silueta en blanco. Va junto a la USM, no en su lugar | captura en claro y oscuro |
 | Ninguna institución queda con marcador de posición | `verify` |
 | Ningún SVG de terceros entra al sitio: los tres se publican como PNG rasterizado, sin guiones ni referencias externas que revisar | inspección de `src/assets/logos/` |
 
