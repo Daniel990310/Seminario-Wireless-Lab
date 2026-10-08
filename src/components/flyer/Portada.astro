@@ -12,6 +12,7 @@
 import type { Contenido } from '~/data/contenido';
 import Encabezado from './Encabezado.astro';
 import Marcas from './Marcas.astro';
+import Participantes from './Participantes.astro';
 import { datosFlyer } from './datos';
 
 interface Props {
@@ -51,6 +52,8 @@ const historia = cierre === 'sticker';
     versión del .ai): Instagram y LinkedIn ya marcan el carrusel con sus puntos, y la línea
     le restaba alto a la lámina.
   */}
+  {/* Instituciones participantes e IEEE AP-S (Mauricio, 2026-10-08), como en la pieza única. */}
+  {!historia && <Participantes c={c} base={36} />}
   {
     cierre === 'sticker' && (
       <>
