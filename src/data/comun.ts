@@ -695,16 +695,11 @@ export const comun = {
      * folio: el título del proyecto no llegó y no se publica uno buscado por nuestra cuenta.
      * Instrumento y folio no se traducen, como la mención.
      *
-     * Los dos de Miguel Gutiérrez Gaitán los dio Daniel el 2026-10-07, igual sin cotejar.
-     * «Fondecyt 11241221»: el folio que empieza en 11 es el de Iniciación en Investigación
-     * `[probable: convención de folios de ANID]`. «CPS-RTC CIA250016»: el centro de
-     * investigación aplicada de la convocatoria ANID 2025 en que él es investigador principal.
+     * Los dos proyectos de Miguel Gutiérrez Gaitán (Fondecyt 11241221 y CPS-RTC CIA250016)
+     * estuvieron aquí del 2026-10-07 al 2026-10-08; Daniel los retiró: eran información de
+     * Miguel, no financiamiento del seminario.
      */
-    otrosProyectos: [
-      { instrumento: 'Fondecyt Regular', code: '1250951' },
-      { instrumento: 'Fondecyt de Iniciación', code: '11241221' },
-      { instrumento: 'Centro de Investigación Aplicada CPS-RTC', code: 'CIA250016' },
-    ],
+    otrosProyectos: [{ instrumento: 'Fondecyt Regular', code: '1250951' }],
   },
 
   /**
