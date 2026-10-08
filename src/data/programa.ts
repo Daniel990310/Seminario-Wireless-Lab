@@ -28,11 +28,26 @@ export type Pausa =
   | 'cierreDia'
   | 'cierre';
 
+/** Los dibujos de `IconoSesion.astro`: uno por clase de sesión, no por sesión. */
+export type IconoSesion = 'registro' | 'bienvenida' | 'charla' | 'cafe' | 'almuerzo' | 'posters' | 'antena' | 'cierre';
+
+export const ICONO_DE_PAUSA: Record<Pausa, IconoSesion> = {
+  registro: 'registro',
+  recepcion: 'registro',
+  bienvenidaIntro: 'bienvenida',
+  bienvenida: 'bienvenida',
+  cafe: 'cafe',
+  almuerzo: 'almuerzo',
+  posters: 'posters',
+  cierreDia: 'cierre',
+  cierre: 'cierre',
+};
+
 export type Sesion =
   | { hora: string; expositor: IdExpositor }
   | { hora: string; pausa: Pausa }
-  /** Nombre propio que no se traduce. */
-  | { hora: string; nombre: string };
+  /** Nombre propio que no se traduce; su ícono va aquí porque el nombre no dice de qué clase es. */
+  | { hora: string; nombre: string; icono: IconoSesion };
 
 export interface Jornada {
   dia: 'miercoles21' | 'jueves22';
@@ -48,7 +63,8 @@ export const programa: Jornada[] = [
       { hora: '08:30–09:00', pausa: 'registro' },
       { hora: '09:00–09:15', pausa: 'bienvenidaIntro' },
       { hora: '09:15–10:15', expositor: 'valenzuela' },
-      { hora: '10:15–10:30', nombre: 'IEEE AP-S Chile' },
+      // Antena: AP-S es la sociedad de antenas y propagación del IEEE.
+      { hora: '10:15–10:30', nombre: 'IEEE AP-S Chile', icono: 'antena' },
       { hora: '10:30–11:00', pausa: 'cafe' },
       { hora: '11:00–12:00', expositor: 'feick' },
       { hora: '12:00–13:00', expositor: 'zussman' },

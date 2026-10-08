@@ -1,0 +1,51 @@
+---
+/**
+ * Ícono de línea de una sesión del programa (enmienda de RF-32, 2026-10-08).
+ *
+ * Trazos propios en una retícula de 24, sin biblioteca: son ocho dibujos y una dependencia
+ * de íconos pesaría más que todos juntos. Decorativos (`aria-hidden`): el texto de la
+ * sesión ya dice lo mismo. Heredan el color con `currentColor`.
+ */
+import type { IconoSesion } from '~/data/programa';
+
+interface Props {
+  icono: IconoSesion;
+  class?: string;
+}
+
+const { icono, class: clase } = Astro.props;
+
+const trazos: Record<IconoSesion, string> = {
+  // Credencial con retrato.
+  registro:
+    'M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z M12 7.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z M8 17.5c.8-1.8 2.2-2.6 4-2.6s3.2.8 4 2.6',
+  // Micrófono.
+  bienvenida: 'M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z M5.5 11a6.5 6.5 0 0 0 13 0 M12 17.5V21 M9 21h6',
+  // Pantalla con una curva que sube.
+  charla: 'M4.5 4h15A1.5 1.5 0 0 1 21 5.5v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 14.5v-9A1.5 1.5 0 0 1 4.5 4z M12 16v4 M8 20h8 M7 12.5l3-3 2.5 2 4.5-4.5',
+  // Taza con vapor.
+  cafe: 'M4 10h12v4a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-4z M16 11.5h1.5a2.5 2.5 0 0 1 0 5H16 M8 3.5v3 M12 3.5v3',
+  // Tenedor y cuchillo.
+  almuerzo: 'M6 3v5a2 2 0 0 0 4 0V3 M8 3v18 M18 21V3c-2.2 1.4-3.5 4-3.5 7.5H18',
+  // Atril con un póster.
+  posters: 'M5 3h14v11H5z M8 7h8 M8 10h5 M9 14l-2 7 M15 14l2 7 M12 14v3',
+  // Antena con ondas: la sesión de IEEE AP-S, la sociedad de antenas y propagación.
+  antena:
+    'M12 10v11 M8.5 21h7 M12 6.2a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6z M8.8 4.8a4.6 4.6 0 0 0 0 6.4 M15.2 4.8a4.6 4.6 0 0 1 0 6.4 M6 2.5a8 8 0 0 0 0 11 M18 2.5a8 8 0 0 1 0 11',
+  // Banderín de meta.
+  cierre: 'M5 21V3.5 M5 4h12l-2.5 4L17 12H5',
+};
+---
+
+<svg
+  class={clase}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  <path d={trazos[icono]} />
+</svg>

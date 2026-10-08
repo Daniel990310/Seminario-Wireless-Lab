@@ -83,7 +83,7 @@ const COINCIDENCIA_LEGITIMA = [
   // dirección pasó a `contact@bcsensing.org`: el verificador llevaba desde entonces
   // marcándola como traducción olvidada. Una dirección no se traduce, sea cual sea.
   /^[\w.+-]+@[\w.-]+\.\w+$/,
-  /FOVI\d+|^CIA\d+$/, // Códigos de proyecto (CIA: centros de investigación aplicada de ANID)
+  /FOVI\d+/, // Códigos de proyecto
   /*
    * Red CYTED DISeCom, referenciada desde el 2026-09-25. Su **nombre oficial es español**
    * —es una red iberoamericana— y traducirlo produciría una red que no existe, igual que

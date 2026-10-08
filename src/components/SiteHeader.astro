@@ -277,9 +277,13 @@ const mailto = `mailto:${c.contact.email}?subject=${encodeURIComponent(c.ui.asun
           </svg>
         </summary>
 
-        <!-- Opaco y sin sombra: igual que la barra, y el sistema separa con retícula, no con elevación. -->
+        <!--
+          Opaco y sin sombra: igual que la barra, y el sistema separa con retícula, no con elevación.
+          `z-10` porque `FranjaSede` va después en el DOM y está posicionada: sin índice, la
+          banda se pintaba encima del panel abierto (Daniel, 2026-10-08).
+        -->
         <div
-          class="absolute right-0 mt-3 w-60 overflow-hidden rounded-surface border border-border bg-surface"
+          class="absolute right-0 z-10 mt-3 w-60 overflow-hidden rounded-surface border border-border bg-surface"
         >
           <ul class="divide-y divide-border">
             {

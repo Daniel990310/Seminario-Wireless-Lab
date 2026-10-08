@@ -8,6 +8,7 @@
  * vectores el optimizador no hace nada y el flujo de sustituir el archivo por su nombre es
  * más útil.
  */
+import type { IconoSesion } from './programa';
 import pucvClaro from '~/assets/logos/pucv.png';
 import pucvOscuro from '~/assets/logos/pucv-oscuro.png';
 /*
@@ -60,6 +61,14 @@ import comsocClaro from '~/assets/logos/comsoc-chile.png';
 import comsocOscuro from '~/assets/logos/comsoc-chile-oscuro.png';
 import cpsRtcClaro from '~/assets/logos/cps-rtc.png';
 import cpsRtcOscuro from '~/assets/logos/cps-rtc-oscuro.png';
+/*
+ * CCTVal: el logotipo horizontal de color de `cctval.cl` (`ORG_CCTVAL_Logotipo_…_Mesa-de-
+ * trabajo-1.png`, 4501 × 1697, recortado y llevado a 1400 px). Tinta `rgb(45, 48, 198)`:
+ * 8,55:1 sobre el fondo claro y 2,00:1 sobre el oscuro `[medido]`, así que la variante
+ * oscura es la silueta en blanco.
+ */
+import cctvalClaro from '~/assets/logos/cctval.png';
+import cctvalOscuro from '~/assets/logos/cctval-oscuro.png';
 /*
  * Retrato de Mauricio Rodríguez para «El seminario» (RF-31). Lo pidió él, a través de
  * Daniel, el 2026-10-04: eso es la autorización de RF-11.1. Desde el 2026-10-06 es la foto
@@ -242,6 +251,10 @@ export interface DiaPrograma {
     time: string;
     title: string;
     speaker?: string;
+    /** Ficha del expositor en «Expositores», destino del enlace de su nombre. */
+    speakerId?: string;
+    /** Sin ícono en el programa de demostración, que no tiene clases de sesión. */
+    icono?: IconoSesion;
     /**
      * Resumen de la charla. Opcional a propósito: una pausa o un almuerzo no
      * lo tienen, y forzarlo obligaría a inventar texto.
@@ -537,6 +550,20 @@ export const comun = {
       url: 'https://www.usm.cl',
     },
     /*
+     * El centro por el que participa Feick, junto a la marca USM y no en su lugar: la USM
+     * autorizó la institucional, y la submarca que pidió Mauricio el 2026-09-25 nunca llegó.
+     * Se toma de internet por la decisión de Mauricio del 2026-10-04 (RF-22), que Daniel
+     * extendió al CCTVal el 2026-10-08. `cctval.cl` y no `cctval.usm.cl`, que tiene el
+     * certificado TLS vencido.
+     */
+    {
+      name: 'Centro Científico Tecnológico de Valparaíso',
+      shortName: 'CCTVal',
+      logo: cctvalClaro,
+      logoOscuro: cctvalOscuro,
+      url: 'https://cctval.cl',
+    },
+    /*
      * Un solo archivo para los dos temas, y esta vez no es una carencia: su tinta es el azul
      * `#005aff`, que da **4,69:1** sobre el fondo claro y **3,56:1** sobre el oscuro
      * `[medido]`. Las dos por encima del umbral de objeto gráfico, así que la marca se ve
@@ -673,16 +700,11 @@ export const comun = {
      * folio: el título del proyecto no llegó y no se publica uno buscado por nuestra cuenta.
      * Instrumento y folio no se traducen, como la mención.
      *
-     * Los dos de Miguel Gutiérrez Gaitán los dio Daniel el 2026-10-07, igual sin cotejar.
-     * «Fondecyt 11241221»: el folio que empieza en 11 es el de Iniciación en Investigación
-     * `[probable: convención de folios de ANID]`. «CPS-RTC CIA250016»: el centro de
-     * investigación aplicada de la convocatoria ANID 2025 en que él es investigador principal.
+     * Los dos proyectos de Miguel Gutiérrez Gaitán (Fondecyt 11241221 y CPS-RTC CIA250016)
+     * estuvieron aquí del 2026-10-07 al 2026-10-08; Daniel los retiró: eran información de
+     * Miguel, no financiamiento del seminario.
      */
-    otrosProyectos: [
-      { instrumento: 'Fondecyt Regular', code: '1250951' },
-      { instrumento: 'Fondecyt de Iniciación', code: '11241221' },
-      { instrumento: 'Centro de Investigación Aplicada CPS-RTC', code: 'CIA250016' },
-    ],
+    otrosProyectos: [{ instrumento: 'Fondecyt Regular', code: '1250951' }],
   },
 
   /**

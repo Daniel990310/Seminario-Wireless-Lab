@@ -621,6 +621,7 @@ responsabilidad. La distinción del punto 1 de la derogación sigue valiendo.
 | **ALMA** lleva el logotipo de color de ESO (`eso.org/public/products/logos/alma-logo`, JPG de 495 × 701 pasado a PNG). Es una placa azul opaca: se lee igual en los dos temas y va sin `logoOscuro` | captura en claro y oscuro |
 | **UPB** lleva el logo de su sitio (`upb.edu`), publicado solo en blanco con alfa. Esa es la variante oscura; la clara es la misma silueta en `#1d1d1b`, como las demás marcas de una tinta | captura en claro y oscuro |
 | **Columbia** lleva el logotipo institucional de **Columbia University**, el nombre de la ficha, tomado del SVG de Wikipedia (`Columbia_University_1754.svg`, una tinta `#000d74`) y rasterizado a PNG, con la variante oscura en blanco. Los archivos de CUSPS se borran: eran de otra facultad | inspección de `comun.ts` y capturas |
+| **CCTVal** (añadido el 2026-10-08, Daniel extiende esta decisión): logotipo horizontal de color de `cctval.cl`, recortado a PNG; la variante oscura es la silueta en blanco. Va junto a la USM, no en su lugar | captura en claro y oscuro |
 | Ninguna institución queda con marcador de posición | `verify` |
 | Ningún SVG de terceros entra al sitio: los tres se publican como PNG rasterizado, sin guiones ni referencias externas que revisar | inspección de `src/assets/logos/` |
 
@@ -674,3 +675,11 @@ parrilla para los dos idiomas.
 | RF-32.7 · Cada sesión de expositor lleva el título de su charla y su resumen en el desplegable «Resumen», con `lang="en"`; sin charla recibida, «Título de la charla por confirmar» y sin desplegable | inspección, `verify:idioma` |
 | RF-32.8 · Con parrilla publicada, la lista suelta de RF-32.1 no se pinta: cada charla ya está en su hora y la lista repetiría los resúmenes | inspección de `PaginaSeminario.astro` |
 | RF-32.9 · Horas, orden y enlaces a expositores viven una sola vez en `programa.ts`; los nombres de jornada y de pausa, en `es.ts` y `en.ts` | `check`, `verify:idioma` |
+
+**Enmienda 2026-10-08** (Daniel: animar el despliegue, enlazar al expositor y quitarle sobriedad al programa con íconos de línea, «y lo vemos para ver si se queda»):
+
+| Criterio | Comprobación |
+| --- | --- |
+| RF-32.10 · El resumen se abre con `desplegable-suave` y el texto entra con fundido; nada de eso con `prefers-reduced-motion: reduce` | inspección de `global.css`, `verify` |
+| RF-32.11 · El nombre del expositor en una sesión es un enlace a su ficha (`#expositor-<id>`), que se resalta una vez al llegar | prueba en navegador |
+| RF-32.12 · Cada sesión lleva un ícono de línea de su clase (`IconoSesion.astro`, ocho dibujos propios, `aria-hidden`); los nombres propios declaran el suyo en `programa.ts` | captura |
