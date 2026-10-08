@@ -42,7 +42,8 @@ for (const p of participantes.filter((x) => !x.logo)) {
             alt=""
             width={Math.round(alto * proporcionDe(logo))}
             height={alto}
-            class="block"
+            class="block w-auto"
+            style={`height:${alto}px`}
             data-participante={nombre}
           />
         </li>

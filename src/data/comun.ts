@@ -682,7 +682,8 @@ export const comun = {
       logoOscuro: apsOscuro,
       url: 'https://www.ieeeaps.org',
     },
-  ] as Institucion[],
+    // `satisfies` comprueba el contrato; `as` lo ensancha para que se lean los opcionales.
+  ] satisfies Institucion[] as Institucion[],
 
   /*
    * Reconocimiento del financiamiento (RNF-8). **No es cortesía: ANID lo exige**,

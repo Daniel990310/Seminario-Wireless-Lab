@@ -28,8 +28,8 @@
  * ANID no exige el folio («Cómo mencionar a ANID en productos 2026»); van porque Mauricio
  * lo pidió el 2026-10-08.
  *
- * Con `participantes`, la fila de instituciones participantes va justo encima de la
- * franja. Este componente es el único dueño del pie: el aire, la fila y la franja.
+ * La fila de instituciones participantes va justo encima de la franja, en toda lámina que
+ * la lleva. Este componente es el único dueño del pie: el aire, la fila y la franja.
  *
  * ── FRANJA ESTRECHA, 2026-10-08 ──────────────────────────────────────────────────
  *
@@ -52,32 +52,27 @@ import { datosFlyer } from './datos';
 
 interface Props {
   c: Contenido;
-  /** Fila de instituciones participantes encima de la franja. */
-  participantes?: boolean;
 }
 
-const { c, participantes = false } = Astro.props;
+const { c } = Astro.props;
 const [pucv] = c.organizers;
 const anid = c.funding.agency;
 const { mencion } = datosFlyer(c);
 ---
 
 {/*
-  El aire de arriba separa el contenido del pie: 40 px hasta la franja (sin él un retrato
-  quedaba pegado al blanco, Daniel, 2026-10-01), o 24 hasta la fila de participantes, que
-  deja sus propios 40 hasta la franja. El generador exige al menos 32 px (RF-24.4).
+  El pie empieza en la fila de participantes. 32 px de aire entre el contenido y el pie
+  (sin aire un retrato quedaba pegado al blanco, Daniel, 2026-10-01): es lo que mide
+  RF-24.4, desde lo último del contenido hasta el borde de arriba de la fila. Entre la
+  fila y la franja, otros 32.
 
   Cada marca lleva `data-marca`: el generador comprueba cuáles hay, su orden y su peso
   (RF-26.3 a RF-26.5), y que no haya ninguna imagen más en la franja.
 */}
-<div class:list={['mt-auto', participantes ? 'pt-[24px]' : 'pt-[40px]']}>
-{
-  participantes && (
-    <div class="mb-[40px]">
-      <Participantes c={c} />
-    </div>
-  )
-}
+<div class="mt-auto pt-[32px]">
+  <div class="mb-[32px]">
+    <Participantes c={c} />
+  </div>
 <footer
   data-flyer-marcas
   class="-mx-[72px] bg-[var(--pure-white)] px-[72px] pt-[22px] pb-[24px] text-[var(--navy-900)]"

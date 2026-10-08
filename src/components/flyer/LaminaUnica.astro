@@ -55,8 +55,8 @@ const expositores = [...internacionales, ...nacionales];
   {c.registro.url && <Qr url={c.registro.url} tamano={220} lado="derecha" />}
 </div>
 
-<p class="mt-[14px] text-[44px] leading-none text-foreground">
+<p class="mt-[10px] text-[44px] leading-none text-foreground">
   {t.inscripciones} <span class="font-semibold text-accent">{dominio}</span>
 </p>
 
-<Marcas c={c} participantes />
+<Marcas c={c} />

@@ -96,15 +96,23 @@ export function medirLienzo({ seguro, ancho, alto, piso, pisoPie = piso, grilla3
         return r.left < qrCaja.right - 1 && r.right > qrCaja.left + 1 && r.top < qrCaja.bottom - 1 && r.bottom > qrCaja.top + 1;
       })
     : [];
-  const problema = desborde > 1 ? `desborda ${desborde} px` : sobreQr.length ? `sobre el QR: ${caso(sobreQr.map(nombre))}` : caso(cortados.map(nombre));
+  const problema = [
+    desborde > 1 && `desborda ${desborde} px`,
+    sobreQr.length && `sobre el QR: ${caso(sobreQr.map(nombre))}`,
+    caso(cortados.map(nombre)),
+  ].find(Boolean);
   marca('RF-24.3', desborde <= 1 && !cortados.length && !sobreQr.length, problema);
 
-  /* RF-24.4 · aire mínimo entre el contenido y la franja de marcas, donde la hay. */
+  /*
+   * RF-24.4 · aire mínimo entre el contenido y el pie, donde lo hay. El pie empieza en la
+   * fila de participantes; medir contra la franja daría siempre el aire de la propia fila.
+   */
   const franja = document.querySelector('[data-flyer-marcas]');
   if (franja) {
-    const borde = franja.getBoundingClientRect().top;
+    const pie = document.querySelector('[data-flyer-participantes]') ?? franja;
+    const borde = pie.getBoundingClientRect().top;
     const encima = visibles
-      .filter((el) => !franja.contains(el))
+      .filter((el) => !franja.contains(el) && !pie.contains(el))
       .map((el) => el.getBoundingClientRect().bottom)
       .filter((b) => b <= borde + 1);
     const aire = Math.round(borde - Math.max(...encima));

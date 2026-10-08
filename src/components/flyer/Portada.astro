@@ -21,20 +21,18 @@ interface Props {
 const { c, historia = false } = Astro.props;
 const t = c.ui.flyer;
 const { dominio } = datosFlyer(c);
-/*
- * Logo a 780 y no a 936: la caja del SVG trae su margen de respeto, y a 936 ese margen
- * salía del recorte 3:4 de la grilla de Instagram (RF-23.3, lo detectó el generador).
- *
- * La historia va con el encabezado compacto y menos aire: con la mención de
- * financiamiento en la franja (Daniel, 2026-10-01) y el hueco del sticker, desbordaba
- * 130 px en inglés, donde el organizador ocupa dos líneas `[medido]`.
- */
 ---
 
 {/*
   El bloque principal se centra en el alto que queda libre. Pegado arriba dejaba un
   hueco de unos 400 px entre la URL y el cierre: en el teléfono se leía como una lámina
   a medio hacer.
+
+  Logo a 780 y no a 936: la caja del SVG trae su margen de respeto, y a 936 ese margen
+  salía del recorte 3:4 de la grilla de Instagram (RF-23.3, lo detectó el generador). La
+  historia va con el encabezado compacto y menos aire: con la mención en la franja y el
+  hueco del sticker desbordaba 130 px en inglés, donde el organizador ocupa dos líneas
+  `[medido]`.
 */}
 <div class:list={['flex flex-1 flex-col justify-center', !historia && 'pb-[36px]']}>
   <Encabezado c={c} anchoLogo={780} compacto={historia} />
@@ -52,5 +50,5 @@ const { dominio } = datosFlyer(c);
       </>
     )
   }
-  <Marcas c={c} participantes />
+  <Marcas c={c} />
 </div>

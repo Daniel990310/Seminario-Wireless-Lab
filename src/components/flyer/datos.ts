@@ -20,6 +20,14 @@ import type { LaminaFlyer } from '~/data/flyer';
  */
 const DESCRIPTOR_LOGO = 'Wireless Sensing';
 
+export interface ParticipanteFlyer {
+  /** Sigla o nombre corto: lo que se declara en `data-participante` y espera RF-26.3. */
+  nombre: string;
+  nombreCompleto: string;
+  logo?: Logo;
+  escala: number;
+}
+
 export function datosFlyer(c: Contenido) {
   const i = c.title.indexOf(DESCRIPTOR_LOGO);
   const restoTitulo = i >= 0 ? c.title.slice(i + DESCRIPTOR_LOGO.length).trim() : c.title;
@@ -59,8 +67,9 @@ export function datosFlyer(c: Contenido) {
    * logo no se filtra aquí: `Participantes` la omite, y el generador lo detecta porque
    * espera a todas por nombre (RF-26.3).
    */
-  const participantes: ParticipanteFlyer[] = [...c.participants, ...c.colaboradoresFlyer].map(
-    (p: Institucion) => ({
+  const instituciones: readonly Institucion[] = [...c.participants, ...c.colaboradoresFlyer];
+  const participantes: ParticipanteFlyer[] = instituciones.map(
+    (p) => ({
       nombre: p.shortName,
       nombreCompleto: p.name,
       logo: p.logoOscuro ?? p.logo,
@@ -99,14 +108,6 @@ export function datosFlyer(c: Contenido) {
   };
 }
 
-export interface ParticipanteFlyer {
-  /** Sigla o nombre corto: lo que se declara en `data-participante` y espera RF-26.3. */
-  nombre: string;
-  nombreCompleto: string;
-  logo?: Logo;
-  escala: number;
-}
-
 /*
  * Texto alternativo de cada lámina, para pegar al publicar: Instagram y LinkedIn lo piden
  * por imagen. Dice lo que la lámina dice, con los nombres de institución completos.
@@ -132,8 +133,10 @@ export function altFlyer(c: Contenido, lamina: LaminaFlyer) {
       instituciones,
       mencion,
     ],
-    // Sin la lista de instituciones: cada expositor ya lleva la suya, y con ella el texto
-    // pasaba de los 1000 caracteres de Instagram (RF-29.1).
+    /*
+     * Sin la lista de instituciones: cada expositor ya lleva la suya, y con ella el texto
+     * pasaba de los 1000 caracteres de Instagram (RF-29.1).
+     */
     unica: [evento, `${t.expositores}: ${lista}.`, `${t.inscripciones} ${dominio}.${qr}`, mencion],
   };
   return partes[lamina].filter(Boolean).join(' ');
