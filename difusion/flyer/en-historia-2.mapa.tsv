@@ -1,31 +1,31 @@
 logo	Logo del seminario	45.00	218.10	322.50	61.61	0		
-foto	Retrato · Gil Zussman	54.00	460.00	72.00	72.00	0		
-foto	Retrato · Jinfeng Du	54.00	544.00	72.00	72.00	0		
-foto	Retrato · Reinaldo A. Valenzuela	54.00	628.00	72.00	72.00	0		
-foto	Retrato · Gustavo A. Siles Soria	54.00	712.00	72.00	72.00	0		
-foto	Retrato · Giorgio Siringo	54.00	873.68	72.00	72.00	0		
-foto	Retrato · Rodolfo Feick	54.00	957.68	72.00	72.00	0		
-foto	Retrato · Miguel Gutiérrez Gaitán	54.00	1041.68	72.00	72.00	0		
-foto	Retrato · Karel Toledo de la Garza	54.00	1125.68	72.00	72.00	0		
+foto	Retrato · Gil Zussman	54.00	517.58	144.00	144.00	0		
+foto	Retrato · Jinfeng Du	234.00	517.58	144.00	144.00	0		
+foto	Retrato · Reinaldo A. Valenzuela	414.00	517.58	144.00	144.00	0		
+foto	Retrato · Gustavo A. Siles Soria	594.00	517.58	144.00	144.00	0		
+foto	Retrato · Giorgio Siringo	54.00	906.20	144.00	144.00	0		
+foto	Retrato · Rodolfo Feick	234.00	906.20	144.00	144.00	0		
+foto	Retrato · Miguel Gutiérrez Gaitán	414.00	906.20	144.00	144.00	0		
+foto	Retrato · Karel Toledo de la Garza	594.00	906.20	144.00	144.00	0		
 figura	Figura	104.39	374.39	861.00	672.00	0		
 texto	21–22 OCT 2026	529.20	217.50	226.80	33.75	1	derecha	21–22 OCT 2026
 texto	bcsensing.org	529.20	251.25	226.80	29.06	1	derecha	bcsensing.org
 texto	Speakers	54.00	307.31	702.00	63.00	1	izquierda	Speakers
-texto	INTERNATIONAL	54.00	413.12	702.00	34.88	1	izquierda	INTERNATIONAL
-texto	Gil Zussman	144.00	460.50	237.55	36.95	1	izquierda	Gil Zussman
-texto	Columbia University	144.00	500.45	237.55	31.04	1	izquierda	Columbia University
-texto	Jinfeng Du	144.00	544.50	184.50	36.95	1	izquierda	Jinfeng Du
-texto	Nokia Bell Labs	144.00	584.45	184.50	31.04	1	izquierda	Nokia Bell Labs
-texto	Reinaldo A. Valenzuela	144.00	628.50	347.37	36.95	1	izquierda	Reinaldo A. Valenzuela
-texto	Nokia Bell Labs	144.00	668.45	347.37	31.04	1	izquierda	Nokia Bell Labs
-texto	Gustavo A. Siles Soria	144.00	712.50	335.38	36.95	1	izquierda	Gustavo A. Siles Soria
-texto	UPB	144.00	752.45	335.38	31.04	1	izquierda	UPB
-texto	BASED IN CHILE	54.00	826.80	702.00	34.88	1	izquierda	BASED IN CHILE
-texto	Giorgio Siringo	144.00	874.18	229.00	36.95	1	izquierda	Giorgio Siringo
-texto	ALMA	144.00	914.13	229.00	31.04	1	izquierda	ALMA
-texto	Rodolfo Feick	144.00	958.18	208.04	36.95	1	izquierda	Rodolfo Feick
-texto	CCTVal, UTFSM	144.00	998.13	208.04	31.04	1	izquierda	CCTVal, UTFSM
-texto	Miguel Gutiérrez Gaitán	144.00	1042.18	362.29	36.95	1	izquierda	Miguel Gutiérrez Gaitán
-texto	PUC	144.00	1082.13	362.29	31.04	1	izquierda	PUC
-texto	Karel Toledo de la Garza	144.00	1126.18	373.99	36.95	1	izquierda	Karel Toledo de la Garza
-texto	USACH	144.00	1166.13	373.99	31.04	1	izquierda	USACH
+texto	INTERNATIONAL	54.00	470.71	702.00	34.88	1	izquierda	INTERNATIONAL
+texto	Gil Zussman	54.00	672.08	162.00	28.56	1	izquierda	Gil Zussman
+texto	Columbia University	54.00	703.64	162.00	53.46	2	izquierda	Columbia University
+texto	Jinfeng Du	234.00	672.08	162.00	28.56	1	izquierda	Jinfeng Du
+texto	Nokia Bell Labs	234.00	703.64	162.00	26.73	1	izquierda	Nokia Bell Labs
+texto	Reinaldo A. Valenzuela	414.00	672.08	162.00	57.12	2	izquierda	Reinaldo A. Valenzuela
+texto	Nokia Bell Labs	414.00	732.20	162.00	26.73	1	izquierda	Nokia Bell Labs
+texto	Gustavo A. Siles Soria	594.00	672.08	162.00	57.12	2	izquierda	Gustavo A. Siles Soria
+texto	UPB	594.00	732.20	162.00	26.73	1	izquierda	UPB
+texto	BASED IN CHILE	54.00	859.32	702.00	34.88	1	izquierda	BASED IN CHILE
+texto	Giorgio Siringo	54.00	1060.70	162.00	57.12	2	izquierda	Giorgio Siringo
+texto	ALMA	54.00	1120.82	162.00	26.73	1	izquierda	ALMA
+texto	Rodolfo Feick	234.00	1060.70	162.00	28.56	1	izquierda	Rodolfo Feick
+texto	CCTVal, UTFSM	234.00	1092.26	162.00	26.73	1	izquierda	CCTVal, UTFSM
+texto	Miguel Gutiérrez Gaitán	414.00	1060.70	162.00	85.68	3	izquierda	Miguel Gutiérrez Gaitán
+texto	PUC	414.00	1149.38	162.00	26.73	1	izquierda	PUC
+texto	Karel Toledo de la Garza	594.00	1060.70	162.00	57.12	2	izquierda	Karel Toledo de la Garza
+texto	USACH	594.00	1120.82	162.00	26.73	1	izquierda	USACH

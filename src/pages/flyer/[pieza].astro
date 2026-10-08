@@ -18,7 +18,6 @@ export function getStaticPaths() {
 
 const { idioma, formato, lamina } = Astro.props;
 const c = contenido(idioma);
-const historia = formato === '9x16';
 
 /*
  * Altura del emisor de la figura (borde derecho) bajo el inicio del contenido: el centro
@@ -51,6 +50,6 @@ const esperado = {
   {lamina === 'unica' && <LaminaUnica c={c} />}
   {lamina === 'portada' && <Portada c={c} cierre="desliza" />}
   {lamina === 'historia' && <Portada c={c} cierre="sticker" />}
-  {lamina === 'expositores' && <LaminaExpositores c={c} historia={historia} />}
+  {lamina === 'expositores' && <LaminaExpositores c={c} />}
   {lamina === 'inscripcion' && <LaminaInscripcion c={c} />}
 </CartelFlyer>

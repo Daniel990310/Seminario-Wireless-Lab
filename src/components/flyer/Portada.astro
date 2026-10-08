@@ -52,8 +52,6 @@ const historia = cierre === 'sticker';
     versión del .ai): Instagram y LinkedIn ya marcan el carrusel con sus puntos, y la línea
     le restaba alto a la lámina.
   */}
-  {/* Instituciones participantes e IEEE AP-S (Mauricio, 2026-10-08), como en la pieza única. */}
-  {!historia && <Participantes c={c} base={36} />}
   {
     cierre === 'sticker' && (
       <>
@@ -62,5 +60,9 @@ const historia = cierre === 'sticker';
       </>
     )
   }
+  {/* Instituciones participantes e IEEE AP-S (Mauricio, 2026-10-08), como en la pieza única. */}
+  <div class:list={[historia && 'mt-[40px]']}>
+    <Participantes c={c} base={36} />
+  </div>
   <Marcas c={c} />
 </div>

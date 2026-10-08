@@ -2,19 +2,15 @@
 /**
  * Lámina de expositores: segunda del carrusel y segunda historia.
  *
- * ── CARRUSEL: CUATRO COLUMNAS POR GRUPO (2026-10-08) ─────────────────────────────
+ * ── CUATRO COLUMNAS POR GRUPO (2026-10-08) ───────────────────────────────────────
  *
- * Hasta el 2026-10-08 iba en una sola columna con retratos de 88 px: la mitad derecha del
- * lienzo quedaba vacía y las caras, que son lo que esta lámina vende, eran lo más chico.
- * Ahora cada grupo es una fila de cuatro con el retrato a 192 px y nombre y afiliación
- * debajo, partidos en renglones si hace falta. Ocho expositores son cuatro y cuatro, así
- * que los grupos quedan parejos.
- *
- * ── HISTORIA: UNA COLUMNA ───────────────────────────────────────────────────────
- *
- * A 44 px el nombre y a 36 la afiliación, dos columnas de 448 px partían nombres y
- * afiliaciones en varias líneas. En una columna cada expositor ocupa una fila y se lee de
- * un vistazo, y la lista se reparte en el alto.
+ * Hasta el 2026-10-08 iba en una sola columna con retratos de 88 px (96 en la historia): la
+ * mitad derecha del lienzo quedaba vacía y las caras, que son lo que esta lámina vende,
+ * eran lo más chico. Ahora cada grupo es una fila de cuatro con el retrato a 192 px y
+ * nombre y afiliación debajo, partidos en renglones si hace falta. Ocho expositores son
+ * cuatro y cuatro, así que los grupos quedan parejos. La historia usa la misma grilla, con
+ * los grupos repartidos en el alto; con el texto un escalón más grande partía «Gil /
+ * Zussman» y «Nokia / Bell Labs» en la columna de 216 px.
  *
  * Sin franja de marcas, en los dos formatos: es una lámina interior, y la franja con la
  * mención de financiamiento va en las de portada e inscripción.
@@ -30,45 +26,37 @@ import { datosFlyer } from './datos';
 
 interface Props {
   c: Contenido;
-  /** 9:16: una columna, retratos de 96 px y la lista repartida en el alto. */
-  historia?: boolean;
 }
 
-const { c, historia = false } = Astro.props;
+const { c } = Astro.props;
 const { internacionales, nacionales } = datosFlyer(c);
 const grupos = [
   { rotulo: c.ui.flyer.grupoInternacional, lista: internacionales },
   { rotulo: c.ui.flyer.grupoNacional, lista: nacionales },
 ];
-const retrato = historia ? 'size-[96px]' : 'size-[192px]';
 ---
 
 <Cabecera c={c} />
 <h2 class="mt-[36px] font-display text-[84px] leading-none font-semibold text-foreground">{c.ui.flyer.expositores}</h2>
 
-<div class:list={['flex flex-col', historia ? 'flex-1 justify-evenly pb-[48px]' : 'flex-1 justify-evenly']}>
+<div class="flex flex-1 flex-col justify-evenly">
   {
     grupos.map((g) => (
       <section class="mt-[32px]">
         <p class="eyebrow text-[31px]">{g.rotulo}</p>
-        <ul
-          class:list={[
-            'mt-[16px]',
-            historia ? 'flex flex-col gap-[16px]' : 'grid grid-cols-4 gap-x-[24px]',
-          ]}
-        >
+        <ul class="mt-[16px] grid grid-cols-4 gap-x-[24px]">
           {g.lista.map((e) => (
-            <li class:list={[historia ? 'flex items-center gap-[24px]' : 'flex flex-col']}>
+            <li class="flex flex-col">
               {e.foto ? (
-                <Image src={e.foto} alt="" width={384} height={384} class:list={[retrato, 'shrink-0 rounded-full object-cover']} />
+                <Image src={e.foto} alt="" width={384} height={384} class="size-[192px] rounded-full object-cover" />
               ) : (
-                <span class:list={[retrato, 'flex shrink-0 items-center justify-center rounded-full bg-surface font-display text-[56px] font-semibold text-primary']}>
+                <span class="flex size-[192px] items-center justify-center rounded-full bg-surface font-display text-[56px] font-semibold text-primary">
                   {iniciales(e.name)}
                 </span>
               )}
-              <span class:list={['min-w-0', !historia && 'mt-[14px]']}>
-                <span class:list={['block leading-[1.12] font-semibold text-balance text-foreground', historia ? 'text-[44px]' : 'text-[34px]']}>{e.name}</span>
-                <span class:list={['mt-[4px] block leading-[1.15] text-balance text-muted-foreground', historia ? 'text-[36px]' : 'text-[31px]']}>{e.afiliacionCorta}</span>
+              <span class="mt-[14px] min-w-0">
+                <span class="block text-[34px] leading-[1.12] font-semibold text-balance text-foreground">{e.name}</span>
+                <span class="mt-[4px] block text-[31px] leading-[1.15] text-balance text-muted-foreground">{e.afiliacionCorta}</span>
               </span>
             </li>
           ))}
