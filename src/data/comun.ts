@@ -8,6 +8,7 @@
  * vectores el optimizador no hace nada y el flujo de sustituir el archivo por su nombre es
  * más útil.
  */
+import type { IconoSesion } from './programa';
 import pucvClaro from '~/assets/logos/pucv.png';
 import pucvOscuro from '~/assets/logos/pucv-oscuro.png';
 /*
@@ -250,6 +251,10 @@ export interface DiaPrograma {
     time: string;
     title: string;
     speaker?: string;
+    /** Ficha del expositor en «Expositores», destino del enlace de su nombre. */
+    speakerId?: string;
+    /** Sin ícono en el programa de demostración, que no tiene clases de sesión. */
+    icono?: IconoSesion;
     /**
      * Resumen de la charla. Opcional a propósito: una pausa o un almuerzo no
      * lo tienen, y forzarlo obligaría a inventar texto.

@@ -675,3 +675,11 @@ parrilla para los dos idiomas.
 | RF-32.7 · Cada sesión de expositor lleva el título de su charla y su resumen en el desplegable «Resumen», con `lang="en"`; sin charla recibida, «Título de la charla por confirmar» y sin desplegable | inspección, `verify:idioma` |
 | RF-32.8 · Con parrilla publicada, la lista suelta de RF-32.1 no se pinta: cada charla ya está en su hora y la lista repetiría los resúmenes | inspección de `PaginaSeminario.astro` |
 | RF-32.9 · Horas, orden y enlaces a expositores viven una sola vez en `programa.ts`; los nombres de jornada y de pausa, en `es.ts` y `en.ts` | `check`, `verify:idioma` |
+
+**Enmienda 2026-10-08** (Daniel: animar el despliegue, enlazar al expositor y quitarle sobriedad al programa con íconos de línea, «y lo vemos para ver si se queda»):
+
+| Criterio | Comprobación |
+| --- | --- |
+| RF-32.10 · El resumen se abre con `desplegable-suave` y el texto entra con fundido; nada de eso con `prefers-reduced-motion: reduce` | inspección de `global.css`, `verify` |
+| RF-32.11 · El nombre del expositor en una sesión es un enlace a su ficha (`#expositor-<id>`), que se resalta una vez al llegar | prueba en navegador |
+| RF-32.12 · Cada sesión lleva un ícono de línea de su clase (`IconoSesion.astro`, ocho dibujos propios, `aria-hidden`); los nombres propios declaran el suyo en `programa.ts` | captura |

@@ -56,7 +56,12 @@ const initials = iniciales(speaker.name);
   ancho y la sección se volvería una galería de retratos, que es exactamente lo que se pidió
   evitar.
 -->
-<article class="reveal border-t hairline pt-6" style={`transition-delay:${index * 70}ms`}>
+<!-- `id`: destino del enlace del nombre en el programa; `ficha-expositor` lo resalta al llegar. -->
+<article
+  id={`expositor-${speaker.id}`}
+  class="ficha-expositor reveal border-t hairline pt-6"
+  style={`transition-delay:${index * 70}ms`}
+>
   {/*
     Retrato si lo hay; monograma si no. El monograma NO es un respaldo de emergencia: es el
     estado por defecto que define RF-11.2, porque una foto solo se publica con autorización
