@@ -47,6 +47,13 @@ export type FormatoFlyer = keyof typeof FORMATOS_FLYER;
 export const PISO_FLYER = 31;
 
 /*
+ * Piso de la franja de marcas, que solo lleva la mención de financiamiento: letra legal,
+ * que se lee acercando, no el mensaje. 24 px son 8,7 pt en el teléfono. Lo pidió Mauricio
+ * por Daniel el 2026-10-08: financiamiento más pequeño y menos blanco abajo.
+ */
+export const PISO_PIE_FLYER = 24;
+
+/*
  * Qué lleva cada lámina. Ocho expositores no caben a tamaño legible junto a la portada,
  * así que el feed va en carrusel —Instagram lo muestra como carrusel y LinkedIn como
  * documento PDF— y se mantiene una pieza única de respaldo, para WhatsApp o para quien

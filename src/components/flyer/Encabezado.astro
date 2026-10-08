@@ -19,8 +19,10 @@ interface Props {
   c: Contenido;
   anchoLogo: number;
   /**
-   * La pieza única: fecha a 64 en vez de 76, organizador a 32 y menos aire. Con la escala
-   * de portada desbordaba 97 px en inglés, donde el organizador ocupa dos líneas.
+   * Pieza única e historia: fecha a 64, organizador a 32 y menos aire. Con la escala de
+   * portada desbordaba 97 px en inglés, donde el organizador ocupa dos líneas. Sin
+   * `compacto` (la portada del carrusel), la fecha va a 100: con la franja estrecha
+   * (2026-10-08) le sobraba alto, y es lo que quien pasa por el feed tiene que retener.
    */
   compacto?: boolean;
 }
@@ -44,7 +46,7 @@ const sangria = Math.round((anchoLogo * 31.5) / 650);
 <p
   class:list={[
     'font-mono leading-none font-semibold tracking-tight text-accent',
-    compacto ? 'mt-[24px] text-[64px]' : 'mt-[36px] text-[76px]',
+    compacto ? 'mt-[24px] text-[64px]' : 'mt-[40px] text-[100px]',
   ]}
 >
   {c.dates.shortLabel}

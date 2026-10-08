@@ -176,9 +176,6 @@ export interface ContenidoIdioma {
       /** Rótulo del QR, que apunta al formulario y no al sitio. */
       qr: string;
       organiza: string;
-      financian: string;
-      /** Pie de la portada del carrusel: dice que hay más láminas y qué traen. */
-      desliza: string;
       /** Título de la lámina de inscripción del carrusel. */
       inscripcion: string;
       /** Antecede a la URL, junto al QR. */

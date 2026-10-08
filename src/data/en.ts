@@ -195,9 +195,7 @@ export const en = {
       inscripciones: 'Register at',
       qr: 'Registration form',
       organiza: 'Organised by',
-      financian: 'Funded by',
       // Sin «→»: ver el comentario en `es.ts`.
-      desliza: 'Swipe: speakers and registration',
       inscripcion: 'Registration',
       escanea: 'Scan the code or go to',
       sticker: 'Register via the link',

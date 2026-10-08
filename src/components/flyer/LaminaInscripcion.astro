@@ -3,6 +3,10 @@
  * Lámina de inscripción: tercera del carrusel. Es donde el QR tiene sentido —quien ve el
  * carrusel en LinkedIn desde el computador lo escanea con el teléfono— y donde cabe la
  * fórmula de ANID completa a tamaño legible.
+ *
+ * Desde el 2026-10-08 lleva además el horario de cada jornada, que quien se inscribe
+ * necesita para saber si puede ir, y la fila de instituciones participantes que pidió
+ * Mauricio. Ocupan los ~270 px que la franja estrecha dejó libres bajo el QR.
  */
 import type { Contenido } from '~/data/contenido';
 import Cabecera from './Cabecera.astro';
@@ -16,7 +20,7 @@ interface Props {
 
 const { c } = Astro.props;
 const t = c.ui.flyer;
-const { dominio } = datosFlyer(c);
+const { dominio, jornadas } = datosFlyer(c);
 ---
 
 <Cabecera c={c} />
@@ -30,6 +34,18 @@ const { dominio } = datosFlyer(c);
     <p class="mt-[40px] text-[36px] leading-[1.25] text-balance text-muted-foreground">
       {c.venue.name}, {c.venue.country}
     </p>
+    {
+      jornadas.length > 0 && (
+        <ul class="mt-[28px] flex flex-col gap-[10px]">
+          {jornadas.map((d) => (
+            <li class="text-[31px] leading-[1.2]">
+              <span class="block text-foreground">{d.label}</span>
+              <span class="block font-mono text-accent">{d.date}</span>
+            </li>
+          ))}
+        </ul>
+      )
+    }
   </div>
 </div>
 

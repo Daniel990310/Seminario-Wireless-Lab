@@ -29,7 +29,7 @@
 import { mkdir, readFile, writeFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { inflateSync } from 'node:zlib';
-import { FORMATOS_FLYER, PIEZAS_FLYER, PISO_FLYER } from '../src/data/flyer.ts';
+import { FORMATOS_FLYER, PIEZAS_FLYER, PISO_FLYER, PISO_PIE_FLYER } from '../src/data/flyer.ts';
 import { RAIZ, abrirDist } from './lib/servir-dist.mjs';
 import { medirLienzo } from './lib/criterios-flyer.mjs';
 import { mapaATsv, mapaLienzo } from './lib/mapa-flyer.mjs';
@@ -44,18 +44,18 @@ const CRITERIOS = {
   'RF-23.1': 'Lienzo y PNG a tamaño exacto',
   'RF-23.2': 'Nada legible en la franja que tapa la interfaz',
   'RF-23.3': 'Lo legible dentro del recorte 3:4 de la grilla',
-  'RF-24.1': `Ningún texto bajo ${PISO_FLYER} px (11 pt en teléfono)`,
+  'RF-24.1': `Ningún texto bajo ${PISO_FLYER} px (11 pt en teléfono); ${PISO_PIE_FLYER} en la franja de marcas`,
   'RF-24.2': 'Contraste del texto 4,5:1, o 3:1 si es grande',
-  'RF-24.3': 'Nada desborda ni se corta',
-  'RF-24.4': 'Al menos 32 px entre contenido y cierre (franja o foto)',
+  'RF-24.3': 'Nada desborda, se corta ni se monta sobre el QR',
+  'RF-24.4': 'Al menos 32 px entre contenido y pie',
   'RF-25.1': 'Como mucho tres familias tipográficas',
   'RF-25.2': 'Dominio, fecha y, donde va, organizador',
   'RF-26.1': 'Logo del seminario, variante blanca, sobre su mínimo',
   'RF-26.2': 'Ninguna imagen estirada',
-  'RF-26.3': 'Solo las marcas autorizadas para estas piezas',
+  'RF-26.3': 'Solo las marcas autorizadas en la franja; todos los participantes',
   'RF-26.4': 'ANID a la derecha de las demás marcas',
   'RF-26.5': 'Peso de las marcas entre 0,72× y 1,7× el de ANID',
-  'RF-26.6': 'Fórmula de ANID completa donde corresponde',
+  'RF-26.6': 'Fórmula de ANID completa y cada folio',
   'RF-28.1': 'El QR lee la URL del formulario, a escala 1 y 0,5',
   'RF-28.3': 'Hueco del sticker libre, de 600 × 170 o más',
   'RF-29.1': 'Texto alternativo, entre 1 y 1000 caracteres',
@@ -160,7 +160,7 @@ for (const { pieza, formato } of PIEZAS_FLYER) {
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(300);
 
-  r.push(...(await page.evaluate(medirLienzo, { seguro, ancho, alto, piso: PISO_FLYER, grilla34: formato === '4x5' })));
+  r.push(...(await page.evaluate(medirLienzo, { seguro, ancho, alto, piso: PISO_FLYER, pisoPie: PISO_PIE_FLYER, grilla34: formato === '4x5' })));
   const qr = await leerQr(page);
   if (qr) r.push(qr);
 
@@ -176,7 +176,7 @@ for (const { pieza, formato } of PIEZAS_FLYER) {
   // Las fuentes instaladas tienen métricas apenas distintas: se vuelve a medir el lienzo.
   await page.addStyleTag({ content: CSS_PDF });
   await page.evaluate(() => document.fonts.ready);
-  const enPdf = (await page.evaluate(medirLienzo, { seguro, ancho, alto, piso: PISO_FLYER, grilla34: false }))
+  const enPdf = (await page.evaluate(medirLienzo, { seguro, ancho, alto, piso: PISO_FLYER, pisoPie: PISO_PIE_FLYER, grilla34: false }))
     .filter((x) => x.id === 'RF-24.3' && !x.ok)
     .map((x) => ({ ...x, detalle: `con las fuentes del PDF: ${x.detalle}` }));
   r.push(...enPdf);

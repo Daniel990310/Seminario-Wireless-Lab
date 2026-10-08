@@ -9,7 +9,7 @@
  * Lo que la lámina debe contener lo declara ella misma en `data-flyer-esperado` sobre el
  * `<body>` (ver `CartelFlyer.astro`): así el criterio no adivina qué lámina está mirando.
  */
-export function medirLienzo({ seguro, ancho, alto, piso, grilla34 }) {
+export function medirLienzo({ seguro, ancho, alto, piso, pisoPie = piso, grilla34 }) {
   const res = [];
   const marca = (id, ok, detalle = '') => res.push({ id, ok, detalle });
   const esperado = JSON.parse(document.body.dataset.flyerEsperado || '{}');
@@ -40,8 +40,10 @@ export function medirLienzo({ seguro, ancho, alto, piso, grilla34 }) {
     marca('RF-23.3', !fuera.length, caso(fuera.map(nombre)));
   }
 
-  /* RF-24.1 · piso tipográfico. */
-  const chicos = textos.filter((el) => parseFloat(getComputedStyle(el).fontSize) < piso);
+  /* RF-24.1 · piso tipográfico; la mención de financiamiento, letra legal, tiene el suyo. */
+  const chicos = textos.filter(
+    (el) => parseFloat(getComputedStyle(el).fontSize) < (el.closest('[data-flyer-mencion]') ? pisoPie : piso),
+  );
   marca('RF-24.1', !chicos.length, caso(chicos.map((el) => `${getComputedStyle(el).fontSize} «${nombre(el)}»`)));
 
   /*
@@ -77,24 +79,40 @@ export function medirLienzo({ seguro, ancho, alto, piso, grilla34 }) {
   }
   marca('RF-24.2', !pobres.length, caso(pobres));
 
-  /* RF-24.3 · nada desborda ni se corta. */
+  /*
+   * RF-24.3 · nada desborda, se corta ni se monta sobre el QR. Lo último cubre los renglones
+   * `whitespace-nowrap` de la pieza única: si uno se alarga, invade el QR y no desborda.
+   */
   const desborde = caja.scrollHeight - caja.clientHeight;
   const cortados = [...caja.querySelectorAll('*')].filter(
     (el) => el.scrollWidth > el.clientWidth + 1 && getComputedStyle(el).overflow !== 'visible',
   );
-  marca('RF-24.3', desborde <= 1 && !cortados.length, desborde > 1 ? `desborda ${desborde} px` : caso(cortados.map(nombre)));
+  const qr = caja.querySelector('[data-flyer-qr]');
+  const qrCaja = qr?.getBoundingClientRect();
+  const sobreQr = qrCaja
+    ? visibles.filter((el) => {
+        if (qr.contains(el)) return false;
+        const r = el.getBoundingClientRect();
+        return r.left < qrCaja.right - 1 && r.right > qrCaja.left + 1 && r.top < qrCaja.bottom - 1 && r.bottom > qrCaja.top + 1;
+      })
+    : [];
+  const problema = [
+    desborde > 1 && `desborda ${desborde} px`,
+    sobreQr.length && `sobre el QR: ${caso(sobreQr.map(nombre))}`,
+    caso(cortados.map(nombre)),
+  ].find(Boolean);
+  marca('RF-24.3', desborde <= 1 && !cortados.length && !sobreQr.length, problema);
 
   /*
-   * RF-24.4 · aire mínimo entre el contenido y lo que cierra la lámina: la franja de
-   * marcas, o la foto de la sede en la historia que no lleva franja.
+   * RF-24.4 · aire mínimo entre el contenido y el pie, donde lo hay. El pie empieza en la
+   * fila de participantes; medir contra la franja daría siempre el aire de la propia fila.
    */
   const franja = document.querySelector('[data-flyer-marcas]');
-  const foto = document.querySelector('[data-flyer-foto-sede]');
-  const cierre = franja ?? foto;
-  if (cierre) {
-    const borde = cierre.getBoundingClientRect().top;
+  if (franja) {
+    const pie = document.querySelector('[data-flyer-participantes]') ?? franja;
+    const borde = pie.getBoundingClientRect().top;
     const encima = visibles
-      .filter((el) => !franja?.contains(el))
+      .filter((el) => !franja.contains(el) && !pie.contains(el))
       .map((el) => el.getBoundingClientRect().bottom)
       .filter((b) => b <= borde + 1);
     const aire = Math.round(borde - Math.max(...encima));
@@ -122,13 +140,22 @@ export function medirLienzo({ seguro, ancho, alto, piso, grilla34 }) {
   });
   marca('RF-26.2', !estirados.length, caso(estirados.map(nombre)));
 
-  /* RF-26.3 a RF-26.5 · marcas institucionales: cuáles, en qué orden, con qué peso. */
+  /*
+   * RF-26.3 a RF-26.5 · marcas institucionales: cuáles, en qué orden, con qué peso. RF-26.3
+   * cubre además la fila de participantes: todas por nombre y fuera de la franja.
+   */
   if (franja) {
     const piezas = [...franja.querySelectorAll('[data-marca]')];
     const ids = piezas.map((p) => p.dataset.marca).sort();
     const intrusas = [...franja.querySelectorAll('img')].filter((i) => !i.dataset.marca);
-    const ok = JSON.stringify(ids) === JSON.stringify([...esperado.marcas].sort()) && !intrusas.length;
-    marca('RF-26.3', ok, ok ? '' : `hay ${ids.join(', ')}${intrusas.length ? ' + imágenes sin marca' : ''}`);
+    const hay = [...caja.querySelectorAll('[data-participante]')].map((i) => i.dataset.participante);
+    const faltan = (esperado.participantes ?? []).filter((n) => !hay.includes(n));
+    const ok = JSON.stringify(ids) === JSON.stringify([...esperado.marcas].sort()) && !intrusas.length && !faltan.length;
+    marca(
+      'RF-26.3',
+      ok,
+      faltan.length ? `faltan participantes: ${faltan.join(', ')}` : ok ? '' : `hay ${ids.join(', ')}${intrusas.length ? ' + imágenes sin marca' : ''}`,
+    );
 
     const anid = piezas.find((p) => p.dataset.marca === 'anid')?.getBoundingClientRect();
     const resto = piezas.filter((p) => p.dataset.marca !== 'anid').map((p) => p.getBoundingClientRect());
@@ -141,8 +168,11 @@ export function medirLienzo({ seguro, ancho, alto, piso, grilla34 }) {
     marca('RF-26.5', !!ref && !desparejas.length, caso(conImagen.map(([m, a]) => `${m} ${(a / ref).toFixed(2)}×`)));
   }
 
-  /* RF-26.6 · la fórmula de ANID, donde la lámina la lleva. */
-  if (esperado.mencion) marca('RF-26.6', todo.includes(esperado.mencion), '');
+  /* RF-26.6 · la fórmula de ANID y el folio de cada proyecto, donde la lámina la lleva. */
+  if (esperado.mencion) {
+    const sinFolio = (esperado.folios ?? []).filter((f) => !todo.includes(f));
+    marca('RF-26.6', todo.includes(esperado.mencion) && !sinFolio.length, sinFolio.length ? `sin folio: ${sinFolio.join(', ')}` : '');
+  }
 
   /* RF-28.3 · hueco del sticker libre, en las historias de portada. */
   const hueco = document.querySelector('[data-flyer-sticker]')?.getBoundingClientRect();

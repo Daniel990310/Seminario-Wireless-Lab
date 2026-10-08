@@ -24,16 +24,17 @@ export function mapaLienzo() {
   for (const el of document.querySelectorAll('[data-logo-seminario]')) {
     objetos.push({ tipo: 'logo', nombre: 'Logo del seminario', caja: caja(el) });
   }
+  for (const el of document.querySelectorAll('[data-participante]')) {
+    objetos.push({ tipo: 'logo', nombre: `Logo ${el.dataset.participante}`, caja: caja(el) });
+  }
   for (const el of document.querySelectorAll('[data-flyer-qr]')) {
     objetos.push({ tipo: 'qr', nombre: 'QR de inscripción', caja: caja(el.querySelector('div') ?? el) });
   }
-  const propio = '[data-marca],[data-logo-seminario],[data-flyer-qr]';
+  const propio = '[data-marca],[data-participante],[data-logo-seminario],[data-flyer-qr]';
   for (const img of document.querySelectorAll('img')) {
     if (img.closest(propio)) continue;
     const ficha = img.closest('li') ?? img.parentElement;
-    const nombre = img.hasAttribute('data-flyer-foto-sede')
-      ? 'Foto de la sede'
-      : `Retrato · ${(ficha?.innerText ?? '').trim().split('\n')[0] || 'sin nombre'}`;
+    const nombre = `Retrato · ${(ficha?.innerText ?? '').trim().split('\n')[0] || 'sin nombre'}`;
     objetos.push({ tipo: 'foto', nombre: recortar(nombre, 48), caja: caja(img) });
   }
   for (const svg of document.querySelectorAll('svg')) {

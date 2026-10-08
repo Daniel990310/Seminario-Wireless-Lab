@@ -1,0 +1,53 @@
+---
+/**
+ * Fila de logos de las instituciones participantes, sobre el fondo oscuro de la lámina.
+ * Qué marcas y con qué escala lo decide `datosFlyer` (`participantes`); aquí solo se
+ * dibujan. La compone `Marcas`, encima de la franja.
+ *
+ * Mauricio, por Daniel (2026-10-08): los logos del sitio más el de IEEE AP-S en el flyer.
+ * Van fuera de la franja blanca porque él mismo la pidió estrecha. Tamaño por área, como
+ * el muro del sitio (`~/lib/area-logos`).
+ *
+ * `<img>` y no `<Image />`: el lienzo se captura a PNG y a PDF, y el optimizador solo
+ * cambiaría el formato del archivo intermedio. Una institución sin logo no se dibuja y
+ * avisa en el build; el generador la echa en falta por nombre (RF-26.3).
+ */
+import type { Contenido } from '~/data/contenido';
+import { alturaPorArea, esRaster, proporcionDe } from '~/lib/area-logos';
+import { datosFlyer } from './datos';
+
+interface Props {
+  c: Contenido;
+}
+
+/** Alto, en px de lienzo, de una marca de proporción 2,2; las demás se igualan en área. */
+const BASE = 32;
+
+const { c } = Astro.props;
+const { participantes } = datosFlyer(c);
+for (const p of participantes.filter((x) => !x.logo)) {
+  console.warn(`[flyer] ${p.nombre} no tiene logo: queda fuera de la fila de participantes`);
+}
+---
+
+<ul data-flyer-participantes class="flex flex-wrap items-center gap-x-[32px] gap-y-[12px]">
+  {
+    participantes.map(({ nombre, logo, escala }) => {
+      if (!logo) return null;
+      const alto = alturaPorArea(logo, BASE, escala);
+      return (
+        <li>
+          <img
+            src={esRaster(logo) ? logo.src : logo}
+            alt=""
+            width={Math.round(alto * proporcionDe(logo))}
+            height={alto}
+            class="block w-auto"
+            style={`height:${alto}px`}
+            data-participante={nombre}
+          />
+        </li>
+      );
+    })
+  }
+</ul>

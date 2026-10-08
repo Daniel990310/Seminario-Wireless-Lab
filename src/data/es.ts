@@ -208,9 +208,7 @@ export const es = {
       inscripciones: 'Inscripciones en',
       qr: 'Formulario de inscripción',
       organiza: 'Organiza',
-      financian: 'Financian',
       // Sin «→»: Illustrator no mapea esa glifa del subconjunto incrustado y la sustituye por Myriad.
-      desliza: 'Desliza: expositores e inscripción',
       inscripcion: 'Inscripción',
       escanea: 'Escanea el código o entra a',
       sticker: 'Inscríbete en el enlace',

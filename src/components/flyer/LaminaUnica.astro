@@ -3,8 +3,15 @@
  * Pieza única 4:5, de respaldo: para WhatsApp o para publicar sin carrusel.
  *
  * Lleva todo lo esencial en una lámina, y para que quepa a tamaño legible renuncia a lo
- * que el carrusel sí muestra: los retratos y las afiliaciones. Quedan los nombres, que es
- * lo que alguien reconoce en un feed, en una columna con el QR al lado.
+ * que el carrusel sí muestra: los retratos. Quedan los nombres, que es lo que alguien
+ * reconoce en un feed, en una columna con el QR al lado, y desde el 2026-10-08 (Daniel) la
+ * institución de cada uno en gris, en el mismo renglón. Se separan por tamaño, peso y
+ * color —nombre a 33 px seminegrita, afiliación a 31 normal y gris— y por media eme de
+ * aire; no con un punto medio, que la guía de diseño marca como muletilla genérica. La
+ * afiliación no baja de 31: es el piso (RF-24.1). El nombre va a 33 y no a 34 como en la
+ * lámina de expositores porque a 34 el par más largo, «Reinaldo A. Valenzuela» con «Nokia
+ * Bell Labs», no cabe en un renglón. Por lo mismo el QR va sin rótulo: el llamado a
+ * inscribirse está justo debajo. El generador falla si algo se monta sobre el QR (RF-24.3).
  *
  * Con nombres en dos columnas y el QR en su propia fila desbordaba 283 px en español
  * `[medido: 2026-10-01]`: es la medida de por qué el feed va en carrusel.
@@ -22,27 +29,33 @@ interface Props {
 const { c } = Astro.props;
 const t = c.ui.flyer;
 const { dominio, internacionales, nacionales } = datosFlyer(c);
-const nombres = [...internacionales, ...nacionales].map((e) => e.name);
+const expositores = [...internacionales, ...nacionales];
 ---
 
-<Encabezado c={c} anchoLogo={400} compacto />
+<Encabezado c={c} anchoLogo={416} compacto />
 
 {/*
-  Espaciado al justo: con la mención de financiamiento completa en la franja —ANID y
-  CYTED, una línea más— la pieza desbordaba 39 px en inglés `[medido: 2026-10-02]`. Se
-  recuperó en interlineado y márgenes, sin bajar ningún texto del piso.
+  Con la franja estrecha (2026-10-08) sobraban unos 160 px. Se los llevan la fila de
+  instituciones participantes que pidió Mauricio (la pone `Marcas`) y el logo, de 400 a 416.
 */}
 <div class="mt-[24px] flex items-start justify-between gap-[40px]">
   <div class="min-w-0">
     <p class="eyebrow text-[31px]">{t.expositores}</p>
-    <ul class="mt-[6px]">
-      {nombres.map((n) => <li class="text-[31px] leading-[1.1] font-semibold text-foreground">{n}</li>)}
+    <ul class="mt-[4px]">
+      {
+        expositores.map((e) => (
+          <li class="leading-[1.08] whitespace-nowrap">
+            <span class="text-[33px] font-semibold text-foreground">{e.name}</span>
+            <span class="ml-[0.5em] text-[31px] text-muted-foreground">{e.afiliacionCorta}</span>
+          </li>
+        ))
+      }
     </ul>
   </div>
-  {c.registro.url && <Qr url={c.registro.url} tamano={220} rotulo={t.qr} anchoRotulo={340} lado="derecha" />}
+  {c.registro.url && <Qr url={c.registro.url} tamano={220} lado="derecha" />}
 </div>
 
-<p class="mt-[12px] text-[40px] leading-none text-foreground">
+<p class="mt-[10px] text-[44px] leading-none text-foreground">
   {t.inscripciones} <span class="font-semibold text-accent">{dominio}</span>
 </p>
 

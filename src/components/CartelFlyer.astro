@@ -19,9 +19,8 @@
  * El texto alternativo llega como `alt` y viaja en un `<meta>`: el lienzo no se navega,
  * y el generador lo escribe junto al PNG para pegarlo al publicar.
  */
-import { Font, Image } from 'astro:assets';
+import { Font } from 'astro:assets';
 import PropagationFigure from './PropagationFigure.astro';
-import fotoSede from '~/assets/fondos/sede-acceso.webp';
 import { contenido, type Idioma } from '~/data/contenido';
 import { FORMATOS_FLYER, type FormatoFlyer } from '~/data/flyer';
 import '~/styles/global.css';
@@ -113,27 +112,6 @@ const figura = {
         <slot />
       </div>
 
-      {/*
-        Historias: la franja de abajo que tapa la interfaz (RF-23.2) la ocupa la fotografía
-        de la sede, la misma del sitio (RF-21): ahí no puede ir contenido, y vacía se leía
-        como un hueco (Daniel, 2026-10-01: primero en azul, después en blanco). La foto no
-        pierde nada si la barra la tapa, y dice dónde es el seminario. Su proporción,
-        4,38:1, es casi la de la franja, 1080 × 250 = 4,32:1, así que casi no se recorta.
-        Sin texto encima, como en el sitio.
-      */}
-      {
-        seguro.abajo > 0 && (
-          <Image
-            src={fotoSede}
-            alt=""
-            width={1080}
-            height={seguro.abajo}
-            class="absolute inset-x-0 bottom-0 w-full object-cover"
-            style={`height:${seguro.abajo}px`}
-            data-flyer-foto-sede
-          />
-        )
-      }
     </div>
   </body>
 </html>

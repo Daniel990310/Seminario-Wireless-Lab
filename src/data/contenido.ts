@@ -163,6 +163,7 @@ export function contenido(lang: Idioma) {
 
     organizers: comun.organizers,
     participants: comun.participants,
+    colaboradoresFlyer: comun.colaboradoresFlyer,
 
     funding: {
       agency: comun.funding.agency,
