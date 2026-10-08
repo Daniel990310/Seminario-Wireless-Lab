@@ -106,8 +106,8 @@ function pintarNotaRelacion(): void {
 
   if (!f.relacionFija) {
     notaRelacion.textContent =
-      `${ahora} Sin fijarla rige la del sitio: ${FRANJA_ACTUAL.relacion} : 1, con un tope por alto ` +
-      'de ventana que hace desaparecer la banda en un teléfono apaisado.';
+      `${ahora} Sin fijarla rige la del sitio: ${FRANJA_ACTUAL.relacion} : 1, la de la foto. ` +
+      'Por debajo de 30rem de alto (teléfono apaisado) no hay banda.';
     return;
   }
 
@@ -130,7 +130,7 @@ function construirCss(): string {
   // Sin relación fija, la misma fórmula que `--alto-franja` en `global.css`, escalada por «alto».
   const alturaFranja = f.relacionFija
     ? `calc(100vw / ${f.relacion})`
-    : `max(0px, min(calc(100vw / ${FRANJA_ACTUAL.relacion} * ${f.alto}), calc(100vh - 32rem)))`;
+    : `calc(100vw / ${FRANJA_ACTUAL.relacion} * ${f.alto})`;
   /*
    * `!important` en las propiedades personalizadas, y no es adorno.
    *
@@ -345,7 +345,9 @@ function informe(): string {
     }
     if (f.relacionFija) {
       l.push(`- relación FIJA: ${f.relacion.toFixed(2)} : 1  → src/styles/global.css, \`--alto-franja: calc(100vw / ${f.relacion.toFixed(2)})\``);
-      l.push('    ⚠ quita el tope por alto de ventana: en un teléfono apaisado la banda deja de desaparecer');
+      if (f.relacion > FRANJA_ACTUAL.relacion) {
+        l.push(`    ⚠ más alargada que la foto (${FRANJA_ACTUAL.relacion} : 1): se recorta por arriba y por abajo`);
+      }
       l.push(
         `    alturas que resultan: ${ANCHOS_DE_REFERENCIA.map((w) => `${w}px → ${Math.round(w / f.relacion)}px`).join(' · ')}`,
       );

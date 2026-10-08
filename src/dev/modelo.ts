@@ -26,10 +26,9 @@ export interface AjusteFranja {
   velo: number;
   alto: number;
   /**
-   * Sin `relacionFija` rige la fórmula del sitio, `--alto-franja` en `global.css`: 7,04:1
-   * con un tope por alto de ventana (`100vh − 32rem`), que hace desaparecer la banda en un
-   * teléfono apaisado. Con `relacionFija`, la altura pasa a `100vw / relacion` **sin tope**.
-   * Hasta el 2026-10-07 el panel partía de un `clamp` y un 7,33 que el sitio ya no usaba.
+   * Sin `relacionFija` rige la fórmula del sitio, `--alto-franja` en `global.css`: 7,04:1,
+   * la relación de la foto, sin tope por alto de ventana desde el 2026-10-07. Con
+   * `relacionFija`, la altura pasa a `100vw / relacion`.
    */
   relacionFija: boolean;
   relacion: number;
