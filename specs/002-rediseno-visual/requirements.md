@@ -661,3 +661,16 @@ tenía dónde ponerlos.
 
 Estado al 2026-10-06: cinco de ocho (Valenzuela, Feick, Siringo, Siles y Toledo). Faltan
 Zussman, Du y Gutiérrez.
+
+### Enmienda del 2026-10-07 · llegó la parrilla horaria
+
+Daniel entregó `Programa_Beyond Connectivity.docx`: miércoles 21 de 08:30 a 17:30 y jueves
+22 de 08:30 a 13:00, con la hora de cada expositor. Va en `src/data/programa.ts`, una sola
+parrilla para los dos idiomas.
+
+| Criterio | Comprobación |
+| --- | --- |
+| RF-32.6 · «Programa» muestra las dos jornadas reales en las pestañas de `ProgramaJornadas`; el aviso provisional de RF-8.1 deja de pintarse | captura |
+| RF-32.7 · Cada sesión de expositor lleva el título de su charla y su resumen en el desplegable «Resumen», con `lang="en"`; sin charla recibida, «Título de la charla por confirmar» y sin desplegable | inspección, `verify:idioma` |
+| RF-32.8 · Con parrilla publicada, la lista suelta de RF-32.1 no se pinta: cada charla ya está en su hora y la lista repetiría los resúmenes | inspección de `PaginaSeminario.astro` |
+| RF-32.9 · Horas, orden y enlaces a expositores viven una sola vez en `programa.ts`; los nombres de jornada y de pausa, en `es.ts` y `en.ts` | `check`, `verify:idioma` |

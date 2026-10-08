@@ -175,15 +175,28 @@ const hasProgram = program.days.length > 0;
       ya aparece en el hero. Retirado el epígrafe, el título ya declara las fechas y el
       subtítulo no tenía nada que añadir. `[2026-08-06]`
     -->
+    <!--
+      Relleno inferior igual al superior, y no los 5–7rem de las demás secciones: el
+      programa termina en una fila de texto corta y el relleno común dejaba un bloque
+      vacío bajo «Cierre…» que Daniel marcó dos veces (2026-10-07). `!` porque el
+      relleno común lo pone `Section` y dos utilidades del mismo peso no deciden por orden.
+    -->
     <Section
       id="programa"
+      eyebrow={ui.secciones.programa.eyebrow}
       title={ui.secciones.programa.title}
       tinted
+      class="pb-12! sm:pb-16!"
     >
       <div class="mt-12">
         {
           hasProgram ? (
-            <div class="space-y-10">
+            /*
+              `flex gap-10` y no `space-y-10`: en Tailwind 4 `space-y` pone margen inferior a
+              todo hijo que no sea el último, y el último es el `<script>` de las pestañas.
+              Las jornadas cargaban 40 px de más bajo la última sesión `[medido: 2026-10-07]`.
+            */
+            <div class="flex flex-col gap-10">
               {/*
                 Aviso obligatorio si las sesiones son de ejemplo. Va arriba del
                 todo, con `role="note"` para que un lector de pantalla lo anuncie
@@ -206,13 +219,18 @@ const hasProgram = program.days.length > 0;
             </div>
           )
         }
-        <CharlasConfirmadas c={c} hasProgram={hasProgram} />
+        {/*
+          Con parrilla publicada cada charla está en su hora, con su resumen desplegable:
+          la lista suelta repetiría los cinco resúmenes. Queda para cuando no hay horario.
+        */}
+        {!hasProgram && <CharlasConfirmadas c={c} hasProgram={hasProgram} />}
       </div>
     </Section>
 
     <!-- Expositores -->
     <Section
       id="expositores"
+      eyebrow={ui.secciones.expositores.eyebrow}
       title={ui.secciones.expositores.title}
       lead={ui.secciones.expositores.lead}
     >

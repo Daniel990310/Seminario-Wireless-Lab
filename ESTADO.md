@@ -23,6 +23,33 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Programa real, foto y proyectos de Miguel · 2026-10-07 · (rama `daniel/programa-y-miguel`)
+
+- **Programa publicado** desde `Programa_Beyond Connectivity.docx` (Daniel): miércoles 21
+  de 08:30 a 17:30 y jueves 22 de 08:30 a 13:00, en `src/data/programa.ts`. Cada sesión de
+  expositor toma título y resumen de `charlas.ts` (en inglés, `lang="en"`); Zussman, Du y
+  Gutiérrez salen con «Título de la charla por confirmar». La lista suelta de charlas
+  solo se pinta sin horario (RF-32.8). «IEEE AP-S Chile» (10:15–10:30) va tal cual: el
+  documento no dice qué es.
+- **Foto nueva de Miguel Gutiérrez** (`Miguel.jpeg`, 856×820), recortada con las guías de
+  los demás retratos.
+- **Proyectos de Miguel en el financiamiento**: Fondecyt de Iniciación 11241221
+  (`[probable]` por la convención de folios) y Centro de Investigación Aplicada CPS-RTC
+  CIA250016.
+- Verificadores ajustados a lo que antes no se daba: `verify:teclado` acepta que solo la
+  pestaña activa esté en el orden de Tab (patrón ARIA; las flechas las prueba
+  `verify:interaccion`), y RF-32.2/RF-32.3 buscan las charlas también en el programa.
+- Se trabajó en el worktree `.claude/worktrees/programa-miguel` porque otra sesión usaba
+  la carpeta principal (rama `daniel/ai-editables`, PR #23).
+- Tras revisarlo en `/ajustar` (informe del 2026-10-07): recortes de Siles, Siringo y
+  Gutiérrez aplicados; epígrafes «Programa» y «Expositores» (su título ya no nombra la
+  sección; `sede` y `organizacion` siguen sin él); 40 px de más bajo el programa
+  quitados (`space-y` de Tailwind 4 con el `<script>` de último hijo). La «relación fija
+  7,33» del informe **no se aplicó**: era el valor por omisión, viejo, del panel; el sitio
+  ya usa 7,04:1 con tope por alto de ventana.
+- Panel: el retrato del director entra en «Retratos»; «señalar» suma relleno arriba y
+  abajo; la banda parte de la fórmula real de `global.css`.
+
 ## Charlas, logos, Siringo y Fondecyt · 2026-10-06 · (en vivo, versión `b6bdd2dd`)
 
 - **Charlas confirmadas (RF-32):** 5 de 8 (Valenzuela, Feick, Siringo, Siles, Toledo),

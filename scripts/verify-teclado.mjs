@@ -169,6 +169,14 @@ for (const tema of ['light', 'dark']) {
        * radios del selector de tema están ocultos a la vista y los representa su
        * rótulo, así que no se les puede exigir caja.
        */
+      /*
+       * Pestañas: el mismo caso que un grupo de radios. El patrón de pestañas de ARIA deja
+       * en el orden de Tab solo la seleccionada (`tabindex="0"`); a las demás se llega con
+       * las flechas, y eso lo comprueba `verify:interaccion` (RF-6). No se había dado hasta
+       * el 2026-10-07, cuando se publicaron las jornadas reales.
+       */
+      if (el.getAttribute('role') === 'tab' && el.tabIndex === -1) return false;
+
       if (el.type === 'radio') {
         if (!el.checked) return false;
         const clave = `radio:${el.name}`;

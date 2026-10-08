@@ -12,7 +12,8 @@
  * bolsa plana: con más de setenta cadenas, una lista alfabética hace imposible
  * saber si falta algo o si algo dejó de usarse.
  */
-import type { CodigoPais, DiaPrograma, GradoAcademico } from './comun';
+import type { CodigoPais, GradoAcademico } from './comun';
+import type { Jornada, Pausa } from './programa';
 
 export interface SeccionEncabezado {
   /**
@@ -23,6 +24,12 @@ export interface SeccionEncabezado {
    * repetía el título en pequeño —«Sede» sobre «Auditorio de la Sede PUCV Santiago»— y
    * se retiró el 2026-08-06. Antes de añadir uno nuevo, comprobar que dice algo que el
    * `title` no diga.
+   *
+   * El 2026-10-07 volvió a `programa` y `expositores` por pedido de Daniel, y pasan la
+   * prueba: su título ya no nombra la sección —«Jornadas del 21 y 22 de octubre»,
+   * «Investigadores participantes»— y el epígrafe es la palabra del menú, que es lo que
+   * busca quien llega desde él. `sede` y `organizacion` siguen sin él: su título ya dice
+   * «Sede» y «Organización».
    */
   eyebrow?: string;
   title: string;
@@ -54,7 +61,6 @@ export interface ContenidoIdioma {
   program: {
     pendingNotice: string;
     pendingDetail: string;
-    days: DiaPrograma[];
   };
 
   /** Texto para un expositor cuya afiliación aún no está confirmada. */
@@ -215,6 +221,12 @@ export interface ContenidoIdioma {
       jornadas: string;
       /** Abre el resumen de una sesión. */
       verResumen: string;
+      /** Nombre de cada jornada del programa real (`programa.ts`). */
+      dias: Record<Jornada['dia'], string>;
+      /** Nombre de cada pausa del programa: registro, café, almuerzo… */
+      pausas: Record<Pausa, string>;
+      /** Título de una sesión cuyo expositor aún no envió el de su charla. */
+      charlaPorConfirmar: string;
       /** Lista de charlas confirmadas, cada una desplegable (RF-32). */
       charlas: {
         titulo: string;

@@ -13,6 +13,7 @@ import {
   comun,
   PROGRAMA_DEMOSTRATIVO,
   type CodigoPais,
+  type DiaPrograma,
   type ExpositorComun,
   type NodoRed,
 } from './comun';
@@ -20,6 +21,7 @@ import { es } from './es';
 import { en } from './en';
 import { programaDemoEs, programaDemoEn } from './programa-demo';
 import { charlasConfirmadas } from './charlas';
+import { programa, type Jornada, type Sesion } from './programa';
 
 export const IDIOMAS = ['es', 'en'] as const;
 export type Idioma = (typeof IDIOMAS)[number];
@@ -68,6 +70,31 @@ export function contenido(lang: Idioma) {
     };
   };
 
+  /*
+   * El programa real (`programa.ts`) en el idioma de la página. Una sesión de expositor
+   * toma título y resumen de su charla —en inglés, de ahí `lang`— o el aviso de título
+   * por confirmar si todavía no llegó; nombre y afiliación vienen de la nómina.
+   */
+  const nomina = [...comun.speakers.international, ...comun.speakers.national];
+  const sesion = (s: Sesion): DiaPrograma['sessions'][number] => {
+    if ('pausa' in s) return { time: s.hora, title: t.ui.programa.pausas[s.pausa] };
+    if ('nombre' in s) return { time: s.hora, title: s.nombre };
+    const e = nomina.find((x) => x.id === s.expositor)!;
+    const charla = charlasConfirmadas[s.expositor];
+    return {
+      time: s.hora,
+      title: charla?.title ?? t.ui.programa.charlaPorConfirmar,
+      speaker: `${e.name} · ${e.affiliation ?? t.afiliacionPorConfirmar}`,
+      summary: charla?.abstract,
+      lang: charla ? 'en' : undefined,
+    };
+  };
+  const jornada = (j: Jornada): DiaPrograma => ({
+    date: j.horario,
+    label: t.ui.programa.dias[j.dia],
+    sessions: j.sesiones.map(sesion),
+  });
+
   const nodo = (n: NodoRed) => ({
     label: n.label,
     detail: n.detail,
@@ -101,13 +128,8 @@ export function contenido(lang: Idioma) {
      */
     program: {
       ...t.program,
-      days:
-        PROGRAMA_DEMOSTRATIVO && t.program.days.length === 0
-          ? lang === 'es'
-            ? programaDemoEs
-            : programaDemoEn
-          : t.program.days,
-      esDemostracion: PROGRAMA_DEMOSTRATIVO && t.program.days.length === 0,
+      days: programa.length > 0 ? programa.map(jornada) : PROGRAMA_DEMOSTRATIVO ? (lang === 'es' ? programaDemoEs : programaDemoEn) : [],
+      esDemostracion: PROGRAMA_DEMOSTRATIVO && programa.length === 0,
     },
     about: t.about,
     /*

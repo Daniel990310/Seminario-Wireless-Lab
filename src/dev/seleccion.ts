@@ -78,12 +78,16 @@ function registrarElemento(el: Element): AjusteElemento {
       peso: e.fontWeight,
       margenArriba: px(e.marginTop),
       margenAbajo: px(e.marginBottom),
+      rellenoArriba: px(e.paddingTop),
+      rellenoAbajo: px(e.paddingBottom),
       alineacion: e.textAlign,
     },
     escalaLetra: 1,
     peso: null,
     margenArriba: null,
     margenAbajo: null,
+    rellenoArriba: null,
+    rellenoAbajo: null,
     alineacion: null,
     color: null,
     oculto: false,
@@ -99,6 +103,9 @@ function tieneCambios(a: AjusteElemento): boolean {
     a.peso !== null ||
     a.margenArriba !== null ||
     a.margenAbajo !== null ||
+    // `!= null`: un borrador anterior al 2026-10-07 no trae los campos de relleno.
+    a.rellenoArriba != null ||
+    a.rellenoAbajo != null ||
     a.alineacion !== null ||
     a.color !== null ||
     a.oculto ||
@@ -121,6 +128,8 @@ export function cssDeElementos(): string[] {
     if (a.peso) r.push(`font-weight:${a.peso}`);
     if (a.margenArriba !== null) r.push(`margin-top:${a.margenArriba}px`);
     if (a.margenAbajo !== null) r.push(`margin-bottom:${a.margenAbajo}px`);
+    if (a.rellenoArriba != null) r.push(`padding-top:${a.rellenoArriba}px`);
+    if (a.rellenoAbajo != null) r.push(`padding-bottom:${a.rellenoAbajo}px`);
     if (a.alineacion) r.push(`text-align:${a.alineacion}`);
     if (a.color) r.push(`color:var(--${a.color})`);
     if (a.oculto) r.push('display:none');
@@ -268,6 +277,24 @@ export function grupoElementos(): HTMLElement {
         leer: () => a.margenAbajo ?? a.original.margenAbajo,
         escribir: (v) => (a.margenAbajo = v),
       }),
+      deslizador({
+        etiqueta: `relleno arriba (hoy ${a.original.rellenoArriba ?? 0}px)`,
+        min: 0,
+        max: 240,
+        paso: 4,
+        unidad: 'px',
+        leer: () => a.rellenoArriba ?? a.original.rellenoArriba ?? 0,
+        escribir: (v) => (a.rellenoArriba = v),
+      }),
+      deslizador({
+        etiqueta: `relleno abajo (hoy ${a.original.rellenoAbajo ?? 0}px)`,
+        min: 0,
+        max: 240,
+        paso: 4,
+        unidad: 'px',
+        leer: () => a.rellenoAbajo ?? a.original.rellenoAbajo ?? 0,
+        escribir: (v) => (a.rellenoAbajo = v),
+      }),
       crear('span', 'rotulo', `alineación (hoy ${a.original.alineacion})`),
       opciones(
         [['igual', null], ['izquierda', 'left'], ['centro', 'center'], ['derecha', 'right']] as const,
@@ -349,6 +376,8 @@ export function informeElementos(): string[] {
     if (a.peso) l.push(`    peso: ${o.peso} → ${a.peso}`);
     if (a.margenArriba !== null) l.push(`    margen arriba: ${o.margenArriba}px → ${a.margenArriba}px`);
     if (a.margenAbajo !== null) l.push(`    margen abajo: ${o.margenAbajo}px → ${a.margenAbajo}px`);
+    if (a.rellenoArriba != null) l.push(`    relleno arriba: ${o.rellenoArriba ?? 0}px → ${a.rellenoArriba}px`);
+    if (a.rellenoAbajo != null) l.push(`    relleno abajo: ${o.rellenoAbajo ?? 0}px → ${a.rellenoAbajo}px`);
     if (a.alineacion) l.push(`    alineación: ${o.alineacion} → ${a.alineacion}`);
     if (a.color) l.push(`    color: → var(--${a.color}) · ${contrasteDe(a.selector) || 'contraste sin medir'}`);
     if (a.oculto) l.push('    QUITAR (oculto en la vista previa)');
