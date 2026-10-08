@@ -23,7 +23,14 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
-## Programa real, foto y proyectos de Miguel · 2026-10-07 · (rama `daniel/programa-y-miguel`)
+## Programa real, foto y proyectos de Miguel · 2026-10-07 · (en vivo, versión `f6e5fe8b`)
+
+- **Desplegado el 2026-10-08** con los PR #22 (escala de logos PUC y CPS-RTC), #23 (`.ai`
+  en capas) y #24 (esto), thermos dispensado por Daniel en los tres. `verify:publicado`
+  32 ✓, 0 ✗ `[medido]`. Versión `f6e5fe8b-377e-47c0-a88d-e43bedca580c`.
+- **Pendiente:** los flyers de `difusion/` se generaron antes de la foto nueva de Miguel y
+  del programa; regenerarlos (y sus `.ai` con `abrir-flyer.ps1 -Rehacer`) si se van a
+  volver a repartir.
 
 - **Programa publicado** desde `Programa_Beyond Connectivity.docx` (Daniel): miércoles 21
   de 08:30 a 17:30 y jueves 22 de 08:30 a 13:00, en `src/data/programa.ts`. Cada sesión de
@@ -43,10 +50,13 @@ Hostinger sin revocar.**
   la carpeta principal (rama `daniel/ai-editables`, PR #23).
 - Tras revisarlo en `/ajustar` (informe del 2026-10-07): recortes de Siles, Siringo y
   Gutiérrez aplicados; epígrafes «Programa» y «Expositores» (su título ya no nombra la
-  sección; `sede` y `organizacion` siguen sin él); 40 px de más bajo el programa
-  quitados (`space-y` de Tailwind 4 con el `<script>` de último hijo). La «relación fija
-  7,33» del informe **no se aplicó**: era el valor por omisión, viejo, del panel; el sitio
-  ya usa 7,04:1 con tope por alto de ventana.
+  sección; `sede` y `organizacion` siguen sin él); el hueco bajo el programa pasa de
+  150 px a 64 (dos trampas de `space-y` de Tailwind 4 y relleno de sección reducido).
+  Retrato de Mauricio a la escala de los expositores.
+- **Banda de la sede sin tope por alto de ventana** (segundo informe, enmienda de D12):
+  `calc(100vw / 7.04)`, la relación de la foto, en vez del 7,33 pedido (más alargada que
+  la foto, la recortaría). Sin banda solo por debajo de 30rem de alto. Precio: en
+  ventanas anchas y bajas la bajada del hero puede quedar bajo el borde.
 - Panel: el retrato del director entra en «Retratos»; «señalar» suma relleno arriba y
   abajo; la banda parte de la fórmula real de `global.css`.
 
