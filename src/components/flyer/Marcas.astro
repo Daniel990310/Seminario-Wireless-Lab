@@ -23,8 +23,20 @@
  * píxeles de tinta plena quedan idénticos. El sitio sigue con el original.
  *
  * La mención de financiamiento va **siempre** que va la franja (Daniel, 2026-10-01: estaba
- * en unas láminas y en otras no): la fórmula de ANID (RNF-8.1) y la red CYTED con su
- * código. A 31 px, el piso.
+ * en unas láminas y en otras no): la fórmula de ANID (RNF-8.1), el Fondecyt (RNF-8.4) y la
+ * red CYTED con su código.
+ *
+ * ── FRANJA ESTRECHA, 2026-10-08 ──────────────────────────────────────────────────
+ *
+ * Mauricio pidió, por Daniel, menos blanco abajo y el financiamiento más pequeño. Medida
+ * antes: la franja ocupaba 370 de los 1350 px de la portada, más que el titular, y las
+ * marcas pesaban más que la fecha. Tres cambios:
+ *   - Sin los rótulos «Organiza» y «Financian»: el organizador ya está nombrado arriba y la
+ *     mención dice quién financia, así que repetían lo que la lámina ya decía.
+ *   - Marcas a 64 px de alto (antes 72) y CYTED a 90 (antes 101): la misma razón para
+ *     todas, así que el peso relativo de RF-26.5 no cambia.
+ *   - La mención a 24 px, piso propio de la franja (`PISO_PIE_FLYER`): es letra legal, que
+ *     se tiene que poder leer acercando, no el mensaje de la lámina.
  */
 import { Image } from 'astro:assets';
 import submarcaEie from '~/assets/logos/eie-pucv.png';
@@ -36,7 +48,6 @@ interface Props {
 }
 
 const { c } = Astro.props;
-const t = c.ui.flyer;
 const [pucv] = c.organizers;
 const anid = c.funding.agency;
 const [cyted] = c.financiadores;
@@ -53,28 +64,24 @@ const [cyted] = c.financiadores;
 <div class="mt-auto pt-[40px]">
 <footer
   data-flyer-marcas
-  class="-mx-[72px] bg-[var(--pure-white)] px-[72px] pt-[24px] pb-[28px] text-[var(--navy-900)]"
+  class="-mx-[72px] bg-[var(--pure-white)] px-[72px] pt-[22px] pb-[24px] text-[var(--navy-900)]"
 >
-  <div class="flex items-end justify-between">
-    <div>
-      <p class="eyebrow text-[31px] text-[var(--slate-600)]">{t.organiza}</p>
-      <div class="mt-[8px] flex h-[101px] items-center gap-[36px]">
-        <Image src={pucv.logo} alt="" width={284} height={144} class="h-[72px] w-auto" data-marca="pucv" />
-        <Image src={submarcaEie} alt="" height={144} class="h-[72px] w-auto" data-marca="eie" />
-      </div>
+  <div class="flex h-[90px] items-center justify-between">
+    <div class="flex items-center gap-[32px]">
+      <Image src={pucv.logo} alt="" width={256} height={130} class="h-[64px] w-auto" data-marca="pucv" />
+      <Image src={submarcaEie} alt="" height={128} class="h-[64px] w-auto" data-marca="eie" />
     </div>
-    <div class="text-right">
-      <p class="eyebrow text-[31px] text-[var(--slate-600)]">{t.financian}</p>
-      <div class="mt-[8px] flex h-[101px] items-center justify-end gap-[36px]">
-        <Image src={cytedFondoBlanco} alt="" width={202} height={201} class="size-[101px]" data-marca="cyted" />
-        {/* 134 × 72: el `viewBox` del SVG, 470,89 × 252,78, llevado a 72 de alto. */}
-        <img src={anid.logo} alt="" width="134" height="72" class="h-[72px] w-auto" data-marca="anid" />
-      </div>
+    <div class="flex items-center gap-[32px]">
+      <Image src={cytedFondoBlanco} alt="" width={180} height={179} class="size-[90px]" data-marca="cyted" />
+      {/* 119 × 64: el `viewBox` del SVG, 470,89 × 252,78, llevado a 64 de alto. */}
+      <img src={anid.logo} alt="" width="119" height="64" class="h-[64px] w-auto" data-marca="anid" />
     </div>
   </div>
-  <p data-flyer-mencion class="mt-[16px] text-[31px] leading-[1.25] text-pretty text-[var(--slate-600)]">
-    {c.funding.mencion} · {c.funding.project.code}.<br />
-    {cyted.agency.shortName} {cyted.project.code} · {cyted.project.acronimo}.
+  <p data-flyer-mencion class="mt-[14px] text-[24px] leading-[1.3] text-pretty text-[var(--slate-600)]">
+    {/* De corrido y no en dos párrafos: el corte dejaba «· FOVI250222.» solo en un renglón. */}
+    {c.funding.mencion} · {c.funding.project.code}.{' '}
+    {c.funding.otrosProyectos.map((p) => `${p.instrumento} ${p.code} · `)}{cyted.agency.shortName}{' '}
+    {cyted.project.code} · {cyted.project.acronimo}.
   </p>
 </footer>
 </div>

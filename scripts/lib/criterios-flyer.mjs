@@ -9,7 +9,7 @@
  * Lo que la lámina debe contener lo declara ella misma en `data-flyer-esperado` sobre el
  * `<body>` (ver `CartelFlyer.astro`): así el criterio no adivina qué lámina está mirando.
  */
-export function medirLienzo({ seguro, ancho, alto, piso, grilla34 }) {
+export function medirLienzo({ seguro, ancho, alto, piso, pisoPie, grilla34 }) {
   const res = [];
   const marca = (id, ok, detalle = '') => res.push({ id, ok, detalle });
   const esperado = JSON.parse(document.body.dataset.flyerEsperado || '{}');
@@ -40,8 +40,10 @@ export function medirLienzo({ seguro, ancho, alto, piso, grilla34 }) {
     marca('RF-23.3', !fuera.length, caso(fuera.map(nombre)));
   }
 
-  /* RF-24.1 · piso tipográfico. */
-  const chicos = textos.filter((el) => parseFloat(getComputedStyle(el).fontSize) < piso);
+  /* RF-24.1 · piso tipográfico; la franja de marcas, con la letra legal, tiene el suyo. */
+  const chicos = textos.filter(
+    (el) => parseFloat(getComputedStyle(el).fontSize) < (el.closest('[data-flyer-marcas]') ? pisoPie : piso),
+  );
   marca('RF-24.1', !chicos.length, caso(chicos.map((el) => `${getComputedStyle(el).fontSize} «${nombre(el)}»`)));
 
   /*

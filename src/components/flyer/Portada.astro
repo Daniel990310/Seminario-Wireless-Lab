@@ -3,8 +3,7 @@
  * Portada: primera lámina del carrusel (`cierre="desliza"`) y primera historia
  * (`cierre="sticker"`).
  *
- * En el carrusel el pie dice que hay más láminas y qué traen: sin eso, quien ve la
- * portada en el feed no sabe que los expositores y el QR están a un gesto.
+ * En el carrusel no lleva pie propio: los puntos del carrusel ya dicen que hay más.
  *
  * En la historia, el QR no sirve —se ve en el mismo teléfono—: el enlace al formulario va
  * en el sticker de enlace que se pega al publicar. La lámina le deja un hueco vacío,
@@ -40,17 +39,20 @@ const historia = cierre === 'sticker';
   a medio hacer.
 */}
 <div class:list={['flex flex-1 flex-col justify-center', !historia && 'pb-[36px]']}>
-  <Encabezado c={c} anchoLogo={780} compacto={historia} />
+  <Encabezado c={c} anchoLogo={780} compacto={historia} fechaGrande={!historia} />
   <p class:list={['text-[52px] leading-none text-foreground', historia ? 'mt-[32px]' : 'mt-[48px]']}>
     {t.inscripciones} <span class="font-semibold text-accent">{dominio}</span>
   </p>
 </div>
 
 <div>
+  {/*
+    Sin «Desliza: expositores e inscripción» desde el 2026-10-08 (Daniel lo quitó en su
+    versión del .ai): Instagram y LinkedIn ya marcan el carrusel con sus puntos, y la línea
+    le restaba alto a la lámina.
+  */}
   {
-    cierre === 'desliza' ? (
-      <p class="eyebrow text-[31px] text-accent">{t.desliza}</p>
-    ) : (
+    cierre === 'sticker' && (
       <>
         <p class="mt-[24px] text-[36px] text-foreground">{t.sticker}</p>
         <div data-flyer-sticker class="mt-[16px] h-[170px] w-[600px]" />

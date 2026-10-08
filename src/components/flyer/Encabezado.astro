@@ -23,9 +23,14 @@ interface Props {
    * de portada desbordaba 97 px en inglés, donde el organizador ocupa dos líneas.
    */
   compacto?: boolean;
+  /**
+   * La portada del carrusel: fecha a 100. Con la franja estrecha (2026-10-08) le sobraba
+   * alto, y la fecha es lo que quien pasa por el feed tiene que retener.
+   */
+  fechaGrande?: boolean;
 }
 
-const { c, anchoLogo, compacto = false } = Astro.props;
+const { c, anchoLogo, compacto = false, fechaGrande = false } = Astro.props;
 const { restoTitulo, organizador } = datosFlyer(c);
 /* Proporción del `viewBox` del logo, 650 × 218: no se estira (manual 5.2). */
 const altoLogo = Math.round((anchoLogo * 218) / 650);
@@ -44,7 +49,7 @@ const sangria = Math.round((anchoLogo * 31.5) / 650);
 <p
   class:list={[
     'font-mono leading-none font-semibold tracking-tight text-accent',
-    compacto ? 'mt-[24px] text-[64px]' : 'mt-[36px] text-[76px]',
+    compacto ? 'mt-[24px] text-[64px]' : fechaGrande ? 'mt-[40px] text-[100px]' : 'mt-[36px] text-[76px]',
   ]}
 >
   {c.dates.shortLabel}

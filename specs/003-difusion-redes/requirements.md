@@ -56,7 +56,7 @@ la de la franja (4,32:1).
 
 | # | Criterio | Procedencia | Quién lo mide |
 | - | --- | --- | --- |
-| RF-24.1 | Ningún texto bajo **31 px de lienzo**: el lienzo de 1080 px se ve a unos 390 pt (escala 0,361), y 11 pt es el mínimo de texto de iOS | `[verificado]` Apple HIG; escala `[medido]` | generador |
+| RF-24.1 | Ningún texto bajo **31 px de lienzo**: el lienzo de 1080 px se ve a unos 390 pt (escala 0,361), y 11 pt es el mínimo de texto de iOS. **Excepción desde el 2026-10-08:** la franja de marcas, que solo lleva la mención de financiamiento, tiene piso de **24 px** (8,7 pt): es letra legal, no el mensaje | `[verificado]` Apple HIG; escala `[medido]`; la excepción, Mauricio por Daniel: menos blanco abajo y financiamiento más pequeño | generador |
 | RF-24.2 | Contraste del texto contra su fondo **4,5:1**, o **3:1** si es texto grande (24 px, o 18,66 px en negrita, en el teléfono) | WCAG 2.1 AA, RNF-1 del proyecto | generador, sobre el fondo opaco más cercano |
 | RF-24.3 | Nada desborda su caja ni se corta, tanto con las fuentes del sitio (PNG) como con las del PDF | `[medido]`: las métricas cambian entre las dos | generador |
 | RF-24.4 | Al menos **32 px** entre el último contenido y lo que cierra la lámina: la franja de marcas o, en la historia de expositores, la foto de la sede | Daniel, 2026-10-01: retrato pegado a la franja | generador |
@@ -81,7 +81,7 @@ figura son trazos finos al 65 %; su efecto sobre la lectura lo juzga RF-30.1.
 | RF-26.3 | En la franja van **solo PUCV, EIE, CYTED y ANID**, y ninguna otra imagen. CYTED con su marca de 40 años **sobre fondo blanco**: variante del original de `comun.ts` que cambia solo el fondo negro, con la tinta intacta (ver `Marcas.astro`) | decisión de Daniel, 2026-10-01 y 2026-10-02 | generador, por `data-marca` |
 | RF-26.4 | **ANID a la derecha** de las marcas no gubernamentales | manual ANID §1.1, `specs/gestion/anid-normas-2026.md` | generador |
 | RF-26.5 | Peso visual igualado: el área de cada marca entre **0,72× y 1,7×** la de ANID | RF-18.2 del proyecto; manual ANID §1.1 | generador |
-| RF-26.6 | **Toda lámina con franja de marcas lleva la mención de financiamiento**: la fórmula de ANID completa (RNF-8.1) y la red CYTED con su código. Las de expositores no llevan franja: son interiores | RNF-8.1; Daniel, 2026-10-02: estaba en unas láminas y en otras no | generador |
+| RF-26.6 | **Toda lámina con franja de marcas lleva la mención de financiamiento**: la fórmula de ANID completa (RNF-8.1), el Fondecyt Regular 1250951 (RNF-8.4, desde el 2026-10-08) y la red CYTED con su código, de corrido. Sin rótulos «Organiza»/«Financian» en la franja: repetían lo que dicen el organizador de arriba y la mención. Las de expositores no llevan franja: son interiores | RNF-8.1; Daniel, 2026-10-02: estaba en unas láminas y en otras no | generador |
 
 ## RF-27 · Personas
 

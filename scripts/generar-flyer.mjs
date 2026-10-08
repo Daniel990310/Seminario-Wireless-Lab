@@ -29,7 +29,7 @@
 import { mkdir, readFile, writeFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { inflateSync } from 'node:zlib';
-import { FORMATOS_FLYER, PIEZAS_FLYER, PISO_FLYER } from '../src/data/flyer.ts';
+import { FORMATOS_FLYER, PIEZAS_FLYER, PISO_FLYER, PISO_PIE_FLYER } from '../src/data/flyer.ts';
 import { RAIZ, abrirDist } from './lib/servir-dist.mjs';
 import { medirLienzo } from './lib/criterios-flyer.mjs';
 import { mapaATsv, mapaLienzo } from './lib/mapa-flyer.mjs';
@@ -44,7 +44,7 @@ const CRITERIOS = {
   'RF-23.1': 'Lienzo y PNG a tamaño exacto',
   'RF-23.2': 'Nada legible en la franja que tapa la interfaz',
   'RF-23.3': 'Lo legible dentro del recorte 3:4 de la grilla',
-  'RF-24.1': `Ningún texto bajo ${PISO_FLYER} px (11 pt en teléfono)`,
+  'RF-24.1': `Ningún texto bajo ${PISO_FLYER} px (11 pt en teléfono); ${PISO_PIE_FLYER} en la franja de marcas`,
   'RF-24.2': 'Contraste del texto 4,5:1, o 3:1 si es grande',
   'RF-24.3': 'Nada desborda ni se corta',
   'RF-24.4': 'Al menos 32 px entre contenido y cierre (franja o foto)',
@@ -160,7 +160,7 @@ for (const { pieza, formato } of PIEZAS_FLYER) {
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(300);
 
-  r.push(...(await page.evaluate(medirLienzo, { seguro, ancho, alto, piso: PISO_FLYER, grilla34: formato === '4x5' })));
+  r.push(...(await page.evaluate(medirLienzo, { seguro, ancho, alto, piso: PISO_FLYER, pisoPie: PISO_PIE_FLYER, grilla34: formato === '4x5' })));
   const qr = await leerQr(page);
   if (qr) r.push(qr);
 
@@ -176,7 +176,7 @@ for (const { pieza, formato } of PIEZAS_FLYER) {
   // Las fuentes instaladas tienen métricas apenas distintas: se vuelve a medir el lienzo.
   await page.addStyleTag({ content: CSS_PDF });
   await page.evaluate(() => document.fonts.ready);
-  const enPdf = (await page.evaluate(medirLienzo, { seguro, ancho, alto, piso: PISO_FLYER, grilla34: false }))
+  const enPdf = (await page.evaluate(medirLienzo, { seguro, ancho, alto, piso: PISO_FLYER, pisoPie: PISO_PIE_FLYER, grilla34: false }))
     .filter((x) => x.id === 'RF-24.3' && !x.ok)
     .map((x) => ({ ...x, detalle: `con las fuentes del PDF: ${x.detalle}` }));
   r.push(...enPdf);
