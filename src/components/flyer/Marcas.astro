@@ -53,16 +53,21 @@ import { datosFlyer } from './datos';
 
 interface Props {
   c: Contenido;
+  /**
+   * Sin la fila de participantes: la lámina de expositores, donde le quitaría a los
+   * retratos el alto que la franja sola ya les quita (Daniel, 2026-10-09, a prueba).
+   */
+  participantes?: boolean;
 }
 
-const { c } = Astro.props;
+const { c, participantes = true } = Astro.props;
 const [pucv] = c.organizers;
 const anid = c.funding.agency;
 const { mencion } = datosFlyer(c);
 ---
 
 {/*
-  El pie empieza en la fila de participantes. 32 px de aire entre el contenido y el pie
+  El pie empieza en la fila de participantes, o en la franja si no la hay. 32 px de aire entre el contenido y el pie
   (sin aire un retrato quedaba pegado al blanco, Daniel, 2026-10-01): es lo que mide
   RF-24.4, desde lo último del contenido hasta el borde de arriba de la fila. Entre la
   fila y la franja, otros 32.
@@ -71,9 +76,13 @@ const { mencion } = datosFlyer(c);
   (RF-26.3 a RF-26.5), y que no haya ninguna imagen más en la franja.
 */}
 <div class="mt-auto pt-[32px]">
-  <div class="mb-[32px]">
-    <Participantes c={c} />
-  </div>
+  {
+    participantes && (
+      <div class="mb-[32px]">
+        <Participantes c={c} />
+      </div>
+    )
+  }
   <footer
     data-flyer-marcas
     class="-mx-[72px] bg-[var(--pure-white)] px-[72px] pt-[22px] pb-[24px] text-[var(--navy-900)]"

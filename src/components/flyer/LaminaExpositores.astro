@@ -6,14 +6,15 @@
  *
  * Hasta el 2026-10-08 iba en una sola columna con retratos de 88 px (96 en la historia): la
  * mitad derecha del lienzo quedaba vacía y las caras, que son lo que esta lámina vende,
- * eran lo más chico. Ahora cada grupo es una fila de cuatro con el retrato a 192 px y
+ * eran lo más chico. Ahora cada grupo es una fila de cuatro con el retrato a 164 px y
  * nombre y afiliación debajo, partidos en renglones si hace falta. Ocho expositores son
  * cuatro y cuatro, así que los grupos quedan parejos. La historia usa la misma grilla, con
  * los grupos repartidos en el alto; con el texto un escalón más grande partía «Gil /
  * Zussman» y «Nokia / Bell Labs» en la columna de 216 px.
  *
- * Sin franja de marcas, en los dos formatos: es una lámina interior, y la franja con la
- * mención de financiamiento va en las de portada e inscripción.
+ * Con franja de marcas y agradecimiento desde el 2026-10-09 (Daniel, a prueba), pero sin
+ * la fila de participantes: con ella los retratos no cabían en dos filas. La franja les
+ * quitó 28 px (192 → 164); antes no la llevaba por ser lámina interior.
  *
  * Retrato si lo hay; monograma si no, igual que en el sitio (RF-11.2). Nada generado:
  * lo prohíbe el manual de ANID (§1.5) y el proyecto.
@@ -22,6 +23,7 @@ import { Image } from 'astro:assets';
 import type { Contenido } from '~/data/contenido';
 import { iniciales } from '~/data/iniciales';
 import Cabecera from './Cabecera.astro';
+import Marcas from './Marcas.astro';
 import { datosFlyer } from './datos';
 
 interface Props {
@@ -48,9 +50,9 @@ const grupos = [
           {g.lista.map((e) => (
             <li class="flex flex-col">
               {e.foto ? (
-                <Image src={e.foto} alt="" width={384} height={384} class="size-[192px] rounded-full object-cover" />
+                <Image src={e.foto} alt="" width={328} height={328} class="size-[164px] rounded-full object-cover" />
               ) : (
-                <span class="flex size-[192px] items-center justify-center rounded-full bg-surface font-display text-[56px] font-semibold text-primary">
+                <span class="flex size-[164px] items-center justify-center rounded-full bg-surface font-display text-[56px] font-semibold text-primary">
                   {iniciales(e.name)}
                 </span>
               )}
@@ -65,3 +67,5 @@ const grupos = [
     ))
   }
 </div>
+
+<Marcas c={c} participantes={false} />
