@@ -46,7 +46,7 @@ const esperado = {
   lang={idioma}
   formato={formato}
   alt={altFlyer(c, lamina)}
-  pie={lamina === 'portada' ? pieDePublicacion(c, 'carrusel') : lamina === 'unica' ? pieDePublicacion(c, 'unica') : undefined}
+  pie={lamina === 'portada' || lamina === 'unica' ? pieDePublicacion(c) : undefined}
   emisor={EMISOR[lamina]}
   esperado={esperado}
 >

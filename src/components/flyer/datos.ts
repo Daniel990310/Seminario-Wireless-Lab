@@ -98,8 +98,10 @@ export function datosFlyer(c: Contenido) {
  * Pie de publicación: el texto que va bajo el post, **uno por publicación** —el carrusel
  * entero o la pieza única—, no uno por imagen; eso es el texto alternativo. Lo pidió
  * Daniel el 2026-10-09. Sale de los mismos datos que el sitio, para que no se contradigan.
+ * Es el mismo texto para las dos publicaciones: la frase «desliza para ver…» del carrusel
+ * se quitó porque al leerse completo no tenía sentido (Daniel).
  */
-export function pieDePublicacion(c: Contenido, publicacion: 'carrusel' | 'unica') {
+export function pieDePublicacion(c: Contenido) {
   const t = c.ui.flyer;
   const { dominio, organizador, mencion } = datosFlyer(c);
   const [, escuela] = c.organizers;
@@ -112,7 +114,6 @@ export function pieDePublicacion(c: Contenido, publicacion: 'carrusel' | 'unica'
     `${c.dates.label}, ${c.venue.name}, ${c.venue.country}.`,
     organizador ? `${t.organiza}: ${organizador} (${escuela.name}).` : '',
     `${t.expositores}:\n${expositores}`,
-    publicacion === 'carrusel' ? t.deslizaPie : '',
     `${t.programaPie} https://${dominio}`,
     mencion,
   ]

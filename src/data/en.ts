@@ -199,7 +199,6 @@ export const en = {
       inscripcion: 'Registration',
       escanea: 'Scan the code or go to',
       sticker: 'Register via the link',
-      deslizaPie: 'Swipe to see the speakers and the registration QR code.',
       programaPie: 'Registration and programme:',
       agradecimiento:
         'This work was supported by ANID FONDECYT 1250951 and 11261397, ANID CCTVal CIA250027, ANID Vinculación Internacional FOVI250222 and Programa Iberoamericano de Ciencia y Tecnología para el Desarrollo - CYTED (525RT0175-DISeCom).',

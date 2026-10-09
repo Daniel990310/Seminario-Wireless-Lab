@@ -182,8 +182,6 @@ export interface ContenidoIdioma {
       escanea: string;
       /** Historia: va sobre el hueco donde se pega el sticker de enlace al publicar. */
       sticker: string;
-      /** Pie de publicación del carrusel: dice que hay más láminas y qué traen. */
-      deslizaPie: string;
       /** Pie de publicación: antecede a la URL del sitio. */
       programaPie: string;
       /**
