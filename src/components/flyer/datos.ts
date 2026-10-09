@@ -62,37 +62,24 @@ export function datosFlyer(c: Contenido) {
     : null;
 
   /*
-   * Fila de instituciones participantes (Mauricio, 2026-10-08): las del sitio y las que
-   * solo van en el flyer. Sobre el fondo oscuro, la variante oscura si la hay. Una sin
-   * logo no se filtra aquí: `Participantes` la omite, y el generador lo detecta porque
-   * espera a todas por nombre (RF-26.3).
+   * Fila de instituciones participantes del sitio (Mauricio, 2026-10-08). Sobre el fondo
+   * oscuro, la variante oscura si la hay. Una sin logo no se filtra aquí: `Participantes`
+   * la omite, y el generador lo detecta porque espera a todas por nombre (RF-26.3).
    */
-  const instituciones: readonly Institucion[] = [...c.participants, ...c.colaboradoresFlyer];
-  const participantes: ParticipanteFlyer[] = instituciones.map(
-    (p) => ({
-      nombre: p.shortName,
-      nombreCompleto: p.name,
-      logo: p.logoOscuro ?? p.logo,
-      escala: (p.escalaOptica ?? 1) * (p.escalaOpticaFlyer ?? 1),
-    }),
-  );
+  const instituciones: readonly Institucion[] = c.participants;
+  const participantes: ParticipanteFlyer[] = instituciones.map((p) => ({
+    nombre: p.shortName,
+    nombreCompleto: p.name,
+    logo: p.logoOscuro ?? p.logo,
+    escala: (p.escalaOptica ?? 1) * (p.escalaOpticaFlyer ?? 1),
+  }));
 
   /*
-   * Mención de financiamiento: la fórmula de ANID (RNF-8.1) y los tres proyectos con su
-   * folio, que pidió Mauricio el 2026-10-08. Se arma aquí para que la franja, el texto
-   * alternativo y el criterio RF-26.6 usen la misma cadena.
+   * Mención de financiamiento al pie: el agradecimiento que mandó Mauricio el 2026-10-09,
+   * en el idioma de la pieza (`ui.flyer.agradecimiento`). La comparten la franja, el texto
+   * alternativo y el criterio RF-26.6.
    */
-  const [cyted] = c.financiadores;
-  const folios = [
-    c.funding.project.code,
-    ...c.funding.otrosProyectos.map((p) => p.code),
-    cyted.project.code,
-  ];
-  const otros = c.funding.otrosProyectos.map((p) => `${p.instrumento} ${p.code}`);
-  const mencion = [
-    `${c.funding.mencion} · ${c.funding.project.code}.`,
-    `${[...otros, `${cyted.agency.shortName} ${cyted.project.code}`, cyted.project.acronimo].join(' · ')}.`,
-  ].join(' ');
+  const mencion = c.ui.flyer.agradecimiento;
 
   return {
     restoTitulo,
@@ -102,7 +89,6 @@ export function datosFlyer(c: Contenido) {
     nacionales: expositores(c.speakers.national),
     participantes,
     mencion,
-    folios,
     /* Solo el programa real: el demostrativo del sitio lleva un aviso que la lámina no tiene. */
     jornadas: c.program.esDemostracion ? [] : c.program.days,
   };

@@ -29,15 +29,14 @@ const EMISOR = { unica: 230, portada: 700, historia: 900, expositores: 700, insc
  * Lo que la lámina debe contener, para los criterios de `specs/003-difusion-redes`. Se
  * declara aquí, junto a la decisión de qué lámina es, y no se deduce del HTML.
  */
-const { dominio, organizador, participantes, folios } = datosFlyer(c);
+const { dominio, organizador, participantes, mencion } = datosFlyer(c);
 const conFranja = lamina !== 'expositores';
 const esperado = {
   dominio,
   fecha: c.dates.shortLabel,
   organizador: ['unica', 'portada', 'historia'].includes(lamina) ? organizador : null,
-  marcas: conFranja ? ['pucv', 'eie', 'cyted', 'anid'] : [],
-  mencion: conFranja ? c.funding.mencion : null,
-  folios: conFranja ? folios : [],
+  marcas: conFranja ? ['pucv', 'eie', 'cyted', 'aps', 'anid'] : [],
+  mencion: conFranja ? mencion : null,
   // Toda lámina con franja lleva la fila de participantes encima (`Marcas participantes`).
   participantes: conFranja ? participantes.map((p) => p.nombre) : [],
 };

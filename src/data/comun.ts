@@ -69,7 +69,6 @@ import cpsRtcOscuro from '~/assets/logos/cps-rtc-oscuro.png';
  */
 import cctvalClaro from '~/assets/logos/cctval.png';
 import cctvalOscuro from '~/assets/logos/cctval-oscuro.png';
-import apsOscuro from '~/assets/logos/ieee-aps-oscuro.png';
 /*
  * Retrato de Mauricio Rodríguez para «El seminario» (RF-31). Lo pidió él, a través de
  * Daniel, el 2026-10-04: eso es la autorización de RF-11.1. Desde el 2026-10-06 es la foto
@@ -667,23 +666,6 @@ export const comun = {
     },
   ],
 
-  /*
-   * Marcas que van en la fila de participantes del flyer y no en el sitio. IEEE AP-S, la
-   * sociedad de antenas y propagación, que tiene su espacio en el programa: Mauricio pidió
-   * su logo en el flyer (Daniel, 2026-10-08), bajo la misma decisión de tomar de internet
-   * los logos que faltan (RF-22). `main-logo-2025.svg` de `ieeeaps.org`, rasterizado a
-   * 360 px de alto; la variante oscura es la silueta en blanco. Solo esa variante, porque
-   * la fila va sobre el fondo oscuro de la lámina.
-   */
-  colaboradoresFlyer: [
-    {
-      name: 'IEEE Antennas and Propagation Society',
-      shortName: 'IEEE AP-S',
-      logoOscuro: apsOscuro,
-      url: 'https://www.ieeeaps.org',
-    },
-    // `satisfies` comprueba el contrato; `as` lo ensancha para que se lean los opcionales.
-  ] satisfies Institucion[] as Institucion[],
 
   /*
    * Reconocimiento del financiamiento (RNF-8). **No es cortesía: ANID lo exige**,

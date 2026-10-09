@@ -47,11 +47,12 @@ export type FormatoFlyer = keyof typeof FORMATOS_FLYER;
 export const PISO_FLYER = 31;
 
 /*
- * Piso de la franja de marcas, que solo lleva la mención de financiamiento: letra legal,
- * que se lee acercando, no el mensaje. 24 px son 8,7 pt en el teléfono. Lo pidió Mauricio
- * por Daniel el 2026-10-08: financiamiento más pequeño y menos blanco abajo.
+ * Piso de la mención de financiamiento: letra legal, que se lee acercando, no el mensaje.
+ * 20 px son 7,2 pt en el teléfono. Era 24 desde el 2026-10-08; bajó a 20 el 2026-10-09
+ * para que el agradecimiento de Mauricio, más largo, quepa en tres renglones y la franja
+ * no crezca («la letra lo más pequeña posible para que no se afecten las proporciones»).
  */
-export const PISO_PIE_FLYER = 24;
+export const PISO_PIE_FLYER = 20;
 
 /*
  * Qué lleva cada lámina. Ocho expositores no caben a tamaño legible junto a la portada,

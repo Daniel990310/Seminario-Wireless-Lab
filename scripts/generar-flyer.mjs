@@ -55,7 +55,7 @@ const CRITERIOS = {
   'RF-26.3': 'Solo las marcas autorizadas en la franja; todos los participantes',
   'RF-26.4': 'ANID a la derecha de las demás marcas',
   'RF-26.5': 'Peso de las marcas entre 0,72× y 1,7× el de ANID',
-  'RF-26.6': 'Fórmula de ANID completa y cada folio',
+  'RF-26.6': 'Agradecimiento de financiamiento completo',
   'RF-28.1': 'El QR lee la URL del formulario, a escala 1 y 0,5',
   'RF-28.3': 'Hueco del sticker libre, de 600 × 170 o más',
   'RF-29.1': 'Texto alternativo, entre 1 y 1000 caracteres',
