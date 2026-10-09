@@ -373,15 +373,17 @@ export const comun = {
        * justamente porque ninguna etiqueta de país describe a un consorcio, pero la etiqueta
        * describe a la persona.
        *
-       * La afiliación es la cadena que confirmó el organizador, y su firma del 2026-10-06 la
-       * respalda: «Senior RF Engineer, ALMA» e «International Staff Member, ESO». ESO sí es
-       * su empleador; trabaja destinado en ALMA.
+       * Su firma del 2026-10-06 dice «Senior RF Engineer, ALMA» e «International Staff
+       * Member, ESO»: ESO es su empleador y trabaja destinado en ALMA. La afiliación es ALMA.
+       * Hasta el 2026-10-09 decía «ALMA / European Southern Observatory», que se leía como si
+       * fueran lo mismo; no lo son: ALMA es una asociación de ESO, la NSF y los NINS con
+       * Chile (Daniel lo marcó como un error serio). Su reseña sigue nombrando a ESO.
        */
       {
         id: 'siringo',
         foto: fotoSiringo,
         name: 'Giorgio Siringo',
-        affiliation: 'ALMA / European Southern Observatory',
+        affiliation: 'Atacama Large Millimeter/submillimeter Array (ALMA)',
         country: 'CL',
         perfil: 'https://www.almaobservatory.org/en/team/giorgio-siringo/',
       },
@@ -613,7 +615,8 @@ export const comun = {
      * `copyright@alma.cl` sin respuesta; la UPB no publica contacto de marca.
      */
     {
-      name: 'ALMA / European Southern Observatory',
+      // El nombre oficial; ESO es uno de sus socios, no su otro nombre (ver Siringo arriba).
+      name: 'Atacama Large Millimeter/submillimeter Array (ALMA)',
       shortName: 'ALMA',
       logo: almaLogo,
       // Placa opaca y vertical: el área la lleva al tope de 1,7× y en la fila densa del
@@ -651,7 +654,8 @@ export const comun = {
      * Mauricio asumió la responsabilidad de publicarlas así (Daniel, 2026-10-06).
      */
     {
-      name: 'IEEE Communications Society, Chile Section',
+      // «Chapter», no «Section»: la Chile Section es la sección IEEE de la que depende.
+      name: 'IEEE Communications Society, Chile Chapter',
       shortName: 'IEEE ComSoc Chile',
       logo: comsocClaro,
       logoOscuro: comsocOscuro,

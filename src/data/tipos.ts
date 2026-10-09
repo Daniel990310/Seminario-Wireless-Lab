@@ -182,6 +182,10 @@ export interface ContenidoIdioma {
       escanea: string;
       /** Historia: va sobre el hueco donde se pega el sticker de enlace al publicar. */
       sticker: string;
+      /** Pie de publicación del carrusel: dice que hay más láminas y qué traen. */
+      deslizaPie: string;
+      /** Pie de publicación: antecede a la URL del sitio. */
+      programaPie: string;
       /**
        * Agradecimiento de financiamiento al pie de las piezas, el que mandó Mauricio el
        * 2026-10-09 en inglés; la versión en español es traducción nuestra (Daniel pidió que

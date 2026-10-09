@@ -5,7 +5,7 @@ import LaminaExpositores from '~/components/flyer/LaminaExpositores.astro';
 import LaminaInscripcion from '~/components/flyer/LaminaInscripcion.astro';
 import LaminaUnica from '~/components/flyer/LaminaUnica.astro';
 import Portada from '~/components/flyer/Portada.astro';
-import { altFlyer, datosFlyer } from '~/components/flyer/datos';
+import { altFlyer, datosFlyer, pieDePublicacion } from '~/components/flyer/datos';
 import { contenido } from '~/data/contenido';
 import { PIEZAS_FLYER } from '~/data/flyer';
 
@@ -46,6 +46,7 @@ const esperado = {
   lang={idioma}
   formato={formato}
   alt={altFlyer(c, lamina)}
+  pie={lamina === 'portada' ? pieDePublicacion(c, 'carrusel') : lamina === 'unica' ? pieDePublicacion(c, 'unica') : undefined}
   emisor={EMISOR[lamina]}
   esperado={esperado}
 >

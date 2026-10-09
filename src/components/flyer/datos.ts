@@ -95,6 +95,32 @@ export function datosFlyer(c: Contenido) {
 }
 
 /*
+ * Pie de publicación: el texto que va bajo el post, **uno por publicación** —el carrusel
+ * entero o la pieza única—, no uno por imagen; eso es el texto alternativo. Lo pidió
+ * Daniel el 2026-10-09. Sale de los mismos datos que el sitio, para que no se contradigan.
+ */
+export function pieDePublicacion(c: Contenido, publicacion: 'carrusel' | 'unica') {
+  const t = c.ui.flyer;
+  const { dominio, organizador, mencion } = datosFlyer(c);
+  const [, escuela] = c.organizers;
+  // Raya y no paréntesis: la afiliación de Siringo ya trae «(ALMA)».
+  const expositores = [...c.speakers.international, ...c.speakers.national]
+    .map((e) => `- ${e.name} — ${e.affiliation}`)
+    .join('\n');
+  return [
+    `${c.ui.hero.eyebrow}\n${c.title}`,
+    `${c.dates.label}, ${c.venue.name}, ${c.venue.country}.`,
+    organizador ? `${t.organiza}: ${organizador} (${escuela.name}).` : '',
+    `${t.expositores}:\n${expositores}`,
+    publicacion === 'carrusel' ? t.deslizaPie : '',
+    `${t.programaPie} https://${dominio}`,
+    mencion,
+  ]
+    .filter(Boolean)
+    .join('\n\n');
+}
+
+/*
  * Texto alternativo de cada lámina, para pegar al publicar: Instagram y LinkedIn lo piden
  * por imagen. Dice lo que la lámina dice, con los nombres de institución completos.
  */
@@ -103,16 +129,17 @@ export function altFlyer(c: Contenido, lamina: LaminaFlyer) {
   const { dominio, organizador, participantes, mencion, jornadas } = datosFlyer(c);
   const organiza = organizador ? ` ${t.organiza}: ${organizador}.` : '';
   const evento = `${c.title}. ${c.dates.label}, ${c.venue.name}, ${c.venue.country}.${organiza}`;
+  // Raya y punto y coma: la afiliación de Feick lleva coma y la de Siringo, paréntesis.
   const lista = [...c.speakers.international, ...c.speakers.national]
-    .map((e) => `${e.name} (${e.affiliation})`)
-    .join(', ');
+    .map((e) => `${e.name} — ${e.affiliation}`)
+    .join('; ');
   const qr = c.registro.url ? ` ${t.qr} (QR).` : '';
-  const instituciones = `${participantes.map((p) => p.nombreCompleto).join(', ')}.`;
+  const instituciones = `${c.ui.organizacion.participantes}: ${participantes.map((p) => p.nombreCompleto).join('; ')}.`;
   const horario = jornadas.map((d) => `${d.label}, ${d.date}`).join('; ');
   const partes: Record<LaminaFlyer, string[]> = {
     portada: [evento, `${t.inscripciones} ${dominio}.`, instituciones, mencion],
     historia: [evento, `${t.sticker}.`, instituciones, mencion],
-    expositores: [`${c.tituloCorto}, ${c.dates.label}. ${t.expositores}: ${lista}.`],
+    expositores: [`${c.tituloCorto}, ${c.dates.label}. ${t.expositores}: ${lista}.`, mencion],
     inscripcion: [
       `${c.tituloCorto}, ${c.dates.label}. ${t.inscripcion}: ${t.escanea} ${dominio}.${qr}`,
       horario && `${horario}.`,

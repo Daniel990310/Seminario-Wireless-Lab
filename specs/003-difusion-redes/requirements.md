@@ -110,6 +110,7 @@ figura son trazos finos al 65 %; su efecto sobre la lectura lo juzga RF-30.1.
 | # | Criterio | Procedencia | Quién lo mide |
 | - | --- | --- | --- |
 | RF-29.1 | Cada pieza trae su **texto alternativo**, entre 1 y 1000 caracteres. El de la pieza única no repite la lista de instituciones participantes: cada expositor ya nombra la suya, y con ella pasaba de 1000 | `[verificado]` límite de la API de Instagram; las historias no admiten alt | generador |
+| RF-29.6 | Cada **publicación** —el carrusel, la pieza única— trae su **pie de publicación** (`<idioma>-carrusel.pie.txt`, `<idioma>-unica.pie.txt`): uno por publicación, no por imagen, hasta 2200 caracteres. Título, fecha y lugar, organizador, expositores con su afiliación, inscripción y agradecimiento de financiamiento, armados con los datos del sitio | Daniel, 2026-10-09: el texto alternativo no es el pie; límite de Instagram | generador |
 | RF-29.2 | El PDF trae texto vivo: **sin Type3** y con las tres familias incrustadas | `[medido]`: con Type3, Illustrator abría 0 marcos | generador |
 | RF-29.3 | El PDF mide lo mismo que el lienzo y pesa **menos de 100 MB**, el máximo de un documento de LinkedIn | `[verificado]` | generador |
 | RF-29.4 | Todas las imágenes cargaron | — | generador |

@@ -62,6 +62,7 @@ const CRITERIOS = {
   'RF-29.2': 'PDF sin Type3 y con las tres familias incrustadas',
   'RF-29.3': 'PDF del tamaño del lienzo y bajo 100 MB',
   'RF-29.4': 'Todas las imágenes cargaron',
+  'RF-29.6': 'Pie de publicación, hasta 2200 caracteres',
 };
 
 /* Variable del sitio → familia, nombre PostScript y genérica. Pesos que el cartel usa. */
@@ -172,6 +173,19 @@ for (const { pieza, formato } of PIEZAS_FLYER) {
   const alt = (await page.locator('meta[name="flyer-alt"]').getAttribute('content')) ?? '';
   await writeFile(join(SALIDA, `${pieza}.alt.txt`), `${alt}\n`, 'utf8');
   r.push({ id: 'RF-29.1', ok: alt.length > 0 && alt.length <= 1000, detalle: `${alt.length} caracteres` });
+
+  /*
+   * RF-29.6 · pie de publicación, uno por publicación: lo trae la lámina que la abre
+   * (portada del carrusel o pieza única). `es-carrusel-1` escribe `es-carrusel.pie.txt`.
+   * 2200 caracteres es el máximo de Instagram; LinkedIn admite 3000.
+   */
+  // Con `evaluate` y no con `locator`: el locator espera 30 s a una etiqueta que la mayoría
+  // de las láminas no lleva.
+  const pie = await page.evaluate(() => document.querySelector('meta[name="flyer-pie"]')?.content);
+  if (pie) {
+    await writeFile(join(SALIDA, `${pieza.replace(/-1$/, '')}.pie.txt`), `${pie}\n`, 'utf8');
+    r.push({ id: 'RF-29.6', ok: pie.length <= 2200, detalle: `${pie.length} caracteres` });
+  }
 
   // Las fuentes instaladas tienen métricas apenas distintas: se vuelve a medir el lienzo.
   await page.addStyleTag({ content: CSS_PDF });

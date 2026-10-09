@@ -212,6 +212,8 @@ export const es = {
       inscripcion: 'Inscripción',
       escanea: 'Escanea el código o entra a',
       sticker: 'Inscríbete en el enlace',
+      deslizaPie: 'Desliza para ver a los expositores y el código QR de inscripción.',
+      programaPie: 'Inscripciones y programa:',
       agradecimiento:
         'Este trabajo fue financiado por ANID FONDECYT 1250951 y 11261397, ANID CCTVal CIA250027, ANID Vinculación Internacional FOVI250222 y el Programa Iberoamericano de Ciencia y Tecnología para el Desarrollo - CYTED (525RT0175-DISeCom).',
       grupoInternacional: 'Internacionales',
