@@ -26,7 +26,7 @@
  *
  * Uso: `npm run build && npm run flyer`.
  */
-import { mkdir, readFile, writeFile, stat } from 'node:fs/promises';
+import { mkdir, readFile, rm, writeFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { inflateSync } from 'node:zlib';
 import { PDFDocument } from 'pdf-lib';
@@ -94,7 +94,10 @@ async function cssPdf() {
   return `${caras.join('')}html:root{${variables}}`;
 }
 
-/** Fuentes de un PDF de Chromium, que las guarda dentro de flujos comprimidos. */
+/**
+ * Fuentes de un PDF de Chromium, que las guarda dentro de flujos comprimidos: cuántas
+ * Type3 trae y cuáles de las tres familias del sitio faltan (RF-29.2).
+ */
 async function fuentesDelPdf(ruta) {
   const b = await readFile(ruta);
   const s = b.toString('latin1');
@@ -108,9 +111,10 @@ async function fuentesDelPdf(ruta) {
     }
   }
   const caja = (todo.match(/\/MediaBox\s*\[\s*0\s+0\s+([\d.]+)\s+([\d.]+)/) ?? []).slice(1).map(Number);
+  const nombres = [...new Set(todo.match(/\/BaseFont\s*\/[^\s/\]>]+/g) ?? [])].join(' ');
   return {
     type3: (todo.match(/\/Subtype\s*\/Type3/g) ?? []).length,
-    nombres: [...new Set(todo.match(/\/BaseFont\s*\/[^\s/\]>]+/g) ?? [])].join(' '),
+    faltan: Object.values(FUENTES_PDF).filter(([, ps]) => !nombres.includes(ps)).map(([f]) => f),
     caja,
     bytes: b.length,
   };
@@ -148,6 +152,8 @@ await mkdir(REVISION, { recursive: true });
 const CSS_PDF = await cssPdf();
 const { base, navegador, cerrar } = await abrirDist();
 const resultados = {};
+// Las piezas que escribieron su PDF en esta corrida: RF-29.7 solo une esas.
+const pdfsEscritos = new Set();
 
 for (const { pieza, formato, idioma, publicacion, pie: llevaPie } of PIEZAS_FLYER) {
   const { ancho, alto, seguro } = FORMATOS_FLYER[formato];
@@ -202,8 +208,8 @@ for (const { pieza, formato, idioma, publicacion, pie: llevaPie } of PIEZAS_FLYE
   await page.emulateMedia({ media: 'screen' });
   await page.pdf({ path: rutaPdf, width: `${ancho}px`, height: `${alto}px`, printBackground: true, pageRanges: '1' });
   const pdf = await fuentesDelPdf(rutaPdf);
-  const faltan = Object.values(FUENTES_PDF).filter(([, ps]) => !pdf.nombres.includes(ps)).map(([f]) => f);
-  r.push({ id: 'RF-29.2', ok: !pdf.type3 && !faltan.length, detalle: pdf.type3 ? `${pdf.type3} Type3` : faltan.join(', ') });
+  pdfsEscritos.add(pieza);
+  r.push({ id: 'RF-29.2', ok: !pdf.type3 && !pdf.faltan.length, detalle: pdf.type3 ? `${pdf.type3} Type3` : pdf.faltan.join(', ') });
   const [pw, ph] = pdf.caja;
   const cuadra = Math.abs(pw - ancho * 0.75) < 1 && Math.abs(ph - alto * 0.75) < 1;
   r.push({ id: 'RF-29.3', ok: cuadra && pdf.bytes < 100e6, detalle: `${pw}×${ph} pt, ${(pdf.bytes / 1e6).toFixed(1)} MB` });
@@ -236,14 +242,20 @@ await cerrar();
  * vectoriales de las láminas, con su texto vivo, y se le vuelve a medir RF-29.2 (sin Type3,
  * las tres familias). El resultado se anota en la lámina que abre el carrusel.
  */
+// Se fija aparte y no se deduce de `LAMINAS`: deducido, el criterio no podría fallar. Si
+// el carrusel gana o pierde láminas, se cambia junto con `LAMINAS`.
 const PAGINAS_CARRUSEL = 3;
 for (const idioma of ['es', 'en']) {
   const laminas = PIEZAS_FLYER.filter((p) => p.idioma === idioma && p.publicacion === 'carrusel');
-  const abre = laminas.find((p) => p.pie).pieza;
+  const abre = laminas.find((p) => p.pie)?.pieza;
+  if (!abre) throw new Error(`El carrusel ${idioma} no tiene lámina con pie en LAMINAS (src/data/flyer.ts).`);
+  const ruta = join(SALIDA, `${idioma}-carrusel.pdf`);
   // Una lámina que no llegó a su PDF en esta corrida (falló al cargar) no se une: el PDF que
-  // haya en disco sería el de una corrida anterior.
-  const sinPdf = laminas.filter(({ pieza }) => !resultados[pieza].some((x) => x.id === 'RF-29.2'));
+  // haya en disco sería el de una corrida anterior. Se borra el carrusel viejo para que no
+  // quede uno desactualizado junto al informe en rojo.
+  const sinPdf = laminas.filter(({ pieza }) => !pdfsEscritos.has(pieza));
   if (sinPdf.length) {
+    await rm(ruta, { force: true });
     resultados[abre].push({ id: 'RF-29.7', ok: false, detalle: `sin PDF de ${sinPdf.map((p) => p.pieza).join(', ')}` });
     continue;
   }
@@ -254,14 +266,19 @@ for (const idioma of ['es', 'en']) {
   for (const origen of origenes) {
     for (const pagina of await carrusel.copyPages(origen, origen.getPageIndices())) carrusel.addPage(pagina);
   }
-  const ruta = join(SALIDA, `${idioma}-carrusel.pdf`);
   await writeFile(ruta, await carrusel.save());
   const pdf = await fuentesDelPdf(ruta);
-  const faltan = Object.values(FUENTES_PDF).filter(([, ps]) => !pdf.nombres.includes(ps)).map(([f]) => f);
+  const paginas = carrusel.getPageCount();
+  const detalle = [
+    `${paginas} páginas`,
+    `${(pdf.bytes / 1e6).toFixed(1)} MB`,
+    pdf.type3 && `${pdf.type3} Type3`,
+    pdf.faltan.length && `faltan ${pdf.faltan.join(', ')}`,
+  ].filter(Boolean);
   resultados[abre].push({
     id: 'RF-29.7',
-    ok: carrusel.getPageCount() === PAGINAS_CARRUSEL && !pdf.type3 && !faltan.length && pdf.bytes < 100e6,
-    detalle: `${carrusel.getPageCount()} páginas, ${(pdf.bytes / 1e6).toFixed(1)} MB${pdf.type3 ? `, ${pdf.type3} Type3` : ''}${faltan.length ? `, faltan ${faltan.join(', ')}` : ''}`,
+    ok: paginas === PAGINAS_CARRUSEL && !pdf.type3 && !pdf.faltan.length && pdf.bytes < 100e6,
+    detalle: detalle.join(', '),
   });
 }
 

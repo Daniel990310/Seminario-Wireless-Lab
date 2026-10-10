@@ -4,7 +4,7 @@
  *
  * ── PUCV, EIE, CYTED, IEEE AP-S Y ANID ──────────────────────────────────────────
  *
- * Las cuatro que Daniel autorizó el 2026-10-01 y, desde el 2026-10-09, IEEE AP-S junto a
+ * Las cuatro primeras las autorizó Daniel el 2026-10-01; desde el 2026-10-09, IEEE AP-S junto a
  * CYTED, pedido de Mauricio. Su logo es el de `ieeeaps.org` (`main-logo-2025.svg`,
  * rasterizado a 360 px de alto), bajo la decisión de RF-22 de tomar de internet los logos
  * que faltan. Las instituciones participantes van en la fila de encima (`Participantes`).
@@ -54,13 +54,15 @@ import { datosFlyer } from './datos';
 interface Props {
   c: Contenido;
   /**
-   * Sin la fila de participantes: la lámina de expositores, donde le quitaría a los
-   * retratos el alto que la franja sola ya les quita (Daniel, 2026-10-09, a prueba).
+   * Fila de participantes sobre la franja; la decide `LAMINAS` en `src/data/flyer.ts`. Sin
+   * valor por omisión: así no hay una segunda fuente de verdad. No la lleva la lámina de
+   * expositores, donde le quitaría a los retratos el alto que la franja sola ya les quita
+   * (Daniel, 2026-10-09, a prueba).
    */
-  participantes?: boolean;
+  participantes: boolean;
 }
 
-const { c, participantes = true } = Astro.props;
+const { c, participantes } = Astro.props;
 const [pucv] = c.organizers;
 const anid = c.funding.agency;
 const { mencion } = datosFlyer(c);

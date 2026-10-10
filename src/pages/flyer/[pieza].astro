@@ -49,9 +49,9 @@ const esperado = {
   emisor={EMISOR[lamina]}
   esperado={esperado}
 >
-  {lamina === 'unica' && <LaminaUnica c={c} />}
-  {lamina === 'portada' && <Portada c={c} />}
-  {lamina === 'historia' && <Portada c={c} historia />}
+  {lamina === 'unica' && <LaminaUnica c={c} participantes={conParticipantes} />}
+  {lamina === 'portada' && <Portada c={c} participantes={conParticipantes} />}
+  {lamina === 'historia' && <Portada c={c} historia participantes={conParticipantes} />}
   {lamina === 'expositores' && <LaminaExpositores c={c} participantes={conParticipantes} />}
-  {lamina === 'inscripcion' && <LaminaInscripcion c={c} />}
+  {lamina === 'inscripcion' && <LaminaInscripcion c={c} participantes={conParticipantes} />}
 </CartelFlyer>
