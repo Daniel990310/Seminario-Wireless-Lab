@@ -7,13 +7,12 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-10-06** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
-ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-10-06**, versión
-`b6bdd2dd`, desde `main` en `f2689a8` (PR #19, charlas confirmadas en «Programa», logos
-PUC/ComSoc/CPS-RTC y foto de Rodríguez; PR #20, Fondecyt Regular 1250951), en
-`https://bcsensing.org`. `verify:todo` en verde antes y `verify:publicado` con todos los
-criterios cumplidos después `[medido: 2026-10-06]`. Thermos dispensado por Daniel en #19 y
-#20 (registrado con `--sin-thermos`); `/slop-check pr` corrido en los dos. Antes:
+Actualizado: **2026-10-10** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
+ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-10-10**, versión
+`8e7b5b9a`, desde `main` en `e89cea9` (PR #28 y #29: nombre correcto de ALMA y de ComSoc
+Chile en el sitio, más los flyers), en `https://bcsensing.org`. `verify:todo` en verde
+antes y `verify:publicado` 32 ✓, 0 ✗ después `[medido: 2026-10-10]`. Antes: 2026-10-08,
+`d60d3ab4` (PR #27) y `f6e5fe8b` (PR #22–#24); 2026-10-06, `b6bdd2dd` (PR #19 y #20);
 2026-10-05, `aac04b64` (PR #15) y `20a555ca` (PR #13); 2026-10-02, `b0d566cd`.
 · **Publicado en <https://bcsensing.org> el 2026-09-22, versión `830dafb9`. Primer
 despliegue indexable. Pendientes en «EMPIEZA AQUÍ»: Search Console y el token de
@@ -22,6 +21,25 @@ Hostinger sin revocar.**
 ---
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
+
+## ALMA corregido en el sitio y flyers para difusión · 2026-10-10 · (en vivo, versión `8e7b5b9a`)
+
+- **Desplegado el 2026-10-10** (`8e7b5b9a-d457-4251-94d0-fc9b44d9fc82`) con los PR #28 y
+  #29. `verify:publicado` 32 ✓, 0 ✗ `[medido]`.
+- **ALMA** ya no figura como «ALMA / European Southern Observatory», que lo hacía pasar por
+  la ESO: es «Atacama Large Millimeter/submillimeter Array (ALMA)» en la ficha de Siringo
+  y en las instituciones participantes. Antes del despliegue el sitio lo decía 5 veces en
+  español y 6 en inglés; después, 0 `[medido con curl]`. La biografía en inglés de Siringo
+  sigue nombrando a la ESO, y es correcto: es su empleador.
+- **ComSoc** con su nombre: «IEEE Communications Society, Chile Chapter».
+- **Flyers** (`specs/003-difusion-redes`): IEEE AP-S junto a CYTED, agradecimiento de
+  financiamiento de Mauricio en el idioma de cada pieza, franja también en la lámina de
+  expositores, pie de publicación por publicación y el carrusel en un PDF para LinkedIn.
+  El correo para difusión PUCV (Bugueño, periodista EIE, Jara; copia a Rodríguez) quedó
+  armado en el `.eml` de `Descargas/Flyers Beyond Connectivity 2026-10-09`; lo envía Daniel.
+- **Pendiente:** confirmar con Mauricio los folios 11261397 y CIA250027 (`[supuesto]`) y que
+  su agradecimiento reemplace la fórmula de ANID en los flyers (RF-26.6); decidir si el
+  sitio también lista esos dos proyectos (hoy solo el Fondecyt Regular 1250951).
 
 ## CCTVal, menú móvil e íconos del programa · 2026-10-08 · (en vivo, versión `d60d3ab4`)
 
