@@ -29,6 +29,7 @@
 import { mkdir, readFile, writeFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { inflateSync } from 'node:zlib';
+import { PDFDocument } from 'pdf-lib';
 import { FORMATOS_FLYER, PIEZAS_FLYER, PISO_FLYER, PISO_PIE_FLYER } from '../src/data/flyer.ts';
 import { RAIZ, abrirDist } from './lib/servir-dist.mjs';
 import { medirLienzo } from './lib/criterios-flyer.mjs';
@@ -63,6 +64,7 @@ const CRITERIOS = {
   'RF-29.3': 'PDF del tamaño del lienzo y bajo 100 MB',
   'RF-29.4': 'Todas las imágenes cargaron',
   'RF-29.6': 'Pie de publicación, hasta 2200 caracteres',
+  'RF-29.7': 'Carrusel en un PDF de tres páginas, bajo 100 MB',
 };
 
 /* Variable del sitio → familia, nombre PostScript y genérica. Pesos que el cartel usa. */
@@ -228,6 +230,29 @@ for (const idioma of ['es', 'en']) {
 }
 
 await cerrar();
+
+/*
+ * RF-29.7 · el carrusel como un solo PDF, para publicarlo en LinkedIn como documento: así
+ * se ve deslizable; las tres imágenes sueltas las muestra en cuadrícula. Se unen los PDF
+ * vectoriales de las láminas, con su texto vivo. El resultado va con la portada.
+ */
+for (const idioma of ['es', 'en']) {
+  const laminas = PIEZAS_FLYER.filter((p) => p.idioma === idioma && p.id.startsWith('carrusel-'));
+  const carrusel = await PDFDocument.create();
+  for (const { pieza } of laminas) {
+    const origen = await PDFDocument.load(await readFile(join(SALIDA, `${pieza}.pdf`)));
+    // El título del documento, el `<title>` de la lámina: es el que LinkedIn muestra.
+    if (!carrusel.getTitle()) carrusel.setTitle(origen.getTitle() ?? '');
+    for (const pagina of await carrusel.copyPages(origen, origen.getPageIndices())) carrusel.addPage(pagina);
+  }
+  const bytes = await carrusel.save();
+  await writeFile(join(SALIDA, `${idioma}-carrusel.pdf`), bytes);
+  resultados[`${idioma}-carrusel-1`].push({
+    id: 'RF-29.7',
+    ok: carrusel.getPageCount() === laminas.length && bytes.length < 100e6,
+    detalle: `${carrusel.getPageCount()} páginas, ${(bytes.length / 1e6).toFixed(1)} MB`,
+  });
+}
 
 /* Informe: una fila por criterio, una columna por pieza. */
 const piezas = Object.keys(resultados);

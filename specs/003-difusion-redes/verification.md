@@ -1,6 +1,6 @@
 # Verificación de las piezas de difusión
 
-> **Generado por `npm run flyer` el 2026-10-09 18:29 UTC. No editar.** Criterios en
+> **Generado por `npm run flyer` el 2026-10-10 02:04 UTC. No editar.** Criterios en
 > [`requirements.md`](requirements.md). `n/a` = el criterio no aplica a esa pieza.
 
 **Todos los criterios medibles en verde.** Falta la revisión humana de RF-30 antes de publicar.
@@ -29,3 +29,4 @@
 | RF-29.3 | PDF del tamaño del lienzo y bajo 100 MB | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | RF-29.4 | Todas las imágenes cargaron | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | RF-29.6 | Pie de publicación, hasta 2200 caracteres | ✓ | ✓ | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a | n/a | n/a |
+| RF-29.7 | Carrusel en un PDF de tres páginas, bajo 100 MB | n/a | ✓ | n/a | n/a | n/a | n/a | n/a | ✓ | n/a | n/a | n/a | n/a |
