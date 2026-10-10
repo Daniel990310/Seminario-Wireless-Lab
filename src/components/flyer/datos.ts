@@ -7,7 +7,7 @@
  *   31 rótulo y afiliación (11,2) · 34 nombre de expositor (12,3) · 36 cuerpo (13) ·
  *   44 destacado (15,9) · 52 subtítulo (18,8) · 64 fecha compacta (23,1) ·
  *   84 título de lámina (30,3) · 100 fecha de portada (36,1).
- * La franja de marcas tiene su propio piso, `PISO_PIE_FLYER` (24). Una lámina que necesite
+ * La mención de financiamiento tiene su propio piso, `PISO_PIE_FLYER` (20). Una lámina que necesite
  * otro valor lo declara donde lo usa y dice por qué.
  */
 import type { Institucion, Logo } from '~/data/comun';
@@ -62,37 +62,25 @@ export function datosFlyer(c: Contenido) {
     : null;
 
   /*
-   * Fila de instituciones participantes (Mauricio, 2026-10-08): las del sitio y las que
-   * solo van en el flyer. Sobre el fondo oscuro, la variante oscura si la hay. Una sin
-   * logo no se filtra aquí: `Participantes` la omite, y el generador lo detecta porque
-   * espera a todas por nombre (RF-26.3).
+   * Fila de instituciones participantes del sitio (Mauricio, 2026-10-08). Sobre el fondo
+   * oscuro, la variante oscura si la hay. Una sin logo no se filtra aquí: `Participantes`
+   * la omite, y el generador lo detecta porque espera a todas por nombre (RF-26.3).
    */
-  const instituciones: readonly Institucion[] = [...c.participants, ...c.colaboradoresFlyer];
-  const participantes: ParticipanteFlyer[] = instituciones.map(
-    (p) => ({
-      nombre: p.shortName,
-      nombreCompleto: p.name,
-      logo: p.logoOscuro ?? p.logo,
-      escala: (p.escalaOptica ?? 1) * (p.escalaOpticaFlyer ?? 1),
-    }),
-  );
+  // Anotado como `Institucion[]` para leer los campos opcionales (`logoOscuro`, escalas).
+  const instituciones: readonly Institucion[] = c.participants;
+  const participantes: ParticipanteFlyer[] = instituciones.map((p) => ({
+    nombre: p.shortName,
+    nombreCompleto: p.name,
+    logo: p.logoOscuro ?? p.logo,
+    escala: (p.escalaOptica ?? 1) * (p.escalaOpticaFlyer ?? 1),
+  }));
 
   /*
-   * Mención de financiamiento: la fórmula de ANID (RNF-8.1) y los tres proyectos con su
-   * folio, que pidió Mauricio el 2026-10-08. Se arma aquí para que la franja, el texto
-   * alternativo y el criterio RF-26.6 usen la misma cadena.
+   * Mención de financiamiento al pie: el agradecimiento que mandó Mauricio el 2026-10-09,
+   * en el idioma de la pieza (`ui.flyer.agradecimiento`). La comparten la franja, el texto
+   * alternativo y el criterio RF-26.6.
    */
-  const [cyted] = c.financiadores;
-  const folios = [
-    c.funding.project.code,
-    ...c.funding.otrosProyectos.map((p) => p.code),
-    cyted.project.code,
-  ];
-  const otros = c.funding.otrosProyectos.map((p) => `${p.instrumento} ${p.code}`);
-  const mencion = [
-    `${c.funding.mencion} · ${c.funding.project.code}.`,
-    `${[...otros, `${cyted.agency.shortName} ${cyted.project.code}`, cyted.project.acronimo].join(' · ')}.`,
-  ].join(' ');
+  const mencion = c.ui.flyer.agradecimiento;
 
   return {
     restoTitulo,
@@ -102,10 +90,35 @@ export function datosFlyer(c: Contenido) {
     nacionales: expositores(c.speakers.national),
     participantes,
     mencion,
-    folios,
     /* Solo el programa real: el demostrativo del sitio lleva un aviso que la lámina no tiene. */
     jornadas: c.program.esDemostracion ? [] : c.program.days,
   };
+}
+
+/*
+ * Pie de publicación: el texto que va bajo el post, **uno por publicación** —el carrusel
+ * entero o la pieza única—, no uno por imagen; eso es el texto alternativo. Lo pidió
+ * Daniel el 2026-10-09. Sale de los mismos datos que el sitio, para que no se contradigan.
+ * Es el mismo texto para el carrusel y la pieza única: se lee completo, sin aludir a láminas.
+ */
+export function pieDePublicacion(c: Contenido) {
+  const t = c.ui.flyer;
+  const { dominio, organizador, mencion } = datosFlyer(c);
+  const [, escuela] = c.organizers;
+  // Raya y no paréntesis: la afiliación de Siringo ya trae «(ALMA)».
+  const expositores = [...c.speakers.international, ...c.speakers.national]
+    .map((e) => `- ${e.name} — ${e.affiliation}`)
+    .join('\n');
+  return [
+    `${c.ui.hero.eyebrow}\n${c.title}`,
+    `${c.dates.label}, ${c.venue.name}, ${c.venue.country}.`,
+    organizador ? `${t.organiza}: ${organizador} (${escuela.name}).` : '',
+    `${t.expositores}:\n${expositores}`,
+    `${t.programaPie} https://${dominio}`,
+    mencion,
+  ]
+    .filter(Boolean)
+    .join('\n\n');
 }
 
 /*
@@ -117,16 +130,17 @@ export function altFlyer(c: Contenido, lamina: LaminaFlyer) {
   const { dominio, organizador, participantes, mencion, jornadas } = datosFlyer(c);
   const organiza = organizador ? ` ${t.organiza}: ${organizador}.` : '';
   const evento = `${c.title}. ${c.dates.label}, ${c.venue.name}, ${c.venue.country}.${organiza}`;
+  // Raya y punto y coma: la afiliación de Feick lleva coma y la de Siringo, paréntesis.
   const lista = [...c.speakers.international, ...c.speakers.national]
-    .map((e) => `${e.name} (${e.affiliation})`)
-    .join(', ');
+    .map((e) => `${e.name} — ${e.affiliation}`)
+    .join('; ');
   const qr = c.registro.url ? ` ${t.qr} (QR).` : '';
-  const instituciones = `${participantes.map((p) => p.nombreCompleto).join(', ')}.`;
+  const instituciones = `${c.ui.organizacion.participantes}: ${participantes.map((p) => p.nombreCompleto).join('; ')}.`;
   const horario = jornadas.map((d) => `${d.label}, ${d.date}`).join('; ');
   const partes: Record<LaminaFlyer, string[]> = {
     portada: [evento, `${t.inscripciones} ${dominio}.`, instituciones, mencion],
     historia: [evento, `${t.sticker}.`, instituciones, mencion],
-    expositores: [`${c.tituloCorto}, ${c.dates.label}. ${t.expositores}: ${lista}.`],
+    expositores: [`${c.tituloCorto}, ${c.dates.label}. ${t.expositores}: ${lista}.`, mencion],
     inscripcion: [
       `${c.tituloCorto}, ${c.dates.label}. ${t.inscripcion}: ${t.escanea} ${dominio}.${qr}`,
       horario && `${horario}.`,

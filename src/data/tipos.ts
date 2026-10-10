@@ -182,6 +182,15 @@ export interface ContenidoIdioma {
       escanea: string;
       /** Historia: va sobre el hueco donde se pega el sticker de enlace al publicar. */
       sticker: string;
+      /** Pie de publicación: antecede a la URL del sitio. */
+      programaPie: string;
+      /**
+       * Agradecimiento de financiamiento al pie de las piezas, el que mandó Mauricio el
+       * 2026-10-09 en inglés; la versión en español es traducción nuestra (Daniel pidió que
+       * cada pieza lo lleve en su idioma). Trae folios que el sitio todavía no declara:
+       * Fondecyt 11261397 y ANID CCTVal CIA250027 `[supuesto: dados por él, no cotejados]`.
+       */
+      agradecimiento: string;
       /**
        * Rótulos de grupo bajo el título «Expositores». Cortos a propósito: los del sitio
        * repiten la palabra y en la lámina se leía «Expositores / Expositores internacionales».

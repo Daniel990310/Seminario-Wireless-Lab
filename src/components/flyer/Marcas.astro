@@ -2,11 +2,12 @@
 /**
  * Franja de marcas al pie de una lámina, sobre blanco y a sangre lateral.
  *
- * ── SOLO LAS CUATRO QUE DANIEL AUTORIZÓ PARA ESTAS PIEZAS (2026-10-01) ─────────
+ * ── PUCV, EIE, CYTED, IEEE AP-S Y ANID ──────────────────────────────────────────
  *
- * PUCV, EIE, CYTED y ANID. Las demás instituciones aparecen como texto, en la afiliación
- * de cada expositor. Que el sitio publique otras marcas no se extiende aquí: un cartel en
- * redes es otra publicación, de más alcance.
+ * Las cuatro primeras las autorizó Daniel el 2026-10-01; desde el 2026-10-09, IEEE AP-S junto a
+ * CYTED, pedido de Mauricio. Su logo es el de `ieeeaps.org` (`main-logo-2025.svg`,
+ * rasterizado a 360 px de alto), bajo la decisión de RF-22 de tomar de internet los logos
+ * que faltan. Las instituciones participantes van en la fila de encima (`Participantes`).
  *
  * Van sobre blanco porque es el fondo para el que sus dueños las diseñaron, y así no hay
  * que elegir variante oscura —el manual de ANID restringe la «pluma» a colores planos
@@ -23,10 +24,9 @@
  * píxeles de tinta plena quedan idénticos. El sitio sigue con el original.
  *
  * La mención de financiamiento va **siempre** que va la franja (Daniel, 2026-10-01: estaba
- * en unas láminas y en otras no): la fórmula de ANID (RNF-8.1) y **todos los proyectos con
- * su folio** —FOVI, Fondecyt Regular y CYTED—, de corrido; la cadena la arma `datosFlyer`.
- * ANID no exige el folio («Cómo mencionar a ANID en productos 2026»); van porque Mauricio
- * lo pidió el 2026-10-08.
+ * en unas láminas y en otras no). Desde el 2026-10-09 es el agradecimiento que mandó
+ * Mauricio, con todos los proyectos y sus folios, en el idioma de cada pieza
+ * (`ui.flyer.agradecimiento`).
  *
  * La fila de instituciones participantes va justo encima de la franja, en toda lámina que
  * la lleva. Este componente es el único dueño del pie: el aire, la fila y la franja.
@@ -40,28 +40,37 @@
  *     mención dice quién financia, así que repetían lo que la lámina ya decía.
  *   - Marcas a 64 px de alto (antes 72) y CYTED a 90 (antes 101): la misma razón para
  *     todas, así que el peso relativo de RF-26.5 no cambia.
- *   - La mención a 24 px, piso propio de la franja (`PISO_PIE_FLYER`): es letra legal, que
- *     se tiene que poder leer acercando, no el mensaje de la lámina.
+ *   - La mención al piso propio de la franja (`PISO_PIE_FLYER`, 20 px desde el 2026-10-09):
+ *     es letra legal, que se tiene que poder leer acercando, no el mensaje de la lámina.
  */
 import { Image } from 'astro:assets';
 import submarcaEie from '~/assets/logos/eie-pucv.png';
 import cytedFondoBlanco from '~/assets/logos/cyted-40-anos-fondo-blanco.png';
+import apsColor from '~/assets/logos/ieee-aps.png';
 import type { Contenido } from '~/data/contenido';
 import Participantes from './Participantes.astro';
 import { datosFlyer } from './datos';
 
 interface Props {
   c: Contenido;
+  /**
+   * Fila de participantes sobre la franja; la decide `LAMINAS` en `src/data/flyer.ts`. Sin
+   * valor por omisión: así no hay una segunda fuente de verdad. No la lleva la lámina de
+   * expositores, donde le quitaría a los retratos el alto que la franja sola ya les quita
+   * (Daniel, 2026-10-09, a prueba).
+   */
+  participantes: boolean;
 }
 
-const { c } = Astro.props;
+const { c, participantes } = Astro.props;
 const [pucv] = c.organizers;
 const anid = c.funding.agency;
 const { mencion } = datosFlyer(c);
 ---
 
 {/*
-  El pie empieza en la fila de participantes. 32 px de aire entre el contenido y el pie
+  El pie empieza en la fila de participantes, o en la franja si no la hay. 32 px de aire
+  entre el contenido y el pie
   (sin aire un retrato quedaba pegado al blanco, Daniel, 2026-10-01): es lo que mide
   RF-24.4, desde lo último del contenido hasta el borde de arriba de la fila. Entre la
   fila y la franja, otros 32.
@@ -70,26 +79,35 @@ const { mencion } = datosFlyer(c);
   (RF-26.3 a RF-26.5), y que no haya ninguna imagen más en la franja.
 */}
 <div class="mt-auto pt-[32px]">
-  <div class="mb-[32px]">
-    <Participantes c={c} />
-  </div>
-<footer
-  data-flyer-marcas
-  class="-mx-[72px] bg-[var(--pure-white)] px-[72px] pt-[22px] pb-[24px] text-[var(--navy-900)]"
->
-  <div class="flex h-[90px] items-center justify-between">
-    <div class="flex items-center gap-[32px]">
-      <Image src={pucv.logo} alt="" width={256} height={130} class="h-[64px] w-auto" data-marca="pucv" />
-      <Image src={submarcaEie} alt="" height={128} class="h-[64px] w-auto" data-marca="eie" />
+  {
+    participantes && (
+      <div class="mb-[32px]">
+        <Participantes c={c} />
+      </div>
+    )
+  }
+  <footer
+    data-flyer-marcas
+    class="-mx-[72px] bg-[var(--pure-white)] px-[72px] pt-[22px] pb-[24px] text-[var(--navy-900)]"
+  >
+    <div class="flex h-[90px] items-center justify-between">
+      <div class="flex items-center gap-[32px]">
+        <Image src={pucv.logo} alt="" width={256} height={130} class="h-[64px] w-auto" data-marca="pucv" />
+        <Image src={submarcaEie} alt="" height={128} class="h-[64px] w-auto" data-marca="eie" />
+      </div>
+      <div class="flex items-center gap-[32px]">
+        <Image src={cytedFondoBlanco} alt="" width={180} height={179} class="size-[90px]" data-marca="cyted" />
+        {/*
+          A 52 px y no a 64: es una marca apaisada (3,79:1) y a la altura de las demás pesaba
+          el doble que ANID, fuera de RF-26.5. A 52 queda en 1,3×.
+        */}
+        <Image src={apsColor} alt="" height={104} class="h-[52px] w-auto" data-marca="aps" />
+        {/* 119 × 64: el `viewBox` del SVG, 470,89 × 252,78, llevado a 64 de alto. */}
+        <img src={anid.logo} alt="" width="119" height="64" class="h-[64px] w-auto" data-marca="anid" />
+      </div>
     </div>
-    <div class="flex items-center gap-[32px]">
-      <Image src={cytedFondoBlanco} alt="" width={180} height={179} class="size-[90px]" data-marca="cyted" />
-      {/* 119 × 64: el `viewBox` del SVG, 470,89 × 252,78, llevado a 64 de alto. */}
-      <img src={anid.logo} alt="" width="119" height="64" class="h-[64px] w-auto" data-marca="anid" />
-    </div>
-  </div>
-  <p data-flyer-mencion class="mt-[14px] text-[24px] leading-[1.3] text-pretty text-[var(--slate-600)]">
-    {mencion}
-  </p>
-</footer>
+    <p data-flyer-mencion class="mt-[14px] text-[20px] leading-[1.3] text-pretty text-[var(--slate-600)]">
+      {mencion}
+    </p>
+  </footer>
 </div>

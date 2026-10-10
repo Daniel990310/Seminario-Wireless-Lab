@@ -5,18 +5,18 @@ import LaminaExpositores from '~/components/flyer/LaminaExpositores.astro';
 import LaminaInscripcion from '~/components/flyer/LaminaInscripcion.astro';
 import LaminaUnica from '~/components/flyer/LaminaUnica.astro';
 import Portada from '~/components/flyer/Portada.astro';
-import { altFlyer, datosFlyer } from '~/components/flyer/datos';
+import { altFlyer, datosFlyer, pieDePublicacion } from '~/components/flyer/datos';
 import { contenido } from '~/data/contenido';
 import { PIEZAS_FLYER } from '~/data/flyer';
 
 export function getStaticPaths() {
-  return PIEZAS_FLYER.map(({ pieza, idioma, formato, lamina }) => ({
+  return PIEZAS_FLYER.map(({ pieza, idioma, formato, lamina, pie, participantes }) => ({
     params: { pieza },
-    props: { idioma, formato, lamina },
+    props: { idioma, formato, lamina, pie, participantes },
   }));
 }
 
-const { idioma, formato, lamina } = Astro.props;
+const { idioma, formato, lamina, pie, participantes: conParticipantes } = Astro.props;
 const c = contenido(idioma);
 
 /*
@@ -29,17 +29,15 @@ const EMISOR = { unica: 230, portada: 700, historia: 900, expositores: 700, insc
  * Lo que la lámina debe contener, para los criterios de `specs/003-difusion-redes`. Se
  * declara aquí, junto a la decisión de qué lámina es, y no se deduce del HTML.
  */
-const { dominio, organizador, participantes, folios } = datosFlyer(c);
-const conFranja = lamina !== 'expositores';
+// Toda lámina lleva franja y agradecimiento; la fila de participantes, según `LAMINAS`.
+const { dominio, organizador, participantes, mencion } = datosFlyer(c);
 const esperado = {
   dominio,
   fecha: c.dates.shortLabel,
   organizador: ['unica', 'portada', 'historia'].includes(lamina) ? organizador : null,
-  marcas: conFranja ? ['pucv', 'eie', 'cyted', 'anid'] : [],
-  mencion: conFranja ? c.funding.mencion : null,
-  folios: conFranja ? folios : [],
-  // Toda lámina con franja lleva la fila de participantes encima (`Marcas participantes`).
-  participantes: conFranja ? participantes.map((p) => p.nombre) : [],
+  marcas: ['pucv', 'eie', 'cyted', 'aps', 'anid'],
+  mencion,
+  participantes: conParticipantes ? participantes.map((p) => p.nombre) : [],
 };
 ---
 
@@ -47,12 +45,13 @@ const esperado = {
   lang={idioma}
   formato={formato}
   alt={altFlyer(c, lamina)}
+  pie={pie ? pieDePublicacion(c) : undefined}
   emisor={EMISOR[lamina]}
   esperado={esperado}
 >
-  {lamina === 'unica' && <LaminaUnica c={c} />}
-  {lamina === 'portada' && <Portada c={c} />}
-  {lamina === 'historia' && <Portada c={c} historia />}
-  {lamina === 'expositores' && <LaminaExpositores c={c} />}
-  {lamina === 'inscripcion' && <LaminaInscripcion c={c} />}
+  {lamina === 'unica' && <LaminaUnica c={c} participantes={conParticipantes} />}
+  {lamina === 'portada' && <Portada c={c} participantes={conParticipantes} />}
+  {lamina === 'historia' && <Portada c={c} historia participantes={conParticipantes} />}
+  {lamina === 'expositores' && <LaminaExpositores c={c} participantes={conParticipantes} />}
+  {lamina === 'inscripcion' && <LaminaInscripcion c={c} participantes={conParticipantes} />}
 </CartelFlyer>

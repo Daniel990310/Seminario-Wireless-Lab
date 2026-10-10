@@ -72,10 +72,10 @@ const COINCIDENCIA_LEGITIMA = [
   // Nombres de personas. Siringo y Siles entran el 2026-09-22 con la nómina confirmada;
   // Mauricio Rodríguez, el 2026-10-04, con la franja del director (RF-31).
   /Gil Zussman|Jinfeng Du|Reinaldo|Giorgio Siringo|Gustavo A\. Siles|Rodolfo Feick|Miguel Gutiérrez|Karel Toledo|^Mauricio Rodríguez$/,
-  // ALMA y ESO son nombres propios. El patrón cubre la afiliación de Siringo en su ficha
-  // —«ALMA / European Southern Observatory»— **y la forma corta sola** de la pared de
-  // logos, que es la que se escapó al añadir la institución `[medido: 2026-09-25]`.
-  /^ALMA\b/,
+  // ALMA es nombre propio: la forma corta sola de la pared de logos, que se escapó al añadir
+  // la institución `[medido: 2026-09-25]`, y desde el 2026-10-09 el nombre oficial completo,
+  // afiliación de Siringo (antes «ALMA / European Southern Observatory», que era un error).
+  /^ALMA\b|^Atacama Large Millimeter\/submillimeter Array \(ALMA\)$/,
   /^UPB$|^UTFSM$/, // Formas cortas de la pared de logos; siglas, no texto traducible
   /^IEEE AP-S Chile$/, // Sesión del programa (2026-10-07): nombre propio de un capítulo IEEE
   /^Bolivia$/, // Se escribe igual en ambos idiomas, como Chile

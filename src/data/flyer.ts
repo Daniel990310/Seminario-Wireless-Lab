@@ -47,11 +47,12 @@ export type FormatoFlyer = keyof typeof FORMATOS_FLYER;
 export const PISO_FLYER = 31;
 
 /*
- * Piso de la franja de marcas, que solo lleva la mención de financiamiento: letra legal,
- * que se lee acercando, no el mensaje. 24 px son 8,7 pt en el teléfono. Lo pidió Mauricio
- * por Daniel el 2026-10-08: financiamiento más pequeño y menos blanco abajo.
+ * Piso de la mención de financiamiento: letra legal, que se lee acercando, no el mensaje.
+ * 20 px son 7,2 pt en el teléfono. Era 24 desde el 2026-10-08; bajó a 20 el 2026-10-09
+ * para que el agradecimiento de Mauricio, más largo, quepa en tres renglones y la franja
+ * no crezca («la letra lo más pequeña posible para que no se afecten las proporciones»).
  */
-export const PISO_PIE_FLYER = 24;
+export const PISO_PIE_FLYER = 20;
 
 /*
  * Qué lleva cada lámina. Ocho expositores no caben a tamaño legible junto a la portada,
@@ -62,14 +63,27 @@ export const PISO_PIE_FLYER = 24;
  */
 export type LaminaFlyer = 'unica' | 'portada' | 'expositores' | 'inscripcion' | 'historia';
 
+/*
+ * `publicacion`: a qué publicación pertenece la lámina. `pie`: la lámina que abre una
+ * publicación con pie (carrusel y pieza única; las historias no llevan) trae el pie de
+ * publicación. `participantes`: si lleva la fila de instituciones participantes sobre la
+ * franja; la de expositores no, porque les quitaría alto a los retratos.
+ */
 const LAMINAS = [
-  { id: 'unica', formato: '4x5', lamina: 'unica' },
-  { id: 'carrusel-1', formato: '4x5', lamina: 'portada' },
-  { id: 'carrusel-2', formato: '4x5', lamina: 'expositores' },
-  { id: 'carrusel-3', formato: '4x5', lamina: 'inscripcion' },
-  { id: 'historia-1', formato: '9x16', lamina: 'historia' },
-  { id: 'historia-2', formato: '9x16', lamina: 'expositores' },
-] as const satisfies ReadonlyArray<{ id: string; formato: FormatoFlyer; lamina: LaminaFlyer }>;
+  { id: 'unica', formato: '4x5', lamina: 'unica', publicacion: 'unica', pie: true, participantes: true },
+  { id: 'carrusel-1', formato: '4x5', lamina: 'portada', publicacion: 'carrusel', pie: true, participantes: true },
+  { id: 'carrusel-2', formato: '4x5', lamina: 'expositores', publicacion: 'carrusel', pie: false, participantes: false },
+  { id: 'carrusel-3', formato: '4x5', lamina: 'inscripcion', publicacion: 'carrusel', pie: false, participantes: true },
+  { id: 'historia-1', formato: '9x16', lamina: 'historia', publicacion: 'historia', pie: false, participantes: true },
+  { id: 'historia-2', formato: '9x16', lamina: 'expositores', publicacion: 'historia', pie: false, participantes: false },
+] as const satisfies ReadonlyArray<{
+  id: string;
+  formato: FormatoFlyer;
+  lamina: LaminaFlyer;
+  publicacion: 'unica' | 'carrusel' | 'historia';
+  pie: boolean;
+  participantes: boolean;
+}>;
 
 const IDIOMAS_FLYER = ['es', 'en'] as const satisfies readonly Idioma[];
 

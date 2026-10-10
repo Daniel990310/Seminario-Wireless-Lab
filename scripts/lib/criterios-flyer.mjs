@@ -142,20 +142,25 @@ export function medirLienzo({ seguro, ancho, alto, piso, pisoPie = piso, grilla3
 
   /*
    * RF-26.3 a RF-26.5 · marcas institucionales: cuáles, en qué orden, con qué peso. RF-26.3
-   * cubre además la fila de participantes: todas por nombre y fuera de la franja.
+   * cubre además la fila de participantes: exactamente las esperadas, por nombre, y fuera
+   * de la franja. Una que sobra también falla: la lámina que no debe llevar la fila no la lleva.
    */
   if (franja) {
     const piezas = [...franja.querySelectorAll('[data-marca]')];
     const ids = piezas.map((p) => p.dataset.marca).sort();
     const intrusas = [...franja.querySelectorAll('img')].filter((i) => !i.dataset.marca);
     const hay = [...caja.querySelectorAll('[data-participante]')].map((i) => i.dataset.participante);
-    const faltan = (esperado.participantes ?? []).filter((n) => !hay.includes(n));
-    const ok = JSON.stringify(ids) === JSON.stringify([...esperado.marcas].sort()) && !intrusas.length && !faltan.length;
-    marca(
-      'RF-26.3',
-      ok,
-      faltan.length ? `faltan participantes: ${faltan.join(', ')}` : ok ? '' : `hay ${ids.join(', ')}${intrusas.length ? ' + imágenes sin marca' : ''}`,
-    );
+    const esperadas = esperado.participantes ?? [];
+    const faltan = esperadas.filter((n) => !hay.includes(n));
+    const sobran = hay.filter((n) => !esperadas.includes(n));
+    const ok =
+      JSON.stringify(ids) === JSON.stringify([...esperado.marcas].sort()) && !intrusas.length && !faltan.length && !sobran.length;
+    const detalle = [
+      faltan.length && `faltan participantes: ${faltan.join(', ')}`,
+      sobran.length && `sobran participantes: ${sobran.join(', ')}`,
+      intrusas.length && 'imágenes sin marca en la franja',
+    ].filter(Boolean);
+    marca('RF-26.3', ok, ok ? '' : detalle.join('; ') || `hay ${ids.join(', ')}`);
 
     const anid = piezas.find((p) => p.dataset.marca === 'anid')?.getBoundingClientRect();
     const resto = piezas.filter((p) => p.dataset.marca !== 'anid').map((p) => p.getBoundingClientRect());
@@ -168,11 +173,8 @@ export function medirLienzo({ seguro, ancho, alto, piso, pisoPie = piso, grilla3
     marca('RF-26.5', !!ref && !desparejas.length, caso(conImagen.map(([m, a]) => `${m} ${(a / ref).toFixed(2)}×`)));
   }
 
-  /* RF-26.6 · la fórmula de ANID y el folio de cada proyecto, donde la lámina la lleva. */
-  if (esperado.mencion) {
-    const sinFolio = (esperado.folios ?? []).filter((f) => !todo.includes(f));
-    marca('RF-26.6', todo.includes(esperado.mencion) && !sinFolio.length, sinFolio.length ? `sin folio: ${sinFolio.join(', ')}` : '');
-  }
+  /* RF-26.6 · el agradecimiento de financiamiento, letra por letra: lo llevan todas. */
+  marca('RF-26.6', !!esperado.mencion && todo.includes(esperado.mencion), '');
 
   /* RF-28.3 · hueco del sticker libre, en las historias de portada. */
   const hueco = document.querySelector('[data-flyer-sticker]')?.getBoundingClientRect();

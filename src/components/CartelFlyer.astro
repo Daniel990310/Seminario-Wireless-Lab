@@ -29,6 +29,11 @@ interface Props {
   lang: Idioma;
   formato: FormatoFlyer;
   alt: string;
+  /**
+   * Pie de publicación, solo en la lámina que abre cada publicación (portada del carrusel
+   * y pieza única). Viaja en un `<meta>`, como el texto alternativo.
+   */
+  pie?: string;
   /** Altura del emisor de la figura bajo el inicio del contenido. Ver el comentario de la figura. */
   emisor?: number;
   /**
@@ -38,7 +43,7 @@ interface Props {
   esperado: Record<string, unknown>;
 }
 
-const { lang, formato, alt, emisor = 410, esperado } = Astro.props;
+const { lang, formato, alt, pie, emisor = 410, esperado } = Astro.props;
 const c = contenido(lang);
 const { ancho, alto, seguro } = FORMATOS_FLYER[formato];
 /* `9x16` reserva las franjas que tapa la interfaz; `4x5` usa el lienzo entero. */
@@ -70,6 +75,7 @@ const figura = {
     <title>{c.title}</title>
     <meta name="robots" content="noindex, nofollow" />
     <meta name="flyer-alt" content={alt} />
+    {pie && <meta name="flyer-pie" content={pie} />}
     {/* Sin `<Font>` la captura sale con la tipografía de reserva. Ver `CartelOg.astro`. */}
     <Font cssVariable="--font-display" preload />
     <Font cssVariable="--font-body" preload />

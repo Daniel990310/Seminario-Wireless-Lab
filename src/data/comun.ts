@@ -69,7 +69,6 @@ import cpsRtcOscuro from '~/assets/logos/cps-rtc-oscuro.png';
  */
 import cctvalClaro from '~/assets/logos/cctval.png';
 import cctvalOscuro from '~/assets/logos/cctval-oscuro.png';
-import apsOscuro from '~/assets/logos/ieee-aps-oscuro.png';
 /*
  * Retrato de Mauricio Rodríguez para «El seminario» (RF-31). Lo pidió él, a través de
  * Daniel, el 2026-10-04: eso es la autorización de RF-11.1. Desde el 2026-10-06 es la foto
@@ -374,15 +373,17 @@ export const comun = {
        * justamente porque ninguna etiqueta de país describe a un consorcio, pero la etiqueta
        * describe a la persona.
        *
-       * La afiliación es la cadena que confirmó el organizador, y su firma del 2026-10-06 la
-       * respalda: «Senior RF Engineer, ALMA» e «International Staff Member, ESO». ESO sí es
-       * su empleador; trabaja destinado en ALMA.
+       * Su firma del 2026-10-06 dice «Senior RF Engineer, ALMA» e «International Staff
+       * Member, ESO»: ESO es su empleador y trabaja destinado en ALMA. La afiliación es ALMA.
+       * Hasta el 2026-10-09 decía «ALMA / European Southern Observatory», que se leía como si
+       * fueran lo mismo; no lo son: ESO es uno de los socios internacionales de ALMA, no otro
+       * nombre suyo (Daniel lo marcó como un error serio). Su reseña sigue nombrando a ESO.
        */
       {
         id: 'siringo',
         foto: fotoSiringo,
         name: 'Giorgio Siringo',
-        affiliation: 'ALMA / European Southern Observatory',
+        affiliation: 'Atacama Large Millimeter/submillimeter Array (ALMA)',
         country: 'CL',
         perfil: 'https://www.almaobservatory.org/en/team/giorgio-siringo/',
       },
@@ -614,7 +615,8 @@ export const comun = {
      * `copyright@alma.cl` sin respuesta; la UPB no publica contacto de marca.
      */
     {
-      name: 'ALMA / European Southern Observatory',
+      // El nombre oficial; ESO es uno de sus socios, no su otro nombre (ver Siringo arriba).
+      name: 'Atacama Large Millimeter/submillimeter Array (ALMA)',
       shortName: 'ALMA',
       logo: almaLogo,
       // Placa opaca y vertical: el área la lleva al tope de 1,7× y en la fila densa del
@@ -652,7 +654,8 @@ export const comun = {
      * Mauricio asumió la responsabilidad de publicarlas así (Daniel, 2026-10-06).
      */
     {
-      name: 'IEEE Communications Society, Chile Section',
+      // «Chapter», no «Section»: la Chile Section es la sección IEEE de la que depende.
+      name: 'IEEE Communications Society, Chile Chapter',
       shortName: 'IEEE ComSoc Chile',
       logo: comsocClaro,
       logoOscuro: comsocOscuro,
@@ -666,24 +669,6 @@ export const comun = {
       escalaOptica: 1.2,
     },
   ],
-
-  /*
-   * Marcas que van en la fila de participantes del flyer y no en el sitio. IEEE AP-S, la
-   * sociedad de antenas y propagación, que tiene su espacio en el programa: Mauricio pidió
-   * su logo en el flyer (Daniel, 2026-10-08), bajo la misma decisión de tomar de internet
-   * los logos que faltan (RF-22). `main-logo-2025.svg` de `ieeeaps.org`, rasterizado a
-   * 360 px de alto; la variante oscura es la silueta en blanco. Solo esa variante, porque
-   * la fila va sobre el fondo oscuro de la lámina.
-   */
-  colaboradoresFlyer: [
-    {
-      name: 'IEEE Antennas and Propagation Society',
-      shortName: 'IEEE AP-S',
-      logoOscuro: apsOscuro,
-      url: 'https://www.ieeeaps.org',
-    },
-    // `satisfies` comprueba el contrato; `as` lo ensancha para que se lean los opcionales.
-  ] satisfies Institucion[] as Institucion[],
 
   /*
    * Reconocimiento del financiamiento (RNF-8). **No es cortesía: ANID lo exige**,
