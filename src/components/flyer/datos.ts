@@ -7,7 +7,7 @@
  *   31 rótulo y afiliación (11,2) · 34 nombre de expositor (12,3) · 36 cuerpo (13) ·
  *   44 destacado (15,9) · 52 subtítulo (18,8) · 64 fecha compacta (23,1) ·
  *   84 título de lámina (30,3) · 100 fecha de portada (36,1).
- * La franja de marcas tiene su propio piso, `PISO_PIE_FLYER` (24). Una lámina que necesite
+ * La mención de financiamiento tiene su propio piso, `PISO_PIE_FLYER` (20). Una lámina que necesite
  * otro valor lo declara donde lo usa y dice por qué.
  */
 import type { Institucion, Logo } from '~/data/comun';
@@ -66,6 +66,7 @@ export function datosFlyer(c: Contenido) {
    * oscuro, la variante oscura si la hay. Una sin logo no se filtra aquí: `Participantes`
    * la omite, y el generador lo detecta porque espera a todas por nombre (RF-26.3).
    */
+  // Anotado como `Institucion[]` para leer los campos opcionales (`logoOscuro`, escalas).
   const instituciones: readonly Institucion[] = c.participants;
   const participantes: ParticipanteFlyer[] = instituciones.map((p) => ({
     nombre: p.shortName,
@@ -98,8 +99,7 @@ export function datosFlyer(c: Contenido) {
  * Pie de publicación: el texto que va bajo el post, **uno por publicación** —el carrusel
  * entero o la pieza única—, no uno por imagen; eso es el texto alternativo. Lo pidió
  * Daniel el 2026-10-09. Sale de los mismos datos que el sitio, para que no se contradigan.
- * Es el mismo texto para las dos publicaciones: la frase «desliza para ver…» del carrusel
- * se quitó porque al leerse completo no tenía sentido (Daniel).
+ * Es el mismo texto para el carrusel y la pieza única: se lee completo, sin aludir a láminas.
  */
 export function pieDePublicacion(c: Contenido) {
   const t = c.ui.flyer;

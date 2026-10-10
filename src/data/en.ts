@@ -200,6 +200,8 @@ export const en = {
       escanea: 'Scan the code or go to',
       sticker: 'Register via the link',
       programaPie: 'Registration and programme:',
+      // Texto de Mauricio, tal cual (2026-10-09). Folios dados por él; 11261397 y CIA250027 no
+      // están cotejados con ANID `[supuesto]`. Ver `tipos.ts`.
       agradecimiento:
         'This work was supported by ANID FONDECYT 1250951 and 11261397, ANID CCTVal CIA250027, ANID Vinculación Internacional FOVI250222 and Programa Iberoamericano de Ciencia y Tecnología para el Desarrollo - CYTED (525RT0175-DISeCom).',
       grupoInternacional: 'International',

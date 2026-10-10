@@ -376,8 +376,8 @@ export const comun = {
        * Su firma del 2026-10-06 dice «Senior RF Engineer, ALMA» e «International Staff
        * Member, ESO»: ESO es su empleador y trabaja destinado en ALMA. La afiliación es ALMA.
        * Hasta el 2026-10-09 decía «ALMA / European Southern Observatory», que se leía como si
-       * fueran lo mismo; no lo son: ALMA es una asociación de ESO, la NSF y los NINS con
-       * Chile (Daniel lo marcó como un error serio). Su reseña sigue nombrando a ESO.
+       * fueran lo mismo; no lo son: ESO es uno de los socios internacionales de ALMA, no otro
+       * nombre suyo (Daniel lo marcó como un error serio). Su reseña sigue nombrando a ESO.
        */
       {
         id: 'siringo',
@@ -669,7 +669,6 @@ export const comun = {
       escalaOptica: 1.2,
     },
   ],
-
 
   /*
    * Reconocimiento del financiamiento (RNF-8). **No es cortesía: ANID lo exige**,

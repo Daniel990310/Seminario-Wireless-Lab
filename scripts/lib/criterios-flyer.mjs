@@ -168,8 +168,8 @@ export function medirLienzo({ seguro, ancho, alto, piso, pisoPie = piso, grilla3
     marca('RF-26.5', !!ref && !desparejas.length, caso(conImagen.map(([m, a]) => `${m} ${(a / ref).toFixed(2)}×`)));
   }
 
-  /* RF-26.6 · el agradecimiento de financiamiento, letra por letra, donde la lámina lo lleva. */
-  if (esperado.mencion) marca('RF-26.6', todo.includes(esperado.mencion), '');
+  /* RF-26.6 · el agradecimiento de financiamiento, letra por letra: lo llevan todas. */
+  marca('RF-26.6', !!esperado.mencion && todo.includes(esperado.mencion), '');
 
   /* RF-28.3 · hueco del sticker libre, en las historias de portada. */
   const hueco = document.querySelector('[data-flyer-sticker]')?.getBoundingClientRect();

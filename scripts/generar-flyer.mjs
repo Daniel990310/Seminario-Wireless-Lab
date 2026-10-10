@@ -64,7 +64,7 @@ const CRITERIOS = {
   'RF-29.3': 'PDF del tamaño del lienzo y bajo 100 MB',
   'RF-29.4': 'Todas las imágenes cargaron',
   'RF-29.6': 'Pie de publicación, hasta 2200 caracteres',
-  'RF-29.7': 'Carrusel en un PDF de tres páginas, bajo 100 MB',
+  'RF-29.7': 'Carrusel en un PDF de tres páginas, con texto vivo y bajo 100 MB',
 };
 
 /* Variable del sitio → familia, nombre PostScript y genérica. Pesos que el cartel usa. */
@@ -149,7 +149,7 @@ const CSS_PDF = await cssPdf();
 const { base, navegador, cerrar } = await abrirDist();
 const resultados = {};
 
-for (const { pieza, formato } of PIEZAS_FLYER) {
+for (const { pieza, formato, idioma, publicacion, pie: llevaPie } of PIEZAS_FLYER) {
   const { ancho, alto, seguro } = FORMATOS_FLYER[formato];
   const r = [];
   const ctx = await navegador.newContext({ viewport: { width: ancho, height: alto }, deviceScaleFactor: 1, reducedMotion: 'reduce' });
@@ -177,16 +177,15 @@ for (const { pieza, formato } of PIEZAS_FLYER) {
   r.push({ id: 'RF-29.1', ok: alt.length > 0 && alt.length <= 1000, detalle: `${alt.length} caracteres` });
 
   /*
-   * RF-29.6 · pie de publicación, uno por publicación: lo trae la lámina que la abre
-   * (portada del carrusel o pieza única). `es-carrusel-1` escribe `es-carrusel.pie.txt`.
-   * 2200 caracteres es el máximo de Instagram; LinkedIn admite 3000.
+   * RF-29.6 · pie de publicación, uno por publicación: lo trae la lámina que `LAMINAS`
+   * marca con `pie` y se escribe como `<idioma>-<publicacion>.pie.txt`. Si esa lámina no
+   * lo trae, falla. 2200 caracteres es el máximo de Instagram; LinkedIn admite 3000.
    */
-  // Con `evaluate` y no con `locator`: el locator espera 30 s a una etiqueta que la mayoría
-  // de las láminas no lleva.
-  const pie = await page.evaluate(() => document.querySelector('meta[name="flyer-pie"]')?.content);
-  if (pie) {
-    await writeFile(join(SALIDA, `${pieza.replace(/-1$/, '')}.pie.txt`), `${pie}\n`, 'utf8');
-    r.push({ id: 'RF-29.6', ok: pie.length <= 2200, detalle: `${pie.length} caracteres` });
+  if (llevaPie) {
+    // Con `evaluate` y no con `locator`: el locator esperaría 30 s si la etiqueta falta.
+    const pie = (await page.evaluate(() => document.querySelector('meta[name="flyer-pie"]')?.content)) ?? '';
+    await writeFile(join(SALIDA, `${idioma}-${publicacion}.pie.txt`), `${pie}\n`, 'utf8');
+    r.push({ id: 'RF-29.6', ok: pie.length > 0 && pie.length <= 2200, detalle: `${pie.length} caracteres` });
   }
 
   // Las fuentes instaladas tienen métricas apenas distintas: se vuelve a medir el lienzo.
@@ -234,23 +233,35 @@ await cerrar();
 /*
  * RF-29.7 · el carrusel como un solo PDF, para publicarlo en LinkedIn como documento: así
  * se ve deslizable; las tres imágenes sueltas las muestra en cuadrícula. Se unen los PDF
- * vectoriales de las láminas, con su texto vivo. El resultado va con la portada.
+ * vectoriales de las láminas, con su texto vivo, y se le vuelve a medir RF-29.2 (sin Type3,
+ * las tres familias). El resultado se anota en la lámina que abre el carrusel.
  */
+const PAGINAS_CARRUSEL = 3;
 for (const idioma of ['es', 'en']) {
-  const laminas = PIEZAS_FLYER.filter((p) => p.idioma === idioma && p.id.startsWith('carrusel-'));
+  const laminas = PIEZAS_FLYER.filter((p) => p.idioma === idioma && p.publicacion === 'carrusel');
+  const abre = laminas.find((p) => p.pie).pieza;
+  // Una lámina que no llegó a su PDF en esta corrida (falló al cargar) no se une: el PDF que
+  // haya en disco sería el de una corrida anterior.
+  const sinPdf = laminas.filter(({ pieza }) => !resultados[pieza].some((x) => x.id === 'RF-29.2'));
+  if (sinPdf.length) {
+    resultados[abre].push({ id: 'RF-29.7', ok: false, detalle: `sin PDF de ${sinPdf.map((p) => p.pieza).join(', ')}` });
+    continue;
+  }
+  const origenes = await Promise.all(laminas.map(({ pieza }) => readFile(join(SALIDA, `${pieza}.pdf`)).then((b) => PDFDocument.load(b))));
   const carrusel = await PDFDocument.create();
-  for (const { pieza } of laminas) {
-    const origen = await PDFDocument.load(await readFile(join(SALIDA, `${pieza}.pdf`)));
-    // El título del documento, el `<title>` de la lámina: es el que LinkedIn muestra.
-    if (!carrusel.getTitle()) carrusel.setTitle(origen.getTitle() ?? '');
+  // El título del documento, el `<title>` de las láminas: es el que LinkedIn muestra.
+  carrusel.setTitle(origenes[0].getTitle() ?? '');
+  for (const origen of origenes) {
     for (const pagina of await carrusel.copyPages(origen, origen.getPageIndices())) carrusel.addPage(pagina);
   }
-  const bytes = await carrusel.save();
-  await writeFile(join(SALIDA, `${idioma}-carrusel.pdf`), bytes);
-  resultados[`${idioma}-carrusel-1`].push({
+  const ruta = join(SALIDA, `${idioma}-carrusel.pdf`);
+  await writeFile(ruta, await carrusel.save());
+  const pdf = await fuentesDelPdf(ruta);
+  const faltan = Object.values(FUENTES_PDF).filter(([, ps]) => !pdf.nombres.includes(ps)).map(([f]) => f);
+  resultados[abre].push({
     id: 'RF-29.7',
-    ok: carrusel.getPageCount() === laminas.length && bytes.length < 100e6,
-    detalle: `${carrusel.getPageCount()} páginas, ${(bytes.length / 1e6).toFixed(1)} MB`,
+    ok: carrusel.getPageCount() === PAGINAS_CARRUSEL && !pdf.type3 && !faltan.length && pdf.bytes < 100e6,
+    detalle: `${carrusel.getPageCount()} páginas, ${(pdf.bytes / 1e6).toFixed(1)} MB${pdf.type3 ? `, ${pdf.type3} Type3` : ''}${faltan.length ? `, faltan ${faltan.join(', ')}` : ''}`,
   });
 }
 

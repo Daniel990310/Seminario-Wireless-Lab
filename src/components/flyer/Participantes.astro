@@ -4,9 +4,9 @@
  * Qué marcas y con qué escala lo decide `datosFlyer` (`participantes`); aquí solo se
  * dibujan. La compone `Marcas`, encima de la franja.
  *
- * Mauricio, por Daniel (2026-10-08): los logos del sitio más el de IEEE AP-S en el flyer.
- * Van fuera de la franja blanca porque él mismo la pidió estrecha. Tamaño por área, como
- * el muro del sitio (`~/lib/area-logos`).
+ * Mauricio, por Daniel (2026-10-08): los logos del sitio en el flyer (IEEE AP-S va en la
+ * franja desde el 2026-10-09). Fuera de la franja blanca porque él mismo la pidió
+ * estrecha. Tamaño por área, como el muro del sitio (`~/lib/area-logos`).
  *
  * `<img>` y no `<Image />`: el lienzo se captura a PNG y a PDF, y el optimizador solo
  * cambiaría el formato del archivo intermedio. Una institución sin logo no se dibuja y
@@ -20,7 +20,10 @@ interface Props {
   c: Contenido;
 }
 
-/** Alto, en px de lienzo, de una marca de proporción 2,2; las demás se igualan en área. */
+/**
+ * Alto, en px de lienzo, de una marca de proporción 2,2; las demás se igualan en área.
+ * 38 desde el 2026-10-09 (antes 32): con la franja más baja quedaba espacio (Daniel).
+ */
 const BASE = 38;
 
 const { c } = Astro.props;

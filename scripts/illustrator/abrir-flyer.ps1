@@ -28,7 +28,11 @@ param(
 
 $raiz = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 if (-not $Piezas) {
-  $Piezas = Get-ChildItem (Join-Path $raiz 'difusion\flyer') -Filter *.pdf | ForEach-Object { $_.BaseName }
+  # Solo las piezas, que tienen su .mapa.tsv: el carrusel unido para LinkedIn
+  # (`<idioma>-carrusel.pdf`, tres paginas) no es una pieza y no se pasa a .ai.
+  $Piezas = Get-ChildItem (Join-Path $raiz 'difusion\flyer') -Filter *.pdf |
+    Where-Object { Test-Path (Join-Path $_.DirectoryName "$($_.BaseName).mapa.tsv") } |
+    ForEach-Object { $_.BaseName }
 }
 <#
   LAS FUENTES TIENEN QUE ESTAR INSTALADAS PARA TODO EL SISTEMA, no solo para el usuario.

@@ -63,14 +63,27 @@ export const PISO_PIE_FLYER = 20;
  */
 export type LaminaFlyer = 'unica' | 'portada' | 'expositores' | 'inscripcion' | 'historia';
 
+/*
+ * `publicacion`: a qué publicación pertenece la lámina. `pie`: la lámina que abre una
+ * publicación con pie (carrusel y pieza única; las historias no llevan) trae el pie de
+ * publicación. `participantes`: si lleva la fila de instituciones participantes sobre la
+ * franja; la de expositores no, porque les quitaría alto a los retratos.
+ */
 const LAMINAS = [
-  { id: 'unica', formato: '4x5', lamina: 'unica' },
-  { id: 'carrusel-1', formato: '4x5', lamina: 'portada' },
-  { id: 'carrusel-2', formato: '4x5', lamina: 'expositores' },
-  { id: 'carrusel-3', formato: '4x5', lamina: 'inscripcion' },
-  { id: 'historia-1', formato: '9x16', lamina: 'historia' },
-  { id: 'historia-2', formato: '9x16', lamina: 'expositores' },
-] as const satisfies ReadonlyArray<{ id: string; formato: FormatoFlyer; lamina: LaminaFlyer }>;
+  { id: 'unica', formato: '4x5', lamina: 'unica', publicacion: 'unica', pie: true, participantes: true },
+  { id: 'carrusel-1', formato: '4x5', lamina: 'portada', publicacion: 'carrusel', pie: true, participantes: true },
+  { id: 'carrusel-2', formato: '4x5', lamina: 'expositores', publicacion: 'carrusel', pie: false, participantes: false },
+  { id: 'carrusel-3', formato: '4x5', lamina: 'inscripcion', publicacion: 'carrusel', pie: false, participantes: true },
+  { id: 'historia-1', formato: '9x16', lamina: 'historia', publicacion: 'historia', pie: false, participantes: true },
+  { id: 'historia-2', formato: '9x16', lamina: 'expositores', publicacion: 'historia', pie: false, participantes: false },
+] as const satisfies ReadonlyArray<{
+  id: string;
+  formato: FormatoFlyer;
+  lamina: LaminaFlyer;
+  publicacion: 'unica' | 'carrusel' | 'historia';
+  pie: boolean;
+  participantes: boolean;
+}>;
 
 const IDIOMAS_FLYER = ['es', 'en'] as const satisfies readonly Idioma[];
 

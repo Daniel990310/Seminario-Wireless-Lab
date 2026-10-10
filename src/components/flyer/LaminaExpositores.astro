@@ -28,9 +28,11 @@ import { datosFlyer } from './datos';
 
 interface Props {
   c: Contenido;
+  /** Fila de participantes sobre la franja; la decide `LAMINAS` en `src/data/flyer.ts`. */
+  participantes: boolean;
 }
 
-const { c } = Astro.props;
+const { c, participantes } = Astro.props;
 const { internacionales, nacionales } = datosFlyer(c);
 const grupos = [
   { rotulo: c.ui.flyer.grupoInternacional, lista: internacionales },
@@ -68,4 +70,4 @@ const grupos = [
   }
 </div>
 
-<Marcas c={c} participantes={false} />
+<Marcas c={c} participantes={participantes} />
