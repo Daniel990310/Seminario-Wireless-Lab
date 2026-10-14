@@ -7,11 +7,11 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-10-10** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
-ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-10-10**, versión
-`8e7b5b9a`, desde `main` en `e89cea9` (PR #28 y #29: nombre correcto de ALMA y de ComSoc
-Chile en el sitio, más los flyers), en `https://bcsensing.org`. `verify:todo` en verde
-antes y `verify:publicado` 32 ✓, 0 ✗ después `[medido: 2026-10-10]`. Antes: 2026-10-08,
+Actualizado: **2026-10-14** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
+ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-10-14**, versión
+`73075e40`, desde `main` en `cc05900` (PR #31: seis proyectos ANID en el sitio y en los
+flyers), en `https://bcsensing.org`. `verify:todo` en verde antes y `verify:publicado`
+32 ✓, 0 ✗ después `[medido: 2026-10-14]`. Antes: 2026-10-10, `8e7b5b9a` (PR #28 y #29); 2026-10-08,
 `d60d3ab4` (PR #27) y `f6e5fe8b` (PR #22–#24); 2026-10-06, `b6bdd2dd` (PR #19 y #20);
 2026-10-05, `aac04b64` (PR #15) y `20a555ca` (PR #13); 2026-10-02, `b0d566cd`.
 · **Publicado en <https://bcsensing.org> el 2026-09-22, versión `830dafb9`. Primer
@@ -22,8 +22,11 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
-## Seis proyectos ANID en el sitio y en los flyers · 2026-10-13 · (sin desplegar)
+## Seis proyectos ANID en el sitio y en los flyers · 2026-10-13 · (en vivo, versión `73075e40`)
 
+- **Desplegado el 2026-10-14** (`73075e40-431a-4494-ae3e-9066bcea881d`) con el PR #31,
+  thermos dispensado por Daniel. `verify:publicado` 32 ✓, 0 ✗; los cuatro folios nuevos
+  3 veces en `/` y en `/en/` del sitio publicado `[medido con curl]`.
 - **Pedido de Daniel** con la lista de Mauricio por WhatsApp: el sitio y los flyers nombran
   **FOVI250222, Fondecyt Regular 1250951, Fondecyt de Iniciación 11241221 y 11261397,
   CCTVal CIA250027 y CPS-RTC CIA250016** (ANID) y **CYTED 525RT0175**. Antes el sitio tenía
@@ -36,7 +39,7 @@ Hostinger sin revocar.**
 - `verify:idioma` acepta `CIA\d+` como folio (antes marcaba los dos centros como sin
   traducir). `verify:todo` en verde.
 - Folios todos `[supuesto]`: dados por Mauricio, no cotejados con ANID.
-- **Pendiente:** fusionar y desplegar (Daniel); los `.ai` no se rehicieron
+- **Pendiente:** los `.ai` no se rehicieron
   (`abrir-flyer.ps1 -Rehacer` si hacen falta); reenviar el material de difusión, armado en
   `Descargas/Flyers Beyond Connectivity 2026-10-13`.
 
