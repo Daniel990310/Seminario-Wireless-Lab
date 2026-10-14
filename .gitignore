@@ -69,3 +69,6 @@ difusion/revision/
 
 # Respaldo de los .ai del 2026-10-03, quizá retocados a mano: no se versionan ni se tocan.
 difusion/ai-anteriores-*/
+
+# JPG del pendón a 150 ppi (RF-33.7): 3,4 MB cada uno y se regenera con `npm run flyer`.
+difusion/flyer/*-150ppi.jpg

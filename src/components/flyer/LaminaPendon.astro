@@ -1,0 +1,69 @@
+---
+/**
+ * Pendón roller impreso (RF-33): en una sola lámina, lo que el carrusel reparte en tres
+ * —portada, expositores con retrato, inscripción con QR y horario, instituciones y
+ * marcas— y, arriba, Mauricio con su retrato como quien dirige el seminario. Lo pidió
+ * Daniel el 2026-10-14.
+ *
+ * Mismos componentes y misma escala tipográfica que el carrusel: el lienzo mide en px lo
+ * que tres láminas, y 1 px son 0,741 mm impresos (`src/data/flyer.ts`). El orden sigue la
+ * altura de la mirada: marca, fecha y sede arriba, a la altura de los ojos de alguien de
+ * pie; personas en el centro; QR a la altura del pecho, donde se escanea sin agacharse;
+ * marcas abajo.
+ *
+ * Retratos y marcas van con su archivo original (`original`): reducidos para la pantalla,
+ * impresos quedaban bajo 70 ppi (RF-33.4).
+ */
+import type { Contenido } from '~/data/contenido';
+import Director from './Director.astro';
+import Encabezado from './Encabezado.astro';
+import GrillaExpositores from './GrillaExpositores.astro';
+import Marcas from './Marcas.astro';
+import Qr from './Qr.astro';
+import { datosFlyer } from './datos';
+
+interface Props {
+  c: Contenido;
+  /** Fila de participantes sobre la franja; la decide `LAMINAS` en `src/data/flyer.ts`. */
+  participantes: boolean;
+}
+
+const { c, participantes } = Astro.props;
+const t = c.ui.flyer;
+const { dominio, jornadas } = datosFlyer(c);
+---
+
+<Encabezado c={c} anchoLogo={740} sinOrganizador />
+
+<div class="flex flex-1 flex-col justify-evenly">
+  <div class="mt-[32px] border-t hairline pt-[32px]">
+    <Director c={c} retrato={220} />
+  </div>
+
+  <section class="mt-[36px]">
+    <h2 class="font-display text-[64px] leading-none font-semibold text-foreground">{t.expositores}</h2>
+    <GrillaExpositores c={c} retrato={176} original />
+  </section>
+
+  <section class="mt-[36px] flex items-start gap-[48px]">
+    {c.registro.url && <Qr url={c.registro.url} tamano={300} />}
+    <div class="min-w-0 pt-[4px]">
+      <p class="text-[36px] leading-[1.25] text-foreground">{t.escanea}</p>
+      <p class="mt-[8px] text-[52px] leading-none font-semibold text-accent">{dominio}</p>
+      {
+        jornadas.length > 0 && (
+          <ul class="mt-[32px] flex flex-col gap-[12px]">
+            {jornadas.map((d) => (
+              <li class="text-[31px] leading-[1.2]">
+                <span class="block text-foreground">{d.label}</span>
+                <span class="block font-mono text-accent">{d.date}</span>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </section>
+</div>
+
+<Marcas c={c} participantes={participantes} original />

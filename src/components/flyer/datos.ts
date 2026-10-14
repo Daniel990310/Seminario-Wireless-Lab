@@ -152,6 +152,11 @@ export function altFlyer(c: Contenido, lamina: LaminaFlyer) {
      * pasaba de los 1000 caracteres de Instagram (RF-29.1).
      */
     unica: [evento, `${t.expositores}: ${lista}.`, `${t.inscripciones} ${dominio}.${qr}`, mencion],
+    /*
+     * El pendón no se publica: el texto sirve si el PDF circula por correo, y para quien
+     * no ve la imagen al revisarlo. Sin tope de 1000: ninguna red lo recibe (RF-29.1).
+     */
+    pendon: [evento, `${t.expositores}: ${lista}.`, `${t.escanea} ${dominio}.${qr}`, horario && `${horario}.`, instituciones, mencion],
   };
   return partes[lamina].filter(Boolean).join(' ');
 }

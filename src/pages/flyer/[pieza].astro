@@ -3,6 +3,7 @@
 import CartelFlyer from '~/components/CartelFlyer.astro';
 import LaminaExpositores from '~/components/flyer/LaminaExpositores.astro';
 import LaminaInscripcion from '~/components/flyer/LaminaInscripcion.astro';
+import LaminaPendon from '~/components/flyer/LaminaPendon.astro';
 import LaminaUnica from '~/components/flyer/LaminaUnica.astro';
 import Portada from '~/components/flyer/Portada.astro';
 import { altFlyer, datosFlyer, pieDePublicacion } from '~/components/flyer/datos';
@@ -23,7 +24,7 @@ const c = contenido(idioma);
  * Altura del emisor de la figura (borde derecho) bajo el inicio del contenido: el centro
  * del hueco que cada lámina deja a la derecha. Medido sobre las capturas de 2026-10-01.
  */
-const EMISOR = { unica: 230, portada: 700, historia: 900, expositores: 700, inscripcion: 820 } as const;
+const EMISOR = { unica: 230, portada: 700, historia: 900, expositores: 700, inscripcion: 820, pendon: 330 } as const;
 
 /*
  * Lo que la lámina debe contener, para los criterios de `specs/003-difusion-redes`. Se
@@ -34,7 +35,7 @@ const { dominio, organizador, participantes, mencion } = datosFlyer(c);
 const esperado = {
   dominio,
   fecha: c.dates.shortLabel,
-  organizador: ['unica', 'portada', 'historia'].includes(lamina) ? organizador : null,
+  organizador: ['unica', 'portada', 'historia', 'pendon'].includes(lamina) ? organizador : null,
   marcas: ['pucv', 'eie', 'cyted', 'aps', 'anid'],
   mencion,
   participantes: conParticipantes ? participantes.map((p) => p.nombre) : [],
@@ -54,4 +55,5 @@ const esperado = {
   {lamina === 'historia' && <Portada c={c} historia participantes={conParticipantes} />}
   {lamina === 'expositores' && <LaminaExpositores c={c} participantes={conParticipantes} />}
   {lamina === 'inscripcion' && <LaminaInscripcion c={c} participantes={conParticipantes} />}
+  {lamina === 'pendon' && <LaminaPendon c={c} participantes={conParticipantes} />}
 </CartelFlyer>

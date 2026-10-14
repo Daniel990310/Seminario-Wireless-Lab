@@ -377,3 +377,16 @@ plataformas publican; donde dos coinciden se toma el dato, y donde discrepan se 
 | Documento PDF de LinkedIn | 1080 × 1350 recomendado, 100 MB máximo | [metricool.com](https://metricool.com/linkedin-pdf-carousels/), [postnitro.ai](https://postnitro.ai/blog/post/linkedin-carousel-pdf-size-and-format-complete-guide-2024) |
 | Texto alternativo de Instagram | hasta 1000 caracteres por la API; las historias no lo admiten | [adaptlypost.com](https://adaptlypost.com/blog/instagram-api-alt-text-character-limit), [caniplaythat.com](https://caniplaythat.com/2021/09/27/facebook-and-instagram-seemingly-remove-alt-text-character-limitations/) |
 | Buenas prácticas de piezas | jerarquía en tres niveles, un solo llamado a la acción, dos o tres familias, aire | [northwestern.edu](https://northwestern.edu/brand/applying-the-brand/signage-environmental-branding/flyers.html), [visme.co](https://visme.co/blog/event-flyers/), [wix.com](https://www.wix.com/wixel/resources/how-to-make-a-flyer) |
+
+### Pendón roller impreso (RF-33) `[verificado]`
+
+Consultado el 2026-10-14. Fichas de imprenta para el *roll-up* o *pull-up banner*; las
+medidas de los márgenes de la barra y del cassette varían por fabricante, así que se usa
+la más conservadora y se marca `[supuesto]` hasta tener la ficha de la imprenta elegida.
+
+| Dato | Valor | Fuente |
+| ---- | ----- | ------ |
+| Medidas de catálogo en Chile | 80 × 200 y 85 × 200 cm; también 60 × 160, 80 × 180 y 100 × 200 | [mercadolibre.cl](https://www.mercadolibre.cl/shorts/clips/9fEkZI/porta-pendon-roller-80x200-cms-con-bolso-transportar), [ficha USACH](https://www.transparenciaactiva.usach.cl/sites/default/files/paginas/5641075523.pdf) |
+| Ficha 85 × 200 | sangrado 10 mm (87 × 217), área imprimible 85 × 215, 150 dpi, CMYK FOGRA51, fuentes incrustadas o en curvas | [ficha USACH](https://www.transparenciaactiva.usach.cl/sites/default/files/paginas/5641075523.pdf) |
+| Base que entra en el cassette | 100–150 mm sin nada importante; 850 × 2000 visibles sobre 850 × 2150 de corte | [paperlust.co](https://printshop.paperlust.co/blog?p=2244), [wttb.co.uk](https://wttb.co.uk/download/template/16.%20download.pdf), [printcraft.com.au](https://www.printcraft.com.au/post/designing-artwork-for-a-pull-up-banner-a-simple-how-to-guide) |
+| Resolución | 150 dpi a tamaño final | las mismas |

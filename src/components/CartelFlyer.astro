@@ -45,8 +45,13 @@ interface Props {
 
 const { lang, formato, alt, pie, emisor = 410, esperado } = Astro.props;
 const c = contenido(lang);
-const { ancho, alto, seguro } = FORMATOS_FLYER[formato];
-/* `9x16` reserva las franjas que tapa la interfaz; `4x5` usa el lienzo entero. */
+const f = FORMATOS_FLYER[formato];
+const { ancho, alto, seguro } = f;
+const impreso = 'impreso' in f;
+/*
+ * `9x16` reserva las franjas que tapa la interfaz; `4x5` usa el lienzo entero; el pendón,
+ * el sangrado, la base del cassette y los márgenes de la barra y del labio.
+ */
 const altoUtil = alto - seguro.arriba - seguro.abajo;
 
 /*
@@ -118,6 +123,16 @@ const figura = {
         <slot />
       </div>
 
+      {/*
+        Pendón impreso: bajo el contenido, el margen sobre el cassette, la base que entra en
+        él y el sangrado siguen el blanco de la franja de marcas. Si la imprenta enrolla
+        un poco más o un poco menos, el borde no deja ver una tira oscura (RF-33.2).
+      */}
+      {
+        impreso && (
+          <div data-flyer-base class="absolute inset-x-0 bottom-0 bg-[var(--pure-white)]" style={`height:${seguro.abajo}px`} />
+        )
+      }
     </div>
   </body>
 </html>

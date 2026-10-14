@@ -25,10 +25,17 @@ interface Props {
    * (2026-10-08) le sobraba alto, y es lo que quien pasa por el feed tiene que retener.
    */
   compacto?: boolean;
+  /**
+   * Sin el renglón «Organiza: …»: el pendón nombra al organizador debajo, con su retrato
+   * (`Director.astro`), y el renglón lo repetía.
+   */
+  sinOrganizador?: boolean;
 }
 
-const { c, anchoLogo, compacto = false } = Astro.props;
-const { restoTitulo, organizador } = datosFlyer(c);
+const { c, anchoLogo, compacto = false, sinOrganizador = false } = Astro.props;
+const datos = datosFlyer(c);
+const { restoTitulo } = datos;
+const organizador = sinOrganizador ? null : datos.organizador;
 /* Proporción del `viewBox` del logo, 650 × 218: no se estira (manual 5.2). */
 const altoLogo = Math.round((anchoLogo * 218) / 650);
 /*

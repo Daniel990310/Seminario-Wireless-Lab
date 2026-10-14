@@ -60,10 +60,17 @@ interface Props {
    * (Daniel, 2026-10-09, a prueba).
    */
   participantes: boolean;
+  /**
+   * Los archivos originales de las marcas, sin reducir, para imprimir (RF-33.4). El
+   * optimizador baja PUCV a 256 px de ancho, y en el pendón eso eran 70 ppi.
+   */
+  original?: boolean;
 }
 
-const { c, participantes } = Astro.props;
+const { c, participantes, original = false } = Astro.props;
 const [pucv] = c.organizers;
+// Un SVG llega como ruta y ya es vectorial: se dibuja tal cual, con la caja de siempre.
+const pucvLogo = typeof pucv.logo === 'string' ? { src: pucv.logo, width: 256, height: 130 } : pucv.logo;
 const anid = c.funding.agency;
 const { mencion } = datosFlyer(c);
 ---
@@ -92,16 +99,40 @@ const { mencion } = datosFlyer(c);
   >
     <div class="flex h-[90px] items-center justify-between">
       <div class="flex items-center gap-[32px]">
-        <Image src={pucv.logo} alt="" width={256} height={130} class="h-[64px] w-auto" data-marca="pucv" />
-        <Image src={submarcaEie} alt="" height={128} class="h-[64px] w-auto" data-marca="eie" />
+        {
+          original ? (
+            <img src={pucvLogo.src} alt="" width={pucvLogo.width} height={pucvLogo.height} class="h-[64px] w-auto" data-marca="pucv" />
+          ) : (
+            <Image src={pucv.logo} alt="" width={256} height={130} class="h-[64px] w-auto" data-marca="pucv" />
+          )
+        }
+        {
+          original ? (
+            <img src={submarcaEie.src} alt="" width={submarcaEie.width} height={submarcaEie.height} class="h-[64px] w-auto" data-marca="eie" />
+          ) : (
+            <Image src={submarcaEie} alt="" height={128} class="h-[64px] w-auto" data-marca="eie" />
+          )
+        }
       </div>
       <div class="flex items-center gap-[32px]">
-        <Image src={cytedFondoBlanco} alt="" width={180} height={179} class="size-[90px]" data-marca="cyted" />
+        {
+          original ? (
+            <img src={cytedFondoBlanco.src} alt="" width={cytedFondoBlanco.width} height={cytedFondoBlanco.height} class="size-[90px]" data-marca="cyted" />
+          ) : (
+            <Image src={cytedFondoBlanco} alt="" width={180} height={179} class="size-[90px]" data-marca="cyted" />
+          )
+        }
         {/*
           A 52 px y no a 64: es una marca apaisada (3,79:1) y a la altura de las demás pesaba
           el doble que ANID, fuera de RF-26.5. A 52 queda en 1,3×.
         */}
-        <Image src={apsColor} alt="" height={104} class="h-[52px] w-auto" data-marca="aps" />
+        {
+          original ? (
+            <img src={apsColor.src} alt="" width={apsColor.width} height={apsColor.height} class="h-[52px] w-auto" data-marca="aps" />
+          ) : (
+            <Image src={apsColor} alt="" height={104} class="h-[52px] w-auto" data-marca="aps" />
+          )
+        }
         {/* 119 × 64: el `viewBox` del SVG, 470,89 × 252,78, llevado a 64 de alto. */}
         <img src={anid.logo} alt="" width="119" height="64" class="h-[64px] w-auto" data-marca="anid" />
       </div>

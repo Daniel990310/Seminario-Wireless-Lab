@@ -22,6 +22,26 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Pendón roller impreso · 2026-10-14 · (rama `ajustes/pendon-impreso`, sin desplegar)
+
+- **Pedido de Daniel:** el flyer para imprimir en gran formato con todo el carrusel en una
+  lámina y el retrato de Mauricio arriba como organizador, como en el sitio. Es un
+  **pendón roller** de 200 cm visibles en **80 u 85 cm** de ancho (RF-33 en
+  `specs/003-difusion-redes`), en ES y EN.
+- **Entregables** en `difusion/flyer/`: `<idioma>-pendon-80x200.pdf` y `-85x200.pdf` a tamaño
+  real (texto vivo, sangrado 10 mm, base de cassette 150 mm, `TrimBox` y `BleedBox`), PNG de
+  vista previa y JPG a 150 ppi (ignorado por git: se regenera con `npm run flyer`).
+  `[medido]` con PyMuPDF: hoja 820,7 × 2171,1 mm, corte 800 × 2150, seis fuentes incrustadas,
+  retratos a 109 ppi y Mauricio a 125 ppi impresos.
+- **Trampa medida:** Chromium ignora `zoom` y `transform: scale` al imprimir una hoja de 2 m
+  (salía el lienzo a un tercio, centrado y cortado). El PDF se escala después con pdf-lib
+  (`aTamanoReal` en `generar-flyer.mjs`). RF-29.3 no lo detectaba: mide la caja, no el dibujo.
+  Revisar el PDF rasterizado, no solo el informe.
+- `npm run flyer`: 16 piezas, 27 criterios en verde. `verify:todo` en verde; `check`, 0 errores.
+- **Pendiente:** que Daniel elija el ancho según la imprenta y pida su ficha técnica (márgenes
+  de barra y cassette, si acepta RGB); prueba impresa de un tramo antes del tiraje (RF-33.8).
+  Retratos a 109 ppi: si se consiguen originales más grandes, suben.
+
 ## Seis proyectos ANID en el sitio y en los flyers · 2026-10-13 · (en vivo, versión `73075e40`)
 
 - **Desplegado el 2026-10-14** (`73075e40-431a-4494-ae3e-9066bcea881d`) con el PR #31,
