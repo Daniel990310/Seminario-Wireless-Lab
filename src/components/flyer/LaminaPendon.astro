@@ -2,14 +2,17 @@
 /**
  * Pendón roller impreso (RF-33): en una sola lámina, lo que el carrusel reparte en tres
  * —portada, expositores con retrato, inscripción con QR y horario, instituciones y
- * marcas— y, arriba, Mauricio con su retrato como quien dirige el seminario. Lo pidió
- * Daniel el 2026-10-14.
+ * marcas— y Mauricio con su retrato como quien dirige el seminario. Lo pidió Daniel el
+ * 2026-10-14.
+ *
+ * Se lee como un resumen de congreso, de arriba abajo: quién (marca, fecha, sede), de qué
+ * trata (la tesis del seminario y su frase técnica), cómo entrar (QR), quiénes hablan y
+ * quién lo hace posible. El QR va arriba (Daniel, 2026-10-14): con la tela de pie, la
+ * banda de 60 a 90 cm bajo el borde superior queda entre 1,3 y 1,6 m del suelo, a la
+ * altura de los ojos y del teléfono de quien se acerca.
  *
  * Mismos componentes y misma escala tipográfica que el carrusel: el lienzo mide en px lo
- * que tres láminas, y 1 px son 0,741 mm impresos (`src/data/flyer.ts`). El orden sigue la
- * altura de la mirada: marca, fecha y sede arriba, a la altura de los ojos de alguien de
- * pie; personas en el centro; QR a la altura del pecho, donde se escanea sin agacharse;
- * marcas abajo.
+ * que tres láminas, y 1 px son 0,741 mm impresos (`src/data/flyer.ts`).
  *
  * Retratos y marcas van con su archivo original (`original`): reducidos para la pantalla,
  * impresos quedaban bajo 70 ppi (RF-33.4).
@@ -31,38 +34,48 @@ interface Props {
 const { c, participantes } = Astro.props;
 const t = c.ui.flyer;
 const { dominio, jornadas } = datosFlyer(c);
+/* La tesis es el título de la sección «El seminario» del sitio: una sola fuente. */
+const tesis = c.ui.secciones.seminario.title;
 ---
 
-<Encabezado c={c} anchoLogo={740} sinOrganizador />
+<Encabezado c={c} anchoLogo={740} soloMarca />
 
 <div class="flex flex-1 flex-col justify-evenly">
-  <div class="mt-[32px] border-t hairline pt-[32px]">
-    <Director c={c} retrato={220} />
-  </div>
-
-  <section class="mt-[36px]">
-    <h2 class="font-display text-[64px] leading-none font-semibold text-foreground">{t.expositores}</h2>
-    <GrillaExpositores c={c} retrato={176} original />
+  <section data-pendon-gancho class="mt-[32px]">
+    <p class="font-display text-[56px] leading-[1.08] font-semibold text-balance text-foreground">{tesis}</p>
+    <p class="mt-[16px] text-[32px] leading-[1.35] text-pretty text-muted-foreground">{t.gancho}</p>
   </section>
 
-  <section class="mt-[36px] flex items-start gap-[48px]">
+  {/* Cómo asistir: cuándo, dónde y el QR, juntos y a la altura de los ojos. */}
+  <section class="mt-[32px] flex items-center gap-[44px]">
     {c.registro.url && <Qr url={c.registro.url} tamano={300} />}
-    <div class="min-w-0 pt-[4px]">
-      <p class="text-[36px] leading-[1.25] text-foreground">{t.escanea}</p>
-      <p class="mt-[8px] text-[52px] leading-none font-semibold text-accent">{dominio}</p>
+    <div class="min-w-0">
+      <p class="font-mono text-[72px] leading-none font-semibold tracking-tight text-accent">{c.dates.shortLabel}</p>
+      <p class="mt-[14px] text-[31px] leading-[1.2] text-balance text-muted-foreground">{c.venue.name}, {c.venue.country}</p>
       {
         jornadas.length > 0 && (
-          <ul class="mt-[32px] flex flex-col gap-[12px]">
+          <ul class="mt-[18px] flex flex-col gap-[6px]">
             {jornadas.map((d) => (
-              <li class="text-[31px] leading-[1.2]">
-                <span class="block text-foreground">{d.label}</span>
-                <span class="block font-mono text-accent">{d.date}</span>
+              <li class="flex flex-wrap gap-x-[16px] text-[31px] leading-[1.2]">
+                <span class="text-foreground">{d.label}</span>
+                <span class="font-mono text-accent">{d.date}</span>
               </li>
             ))}
           </ul>
         )
       }
+      <p class="mt-[18px] text-[31px] leading-[1.25] text-foreground">{t.escanea}</p>
+      <p class="mt-[4px] text-[44px] leading-none font-semibold text-foreground">{dominio}</p>
     </div>
+  </section>
+
+  <div class="mt-[32px] border-t hairline pt-[24px]">
+    <Director c={c} retrato={176} />
+  </div>
+
+  <section class="mt-[24px]">
+    <h2 class="font-display text-[52px] leading-none font-semibold text-foreground">{t.expositores}</h2>
+    <GrillaExpositores c={c} retrato={148} original />
   </section>
 </div>
 

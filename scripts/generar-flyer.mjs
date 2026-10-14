@@ -392,16 +392,23 @@ for (const idioma of ['es', 'en']) {
 }
 
 /*
- * RF-33.8: hoja del pendón para la revisión humana, los dos anchos lado a lado y el lienzo
- * entero a 1200 px de alto, sangrado y base incluidos.
+ * RF-33.8: hoja del pendón para la revisión humana, los dos anchos lado a lado. Muestra lo
+ * que se ve con el pendón armado, a 1200 px de alto, y debajo, rayada, la base que entra
+ * en el cassette: con la base pintada igual que lo visible, la franja blanca parecía el
+ * doble de alta de lo que se ve (Daniel, 2026-10-14).
  */
 for (const idioma of ['es', 'en']) {
   const piezas = PIEZAS_FLYER.filter((p) => p.idioma === idioma && p.publicacion === 'impreso');
   const celdas = await Promise.all(
     piezas.map(async ({ pieza, formato }) => {
       const b64 = (await readFile(join(SALIDA, `${pieza}.png`))).toString('base64');
-      const ancho = Math.round((FORMATOS_FLYER[formato].ancho / FORMATOS_FLYER[formato].alto) * 1200);
-      return `<figure style="margin:0"><img src="data:image/png;base64,${b64}" alt="${pieza}" style="width:${ancho}px;display:block"><figcaption style="font:14px system-ui">${pieza}</figcaption></figure>`;
+      const { ancho, alto, impreso } = FORMATOS_FLYER[formato];
+      const { sangrado, base } = impreso;
+      const k = 1200 / (alto - 2 * sangrado - base);
+      const visible = `width:${Math.round((ancho - 2 * sangrado) * k)}px;height:1200px;overflow:hidden`;
+      const lienzo = `width:${Math.round(ancho * k)}px;display:block;margin:-${Math.round(sangrado * k)}px 0 0 -${Math.round(sangrado * k)}px`;
+      const rayado = `height:${Math.round(base * k)}px;background:repeating-linear-gradient(45deg,#bbb 0 6px,#999 6px 12px);font:12px system-ui;color:#333;padding:6px`;
+      return `<figure style="margin:0"><div style="${visible}"><img src="data:image/png;base64,${b64}" alt="${pieza}" width="${Math.round(ancho * k)}" height="${Math.round(alto * k)}" style="${lienzo}"></div><div style="${rayado}">${impreso.baseMm / 10} cm de base: entra en el cassette, no se ve</div><figcaption style="font:14px system-ui">${pieza}</figcaption></figure>`;
     }),
   );
   const page = await navegador.newPage({ viewport: { width: 1200, height: 1300 } });

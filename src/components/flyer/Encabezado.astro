@@ -26,16 +26,16 @@ interface Props {
    */
   compacto?: boolean;
   /**
-   * Sin el renglón «Organiza: …»: el pendón nombra al organizador debajo, con su retrato
-   * (`Director.astro`), y el renglón lo repetía.
+   * Solo rótulo, logo y resto del título. El pendón lleva fecha y sede junto al QR, en el
+   * bloque de cómo asistir, y nombra al organizador con su retrato (`Director.astro`).
    */
-  sinOrganizador?: boolean;
+  soloMarca?: boolean;
 }
 
-const { c, anchoLogo, compacto = false, sinOrganizador = false } = Astro.props;
+const { c, anchoLogo, compacto = false, soloMarca = false } = Astro.props;
 const datos = datosFlyer(c);
 const { restoTitulo } = datos;
-const organizador = sinOrganizador ? null : datos.organizador;
+const organizador = soloMarca ? null : datos.organizador;
 /* Proporción del `viewBox` del logo, 650 × 218: no se estira (manual 5.2). */
 const altoLogo = Math.round((anchoLogo * 218) / 650);
 /*
@@ -50,15 +50,23 @@ const sangria = Math.round((anchoLogo * 31.5) / 650);
 {/* El nombre accesible del lienzo es el título oficial, en el `<title>` y en el `alt`. */}
 <img src={logoPrincipal.src} alt="" width={anchoLogo} height={altoLogo} class="mt-[12px] block" style={`margin-left:-${sangria}px`} data-logo-seminario="principal" />
 <p class="mt-[8px] font-display text-[52px] leading-[1.1] text-balance text-primary">{restoTitulo}</p>
-<p
-  class:list={[
-    'font-mono leading-none font-semibold tracking-tight text-accent',
-    compacto ? 'mt-[24px] text-[64px]' : 'mt-[40px] text-[100px]',
-  ]}
->
-  {c.dates.shortLabel}
-</p>
-<p class="mt-[16px] text-[36px] leading-[1.2] text-balance text-muted-foreground">{c.venue.name}, {c.venue.country}</p>
+{
+  !soloMarca && (
+    <>
+      <p
+        class:list={[
+          'font-mono leading-none font-semibold tracking-tight text-accent',
+          compacto ? 'mt-[24px] text-[64px]' : 'mt-[40px] text-[100px]',
+        ]}
+      >
+        {c.dates.shortLabel}
+      </p>
+      <p class="mt-[16px] text-[36px] leading-[1.2] text-balance text-muted-foreground">
+        {c.venue.name}, {c.venue.country}
+      </p>
+    </>
+  )
+}
 {
   organizador && (
     <p

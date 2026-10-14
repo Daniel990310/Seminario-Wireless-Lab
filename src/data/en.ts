@@ -208,6 +208,8 @@ export const en = {
       grupoInternacional: 'International',
       // No «Chilean»: el grupo es por institución con sede en Chile, no por nacionalidad.
       grupoNacional: 'Based in Chile',
+      gancho:
+        'Propagation, channel modelling and ISAC architectures at mmWave and sub-THz: 6G networks that carry data and, with the same signal, sense their environment.',
     },
 
     secciones: {

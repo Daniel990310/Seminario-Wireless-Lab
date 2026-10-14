@@ -37,6 +37,12 @@ Hostinger sin revocar.**
   (salía el lienzo a un tercio, centrado y cortado). El PDF se escala después con pdf-lib
   (`aTamanoReal` en `generar-flyer.mjs`). RF-29.3 no lo detectaba: mide la caja, no el dibujo.
   Revisar el PDF rasterizado, no solo el informe.
+- **Segunda versión (mismo día), por Daniel:** no le gustó la primera. Ahora: tesis del
+  seminario + frase técnica (`ui.flyer.gancho`) bajo la marca; **QR arriba**, junto a fecha,
+  sede, horario y dominio; Mauricio debajo, antes de los expositores (RF-33.5). La franja
+  blanca no cambió de alto: en la hoja de revisión parecía el doble porque mostraba la base
+  del cassette; ahora la hoja muestra lo visible y la base rayada aparte. Holgura: 36 px en
+  80 cm, 42 en 85 `[medido]`.
 - `npm run flyer`: 16 piezas, 27 criterios en verde. `verify:todo` en verde; `check`, 0 errores.
 - **Pendiente:** que Daniel elija el ancho según la imprenta y pida su ficha técnica (márgenes
   de barra y cassette, si acepta RGB); prueba impresa de un tramo antes del tiraje (RF-33.8).

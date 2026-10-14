@@ -198,6 +198,11 @@ export interface ContenidoIdioma {
        */
       grupoInternacional: string;
       grupoNacional: string;
+      /**
+       * Pendón: la frase técnica bajo la tesis del seminario (el título de la sección
+       * «El seminario»). Daniel pidió un gancho en lenguaje académico (2026-10-14).
+       */
+      gancho: string;
     };
 
     secciones: {
