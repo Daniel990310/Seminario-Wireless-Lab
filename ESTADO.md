@@ -22,6 +22,24 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Seis proyectos ANID en el sitio y en los flyers · 2026-10-13 · (sin desplegar)
+
+- **Pedido de Daniel** con la lista de Mauricio por WhatsApp: el sitio y los flyers nombran
+  **FOVI250222, Fondecyt Regular 1250951, Fondecyt de Iniciación 11241221 y 11261397,
+  CCTVal CIA250027 y CPS-RTC CIA250016** (ANID) y **CYTED 525RT0175**. Antes el sitio tenía
+  solo FOVI, 1250951 y CYTED; los flyers no tenían 11241221 ni CIA250016. Los dos de Miguel
+  vuelven: el 2026-10-08 se habían retirado como «información de Miguel».
+- `[medido]` los cinco folios nuevos 3 veces en `dist/index.html` y en `dist/en/index.html`
+  (bloque ANID, pie, párrafo de «El seminario»). Flyers: 12 piezas, 23 criterios en verde.
+  El agradecimiento ganó un renglón: retratos de expositores 164 → 150 px y la pieza única
+  apretada 18 px (detalle en `LaminaUnica.astro`).
+- `verify:idioma` acepta `CIA\d+` como folio (antes marcaba los dos centros como sin
+  traducir). `verify:todo` en verde.
+- Folios todos `[supuesto]`: dados por Mauricio, no cotejados con ANID.
+- **Pendiente:** fusionar y desplegar (Daniel); los `.ai` no se rehicieron
+  (`abrir-flyer.ps1 -Rehacer` si hacen falta); reenviar el material de difusión, armado en
+  `Descargas/Flyers Beyond Connectivity 2026-10-13`.
+
 ## ALMA corregido en el sitio y flyers para difusión · 2026-10-10 · (en vivo, versión `8e7b5b9a`)
 
 - **Desplegado el 2026-10-10** (`8e7b5b9a-d457-4251-94d0-fc9b44d9fc82`) con los PR #28 y

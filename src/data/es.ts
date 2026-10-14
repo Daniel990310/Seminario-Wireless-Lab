@@ -113,7 +113,7 @@ export const es = {
     lead: 'Encuentro internacional dedicado a la detección inalámbrica en bandas de ondas milimétricas y sub-terahertz, y a su papel en las redes de comunicación futuras.',
     paragraphs: [
       'Las bandas mmWave y sub-THz permiten que una misma infraestructura inalámbrica no solo transmita información, sino que perciba el entorno: detectar presencia y movimiento, estimar distancias y reconstruir escenas. Esa convergencia entre comunicación y detección es uno de los ejes de las redes 6G.',
-      'El seminario reúne a investigadores de Chile y del extranjero para discutir propagación, mediciones y sensado conjunto, y para mostrar la investigación de la PUCV junto a la de sus colaboradores en estos temas. Se realiza en el marco de tres proyectos que lo financian: FOVI250222 y Fondecyt Regular 1250951, de ANID, y 525RT0175, de CYTED.',
+      'El seminario reúne a investigadores de Chile y del extranjero para discutir propagación, mediciones y sensado conjunto, y para mostrar la investigación de la PUCV junto a la de sus colaboradores en estos temas. Se realiza en el marco de siete proyectos que lo financian: de ANID, FOVI250222, Fondecyt Regular 1250951, Fondecyt de Iniciación 11241221 y 11261397, CCTVal CIA250027 y CPS-RTC CIA250016; y de CYTED, 525RT0175.',
     ],
     director: {
       epigrafe: 'Dirige el seminario',
@@ -213,10 +213,10 @@ export const es = {
       escanea: 'Escanea el código o entra a',
       sticker: 'Inscríbete en el enlace',
       programaPie: 'Inscripciones y programa:',
-      // Traducción del agradecimiento de Mauricio (2026-10-09). Folios dados por él; 11261397 y
-      // CIA250027 no están cotejados con ANID `[supuesto]`. Ver `tipos.ts`.
+      // Traducción del agradecimiento de Mauricio (2026-10-09), con su corrección por WhatsApp
+      // (Daniel, 2026-10-13). Folios dados por él, no cotejados con ANID `[supuesto]`.
       agradecimiento:
-        'Este trabajo fue financiado por ANID FONDECYT 1250951 y 11261397, ANID CCTVal CIA250027, ANID Vinculación Internacional FOVI250222 y el Programa Iberoamericano de Ciencia y Tecnología para el Desarrollo - CYTED (525RT0175-DISeCom).',
+        'Este trabajo fue financiado por ANID FONDECYT Regular 1250951, ANID FONDECYT Iniciación 11241221 y 11261397, ANID CCTVal CIA250027, ANID CPS-RTC CIA250016, ANID Vinculación Internacional FOVI250222 y el Programa Iberoamericano de Ciencia y Tecnología para el Desarrollo - CYTED (525RT0175-DISeCom).',
       grupoInternacional: 'Internacionales',
       grupoNacional: 'Nacionales',
     },

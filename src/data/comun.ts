@@ -712,11 +712,22 @@ export const comun = {
      * folio: el título del proyecto no llegó y no se publica uno buscado por nuestra cuenta.
      * Instrumento y folio no se traducen, como la mención.
      *
-     * Los dos proyectos de Miguel Gutiérrez Gaitán (Fondecyt 11241221 y CPS-RTC CIA250016)
-     * estuvieron aquí del 2026-10-07 al 2026-10-08; Daniel los retiró: eran información de
-     * Miguel, no financiamiento del seminario.
+     * Desde el 2026-10-13 son los proyectos ANID que Mauricio nombró por WhatsApp (su
+     * agradecimiento y la corrección «FONDECYT INICIACION 11241221 y 11261397»), y Daniel
+     * pidió que estén en el sitio y en los flyers. Los dos de Miguel
+     * Gutiérrez Gaitán (11241221 y CIA250016) estuvieron aquí del 2026-10-07 al 2026-10-08 y
+     * Daniel los había retirado como información de Miguel; vuelven porque Mauricio los
+     * declara financiamiento. Los centros van con el nombre que usa Mauricio («ANID CCTVal
+     * CIA250027»), sin nombre de concurso: el instrumento exacto del prefijo `CIA` no está
+     * cotejado. Todos los folios, `[supuesto: dados por él, no cotejados con ANID]`.
      */
-    otrosProyectos: [{ instrumento: 'Fondecyt Regular', code: '1250951' }],
+    otrosProyectos: [
+      { instrumento: 'Fondecyt Regular', code: '1250951' },
+      { instrumento: 'Fondecyt de Iniciación', code: '11241221' },
+      { instrumento: 'Fondecyt de Iniciación', code: '11261397' },
+      { instrumento: 'CCTVal', code: 'CIA250027' },
+      { instrumento: 'CPS-RTC', code: 'CIA250016' },
+    ],
   },
 
   /**

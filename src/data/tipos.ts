@@ -187,8 +187,9 @@ export interface ContenidoIdioma {
       /**
        * Agradecimiento de financiamiento al pie de las piezas, el que mandó Mauricio el
        * 2026-10-09 en inglés; la versión en español es traducción nuestra (Daniel pidió que
-       * cada pieza lo lleve en su idioma). Trae folios que el sitio todavía no declara:
-       * Fondecyt 11261397 y ANID CCTVal CIA250027 `[supuesto: dados por él, no cotejados]`.
+       * cada pieza lo lleve en su idioma). Desde el 2026-10-13 nombra los mismos seis
+       * proyectos ANID que `funding.otrosProyectos` más el FOVI, y CYTED
+       * `[supuesto: folios dados por él, no cotejados]`.
        */
       agradecimiento: string;
       /**

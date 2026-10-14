@@ -99,7 +99,7 @@ export const en = {
     lead: 'An international meeting on wireless sensing in millimetre-wave and sub-terahertz bands, and its role in future communication networks.',
     paragraphs: [
       'The mmWave and sub-THz bands let a single wireless infrastructure not only carry information but also perceive its surroundings: detecting presence and motion, estimating range and reconstructing scenes. This convergence of communication and sensing is one of the pillars of 6G networks.',
-      'The seminar brings together researchers from Chile and abroad to discuss propagation, measurements and joint sensing, and to showcase PUCV research alongside that of its collaborators in these fields. It is held within three projects that fund it: FOVI250222 and Fondecyt Regular 1250951, from ANID, and 525RT0175, from CYTED.',
+      'The seminar brings together researchers from Chile and abroad to discuss propagation, measurements and joint sensing, and to showcase PUCV research alongside that of its collaborators in these fields. It is held within seven projects that fund it: from ANID, FOVI250222, Fondecyt Regular 1250951, Fondecyt de Iniciación 11241221 and 11261397, CCTVal CIA250027 and CPS-RTC CIA250016; and from CYTED, 525RT0175.',
     ],
     director: {
       epigrafe: 'Seminar director',
@@ -200,10 +200,11 @@ export const en = {
       escanea: 'Scan the code or go to',
       sticker: 'Register via the link',
       programaPie: 'Registration and programme:',
-      // Texto de Mauricio, tal cual (2026-10-09). Folios dados por él; 11261397 y CIA250027 no
-      // están cotejados con ANID `[supuesto]`. Ver `tipos.ts`.
+      // Texto de Mauricio (2026-10-09) con su corrección por WhatsApp: 11241221 y 11261397 son
+      // Iniciación, y entra CPS-RTC CIA250016 (Daniel, 2026-10-13). Folios no cotejados con
+      // ANID `[supuesto]`.
       agradecimiento:
-        'This work was supported by ANID FONDECYT 1250951 and 11261397, ANID CCTVal CIA250027, ANID Vinculación Internacional FOVI250222 and Programa Iberoamericano de Ciencia y Tecnología para el Desarrollo - CYTED (525RT0175-DISeCom).',
+        'This work was supported by ANID FONDECYT Regular 1250951, ANID FONDECYT Iniciación 11241221 and 11261397, ANID CCTVal CIA250027, ANID CPS-RTC CIA250016, ANID Vinculación Internacional FOVI250222 and Programa Iberoamericano de Ciencia y Tecnología para el Desarrollo - CYTED (525RT0175-DISeCom).',
       grupoInternacional: 'International',
       // No «Chilean»: el grupo es por institución con sede en Chile, no por nacionalidad.
       grupoNacional: 'Based in Chile',
