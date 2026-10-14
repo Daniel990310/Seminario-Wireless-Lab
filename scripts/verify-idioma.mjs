@@ -84,6 +84,7 @@ const COINCIDENCIA_LEGITIMA = [
   // marcándola como traducción olvidada. Una dirección no se traduce, sea cual sea.
   /^[\w.+-]+@[\w.-]+\.\w+$/,
   /FOVI\d+/, // Códigos de proyecto
+  /^CIA\d+$/, // Folios ANID de los centros CCTVal y CPS-RTC (2026-10-13); los Fondecyt los cubre /^\d/
   /*
    * Red CYTED DISeCom, referenciada desde el 2026-09-25. Su **nombre oficial es español**
    * —es una red iberoamericana— y traducirlo produciría una red que no existe, igual que
