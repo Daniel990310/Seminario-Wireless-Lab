@@ -59,7 +59,7 @@ const CRITERIOS = {
   'RF-26.4': 'ANID a la derecha de las demás marcas',
   'RF-26.5': 'Peso de las marcas entre 0,72× y 1,7× el de ANID',
   'RF-26.6': 'Agradecimiento de financiamiento completo',
-  'RF-28.1': 'El QR se lee y da su URL, a escala 1 y 0,5',
+  'RF-28.1': 'El QR se lee, a escala 1 y 0,5, y es el que la lámina debe llevar',
   'RF-28.3': 'Hueco del sticker libre, de 600 × 170 o más',
   'RF-29.1': 'Texto alternativo, hasta 1000 caracteres en redes; sin tope en impresos',
   'RF-29.2': 'PDF sin Type3 y con las tres familias incrustadas',
@@ -126,7 +126,9 @@ async function fuentesDelPdf(ruta) {
 /**
  * RF-28.1: el QR se decodifica sobre la captura, a tamaño real y a la mitad, y se compara
  * con la URL que la lámina **debe** llevar (`esperado.qr`, de `POR_LAMINA`), no con la que
- * el propio QR declara: así una URL equivocada falla. Un QR donde no va, o que falta, también.
+ * el propio QR declara: así falla una lámina que lleve el QR de otra (inscripción en vez de
+ * programa) y un QR donde no va o que falta. No ve un error en la URL misma: lámina y
+ * criterio la toman del mismo dato. Sin formulario (`registro.url` nulo) no se espera QR.
  */
 async function leerQr(page) {
   const figura = page.locator('[data-flyer-qr]');
@@ -208,7 +210,7 @@ for (const { pieza, formato, idioma, publicacion, pie: llevaPie } of PIEZAS_FLYE
   const alt = (await page.locator('meta[name="flyer-alt"]').getAttribute('content')) ?? '';
   await escribir(join(SALIDA, `${pieza}.alt.txt`), `${alt}\n`);
   // Un impreso no se publica en ninguna red: el tope de Instagram no le aplica.
-  r.push({ id: 'RF-29.1', ok: alt.length > 0 && (Boolean(impreso) || alt.length <= 1000), detalle: `${alt.length} caracteres` });
+  r.push({ id: 'RF-29.1', ok: alt.length > 0 && (impreso !== null || alt.length <= 1000), detalle: `${alt.length} caracteres` });
 
   /*
    * RF-29.6 · pie de publicación, uno por publicación: lo trae la lámina que `LAMINAS`
@@ -240,12 +242,10 @@ for (const { pieza, formato, idioma, publicacion, pie: llevaPie } of PIEZAS_FLYE
    * un pendón a un tercio con el nombre del bueno.
    */
   await page.emulateMedia({ media: 'screen' });
-  let bytesPdf = await page.pdf({ width: `${ancho}px`, height: `${alto}px`, printBackground: true, pageRanges: '1' });
-  const real = impreso ? await aTamanoReal(bytesPdf, f) : null;
-  if (real) bytesPdf = real.bytes;
+  const bytesChromium = await page.pdf({ width: `${ancho}px`, height: `${alto}px`, printBackground: true, pageRanges: '1' });
   const rutaPdf = join(SALIDA, `${pieza}.pdf`);
-  await escribir(rutaPdf, bytesPdf);
-  if (real) r.push(await verificarPdfReal(await readFile(rutaPdf), f, real.hojaChromium));
+  await escribir(rutaPdf, impreso ? await aTamanoReal(bytesChromium, f) : bytesChromium);
+  if (impreso) r.push(await verificarPdfReal(await readFile(rutaPdf), f));
   const pdf = await fuentesDelPdf(rutaPdf);
   pdfsEscritos.add(pieza);
   r.push({ id: 'RF-29.2', ok: !pdf.type3 && !pdf.faltan.length, detalle: pdf.type3 ? `${pdf.type3} Type3` : pdf.faltan.join(', ') });

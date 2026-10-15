@@ -7,11 +7,10 @@ import LaminaInscripcion from '~/components/flyer/LaminaInscripcion.astro';
 import LaminaPendon from '~/components/flyer/LaminaPendon.astro';
 import LaminaTelon from '~/components/flyer/LaminaTelon.astro';
 import LaminaUnica from '~/components/flyer/LaminaUnica.astro';
-import Marcas from '~/components/flyer/Marcas.astro';
 import Portada from '~/components/flyer/Portada.astro';
 import { altFlyer, datosFlyer, pieDePublicacion } from '~/components/flyer/datos';
 import { contenido } from '~/data/contenido';
-import { FORMATOS_FLYER, PIEZAS_FLYER } from '~/data/flyer';
+import { PIEZAS_FLYER } from '~/data/flyer';
 
 export function getStaticPaths() {
   return PIEZAS_FLYER.map(({ pieza, ...props }) => ({ params: { pieza }, props }));
@@ -19,7 +18,6 @@ export function getStaticPaths() {
 
 const { idioma, formato, lamina, pie, emisor, organizador: nombraOrganizador, participantes: conParticipantes, qr } = Astro.props;
 const c = contenido(idioma);
-const { impreso } = FORMATOS_FLYER[formato];
 
 /* Qué componente dibuja cada lámina, con qué props. La historia es la portada con hueco para el sticker. */
 const COMPONENTE = {
@@ -40,6 +38,9 @@ const [Lamina, extra] = COMPONENTE[lamina];
  */
 // Toda lámina lleva franja y agradecimiento; la fila de participantes, según `POR_LAMINA`.
 const { dominio, organizador, participantes, mencion, urlPrograma } = datosFlyer(c);
+// Una lámina que nombra al organizador sin organizador saldría con el nombre en blanco, y
+// RF-25.2 no lo vería: esperaría `null`. Mejor que el build falle.
+if (nombraOrganizador && !organizador) throw new Error(`[flyer] ${lamina}: el comité no trae organizador con grado de doctor`);
 const esperado = {
   dominio,
   fecha: c.dates.shortLabel,
@@ -58,8 +59,7 @@ const esperado = {
   pie={pie ? pieDePublicacion(c) : undefined}
   emisor={emisor}
   esperado={esperado}
+  participantes={conParticipantes}
 >
   <Lamina c={c} {...extra} />
-  {/* La franja es del lienzo, no de la lámina: todas la llevan. Impresa, con los archivos originales. */}
-  <Marcas c={c} participantes={conParticipantes} original={impreso !== null} />
 </CartelFlyer>

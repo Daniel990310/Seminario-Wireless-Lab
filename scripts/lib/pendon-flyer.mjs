@@ -84,6 +84,10 @@ export async function medirImpreso(page, { impreso }) {
  *
  * Se añaden la `TrimBox` —el corte: ancho × (visible + base)— y la `BleedBox`, el corte más
  * el sangrado: con ellas el programa de la imprenta pone las marcas de corte.
+ *
+ * Precondición: la hoja de Chromium mide el lienzo a 0,75 pt por px. Si un Chromium futuro
+ * imprime a otra escala, el dibujo saldría estirado en una hoja del tamaño correcto; se
+ * detiene antes de escribir un pendón así.
  * @param {FormatoFlyerDef} formato
  */
 export async function aTamanoReal(bytesChromium, { ancho, alto, impreso, ptPorPx }) {
@@ -93,6 +97,10 @@ export async function aTamanoReal(bytesChromium, { ancho, alto, impreso, ptPorPx
   doc.setTitle(origen.getTitle() ?? '');
   const pt = (px) => px * ptPorPx;
   const [lienzo] = await doc.embedPdf(origen, [0]);
+  const esperada = { w: ancho * PT_POR_PX_CHROMIUM, h: alto * PT_POR_PX_CHROMIUM };
+  if (Math.abs(lienzo.width - esperada.w) > 1 || Math.abs(lienzo.height - esperada.h) > 1) {
+    throw new Error(`Chromium imprimió ${lienzo.width}×${lienzo.height} pt, no ${esperada.w}×${esperada.h}: el pendón saldría estirado`);
+  }
   const hoja = doc.addPage([pt(ancho), pt(alto)]);
   hoja.drawPage(lienzo, { x: 0, y: 0, width: pt(ancho), height: pt(alto) });
   const corte = {
@@ -105,53 +113,54 @@ export async function aTamanoReal(bytesChromium, { ancho, alto, impreso, ptPorPx
   const s = impreso.sangradoMm * PT_POR_MM;
   hoja.setTrimBox(corte.x, corte.y, corte.w, corte.h);
   hoja.setBleedBox(corte.x - s, corte.y - s, corte.w + 2 * s, corte.h + 2 * s);
-  return { bytes: await doc.save(), hojaChromium: { w: lienzo.width, h: lienzo.height } };
+  return doc.save();
 }
 
 /**
  * RF-33.1 · lee el PDF **escrito en disco** y lo compara con lo que el lienzo y el catálogo
  * dicen, no con las constantes con que se escribió (así no podría fallar):
- *   - la hoja de Chromium mide el lienzo a 0,75 pt por px: si un Chromium futuro imprime a
- *     otra escala, el dibujo saldría estirado en una hoja del tamaño correcto;
  *   - la hoja mide el corte de catálogo más el sangrado, con tres px de holgura: los px del
  *     lienzo se redondean hacia arriba en sangrado, base y ancho, 0,37 mm cada uno;
  *   - la caja de corte queda a `sangradoMm` de cada borde de la hoja, con dos px de
  *     holgura: abajo y a la derecha se suman dos redondeos (sangrado y base, o sangrado y
  *     ancho), 0,74 mm. La hoja sale de los px del lienzo y el corte de los mm de catálogo:
  *     son fuentes distintas, y un corte corrido se ve aquí;
- *   - la caja de sangrado cabe en la hoja.
+ *   - la caja de sangrado llega a los cuatro bordes de la hoja (± dos px) y excede al corte
+ *     en el sangrado por lado. Lo segundo no es redundante: sin `BleedBox`, pdf-lib devuelve
+ *     la hoja entera, que llega a los bordes pero excede al corte en 20,7 mm y no en 20.
  * @param {FormatoFlyerDef} formato
  */
-export async function verificarPdfReal(bytesDisco, { ancho, alto, impreso }, hojaChromium) {
+export async function verificarPdfReal(bytesDisco, { impreso }) {
   const problemas = [];
   const mm = (pt) => pt / PT_POR_MM;
   const f1 = (v) => v.toFixed(1);
   const cerca = (a, b, tol) => Math.abs(a - b) <= tol;
-  const esperadaChromium = { w: ancho * PT_POR_PX_CHROMIUM, h: alto * PT_POR_PX_CHROMIUM };
-  if (!cerca(hojaChromium.w, esperadaChromium.w, 1) || !cerca(hojaChromium.h, esperadaChromium.h, 1)) {
-    problemas.push(`Chromium imprimió ${f1(hojaChromium.w)}×${f1(hojaChromium.h)} pt, no ${f1(esperadaChromium.w)}×${f1(esperadaChromium.h)}`);
-  }
   const pagina = (await PDFDocument.load(bytesDisco)).getPage(0);
   const hoja = pagina.getSize();
   const trim = pagina.getTrimBox();
   const bleed = pagina.getBleedBox();
-  const px = impreso.mmPorPx;
+  const mmPx = impreso.mmPorPx;
   const hojaMm = { w: impreso.anchoMm + 2 * impreso.sangradoMm, h: impreso.visibleMm + impreso.baseMm + 2 * impreso.sangradoMm };
-  if (!cerca(mm(hoja.width), hojaMm.w, 3 * px) || !cerca(mm(hoja.height), hojaMm.h, 3 * px)) {
-    problemas.push(`hoja ${f1(mm(hoja.width))}×${f1(mm(hoja.height))} mm, se esperaba ${hojaMm.w}×${hojaMm.h} ± ${f1(3 * px)}`);
+  if (!cerca(mm(hoja.width), hojaMm.w, 3 * mmPx) || !cerca(mm(hoja.height), hojaMm.h, 3 * mmPx)) {
+    problemas.push(`hoja ${f1(mm(hoja.width))}×${f1(mm(hoja.height))} mm, se esperaba ${hojaMm.w}×${hojaMm.h} ± ${f1(3 * mmPx)}`);
   }
-  const margenes = {
-    izquierda: mm(trim.x),
-    derecha: mm(hoja.width - trim.x - trim.width),
-    abajo: mm(trim.y),
-    arriba: mm(hoja.height - trim.y - trim.height),
-  };
-  const corridos = Object.entries(margenes).filter(([, v]) => !cerca(v, impreso.sangradoMm, 2 * px));
+  // Distancia de una caja a cada borde de la hoja, en mm.
+  const aBordes = (c) => ({
+    izquierda: mm(c.x),
+    derecha: mm(hoja.width - c.x - c.width),
+    abajo: mm(c.y),
+    arriba: mm(hoja.height - c.y - c.height),
+  });
+  const corridos = Object.entries(aBordes(trim)).filter(([, v]) => !cerca(v, impreso.sangradoMm, 2 * mmPx));
   if (corridos.length) {
     problemas.push(`corte a ${corridos.map(([lado, v]) => `${f1(v)} mm por ${lado}`).join(', ')}, no ${impreso.sangradoMm}`);
   }
-  const dentro = bleed.x >= -0.5 && bleed.y >= -0.5 && bleed.x + bleed.width <= hoja.width + 0.5 && bleed.y + bleed.height <= hoja.height + 0.5;
-  if (!dentro) problemas.push('la caja de sangrado sale de la hoja');
+  const lejos = Object.entries(aBordes(bleed)).filter(([, v]) => !cerca(v, 0, 2 * mmPx));
+  if (lejos.length) problemas.push(`sangrado a ${lejos.map(([lado, v]) => `${f1(v)} mm del borde ${lado}`).join(', ')}`);
+  const exceso = [mm(bleed.width - trim.width), mm(bleed.height - trim.height)];
+  if (exceso.some((v) => !cerca(v, 2 * impreso.sangradoMm, 0.1))) {
+    problemas.push(`la caja de sangrado excede al corte en ${exceso.map(f1).join('×')} mm, no ${2 * impreso.sangradoMm}`);
+  }
   const r = (v) => Math.round(mm(v));
   return {
     id: 'RF-33.1',

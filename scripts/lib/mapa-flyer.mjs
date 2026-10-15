@@ -28,7 +28,7 @@ export function mapaLienzo(ptPorPx) {
     objetos.push({ tipo: 'logo', nombre: `Logo ${el.dataset.participante}`, caja: caja(el) });
   }
   for (const el of document.querySelectorAll('[data-flyer-qr]')) {
-    objetos.push({ tipo: 'qr', nombre: 'QR de inscripción', caja: caja(el.querySelector('div') ?? el) });
+    objetos.push({ tipo: 'qr', nombre: 'QR', caja: caja(el.querySelector('div') ?? el) });
   }
   const propio = '[data-marca],[data-participante],[data-logo-seminario],[data-flyer-qr]';
   for (const img of document.querySelectorAll('img')) {

@@ -21,6 +21,7 @@
  */
 import { Font } from 'astro:assets';
 import PropagationFigure from './PropagationFigure.astro';
+import Marcas from './flyer/Marcas.astro';
 import { contenido, type Idioma } from '~/data/contenido';
 import { FORMATOS_FLYER, type FormatoFlyer } from '~/data/flyer';
 import '~/styles/global.css';
@@ -41,11 +42,13 @@ interface Props {
    * (`scripts/lib/criterios-flyer.mjs`). Viaja en `data-flyer-esperado` del `<body>`.
    */
   esperado: Record<string, unknown>;
+  /** Fila de participantes sobre la franja de marcas; la decide `POR_LAMINA` en `src/data/flyer.ts`. */
+  participantes: boolean;
 }
 
-const { lang, formato, alt, pie, emisor = 410, esperado } = Astro.props;
+const { lang, formato, alt, pie, emisor = 410, esperado, participantes } = Astro.props;
 const c = contenido(lang);
-const { ancho, alto, seguro, relleno, fondoInferior } = FORMATOS_FLYER[formato];
+const { ancho, alto, seguro, relleno, fondoInferior, impreso } = FORMATOS_FLYER[formato];
 /*
  * `9x16` reserva las franjas que tapa la interfaz; `4x5` usa el lienzo entero; el pendón,
  * el sangrado, la base del cassette y los márgenes de la barra y del labio.
@@ -119,6 +122,8 @@ const figura = {
         style={`top:${seguro.arriba}px;height:${altoUtil}px;padding-top:${relleno}px`}
       >
         <slot />
+        {/* La franja es del lienzo, no de la lámina: todas la llevan. Impresa, con los archivos originales (RF-33.4). */}
+        <Marcas c={c} participantes={participantes} original={impreso !== null} />
       </div>
 
       {/*

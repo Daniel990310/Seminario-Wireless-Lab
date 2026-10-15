@@ -1,6 +1,6 @@
 # Verificación de las piezas de difusión
 
-> **Generado por `npm run flyer` el 2026-10-15 05:27 UTC. No editar.** Criterios en
+> **Generado por `npm run flyer` el 2026-10-15 08:55 UTC. No editar.** Criterios en
 > [`requirements.md`](requirements.md). `n/a` = el criterio no aplica a esa pieza.
 
 **Todos los criterios medibles en verde.** Falta la revisión humana de RF-30 antes de publicar.
@@ -22,7 +22,7 @@
 | RF-26.4 | ANID a la derecha de las demás marcas | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | RF-26.5 | Peso de las marcas entre 0,72× y 1,7× el de ANID | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | RF-26.6 | Agradecimiento de financiamiento completo | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| RF-28.1 | El QR se lee y da su URL, a escala 1 y 0,5 | ✓ | n/a | n/a | ✓ | n/a | n/a | ✓ | ✓ | ✓ | n/a | ✓ | n/a | n/a | ✓ | n/a | n/a | ✓ | ✓ | ✓ | n/a |
+| RF-28.1 | El QR se lee, a escala 1 y 0,5, y es el que la lámina debe llevar | ✓ | n/a | n/a | ✓ | n/a | n/a | ✓ | ✓ | ✓ | n/a | ✓ | n/a | n/a | ✓ | n/a | n/a | ✓ | ✓ | ✓ | n/a |
 | RF-28.3 | Hueco del sticker libre, de 600 × 170 o más | n/a | n/a | n/a | n/a | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | n/a | n/a | n/a | n/a | n/a |
 | RF-29.1 | Texto alternativo, hasta 1000 caracteres en redes; sin tope en impresos | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | RF-29.2 | PDF sin Type3 y con las tres familias incrustadas | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
