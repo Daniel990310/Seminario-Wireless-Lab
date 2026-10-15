@@ -257,6 +257,9 @@ export interface ContenidoIdioma {
       abrirEnGoogleMaps: string;
       avisoMapa: string;
       tituloMapa: string;
+      estacionamiento: string;
+      /** Tarifa y cómo se aplica el descuento, con la redacción del correo de la sede (RF-35). */
+      estacionamientoDescuento: string;
     };
 
     organizacion: {

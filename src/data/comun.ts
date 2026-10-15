@@ -303,6 +303,8 @@ export const comun = {
     city: 'Santiago',
     mapsUrl:
       'https://www.google.com/maps/search/?api=1&query=Antonio+Bellet+314%2C+Providencia%2C+Santiago%2C+Chile',
+    /** Convenio de la sede (RF-35): flyer y correo de la Sede PUCV Santiago, 2026-10-15. */
+    estacionamiento: { nombre: 'Best Parking', direccion: 'Antonio Bellet 126' },
   },
 
   /*

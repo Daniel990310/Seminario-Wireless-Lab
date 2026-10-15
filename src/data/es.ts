@@ -317,6 +317,9 @@ export const es = {
       abrirEnGoogleMaps: 'Abrir en Google Maps',
       avisoMapa: 'Al cargar el mapa se solicita contenido a Google Maps.',
       tituloMapa: 'Mapa de la sede',
+      estacionamiento: 'Estacionamiento',
+      estacionamientoDescuento:
+        'Tarifa de convenio: $30 por minuto. Timbra el ticket en la recepción de la sede y paga en el cajero manual.',
     },
 
     organizacion: {

@@ -31,8 +31,11 @@ Hostinger sin revocar.**
   puro debajo, como pide la plantilla; el acceso, un QR al programa del sitio.
 - El correo de la sede también pregunta por la sesión de pósteres: en `programa.ts` es el
   **miércoles 21, 14:00–15:00**, después del almuerzo. La dinámica no está escrita en el
-  repo; la responde Mauricio. El descuento de estacionamiento (Best Parking, Antonio Bellet
-  126, $30 el minuto, ticket timbrado en la recepción de la sede) no está en el sitio.
+  repo; la responde Mauricio.
+- **Estacionamiento en «Sede»** (RF-35, spec 002): Best Parking, Antonio Bellet 126, $30 el
+  minuto, ticket timbrado en la recepción de la sede y pagado en el cajero manual, según el
+  correo. ⚠️ El flyer de la sede dice «timbrado en oficina del parking»: falta que Mauricio
+  confirme cuál vale antes de desplegar.
 
 ## Pendón roller impreso · 2026-10-14 · (rama `ajustes/pendon-impreso`, sin desplegar)
 
