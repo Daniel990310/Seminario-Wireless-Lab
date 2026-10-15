@@ -9,7 +9,8 @@
  * El nombre va con el grado, en la forma de cada idioma (`datosFlyer`, `organizador`): es
  * lo que RF-25.2 busca en la lámina.
  *
- * Archivo original del retrato (800 px), no el reducido: se imprime.
+ * Archivo original del retrato (800 px), no el reducido: se imprime. Sin `retrato`, el
+ * bloque va sin foto: Daniel la quitó del pendón el 2026-10-15.
  */
 import type { Contenido } from '~/data/contenido';
 import ImagenFlyer from './ImagenFlyer.astro';
@@ -17,8 +18,8 @@ import { datosFlyer } from './datos';
 
 interface Props {
   c: Contenido;
-  /** Diámetro del retrato, en px de lienzo. */
-  retrato: number;
+  /** Diámetro del retrato, en px de lienzo. Sin él, el bloque no lleva foto. */
+  retrato?: number;
 }
 
 const { c, retrato } = Astro.props;
@@ -27,7 +28,7 @@ const { organizador } = datosFlyer(c);
 ---
 
 <div class="flex items-center gap-[40px]">
-  <ImagenFlyer src={director.foto} original class="shrink-0 rounded-full object-cover" style={`width:${retrato}px;height:${retrato}px`} />
+  {retrato && <ImagenFlyer src={director.foto} original class="shrink-0 rounded-full object-cover" style={`width:${retrato}px;height:${retrato}px`} />}
   <div class="min-w-0">
     <p class="eyebrow text-[31px] text-accent">{director.epigrafe}</p>
     <p class="mt-[10px] font-display text-[64px] leading-[1.05] font-semibold text-foreground">{organizador}</p>

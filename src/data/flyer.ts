@@ -9,8 +9,8 @@
 import type { Idioma } from './contenido';
 
 /*
- * PENDÓN ROLLER IMPRESO (RF-33): la pieza que junta en una sola lámina lo que el carrusel
- * reparte en tres, más el retrato de Mauricio. 200 cm de alto visible en 80 u 85 de ancho,
+ * PENDÓN ROLLER IMPRESO (RF-33): la identidad del seminario, reutilizable en otras ediciones
+ * (RF-33.5). 200 cm de alto visible en 80 u 85 de ancho,
  * las dos medidas de catálogo más comunes (fuentes en `specs/003-difusion-redes`, RF-33).
  *
  * Se dibuja en la **misma escala de px que el carrusel**, para reutilizar sus componentes y

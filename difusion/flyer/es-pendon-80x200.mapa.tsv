@@ -14,17 +14,16 @@ logo	Logo ALMA	1300.46	4404.86	186.81	264.57	0
 logo	Logo UPB	1661.94	4479.40	491.40	115.49	0		
 logo	Logo IEEE ComSoc Chile	151.18	4734.91	443.14	212.07	0		
 logo	Logo CPS-RTC	769.00	4741.21	679.46	199.48	0		
-qr	QR	151.18	2004.92	629.92	629.92	0		
-foto	Retrato · DIRIGE EL SEMINARIO	151.18	2860.63	419.95	419.95	0		
+qr	QR	151.18	2024.34	629.92	629.92	0		
 figura	Figura	351.05	-138.16	2410.50	1881.36	0		
 texto	SEMINARIO INTERNACIONAL	151.18	199.48	2024.15	97.64	1	izquierda	SEMINARIO INTERNACIONAL
 texto	in mmWave and Sub-THz Bands	151.18	972.90	2024.15	120.08	1	izquierda	in mmWave and Sub-THz Bands
-texto	Comunicación y detección sobre la misma…	151.18	1249.44	2024.15	272.11	2	izquierda	Comunicación y detección sobre la misma infraestructura
-texto	Propagación, modelado de canal y arquit…	151.18	1559.35	2024.15	289.07	3	izquierda	Propagación, modelado de canal y arquitecturas ISAC en ondas milimétricas y sub-THz: redes 6G que transmiten datos y, con la misma señal, perciben su entorno.
-texto	Escanea el código o entra a	881.89	2197.05	917.68	94.49	1	izquierda	Escanea el código o entra a
-texto	bcsensing.org	881.89	2308.33	917.68	134.38	1	izquierda	bcsensing.org
-texto	DIRIGE EL SEMINARIO	655.12	2884.91	1303.81	97.64	1	izquierda	DIRIGE EL SEMINARIO
-texto	Dr. Mauricio Rodríguez	655.12	3003.54	1303.81	141.08	1	izquierda	Dr. Mauricio Rodríguez
-texto	Escuela de Ingeniería Eléctrica · PUCV	655.12	3165.62	1303.81	90.68	1	izquierda	Escuela de Ingeniería Eléctrica · PUCV
-texto	INSTITUCIONES PARTICIPANTES Y COLABORAD…	151.18	3437.04	2024.15	195.28	2	izquierda	INSTITUCIONES PARTICIPANTES Y COLABORADORAS
+texto	Comunicación y detección sobre la misma…	151.18	1259.15	2024.15	272.11	2	izquierda	Comunicación y detección sobre la misma infraestructura
+texto	Propagación, modelado de canal y arquit…	151.18	1569.06	2024.15	289.07	3	izquierda	Propagación, modelado de canal y arquitecturas ISAC en ondas milimétricas y sub-THz: redes 6G que transmiten datos y, con la misma señal, perciben su entorno.
+texto	Escanea el código o entra a	881.89	2216.47	917.68	94.49	1	izquierda	Escanea el código o entra a
+texto	bcsensing.org	881.89	2327.76	917.68	134.38	1	izquierda	bcsensing.org
+texto	DIRIGE EL SEMINARIO	151.18	2889.76	1303.81	97.64	1	izquierda	DIRIGE EL SEMINARIO
+texto	Dr. Mauricio Rodríguez	151.18	3008.40	1303.81	141.08	1	izquierda	Dr. Mauricio Rodríguez
+texto	Escuela de Ingeniería Eléctrica · PUCV	151.18	3170.47	1303.81	90.68	1	izquierda	Escuela de Ingeniería Eléctrica · PUCV
+texto	INSTITUCIONES PARTICIPANTES Y COLABORAD…	151.18	3427.33	2024.15	195.28	2	izquierda	INSTITUCIONES PARTICIPANTES Y COLABORADORAS
 texto	Este trabajo fue financiado por ANID FO…	151.18	5316.54	2024.15	218.37	4	izquierda	Este trabajo fue financiado por ANID FONDECYT Regular 1250951, ANID FONDECYT Iniciación 11241221 y 11261397, ANID CCTVal CIA250027, ANID CPS-RTC CIA250016, ANID Vinculación Internacional FOVI250222 y el Programa Iberoamericano de Ciencia y Tecnología para el Desarrollo - CYTED (525RT0175-DISeCom).

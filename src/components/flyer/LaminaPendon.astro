@@ -8,14 +8,15 @@
  * 2026-10-15 lo corrigió: un pendón no cumple la función de un afiche; dice «este soy yo»,
  * y con los expositores y la fecha no sirve la vez siguiente. Que ganen espacio el logo del
  * seminario y las instituciones que colaboran, cuyos logos tienen texto que impreso pequeño
- * no se lee. Daniel eligió la versión reutilizable y mantener a Mauricio como director.
+ * no se lee. Daniel eligió la versión reutilizable y mantener a Mauricio como director; el
+ * mismo día quitó su foto.
  *
  * Queda, de arriba abajo: la marca; la tesis del seminario y su frase técnica; el QR al
- * sitio, a la altura de los ojos (entre 60 y 90 cm bajo el borde superior); Mauricio con
- * su retrato; y las instituciones, en grande (`POR_LAMINA`: `escalaParticipantes`).
+ * sitio, a la altura de los ojos (entre 60 y 90 cm bajo el borde superior); Mauricio, sin
+ * foto; y las instituciones, en grande (`POR_LAMINA`: `escalaParticipantes`).
  *
  * Mismos componentes y escala tipográfica que el carrusel: 1 px son 0,741 mm impresos
- * (`src/data/flyer.ts`). Retrato y marcas van con su archivo original (RF-33.4).
+ * (`src/data/flyer.ts`). Las marcas van con su archivo original (RF-33.4).
  */
 import type { Contenido } from '~/data/contenido';
 import Director from './Director.astro';
@@ -49,7 +50,7 @@ const { dominio, tesis, urlSitio } = datosFlyer(c);
   </section>
 
   <div class="mt-[40px] border-t hairline pt-[32px]">
-    <Director c={c} retrato={200} />
+    <Director c={c} />
   </div>
 
   {/* Rótulo de la fila de instituciones, que `CartelFlyer` pone justo debajo, en grande. */}
