@@ -27,7 +27,11 @@ Hostinger sin revocar.**
 - Revisión de diseño por audio, reenviada por Daniel: quitar expositores (el pendón «es
   como una imagen, este soy yo» y con ellos no sirve otra vez), menos información, y que
   se vean bien los logos de las colaboraciones. Daniel eligió **reutilizable** y **mantener
-  a Mauricio** (RF-33.5). El mismo día Daniel quitó su foto: queda nombre, epígrafe y cargo.
+  a Mauricio** (RF-33.5). El mismo día Daniel quitó su foto, y Mauricio pidió cambiar su
+  nombre por el logo de su laboratorio (plantilla del póster). Ese logo solo existe en PNG de
+  799 px (≈35 ppi al tamaño del pendón), así que se armó con sus partes: «Wireless
+  Communication Lab» en texto y el escudo PUCV monocromo en blanco desde el original de
+  1297 px (`Laboratorio.astro`). Pedir el logo del laboratorio en vector y reemplazarlo.
 - Queda: marca, tesis y frase técnica, QR al sitio con el dominio, Mauricio, instituciones
   participantes a 2,6× y franja a 1,2×. Sin fecha, sede, horario, QR de inscripción ni
   expositores. La franja no pasa de 1,2 porque PUCV (511 px) y CYTED (300 px) bajarían de

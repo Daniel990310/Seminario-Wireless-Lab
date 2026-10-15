@@ -1,0 +1,40 @@
+---
+/**
+ * El laboratorio que organiza, en el lugar donde el pendón nombraba a Mauricio. Lo pidió él
+ * el 2026-10-15, por Daniel: «cambiar mi nombre por el logo PUCV que dice nuestro
+ * laboratorio», el de la plantilla del póster (`Poster_plantilla - Beyond Connectivity`).
+ *
+ * Ese logo solo existe como PNG de 799 × 223 px: impreso al tamaño de este bloque quedaría
+ * en unos 35 ppi (RF-33.4 pide 90). Por eso se arma con sus dos partes, en la misma
+ * disposición: el nombre del laboratorio en texto, alineado a la derecha en dos renglones,
+ * y el escudo PUCV horizontal. El escudo es el monocromático oficial con la tinta en blanco,
+ * la misma derivación que `pucvOscuro` en `comun.ts`, pero desde el archivo de 1297 px y no
+ * desde el de 511. Cuando llegue el logo del laboratorio en vector, se reemplaza este bloque.
+ *
+ * Proporción: en la plantilla, la mayúscula del nombre mide el 10 % del alto del escudo.
+ * Aquí, el 12 %: el texto no baja de 31 px (RF-24.1) y el escudo no pasa de 370 px de ancho,
+ * que es donde su archivo da 90 ppi impreso.
+ */
+import pucvBlanco from '~/assets/logos/pucv-monocromo-blanco.png';
+import type { Contenido } from '~/data/contenido';
+import ImagenFlyer from './ImagenFlyer.astro';
+import { datosFlyer } from './datos';
+
+interface Props {
+  c: Contenido;
+}
+
+const { c } = Astro.props;
+const { laboratorio } = datosFlyer(c);
+const [primera, ...resto] = laboratorio.split(' ');
+---
+
+<div>
+  <p class="eyebrow text-[31px] text-accent">{c.ui.flyer.organiza}</p>
+  <div class="mt-[24px] flex items-center gap-[28px]">
+    <p class="text-right text-[31px] leading-[1.3] font-semibold tracking-[0.14em] text-foreground uppercase">
+      {primera}<br />{resto.join(' ')}
+    </p>
+    <ImagenFlyer src={pucvBlanco} original class="shrink-0" style="width:370px;height:auto" />
+  </div>
+</div>

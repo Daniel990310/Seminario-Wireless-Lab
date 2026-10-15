@@ -217,7 +217,7 @@ const POR_LAMINA: Record<LaminaFlyer, DatosLamina> = {
   expositores: { ...COMUN, emisor: 700, organizador: false, participantes: false, qr: null },
   inscripcion: { ...COMUN, emisor: 820, organizador: false, participantes: true, qr: 'registro' },
   // Emisor [medido sobre las capturas de 2026-10-14 y 2026-10-15]
-  pendon: { emisor: 330, organizador: true, participantes: true, qr: 'sitio', fecha: false, escalaFranja: 1.2, escalaParticipantes: 2.6 },
+  pendon: { emisor: 330, organizador: false, participantes: true, qr: 'sitio', fecha: false, escalaFranja: 1.2, escalaParticipantes: 2.6 },
   acceso: { ...COMUN, emisor: 470, organizador: true, participantes: true, qr: 'programa' },
   telon: { ...COMUN, emisor: 150, organizador: false, participantes: false, qr: null },
 };

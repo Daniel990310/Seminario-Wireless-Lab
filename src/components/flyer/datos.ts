@@ -82,10 +82,17 @@ export function datosFlyer(c: Contenido) {
    */
   const mencion = c.ui.flyer.agradecimiento;
 
+  /*
+   * El laboratorio de Mauricio, que organiza: su nombre en la plantilla del póster. Es un
+   * nombre propio, igual en los dos idiomas. Lo usa el pendón en lugar del de Mauricio.
+   */
+  const laboratorio = 'Wireless Communication Lab';
+
   return {
     restoTitulo,
     dominio,
     organizador,
+    laboratorio,
     internacionales: expositores(c.speakers.international),
     nacionales: expositores(c.speakers.national),
     participantes,
@@ -133,7 +140,7 @@ export function pieDePublicacion(c: Contenido) {
  */
 export function altFlyer(c: Contenido, lamina: LaminaFlyer) {
   const t = c.ui.flyer;
-  const { dominio, organizador, participantes, mencion, jornadas, tesis } = datosFlyer(c);
+  const { dominio, organizador, laboratorio, participantes, mencion, jornadas, tesis } = datosFlyer(c);
   const organiza = organizador ? ` ${t.organiza}: ${organizador}.` : '';
   const evento = `${c.title}. ${c.dates.label}, ${c.venue.name}, ${c.venue.country}.${organiza}`;
   // Raya y punto y coma: la afiliación de Feick lleva coma y la de Siringo, paréntesis.
@@ -162,7 +169,7 @@ export function altFlyer(c: Contenido, lamina: LaminaFlyer) {
      * El pendón no se publica: el texto sirve si el PDF circula por correo, y para quien
      * no ve la imagen al revisarlo. Sin fecha ni sede: se reutiliza en otras ediciones (RF-33.5).
      */
-    pendon: [`${c.title}.${organiza}`, `${tesis}. ${t.gancho}`, `${t.escanea} ${dominio} (QR).`, instituciones, mencion],
+    pendon: [`${c.title}. ${t.organiza}: ${laboratorio}, ${c.organizers[0].name}.`, `${tesis}. ${t.gancho}`, `${t.escanea} ${dominio} (QR).`, instituciones, mencion],
     // Pantallas de la sede: no se publican, pero el texto sirve a quien revisa sin ver la imagen.
     acceso: [evento, `${t.programaQr}: ${dominio} (QR).`, instituciones, mencion],
     telon: [`${c.title}. ${c.dates.label}. ${dominio}.`, mencion],
