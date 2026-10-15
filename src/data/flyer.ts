@@ -25,22 +25,75 @@ import type { Idioma } from './contenido';
  * `seguro` suma a eso un margen dentro del corte —30 mm arriba, bajo la barra que cuelga la
  * tela, y 40 abajo, sobre el labio del cassette— donde tampoco va texto (RF-23.2).
  */
-export const MM_POR_PX_PENDON = 2000 / 2700;
 const VISIBLE_MM = 2000;
+const VISIBLE_PX = 2700;
+const MM_POR_PX_PENDON = VISIBLE_MM / VISIBLE_PX;
 const SANGRADO_MM = 10;
 const BASE_MM = 150;
+const PT_POR_MM = 72 / 25.4;
 
-function pendon(anchoMm: number) {
-  const px = (mm: number) => Math.ceil(mm / MM_POR_PX_PENDON);
+/** Lo que el generador necesita de un formato impreso para escribir el PDF a tamaño real. */
+export interface Impreso {
+  anchoMm: number;
+  visibleMm: number;
+  baseMm: number;
+  sangradoMm: number;
+  /** Sangrado y base en px de lienzo. */
+  sangrado: number;
+  base: number;
+}
+
+/**
+ * Un formato de pieza. Todos los campos en todos los formatos: quien lo lee destructura y
+ * no pregunta qué claves trae.
+ */
+export interface FormatoFlyerDef {
+  ancho: number;
+  alto: number;
+  /** Franja que no lleva nada legible, desde cada borde (RF-23.2). */
+  seguro: { arriba: number; abajo: number };
+  /** Aire sobre el primer contenido, dentro de `seguro.arriba`. */
+  relleno: number;
+  /**
+   * Puntos PDF por px de lienzo en el PDF **final**. Chromium imprime a 0,75 (96 px por
+   * pulgada); el pendón se reescribe a tamaño real (RF-33.1). Lo leen el PDF, su criterio
+   * de tamaño (RF-29.3) y el mapa para Illustrator: una sola fuente.
+   */
+  ptPorPx: number;
+  /**
+   * Qué hay bajo el área útil: el blanco de la franja en el pendón, para que un enrollado
+   * distinto no deje ver una tira oscura (RF-33.2); negro puro en el telón (RF-34.2).
+   */
+  fondoInferior: 'blanco' | 'negro' | null;
+  impreso: Impreso | null;
+}
+
+/*
+ * `Math.ceil` sobre un cociente que debería ser entero: `2000 / 2700` no es representable y
+ * un exceso de un ulp subiría un px. Se resta un margen antes de redondear.
+ */
+function pendon(anchoMm: number): FormatoFlyerDef {
+  const px = (mm: number) => Math.ceil(mm / MM_POR_PX_PENDON - 1e-9);
   const sangrado = px(SANGRADO_MM);
   const base = px(BASE_MM);
   return {
     ancho: px(anchoMm) + 2 * sangrado,
     alto: px(VISIBLE_MM) + base + 2 * sangrado,
     seguro: { arriba: sangrado + px(30), abajo: sangrado + base + px(40) },
+    relleno: 40,
+    ptPorPx: MM_POR_PX_PENDON * PT_POR_MM,
+    fondoInferior: 'blanco',
     impreso: { anchoMm, visibleMm: VISIBLE_MM, baseMm: BASE_MM, sangradoMm: SANGRADO_MM, sangrado, base },
   };
 }
+
+/** Formato de pantalla: PDF de Chromium tal cual, a 0,75 pt por px. */
+function pantalla(ancho: number, alto: number, seguro: FormatoFlyerDef['seguro'], relleno: number): FormatoFlyerDef {
+  return { ancho, alto, seguro, relleno, ptPorPx: 0.75, fondoInferior: null, impreso: null };
+}
+
+/* Alto de la banda de gráfica del telón, `[medido sobre la plantilla de la sede]` (RF-34.2). */
+const BANDA_TELON = 403;
 
 /*
  * `seguro` es la franja que la interfaz de la red tapa, medida desde cada borde. El
@@ -52,7 +105,7 @@ export const FORMATOS_FLYER = {
    * recortar. La grilla del perfil de Instagram la reduce a 3:4 central, 34 px por lado
    * `[supuesto: cambio de la grilla de Instagram, 2025]`; el margen lateral los cubre.
    */
-  '4x5': { ancho: 1080, alto: 1350, seguro: { arriba: 0, abajo: 0 } },
+  '4x5': pantalla(1080, 1350, { arriba: 0, abajo: 0 }, 72),
   /*
    * 9:16, historias de Instagram y estado de WhatsApp. Arriba van la barra de progreso y
    * el nombre de la cuenta; abajo, el campo de respuesta.
@@ -64,19 +117,18 @@ export const FORMATOS_FLYER = {
    * > guías dicen 250. El hueco de abajo ahora lo cruzan los arcos de la figura, no la
    * > franja: la franja termina donde termina la zona segura (RF-23.2).
    */
-  '9x16': { ancho: 1080, alto: 1920, seguro: { arriba: 250, abajo: 250 } },
+  '9x16': pantalla(1080, 1920, { arriba: 250, abajo: 250 }, 40),
   '80x200': pendon(800),
   '85x200': pendon(850),
   /*
    * Pantallas de la sede (RF-34), 1920 × 1080: las plantillas que mandó la Sede PUCV
    * Santiago el 2026-10-15. La de acceso usa el lienzo entero. La del telón del auditorio
-   * lleva la gráfica solo en la banda de arriba, 403 px `[medido sobre la plantilla]`, y
-   * el resto en **negro puro**, como pide la plantilla: es el fondo detrás de quien expone
-   * y de las fotos. `negro` es esa franja; `relleno`, el aire sobre el contenido.
+   * lleva la gráfica solo en la banda de arriba, `BANDA_TELON`, y el resto en **negro
+   * puro**, como pide la plantilla: es el fondo detrás de quien expone y de las fotos.
    */
-  '16x9': { ancho: 1920, alto: 1080, seguro: { arriba: 0, abajo: 0 } },
-  '16x9-telon': { ancho: 1920, alto: 1080, seguro: { arriba: 0, abajo: 677 }, negro: 677, relleno: 36 },
-} as const;
+  '16x9': pantalla(1920, 1080, { arriba: 0, abajo: 0 }, 72),
+  '16x9-telon': { ...pantalla(1920, 1080, { arriba: 0, abajo: 1080 - BANDA_TELON }, 36), fondoInferior: 'negro' },
+} satisfies Record<string, FormatoFlyerDef>;
 
 export type FormatoFlyer = keyof typeof FORMATOS_FLYER;
 
@@ -114,6 +166,25 @@ export const PISO_PIE_FLYER = 20;
 export type LaminaFlyer = 'unica' | 'portada' | 'expositores' | 'inscripcion' | 'historia' | 'pendon' | 'acceso' | 'telon';
 
 /*
+ * Lo que depende de la lámina y no de la pieza:
+ *   - `emisor`: altura del emisor de la figura (borde derecho) bajo el inicio del contenido,
+ *     el centro del hueco que la lámina deja a la derecha. Ver `CartelFlyer.astro`.
+ *   - `organizador`: si la lámina nombra al organizador, para RF-25.2.
+ */
+export const POR_LAMINA: Record<LaminaFlyer, { emisor: number; organizador: boolean }> = {
+  // [medido sobre las capturas de 2026-10-01]
+  unica: { emisor: 230, organizador: true },
+  portada: { emisor: 700, organizador: true },
+  historia: { emisor: 900, organizador: true },
+  expositores: { emisor: 700, organizador: false },
+  inscripcion: { emisor: 820, organizador: false },
+  // [medido sobre las capturas de 2026-10-14 y 2026-10-15]
+  pendon: { emisor: 330, organizador: true },
+  acceso: { emisor: 470, organizador: true },
+  telon: { emisor: 150, organizador: false },
+};
+
+/*
  * `publicacion`: a qué publicación pertenece la lámina. `pie`: la lámina que abre una
  * publicación con pie (carrusel y pieza única; las historias no llevan) trae el pie de
  * publicación. `participantes`: si lleva la fila de instituciones participantes sobre la
@@ -145,3 +216,6 @@ const IDIOMAS_FLYER = ['es', 'en'] as const satisfies readonly Idioma[];
 export const PIEZAS_FLYER = IDIOMAS_FLYER.flatMap((idioma) =>
   LAMINAS.map((l) => ({ ...l, idioma, pieza: `${idioma}-${l.id}` })),
 );
+
+/** Lo que se ve en un teléfono (RF-30.1): ni el pendón ni las pantallas de la sede. */
+export const enTelefono = (p: { publicacion: string }) => ['unica', 'carrusel', 'historia'].includes(p.publicacion);

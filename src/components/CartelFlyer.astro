@@ -45,12 +45,7 @@ interface Props {
 
 const { lang, formato, alt, pie, emisor = 410, esperado } = Astro.props;
 const c = contenido(lang);
-const f = FORMATOS_FLYER[formato];
-const { ancho, alto, seguro } = f;
-const impreso = 'impreso' in f;
-/* Telón del auditorio: franja de negro puro bajo la banda (RF-34.2). */
-const negro = 'negro' in f ? f.negro : 0;
-const relleno = 'relleno' in f ? f.relleno : seguro.arriba ? 40 : 72;
+const { ancho, alto, seguro, relleno, fondoInferior } = FORMATOS_FLYER[formato];
 /*
  * `9x16` reserva las franjas que tapa la interfaz; `4x5` usa el lienzo entero; el pendón,
  * el sangrado, la base del cassette y los márgenes de la barra y del labio.
@@ -127,17 +122,19 @@ const figura = {
       </div>
 
       {/*
-        Pendón impreso: bajo el contenido, el margen sobre el cassette, la base que entra en
-        él y el sangrado siguen el blanco de la franja de marcas. Si la imprenta enrolla
-        un poco más o un poco menos, el borde no deja ver una tira oscura (RF-33.2).
+        Bajo el área útil. Pendón: el margen sobre el cassette, la base que entra en él y el
+        sangrado siguen el blanco de la franja de marcas; si la imprenta enrolla un poco más
+        o un poco menos, el borde no deja ver una tira oscura (RF-33.2). Telón: negro puro y
+        no el fondo del tema, como pide la plantilla de la sede; tapa la figura (RF-34.2).
       */}
       {
-        impreso && (
-          <div data-flyer-base class="absolute inset-x-0 bottom-0 bg-[var(--pure-white)]" style={`height:${seguro.abajo}px`} />
+        fondoInferior && (
+          <div
+            class:list={['absolute inset-x-0 bottom-0', fondoInferior === 'blanco' ? 'bg-[var(--pure-white)]' : 'bg-[#000]']}
+            style={`height:${seguro.abajo}px`}
+          />
         )
       }
-      {/* Negro puro y no el fondo del tema: lo pide la plantilla de la sede, y tapa la figura. */}
-      {negro > 0 && <div data-flyer-negro class="absolute inset-x-0 bottom-0" style={`height:${negro}px;background:#000`} />}
     </div>
   </body>
 </html>

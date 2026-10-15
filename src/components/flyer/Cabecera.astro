@@ -4,11 +4,10 @@
  * carrusel se comparte suelta —una captura, un reenvío—, y sin esto no diría de qué evento
  * es ni dónde inscribirse (RF-25.2).
  *
- * Logo horizontal `-blanco`, el que el manual 5.2 indica para bandas y fondo oscuro. Su
- * mínimo con descriptor es 420 px de ancho: va a 430 (RF-26.1).
+ * Logo horizontal a 430 px, sobre su mínimo de 420 (RF-26.1).
  */
-import logoHorizontal from '~/assets/marca/logo-horizontal-blanco.svg';
 import type { Contenido } from '~/data/contenido';
+import LogoHorizontal from './LogoHorizontal.astro';
 import { datosFlyer } from './datos';
 
 interface Props {
@@ -17,19 +16,10 @@ interface Props {
 
 const { c } = Astro.props;
 const { dominio } = datosFlyer(c);
-/* Proporción del `viewBox`, 670 × 128. Margen interno compensado como en `Encabezado`. */
-const ANCHO = 430;
 ---
 
 <div class="flex items-center justify-between">
-  <img
-    src={logoHorizontal.src}
-    alt=""
-    width={ANCHO}
-    height={Math.round((ANCHO * 128) / 670)}
-    class="-ml-[12px] block"
-    data-logo-seminario="horizontal"
-  />
+  <LogoHorizontal ancho={430} />
   <div class="text-right">
     <p class="font-mono text-[36px] leading-tight font-semibold text-accent">{c.dates.shortLabel}</p>
     <p class="text-[31px] leading-tight text-muted-foreground">{dominio}</p>

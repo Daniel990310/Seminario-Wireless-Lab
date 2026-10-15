@@ -1,0 +1,35 @@
+---
+/**
+ * Una imagen de lámina, decidida en un solo lugar: reducida por el optimizador de Astro
+ * para las piezas de redes, o el archivo original para imprimir (`original`, RF-33.4: en
+ * el pendón, PUCV reducido a 256 px quedaba en 70 ppi). Un SVG llega como ruta y ya es
+ * vectorial: se dibuja tal cual en los dos casos, con la caja `ancho` × `alto`.
+ *
+ * `ancho` y `alto` son los del archivo reducido, como en `<Image>`; con `original` se usan
+ * los del archivo. Los `data-*` pasan a la etiqueta: el generador los lee (`data-marca`).
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata | string;
+  ancho?: number;
+  alto?: number;
+  original?: boolean;
+  class?: string;
+  style?: string;
+  [dato: `data-${string}`]: string;
+}
+
+const { src, ancho, alto, original = false, ...atributos } = Astro.props;
+---
+
+{
+  typeof src === 'string' ? (
+    <img src={src} alt="" width={ancho} height={alto} {...atributos} />
+  ) : original ? (
+    <img src={src.src} alt="" width={src.width} height={src.height} {...atributos} />
+  ) : (
+    <Image src={src} alt="" width={ancho} height={alto} {...atributos} />
+  )
+}

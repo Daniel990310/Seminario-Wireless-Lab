@@ -90,6 +90,8 @@ export function datosFlyer(c: Contenido) {
     nacionales: expositores(c.speakers.national),
     participantes,
     mencion,
+    /* Tesis del seminario: el título de la sección «El seminario» del sitio (pendón, RF-33.5). */
+    tesis: c.ui.secciones.seminario.title,
     /* Solo el programa real: el demostrativo del sitio lleva un aviso que la lámina no tiene. */
     jornadas: c.program.esDemostracion ? [] : c.program.days,
   };
@@ -127,7 +129,7 @@ export function pieDePublicacion(c: Contenido) {
  */
 export function altFlyer(c: Contenido, lamina: LaminaFlyer) {
   const t = c.ui.flyer;
-  const { dominio, organizador, participantes, mencion, jornadas } = datosFlyer(c);
+  const { dominio, organizador, participantes, mencion, jornadas, tesis } = datosFlyer(c);
   const organiza = organizador ? ` ${t.organiza}: ${organizador}.` : '';
   const evento = `${c.title}. ${c.dates.label}, ${c.venue.name}, ${c.venue.country}.${organiza}`;
   // Raya y punto y coma: la afiliación de Feick lleva coma y la de Siringo, paréntesis.
@@ -158,7 +160,7 @@ export function altFlyer(c: Contenido, lamina: LaminaFlyer) {
      */
     pendon: [
       evento,
-      `${c.ui.secciones.seminario.title}. ${t.gancho}`,
+      `${tesis}. ${t.gancho}`,
       `${t.escanea} ${dominio}.${qr}`,
       horario && `${horario}.`,
       `${t.expositores}: ${lista}.`,
@@ -167,7 +169,7 @@ export function altFlyer(c: Contenido, lamina: LaminaFlyer) {
     ],
     // Pantallas de la sede: no se publican, pero el texto sirve a quien revisa sin ver la imagen.
     acceso: [evento, `${t.programaQr}: ${dominio} (QR).`, instituciones, mencion],
-    telon: [`${c.title}. ${c.dates.label}, ${c.venue.name}.`, mencion],
+    telon: [`${c.title}. ${c.dates.label}. ${dominio}.`, mencion],
   };
   return partes[lamina].filter(Boolean).join(' ');
 }

@@ -30,8 +30,12 @@ $raiz = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 if (-not $Piezas) {
   # Solo las piezas, que tienen su .mapa.tsv: el carrusel unido para LinkedIn
   # (`<idioma>-carrusel.pdf`, tres paginas) no es una pieza y no se pasa a .ai.
+  # Tampoco el pendon: su PDF va a tamano real (2,1 pt por px, no 0,75) y
+  # `abrir-flyer.jsx` exporta el PNG de comparacion a 0,75; ademas nunca se probo
+  # `estructurar.jsx` con una hoja de 2,17 m y caja de corte. Se pide por nombre.
   $Piezas = Get-ChildItem (Join-Path $raiz 'difusion\flyer') -Filter *.pdf |
     Where-Object { Test-Path (Join-Path $_.DirectoryName "$($_.BaseName).mapa.tsv") } |
+    Where-Object { $_.BaseName -notmatch '-pendon-' } |
     ForEach-Object { $_.BaseName }
 }
 <#

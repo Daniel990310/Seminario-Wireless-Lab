@@ -288,7 +288,7 @@ export const en = {
       tituloMapa: 'Map of the venue',
       estacionamiento: 'Parking',
       estacionamientoDescuento:
-        'Agreement rate: CLP 30 per minute. Have your ticket stamped at the campus reception and pay at the manual pay station.',
+        'Agreement rate: CLP 30 per minute. Have your ticket stamped at the venue reception and pay at the manual pay station.',
     },
 
     organizacion: {

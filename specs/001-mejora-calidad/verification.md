@@ -2,7 +2,7 @@
 
 Generado por `npm run verify`. **No editar a mano**: se sobrescribe en cada corrida.
 
-**Fecha:** 2026-10-15 · **Commit:** `d746c58`
+**Fecha:** 2026-10-15 · **Commit:** `3ab58a2`
 **Resultado:** todos los presupuestos cumplidos
 
 Método: axe-core sobre el build servido localmente, en 1440×900 y 390×844,

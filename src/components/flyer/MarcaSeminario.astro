@@ -1,0 +1,39 @@
+---
+/**
+ * Marca del seminario en las láminas: rótulo, logo principal y lo que el título oficial
+ * añade al logo. La usan `Encabezado` (que suma fecha, sede y organizador) y el pendón (que
+ * lleva fecha y sede junto al QR y al organizador con su retrato).
+ *
+ * El logo **es** el nombre: «Beyond Connectivity / Wireless Sensing» en trazados, con la
+ * tipografía del manual 5.2. La primera versión ponía el nombre en Crimson Pro como
+ * titular y el logo no aparecía, así que la pieza tenía dos identidades y ninguna era la
+ * de la marca. Ahora el logo encabeza y el texto solo completa el título oficial.
+ *
+ * Variante `-blanco` porque el fondo es oscuro, como manda el manual. Su mínimo con
+ * descriptor es 400 px de ancho; aquí va a `anchoLogo`, siempre por encima.
+ */
+import logoPrincipal from '~/assets/marca/logo-principal-blanco.svg';
+import type { Contenido } from '~/data/contenido';
+import { datosFlyer } from './datos';
+
+interface Props {
+  c: Contenido;
+  anchoLogo: number;
+}
+
+const { c, anchoLogo } = Astro.props;
+const { restoTitulo } = datosFlyer(c);
+/* Proporción del `viewBox` del logo, 650 × 218: no se estira (manual 5.2). */
+const altoLogo = Math.round((anchoLogo * 218) / 650);
+/*
+ * El SVG trae su margen de respeto: la onda exterior empieza en x ≈ 31,5 de 650
+ * `[medido sobre logo-principal-blanco.png, 2600 px]`. Se compensa para que el símbolo
+ * quede alineado con el texto, y el margen sigue existiendo hacia arriba y hacia abajo.
+ */
+const sangria = Math.round((anchoLogo * 31.5) / 650);
+---
+
+<p class="eyebrow text-[31px]">{c.ui.hero.eyebrow}</p>
+{/* El nombre accesible del lienzo es el título oficial, en el `<title>` y en el `alt`. */}
+<img src={logoPrincipal.src} alt="" width={anchoLogo} height={altoLogo} class="mt-[12px] block" style={`margin-left:-${sangria}px`} data-logo-seminario="principal" />
+<p class="mt-[8px] font-display text-[52px] leading-[1.1] text-balance text-primary">{restoTitulo}</p>

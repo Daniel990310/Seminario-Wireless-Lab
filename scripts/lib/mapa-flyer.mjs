@@ -6,14 +6,14 @@
  * mismas fuentes que el PDF, le dice a `scripts/illustrator/estructurar.jsx` qué caja ocupa
  * cada logo, retrato, QR, figura y párrafo. Se evalúa en la página (`page.evaluate`).
  *
- * Cajas en puntos PDF desde la esquina superior izquierda: `[x, y, ancho, alto]`. El PDF
- * mide 0,75 pt por píxel CSS (RF-29.3).
+ * Cajas en puntos PDF desde la esquina superior izquierda: `[x, y, ancho, alto]`. `ptPorPx`
+ * es la escala del PDF final, la del formato (`src/data/flyer.ts`): 0,75 en las piezas de
+ * pantalla; el pendón va a tamaño real (RF-29.3).
  */
-export function mapaLienzo() {
-  const PT = 0.75;
+export function mapaLienzo(ptPorPx) {
   const caja = (el) => {
     const r = el.getBoundingClientRect();
-    return [r.left * PT, r.top * PT, r.width * PT, r.height * PT];
+    return [r.left * ptPorPx, r.top * ptPorPx, r.width * ptPorPx, r.height * ptPorPx];
   };
   const recortar = (s, n) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
   const objetos = [];

@@ -7,9 +7,9 @@
  * Retrato si lo hay; monograma si no, igual que en el sitio (RF-11.2). Nada generado:
  * lo prohíbe el manual de ANID (§1.5) y el proyecto.
  */
-import { Image } from 'astro:assets';
 import type { Contenido } from '~/data/contenido';
 import { iniciales } from '~/data/iniciales';
+import ImagenFlyer from './ImagenFlyer.astro';
 import { datosFlyer } from './datos';
 
 interface Props {
@@ -40,11 +40,7 @@ const tamano = `width:${retrato}px;height:${retrato}px`;
         {g.lista.map((e) => (
           <li class="flex flex-col">
             {e.foto ? (
-              original ? (
-                <img src={e.foto.src} alt="" width={e.foto.width} height={e.foto.height} class="rounded-full object-cover" style={tamano} />
-              ) : (
-                <Image src={e.foto} alt="" width={328} height={328} class="rounded-full object-cover" style={tamano} />
-              )
+              <ImagenFlyer src={e.foto} ancho={328} alto={328} original={original} class="rounded-full object-cover" style={tamano} />
             ) : (
               <span
                 class="flex items-center justify-center rounded-full bg-surface font-display text-[56px] font-semibold text-primary"

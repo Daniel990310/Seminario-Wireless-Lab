@@ -19,8 +19,8 @@
  */
 import type { Contenido } from '~/data/contenido';
 import Director from './Director.astro';
-import Encabezado from './Encabezado.astro';
 import GrillaExpositores from './GrillaExpositores.astro';
+import MarcaSeminario from './MarcaSeminario.astro';
 import Marcas from './Marcas.astro';
 import Qr from './Qr.astro';
 import { datosFlyer } from './datos';
@@ -33,15 +33,13 @@ interface Props {
 
 const { c, participantes } = Astro.props;
 const t = c.ui.flyer;
-const { dominio, jornadas } = datosFlyer(c);
-/* La tesis es el título de la sección «El seminario» del sitio: una sola fuente. */
-const tesis = c.ui.secciones.seminario.title;
+const { dominio, jornadas, tesis } = datosFlyer(c);
 ---
 
-<Encabezado c={c} anchoLogo={740} soloMarca />
+<MarcaSeminario c={c} anchoLogo={740} />
 
 <div class="flex flex-1 flex-col justify-evenly">
-  <section data-pendon-gancho class="mt-[32px]">
+  <section class="mt-[32px]">
     <p class="font-display text-[56px] leading-[1.08] font-semibold text-balance text-foreground">{tesis}</p>
     <p class="mt-[16px] text-[32px] leading-[1.35] text-pretty text-muted-foreground">{t.gancho}</p>
   </section>

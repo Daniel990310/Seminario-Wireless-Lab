@@ -1,0 +1,30 @@
+---
+/**
+ * Logo horizontal del seminario, variante `-blanco`: la que el manual 5.2 indica para
+ * bandas y fondo oscuro. Su mínimo con descriptor es 420 px de ancho (RF-26.1). Lo usan la
+ * cabecera de las láminas interiores y el telón.
+ *
+ * Proporción del `viewBox`, 670 × 128: no se estira. El SVG trae margen interno a la
+ * izquierda; se compensa para que el símbolo quede alineado con el texto: 12 px a 430 de
+ * ancho, y en proporción a otros anchos.
+ */
+import logoHorizontal from '~/assets/marca/logo-horizontal-blanco.svg';
+
+interface Props {
+  ancho: number;
+  class?: string;
+}
+
+const { ancho, class: clase } = Astro.props;
+const sangria = Math.round((ancho * 12) / 430);
+---
+
+<img
+  src={logoHorizontal.src}
+  alt=""
+  width={ancho}
+  height={Math.round((ancho * 128) / 670)}
+  class:list={['block', clase]}
+  style={`margin-left:-${sangria}px`}
+  data-logo-seminario="horizontal"
+/>

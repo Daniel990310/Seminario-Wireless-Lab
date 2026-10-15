@@ -1,6 +1,6 @@
 # Verificación de las piezas de difusión
 
-> **Generado por `npm run flyer` el 2026-10-15 03:45 UTC. No editar.** Criterios en
+> **Generado por `npm run flyer` el 2026-10-15 04:52 UTC. No editar.** Criterios en
 > [`requirements.md`](requirements.md). `n/a` = el criterio no aplica a esa pieza.
 
 **Todos los criterios medibles en verde.** Falta la revisión humana de RF-30 antes de publicar.
@@ -22,15 +22,16 @@
 | RF-26.4 | ANID a la derecha de las demás marcas | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | RF-26.5 | Peso de las marcas entre 0,72× y 1,7× el de ANID | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | RF-26.6 | Agradecimiento de financiamiento completo | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| RF-28.1 | El QR lee la URL del formulario, a escala 1 y 0,5 | ✓ | n/a | n/a | ✓ | n/a | n/a | ✓ | ✓ | ✓ | n/a | ✓ | n/a | n/a | ✓ | n/a | n/a | ✓ | ✓ | ✓ | n/a |
+| RF-28.1 | El QR se lee y da su URL, a escala 1 y 0,5 | ✓ | n/a | n/a | ✓ | n/a | n/a | ✓ | ✓ | ✓ | n/a | ✓ | n/a | n/a | ✓ | n/a | n/a | ✓ | ✓ | ✓ | n/a |
 | RF-28.3 | Hueco del sticker libre, de 600 × 170 o más | n/a | n/a | n/a | n/a | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | n/a | n/a | n/a | n/a | n/a |
-| RF-29.1 | Texto alternativo, entre 1 y 1000 caracteres | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| RF-29.1 | Texto alternativo, hasta 1000 caracteres en redes; sin tope en impresos | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | RF-29.2 | PDF sin Type3 y con las tres familias incrustadas | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | RF-29.3 | PDF del tamaño del lienzo y bajo 100 MB | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | RF-29.4 | Todas las imágenes cargaron | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | RF-29.6 | Pie de publicación, hasta 2200 caracteres | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
 | RF-29.7 | Carrusel en un PDF de tres páginas, con texto vivo y bajo 100 MB | n/a | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
-| RF-33.1 | Pendón: PDF a tamaño real, con caja de corte y de sangrado | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a |
+| RF-33.1 | Pendón: PDF a tamaño real, con caja de corte y de sangrado, releído del archivo | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a |
 | RF-33.4 | Pendón: toda imagen ráster a 90 ppi o más, impresa | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a |
+| RF-33.5 | Pendón: centro del QR entre 60 y 90 cm bajo el borde de arriba | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a |
 | RF-33.6 | Pendón: QR de 15 cm de lado o más | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a |
 | RF-33.7 | Pendón: JPG a 150 ppi del tamaño exacto del lienzo | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a |
