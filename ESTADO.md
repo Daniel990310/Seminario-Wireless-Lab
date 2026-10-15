@@ -22,6 +22,18 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Pendón v3, reutilizable · 2026-10-15 · (rama `ajustes/pendon-impreso`, sin desplegar)
+
+- Revisión de diseño por audio, reenviada por Daniel: quitar expositores (el pendón «es
+  como una imagen, este soy yo» y con ellos no sirve otra vez), menos información, y que
+  se vean bien los logos de las colaboraciones. Daniel eligió **reutilizable** y **mantener
+  a Mauricio** (RF-33.5).
+- Queda: marca, tesis y frase técnica, QR al sitio con el dominio, Mauricio, instituciones
+  participantes a 2,6× y franja a 1,2×. Sin fecha, sede, horario, QR de inscripción ni
+  expositores. La franja no pasa de 1,2 porque PUCV (511 px) y CYTED (300 px) bajarían de
+  90 ppi impresos; con originales más grandes podría crecer.
+- `npm run flyer`: 20 piezas, 28 criterios en verde; las demás piezas sin cambio de píxel.
+
 ## Credenciales del evento · 2026-10-15 · (rama `ajustes/pendon-impreso`, sin desplegar)
 
 - Pedido del profesor por Daniel. Decisiones de Daniel: **10 × 14 cm vertical**, **en

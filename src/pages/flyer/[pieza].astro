@@ -16,7 +16,19 @@ export function getStaticPaths() {
   return PIEZAS_FLYER.map(({ pieza, ...props }) => ({ params: { pieza }, props }));
 }
 
-const { idioma, formato, lamina, pie, emisor, organizador: nombraOrganizador, participantes: conParticipantes, qr } = Astro.props;
+const {
+  idioma,
+  formato,
+  lamina,
+  pie,
+  emisor,
+  organizador: nombraOrganizador,
+  participantes: conParticipantes,
+  qr,
+  fecha,
+  escalaFranja,
+  escalaParticipantes,
+} = Astro.props;
 const c = contenido(idioma);
 
 /* Qué componente dibuja cada lámina, con qué props. La historia es la portada con hueco para el sticker. */
@@ -37,18 +49,18 @@ const [Lamina, extra] = COMPONENTE[lamina];
  * declara aquí, junto a la decisión de qué lámina es, y no se deduce del HTML.
  */
 // Toda lámina lleva franja y agradecimiento; la fila de participantes, según `POR_LAMINA`.
-const { dominio, organizador, participantes, mencion, urlPrograma } = datosFlyer(c);
+const { dominio, organizador, participantes, mencion, urlPrograma, urlSitio } = datosFlyer(c);
 // Una lámina que nombra al organizador sin organizador saldría con el nombre en blanco, y
 // RF-25.2 no lo vería: esperaría `null`. Mejor que el build falle.
 if (nombraOrganizador && !organizador) throw new Error(`[flyer] ${lamina}: el comité no trae organizador con grado de doctor`);
 const esperado = {
   dominio,
-  fecha: c.dates.shortLabel,
+  fecha: fecha ? c.dates.shortLabel : null,
   organizador: nombraOrganizador ? organizador : null,
   marcas: ['pucv', 'eie', 'cyted', 'aps', 'anid'],
   mencion,
   participantes: conParticipantes ? participantes.map((p) => p.nombre) : [],
-  qr: qr === 'registro' ? c.registro.url : qr === 'programa' ? urlPrograma : null,
+  qr: qr ? { registro: c.registro.url, programa: urlPrograma, sitio: urlSitio }[qr] : null,
 };
 ---
 
@@ -60,6 +72,8 @@ const esperado = {
   emisor={emisor}
   esperado={esperado}
   participantes={conParticipantes}
+  escalaFranja={escalaFranja}
+  escalaParticipantes={escalaParticipantes}
 >
   <Lamina c={c} {...extra} />
 </CartelFlyer>

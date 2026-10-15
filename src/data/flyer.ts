@@ -191,23 +191,35 @@ export type LaminaFlyer = 'unica' | 'portada' | 'expositores' | 'inscripcion' | 
  *     de expositores no, porque les quitaría alto a los retratos; el telón tampoco, porque
  *     su banda mide `BANDA_TELON` y no le cabe.
  *   - `qr`: a dónde lleva el QR, si lo hay. El generador lo compara con lo que decodifica
- *     (RF-28.1): el formulario de inscripción, o el programa del sitio en la pantalla de
- *     acceso, donde el día del evento se busca la hora de cada charla (RF-34.1).
+ *     (RF-28.1): el formulario de inscripción; el programa del sitio en la pantalla de
+ *     acceso, donde el día del evento se busca la hora de cada charla (RF-34.1); el sitio en
+ *     el pendón, que sirve más de una edición (RF-33.5).
+ *   - `fecha`: si la lámina dice la fecha (RF-25.2). Todas, salvo el pendón: se reutiliza.
+ *   - `escalaFranja` y `escalaParticipantes`: cuánto crecen las marcas y la fila de
+ *     participantes. En el pendón, las colaboraciones son lo que más se lee (RF-33.5); la
+ *     franja no pasa de 1,2 porque PUCV (511 px) y CYTED (300 px) bajarían de 90 ppi (RF-33.4).
  */
-const POR_LAMINA: Record<
-  LaminaFlyer,
-  { emisor: number; organizador: boolean; participantes: boolean; qr: 'registro' | 'programa' | null }
-> = {
+interface DatosLamina {
+  emisor: number;
+  organizador: boolean;
+  participantes: boolean;
+  qr: 'registro' | 'programa' | 'sitio' | null;
+  fecha: boolean;
+  escalaFranja: number;
+  escalaParticipantes: number;
+}
+const COMUN = { fecha: true, escalaFranja: 1, escalaParticipantes: 1 };
+const POR_LAMINA: Record<LaminaFlyer, DatosLamina> = {
   // Emisor [medido sobre las capturas de 2026-10-01]
-  unica: { emisor: 230, organizador: true, participantes: true, qr: 'registro' },
-  portada: { emisor: 700, organizador: true, participantes: true, qr: null },
-  historia: { emisor: 900, organizador: true, participantes: true, qr: null },
-  expositores: { emisor: 700, organizador: false, participantes: false, qr: null },
-  inscripcion: { emisor: 820, organizador: false, participantes: true, qr: 'registro' },
+  unica: { ...COMUN, emisor: 230, organizador: true, participantes: true, qr: 'registro' },
+  portada: { ...COMUN, emisor: 700, organizador: true, participantes: true, qr: null },
+  historia: { ...COMUN, emisor: 900, organizador: true, participantes: true, qr: null },
+  expositores: { ...COMUN, emisor: 700, organizador: false, participantes: false, qr: null },
+  inscripcion: { ...COMUN, emisor: 820, organizador: false, participantes: true, qr: 'registro' },
   // Emisor [medido sobre las capturas de 2026-10-14 y 2026-10-15]
-  pendon: { emisor: 330, organizador: true, participantes: true, qr: 'registro' },
-  acceso: { emisor: 470, organizador: true, participantes: true, qr: 'programa' },
-  telon: { emisor: 150, organizador: false, participantes: false, qr: null },
+  pendon: { emisor: 330, organizador: true, participantes: true, qr: 'sitio', fecha: false, escalaFranja: 1.2, escalaParticipantes: 2.6 },
+  acceso: { ...COMUN, emisor: 470, organizador: true, participantes: true, qr: 'programa' },
+  telon: { ...COMUN, emisor: 150, organizador: false, participantes: false, qr: null },
 };
 
 /*

@@ -94,6 +94,8 @@ export function datosFlyer(c: Contenido) {
     tesis: c.ui.secciones.seminario.title,
     /* El programa del sitio, al que lleva el QR de la pantalla de acceso (RF-34.1). */
     urlPrograma: `https://${dominio}${rutaBase(c.lang)}#programa`,
+    /* El sitio, al que lleva el QR del pendón: sirve en cualquier edición (RF-33.5). */
+    urlSitio: `https://${dominio}${rutaBase(c.lang)}`,
     /* Solo el programa real: el demostrativo del sitio lleva un aviso que la lámina no tiene. */
     jornadas: c.program.esDemostracion ? [] : c.program.days,
   };
@@ -158,17 +160,9 @@ export function altFlyer(c: Contenido, lamina: LaminaFlyer) {
     unica: [evento, `${t.expositores}: ${lista}.`, `${t.inscripciones} ${dominio}.${qr}`, mencion],
     /*
      * El pendón no se publica: el texto sirve si el PDF circula por correo, y para quien
-     * no ve la imagen al revisarlo. Sin tope de 1000: ninguna red lo recibe (RF-29.1).
+     * no ve la imagen al revisarlo. Sin fecha ni sede: se reutiliza en otras ediciones (RF-33.5).
      */
-    pendon: [
-      evento,
-      `${tesis}. ${t.gancho}`,
-      `${t.escanea} ${dominio}.${qr}`,
-      horario && `${horario}.`,
-      `${t.expositores}: ${lista}.`,
-      instituciones,
-      mencion,
-    ],
+    pendon: [`${c.title}.${organiza}`, `${tesis}. ${t.gancho}`, `${t.escanea} ${dominio} (QR).`, instituciones, mencion],
     // Pantallas de la sede: no se publican, pero el texto sirve a quien revisa sin ver la imagen.
     acceso: [evento, `${t.programaQr}: ${dominio} (QR).`, instituciones, mencion],
     telon: [`${c.title}. ${c.dates.label}. ${dominio}.`, mencion],

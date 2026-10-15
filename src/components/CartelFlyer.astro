@@ -44,9 +44,12 @@ interface Props {
   esperado: Record<string, unknown>;
   /** Fila de participantes sobre la franja de marcas; la decide `POR_LAMINA` en `src/data/flyer.ts`. */
   participantes: boolean;
+  /** Tamaño de las marcas y de la fila de participantes; lo decide `POR_LAMINA`. */
+  escalaFranja: number;
+  escalaParticipantes: number;
 }
 
-const { lang, formato, alt, pie, emisor = 410, esperado, participantes } = Astro.props;
+const { lang, formato, alt, pie, emisor = 410, esperado, participantes, escalaFranja, escalaParticipantes } = Astro.props;
 const c = contenido(lang);
 const { ancho, alto, seguro, relleno, fondoInferior, impreso } = FORMATOS_FLYER[formato];
 /*
@@ -123,7 +126,13 @@ const figura = {
       >
         <slot />
         {/* La franja es del lienzo, no de la lámina: todas la llevan. Impresa, con los archivos originales (RF-33.4). */}
-        <Marcas c={c} participantes={participantes} original={impreso !== null} />
+        <Marcas
+          c={c}
+          participantes={participantes}
+          original={impreso !== null}
+          escala={escalaFranja}
+          escalaParticipantes={escalaParticipantes}
+        />
       </div>
 
       {/*

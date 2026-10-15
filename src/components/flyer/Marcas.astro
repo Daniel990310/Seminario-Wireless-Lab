@@ -65,12 +65,19 @@ interface Props {
    * optimizador baja PUCV a 256 px de ancho, y en el pendón eso eran 70 ppi.
    */
   original?: boolean;
+  /**
+   * Factor sobre los altos de las marcas, y sobre la fila de participantes. Las proporciones
+   * entre marcas no cambian, así que RF-26.5 sigue valiendo. Lo decide `POR_LAMINA`.
+   */
+  escala?: number;
+  escalaParticipantes?: number;
 }
 
-const { c, participantes, original = false } = Astro.props;
+const { c, participantes, original = false, escala = 1, escalaParticipantes = 1 } = Astro.props;
 const [pucv] = c.organizers;
 const anid = c.funding.agency;
 const { mencion } = datosFlyer(c);
+const alto = (px: number) => `height:${px * escala}px`;
 ---
 
 {/*
@@ -87,7 +94,7 @@ const { mencion } = datosFlyer(c);
   {
     participantes && (
       <div class="mb-[32px]">
-        <Participantes c={c} />
+        <Participantes c={c} escala={escalaParticipantes} />
       </div>
     )
   }
@@ -95,20 +102,20 @@ const { mencion } = datosFlyer(c);
     data-flyer-marcas
     class="-mx-[72px] bg-[var(--pure-white)] px-[72px] pt-[22px] pb-[24px] text-[var(--navy-900)]"
   >
-    <div class="flex h-[90px] items-center justify-between">
-      <div class="flex items-center gap-[32px]">
-        <ImagenFlyer src={pucv.logo} ancho={256} alto={130} original={original} class="h-[64px] w-auto" data-marca="pucv" />
-        <ImagenFlyer src={submarcaEie} alto={128} original={original} class="h-[64px] w-auto" data-marca="eie" />
+    <div class="flex items-center justify-between" style={alto(90)}>
+      <div class="flex items-center" style={`gap:${32 * escala}px`}>
+        <ImagenFlyer src={pucv.logo} ancho={256} alto={130} original={original} class="w-auto" style={alto(64)} data-marca="pucv" />
+        <ImagenFlyer src={submarcaEie} alto={128} original={original} class="w-auto" style={alto(64)} data-marca="eie" />
       </div>
-      <div class="flex items-center gap-[32px]">
-        <ImagenFlyer src={cytedFondoBlanco} ancho={180} alto={179} original={original} class="size-[90px]" data-marca="cyted" />
+      <div class="flex items-center" style={`gap:${32 * escala}px`}>
+        <ImagenFlyer src={cytedFondoBlanco} ancho={180} alto={179} original={original} style={`width:${90 * escala}px;${alto(90)}`} data-marca="cyted" />
         {/*
           A 52 px y no a 64: es una marca apaisada (3,79:1) y a la altura de las demás pesaba
           el doble que ANID, fuera de RF-26.5. A 52 queda en 1,3×.
         */}
-        <ImagenFlyer src={apsColor} alto={104} original={original} class="h-[52px] w-auto" data-marca="aps" />
+        <ImagenFlyer src={apsColor} alto={104} original={original} class="w-auto" style={alto(52)} data-marca="aps" />
         {/* 119 × 64: el `viewBox` del SVG, 470,89 × 252,78, llevado a 64 de alto. */}
-        <ImagenFlyer src={anid.logo} ancho={119} alto={64} class="h-[64px] w-auto" data-marca="anid" />
+        <ImagenFlyer src={anid.logo} ancho={119} alto={64} class="w-auto" style={alto(64)} data-marca="anid" />
       </div>
     </div>
     <p data-flyer-mencion class="mt-[14px] text-[20px] leading-[1.3] text-pretty text-[var(--slate-600)]">
