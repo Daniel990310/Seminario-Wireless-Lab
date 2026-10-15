@@ -210,6 +210,7 @@ export const en = {
       grupoNacional: 'Based in Chile',
       gancho:
         'Propagation, channel modelling and ISAC architectures at mmWave and sub-THz: 6G networks that carry data and, with the same signal, sense their environment.',
+      programaQr: 'Programme',
     },
 
     secciones: {

@@ -203,6 +203,8 @@ export interface ContenidoIdioma {
        * «El seminario»). Daniel pidió un gancho en lenguaje académico (2026-10-14).
        */
       gancho: string;
+      /** Pantalla de acceso: rótulo del QR, que apunta al programa del sitio (RF-34). */
+      programaQr: string;
     };
 
     secciones: {

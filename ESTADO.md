@@ -22,6 +22,18 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Pantallas de la sede · 2026-10-15 · (rama `ajustes/pendon-impreso`, sin desplegar)
+
+- La Sede PUCV Santiago mandó a Mauricio dos plantillas de 1920 × 1080 (acceso y telón del
+  auditorio) y un flyer de estacionamiento; Daniel las reenvió. Hechas como láminas del
+  sistema de flyers (RF-34): `difusion/flyer/<idioma>-pantalla-acceso.png` y
+  `-pantalla-telon.png`. El telón lleva la gráfica en la banda de 403 px de arriba y negro
+  puro debajo, como pide la plantilla; el acceso, un QR al programa del sitio.
+- El correo de la sede también pregunta por la sesión de pósteres: en `programa.ts` es el
+  **miércoles 21, 14:00–15:00**, después del almuerzo. La dinámica no está escrita en el
+  repo; la responde Mauricio. El descuento de estacionamiento (Best Parking, Antonio Bellet
+  126, $30 el minuto, ticket timbrado en la recepción de la sede) no está en el sitio.
+
 ## Pendón roller impreso · 2026-10-14 · (rama `ajustes/pendon-impreso`, sin desplegar)
 
 - **Pedido de Daniel:** el flyer para imprimir en gran formato con todo el carrusel en una

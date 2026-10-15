@@ -377,7 +377,8 @@ for (const { pieza, formato, idioma, publicacion, pie: llevaPie } of PIEZAS_FLYE
 
 /* RF-30.1: hojas de contacto a tamaño de teléfono, para la revisión humana. */
 for (const idioma of ['es', 'en']) {
-  const piezas = PIEZAS_FLYER.filter((p) => p.idioma === idioma && p.publicacion !== 'impreso');
+  // Solo lo que se ve en un teléfono: ni el pendón ni las pantallas de la sede.
+  const piezas = PIEZAS_FLYER.filter((p) => p.idioma === idioma && !['impreso', 'pantalla'].includes(p.publicacion));
   const celdas = await Promise.all(
     piezas.map(async ({ pieza }) => {
       const b64 = (await readFile(join(SALIDA, `${pieza}.png`))).toString('base64');

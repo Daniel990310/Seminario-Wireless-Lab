@@ -27,7 +27,7 @@ anteriores el retrato pegado a la franja, el texto bajo el piso y el desborde de
 
 ## Alcance
 
-Ocho láminas por idioma, en español e inglés (`src/data/flyer.ts`):
+Diez láminas por idioma, en español e inglés (`src/data/flyer.ts`):
 
 | Pieza | Formato | Uso |
 | --- | --- | --- |
@@ -35,6 +35,7 @@ Ocho láminas por idioma, en español e inglés (`src/data/flyer.ts`):
 | `unica` | 4:5 | Respaldo de una sola imagen, para WhatsApp o para publicar sin carrusel |
 | `historia-1` · `-2` | 9:16 | Historias y estado de WhatsApp: portada con hueco para el sticker de enlace, y expositores |
 | `pendon-80x200` · `-85x200` | 80 u 85 × 200 cm | **Impreso**: pendón roller con todo el carrusel en una lámina y el retrato de Mauricio arriba (RF-33) |
+| `pantalla-acceso` · `-telon` | 1920 × 1080 | **Pantallas de la sede**: acceso y telón del auditorio, con las plantillas de la sede (RF-34) |
 
 ## RF-23 · Formato y zonas seguras
 
@@ -164,6 +165,18 @@ transparencia activa USACH (sangrado 10 mm, área imprimible 85 × 215, 150 dpi,
 incrustadas); guías de *pull-up banner* 850 × 2000 de imprentas del Reino Unido y Australia
 (base de 100–150 mm en el cassette, 150 dpi a tamaño final, PDF). Detalle en
 `specs/fuentes.md`.
+
+## RF-34 · Pantallas de la sede
+
+La Sede PUCV Santiago mandó a Mauricio el 2026-10-15 dos plantillas de 1920 × 1080 px: el
+fondo de la pantalla de acceso y el del telón del auditorio («banner para fotos»). Daniel
+las reenvió.
+
+| ID | Criterio | Origen | Verificación |
+| --- | --- | --- | --- |
+| RF-34.1 | **Acceso**, 1920 × 1080 a lienzo completo: marca, fecha, sede y organizador como la portada, y un **QR al programa del sitio** (`/#programa`, `/en/#programa`), no al formulario: el día del evento se busca la hora de cada charla. Franja de marcas con participantes y agradecimiento | plantilla de la sede; Daniel, 2026-10-15 | generador (RF-23 a RF-29) |
+| RF-34.2 | **Telón**, 1920 × 1080: la gráfica solo en la **banda de arriba, 403 px** `[medido sobre la plantilla: azul hasta y = 402]`, y el resto en **negro puro** (`#000`), como dice la plantilla («mantener esta área de color negro»). Logo horizontal, título, fecha y dominio; franja de marcas con agradecimiento, sin participantes (no caben) | plantilla de la sede | generador: RF-23.2 con `seguro.abajo` = 677 (nada fuera de la banda) |
+| RF-34.3 | Ninguna de las dos va a la hoja de teléfono (RF-30.1): se ven en pantallas de la sede | — | `generar-flyer.mjs` |
 
 ## Decisiones abiertas
 

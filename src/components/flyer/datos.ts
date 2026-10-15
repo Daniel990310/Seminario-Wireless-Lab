@@ -165,6 +165,9 @@ export function altFlyer(c: Contenido, lamina: LaminaFlyer) {
       instituciones,
       mencion,
     ],
+    // Pantallas de la sede: no se publican, pero el texto sirve a quien revisa sin ver la imagen.
+    acceso: [evento, `${t.programaQr}: ${dominio} (QR).`, instituciones, mencion],
+    telon: [`${c.title}. ${c.dates.label}, ${c.venue.name}.`, mencion],
   };
   return partes[lamina].filter(Boolean).join(' ');
 }

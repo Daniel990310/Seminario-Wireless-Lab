@@ -67,6 +67,15 @@ export const FORMATOS_FLYER = {
   '9x16': { ancho: 1080, alto: 1920, seguro: { arriba: 250, abajo: 250 } },
   '80x200': pendon(800),
   '85x200': pendon(850),
+  /*
+   * Pantallas de la sede (RF-34), 1920 × 1080: las plantillas que mandó la Sede PUCV
+   * Santiago el 2026-10-15. La de acceso usa el lienzo entero. La del telón del auditorio
+   * lleva la gráfica solo en la banda de arriba, 403 px `[medido sobre la plantilla]`, y
+   * el resto en **negro puro**, como pide la plantilla: es el fondo detrás de quien expone
+   * y de las fotos. `negro` es esa franja; `relleno`, el aire sobre el contenido.
+   */
+  '16x9': { ancho: 1920, alto: 1080, seguro: { arriba: 0, abajo: 0 } },
+  '16x9-telon': { ancho: 1920, alto: 1080, seguro: { arriba: 0, abajo: 677 }, negro: 677, relleno: 36 },
 } as const;
 
 export type FormatoFlyer = keyof typeof FORMATOS_FLYER;
@@ -99,9 +108,10 @@ export const PISO_PIE_FLYER = 20;
  * documento PDF— y se mantiene una pieza única de respaldo, para WhatsApp o para quien
  * no quiera publicar varias. Las historias van en dos: en una historia el QR no sirve
  * (se ve en el mismo teléfono), así que la portada deja hueco para el sticker de enlace.
- * El pendón es para imprimir: cabe todo porque mide lo que tres láminas juntas.
+ * El pendón es para imprimir: cabe todo porque mide lo que tres láminas juntas. Acceso y
+ * telón son las pantallas de la sede durante el evento (RF-34).
  */
-export type LaminaFlyer = 'unica' | 'portada' | 'expositores' | 'inscripcion' | 'historia' | 'pendon';
+export type LaminaFlyer = 'unica' | 'portada' | 'expositores' | 'inscripcion' | 'historia' | 'pendon' | 'acceso' | 'telon';
 
 /*
  * `publicacion`: a qué publicación pertenece la lámina. `pie`: la lámina que abre una
@@ -118,11 +128,14 @@ const LAMINAS = [
   { id: 'historia-2', formato: '9x16', lamina: 'expositores', publicacion: 'historia', pie: false, participantes: false },
   { id: 'pendon-80x200', formato: '80x200', lamina: 'pendon', publicacion: 'impreso', pie: false, participantes: true },
   { id: 'pendon-85x200', formato: '85x200', lamina: 'pendon', publicacion: 'impreso', pie: false, participantes: true },
+  { id: 'pantalla-acceso', formato: '16x9', lamina: 'acceso', publicacion: 'pantalla', pie: false, participantes: true },
+  // Sin fila de participantes: la banda del telón mide 403 px y no le cabe.
+  { id: 'pantalla-telon', formato: '16x9-telon', lamina: 'telon', publicacion: 'pantalla', pie: false, participantes: false },
 ] as const satisfies ReadonlyArray<{
   id: string;
   formato: FormatoFlyer;
   lamina: LaminaFlyer;
-  publicacion: 'unica' | 'carrusel' | 'historia' | 'impreso';
+  publicacion: 'unica' | 'carrusel' | 'historia' | 'impreso' | 'pantalla';
   pie: boolean;
   participantes: boolean;
 }>;

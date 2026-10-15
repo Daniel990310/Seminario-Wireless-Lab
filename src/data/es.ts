@@ -221,6 +221,7 @@ export const es = {
       grupoNacional: 'Nacionales',
       gancho:
         'Propagación, modelado de canal y arquitecturas ISAC en ondas milimétricas y sub-THz: redes 6G que transmiten datos y, con la misma señal, perciben su entorno.',
+      programaQr: 'Programa',
     },
 
     secciones: {
