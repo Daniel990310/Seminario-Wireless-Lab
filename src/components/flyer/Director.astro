@@ -12,6 +12,7 @@
  * Archivo original del retrato (800 px), no el reducido: se imprime.
  */
 import type { Contenido } from '~/data/contenido';
+import ImagenFlyer from './ImagenFlyer.astro';
 import { datosFlyer } from './datos';
 
 interface Props {
@@ -26,17 +27,10 @@ const { organizador } = datosFlyer(c);
 ---
 
 <div class="flex items-center gap-[40px]">
-  <img
-    src={director.foto.src}
-    alt=""
-    width={director.foto.width}
-    height={director.foto.height}
-    class="shrink-0 rounded-full object-cover"
-    style={`width:${retrato}px;height:${retrato}px`}
-  />
+  <ImagenFlyer src={director.foto} original class="shrink-0 rounded-full object-cover" style={`width:${retrato}px;height:${retrato}px`} />
   <div class="min-w-0">
     <p class="eyebrow text-[31px] text-accent">{director.epigrafe}</p>
-    <p class="mt-[10px] font-display text-[64px] leading-[1.05] font-semibold text-foreground">{organizador ?? director.nombre}</p>
+    <p class="mt-[10px] font-display text-[64px] leading-[1.05] font-semibold text-foreground">{organizador}</p>
     <p class="mt-[10px] text-[36px] leading-[1.2] text-muted-foreground">{director.cargo}</p>
   </div>
 </div>

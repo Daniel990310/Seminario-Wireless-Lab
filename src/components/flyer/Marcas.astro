@@ -54,7 +54,7 @@ import { datosFlyer } from './datos';
 interface Props {
   c: Contenido;
   /**
-   * Fila de participantes sobre la franja; la decide `LAMINAS` en `src/data/flyer.ts`. Sin
+   * Fila de participantes sobre la franja; la decide `POR_LAMINA` en `src/data/flyer.ts`. Sin
    * valor por omisión: así no hay una segunda fuente de verdad. No la lleva la lámina de
    * expositores, donde le quitaría a los retratos el alto que la franja sola ya les quita
    * (Daniel, 2026-10-09, a prueba).
@@ -108,7 +108,7 @@ const { mencion } = datosFlyer(c);
         */}
         <ImagenFlyer src={apsColor} alto={104} original={original} class="h-[52px] w-auto" data-marca="aps" />
         {/* 119 × 64: el `viewBox` del SVG, 470,89 × 252,78, llevado a 64 de alto. */}
-        <img src={anid.logo} alt="" width="119" height="64" class="h-[64px] w-auto" data-marca="anid" />
+        <ImagenFlyer src={anid.logo} ancho={119} alto={64} class="h-[64px] w-auto" data-marca="anid" />
       </div>
     </div>
     <p data-flyer-mencion class="mt-[14px] text-[20px] leading-[1.3] text-pretty text-[var(--slate-600)]">

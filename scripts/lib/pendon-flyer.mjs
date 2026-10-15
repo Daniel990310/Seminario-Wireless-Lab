@@ -1,8 +1,8 @@
 /**
  * Pendón impreso (RF-33): lo que `generar-flyer.mjs` hace solo con los formatos que tienen
- * `impreso` (`src/data/flyer.ts`). Mide, escribe el PDF a tamaño real y el JPG de imprenta,
- * y arma la hoja de revisión. No escribe a disco: devuelve bytes y el orquestador los
- * escribe con sus reintentos.
+ * `impreso` (`src/data/flyer.ts`). Mide, produce el PDF a tamaño real y el JPG de imprenta,
+ * verifica el PDF escrito y arma la hoja de revisión. No escribe a disco: devuelve bytes y
+ * el orquestador los escribe con sus reintentos.
  *
  * Las razones de cada número, en `specs/003-difusion-redes/requirements.md`:
  *   - `PPI_MINIMO`: a 1 m, la distancia más corta a la que se mira un roller, el ojo separa
@@ -10,21 +10,21 @@
  *     para mirar de cerca, y los retratos no lo tienen.
  *   - `QR_MINIMO_MM`: se lee hasta a unas diez veces su lado; 15 cm, a 1,5 m.
  *   - `QR_ALTURA_MM`: el centro del QR, a la altura de los ojos de quien se acerca (RF-33.5).
+ *
+ * @typedef {import('../../src/data/flyer.ts').FormatoFlyerDef} FormatoFlyerDef
  */
 import { PDFDocument } from 'pdf-lib';
+import { PT_POR_MM, PT_POR_PX_CHROMIUM } from '../../src/data/flyer.ts';
 
-export const PPI_MINIMO = 90;
+const PPI_MINIMO = 90;
 export const PPI_JPG = 150;
-export const QR_MINIMO_MM = 150;
-export const QR_ALTURA_MM = [600, 900];
-const PT_POR_MM = 72 / 25.4;
-/* Chromium imprime a 96 px por pulgada: 0,75 pt por px de lienzo. */
-const PT_CHROMIUM = 0.75;
+const QR_MINIMO_MM = 150;
+const QR_ALTURA_MM = { min: 600, max: 900 };
 
 export const CRITERIOS_PENDON = {
-  'RF-33.1': 'Pendón: PDF a tamaño real, con caja de corte y de sangrado, releído del archivo',
+  'RF-33.1': 'Pendón: PDF a tamaño real, con caja de corte y de sangrado, leído del archivo escrito',
   'RF-33.4': `Pendón: toda imagen ráster a ${PPI_MINIMO} ppi o más, impresa`,
-  'RF-33.5': `Pendón: centro del QR entre ${QR_ALTURA_MM[0] / 10} y ${QR_ALTURA_MM[1] / 10} cm bajo el borde de arriba`,
+  'RF-33.5': `Pendón: centro del QR entre ${QR_ALTURA_MM.min / 10} y ${QR_ALTURA_MM.max / 10} cm bajo el borde de arriba`,
   'RF-33.6': `Pendón: QR de ${QR_MINIMO_MM / 10} cm de lado o más`,
   'RF-33.7': `Pendón: JPG a ${PPI_JPG} ppi del tamaño exacto del lienzo`,
 };
@@ -33,9 +33,10 @@ export const CRITERIOS_PENDON = {
  * RF-33.4, RF-33.5 y RF-33.6, sobre el lienzo: resolución impresa de cada imagen ráster,
  * posición y lado del QR. Con `object-cover` la imagen se escala hasta cubrir la caja, así
  * que manda el lado que más se agranda.
+ * @param {FormatoFlyerDef} formato
  */
-export async function medirImpreso(page, { impreso, ptPorPx }) {
-  const mmPorPx = ptPorPx / PT_POR_MM;
+export async function medirImpreso(page, { impreso }) {
+  const { mmPorPx, sangrado } = impreso;
   const { imagenes, qr } = await page.evaluate((mmPorPx) => {
     const imagenes = [...document.images]
       .filter((i) => i.naturalWidth && !/\.svg(\?|$)/i.test(i.currentSrc || i.src))
@@ -51,7 +52,7 @@ export async function medirImpreso(page, { impreso, ptPorPx }) {
   const peor = imagenes.reduce((a, b) => (!a || b.ppi < a.ppi ? b : a), null);
   const ladoMm = qr ? qr.lado * mmPorPx : 0;
   // Desde el borde de arriba de lo visible: sin el sangrado.
-  const alturaMm = qr ? (qr.centro - impreso.sangrado) * mmPorPx : NaN;
+  const alturaMm = qr ? (qr.centro - sangrado) * mmPorPx : NaN;
   return [
     {
       id: 'RF-33.4',
@@ -64,7 +65,7 @@ export async function medirImpreso(page, { impreso, ptPorPx }) {
     },
     {
       id: 'RF-33.5',
-      ok: alturaMm >= QR_ALTURA_MM[0] && alturaMm <= QR_ALTURA_MM[1],
+      ok: alturaMm >= QR_ALTURA_MM.min && alturaMm <= QR_ALTURA_MM.max,
       detalle: qr ? `${Math.round(alturaMm)} mm` : 'sin QR',
     },
     { id: 'RF-33.6', ok: ladoMm >= QR_MINIMO_MM, detalle: `${Math.round(ladoMm)} mm` },
@@ -72,8 +73,8 @@ export async function medirImpreso(page, { impreso, ptPorPx }) {
 }
 
 /**
- * RF-33.1 · el pendón a tamaño real, con sus cajas de imprenta. Recibe los bytes del PDF de
- * Chromium y devuelve los del PDF final.
+ * El pendón a tamaño real, con sus cajas de imprenta. Recibe los bytes del PDF de Chromium
+ * y devuelve los del PDF final, más el tamaño de la hoja de Chromium para `verificarPdfReal`.
  *
  * Chromium imprime el lienzo a 0,265 mm por px, un tercio del tamaño real. Agrandarlo antes
  * de imprimir no sirve: con `zoom` o con `transform: scale` la hoja de 2,17 m salió con el
@@ -83,11 +84,7 @@ export async function medirImpreso(page, { impreso, ptPorPx }) {
  *
  * Se añaden la `TrimBox` —el corte: ancho × (visible + base)— y la `BleedBox`, el corte más
  * el sangrado: con ellas el programa de la imprenta pone las marcas de corte.
- *
- * El criterio no se deduce de las constantes con que se escribió —así no podría fallar—:
- * comprueba que la hoja de Chromium mide lo que el lienzo a 0,75 pt por px (si un Chromium
- * futuro imprime a otra escala, el dibujo saldría estirado en una hoja del tamaño
- * correcto), y relee el archivo guardado contra las medidas de catálogo en mm.
+ * @param {FormatoFlyerDef} formato
  */
 export async function aTamanoReal(bytesChromium, { ancho, alto, impreso, ptPorPx }) {
   const origen = await PDFDocument.load(bytesChromium);
@@ -108,35 +105,58 @@ export async function aTamanoReal(bytesChromium, { ancho, alto, impreso, ptPorPx
   const s = impreso.sangradoMm * PT_POR_MM;
   hoja.setTrimBox(corte.x, corte.y, corte.w, corte.h);
   hoja.setBleedBox(corte.x - s, corte.y - s, corte.w + 2 * s, corte.h + 2 * s);
-  const bytes = await doc.save();
+  return { bytes: await doc.save(), hojaChromium: { w: lienzo.width, h: lienzo.height } };
+}
 
+/**
+ * RF-33.1 · lee el PDF **escrito en disco** y lo compara con lo que el lienzo y el catálogo
+ * dicen, no con las constantes con que se escribió (así no podría fallar):
+ *   - la hoja de Chromium mide el lienzo a 0,75 pt por px: si un Chromium futuro imprime a
+ *     otra escala, el dibujo saldría estirado en una hoja del tamaño correcto;
+ *   - la hoja mide el corte de catálogo más el sangrado, con tres px de holgura: los px del
+ *     lienzo se redondean hacia arriba en sangrado, base y ancho, 0,37 mm cada uno;
+ *   - la caja de corte queda a `sangradoMm` de cada borde de la hoja, con dos px de
+ *     holgura: abajo y a la derecha se suman dos redondeos (sangrado y base, o sangrado y
+ *     ancho), 0,74 mm. La hoja sale de los px del lienzo y el corte de los mm de catálogo:
+ *     son fuentes distintas, y un corte corrido se ve aquí;
+ *   - la caja de sangrado cabe en la hoja.
+ * @param {FormatoFlyerDef} formato
+ */
+export async function verificarPdfReal(bytesDisco, { ancho, alto, impreso }, hojaChromium) {
   const problemas = [];
+  const mm = (pt) => pt / PT_POR_MM;
+  const f1 = (v) => v.toFixed(1);
   const cerca = (a, b, tol) => Math.abs(a - b) <= tol;
-  if (!cerca(lienzo.width, ancho * PT_CHROMIUM, 1) || !cerca(lienzo.height, alto * PT_CHROMIUM, 1)) {
-    problemas.push(`Chromium imprimió ${lienzo.width.toFixed(0)}×${lienzo.height.toFixed(0)} pt, no ${ancho * PT_CHROMIUM}×${alto * PT_CHROMIUM}`);
+  const esperadaChromium = { w: ancho * PT_POR_PX_CHROMIUM, h: alto * PT_POR_PX_CHROMIUM };
+  if (!cerca(hojaChromium.w, esperadaChromium.w, 1) || !cerca(hojaChromium.h, esperadaChromium.h, 1)) {
+    problemas.push(`Chromium imprimió ${f1(hojaChromium.w)}×${f1(hojaChromium.h)} pt, no ${f1(esperadaChromium.w)}×${f1(esperadaChromium.h)}`);
   }
-  const releida = (await PDFDocument.load(bytes)).getPage(0);
-  const mm = (v) => v / PT_POR_MM;
-  const tamano = releida.getSize();
-  const trim = releida.getTrimBox();
-  const bleed = releida.getBleedBox();
-  const hojaMm = [impreso.anchoMm + 2 * impreso.sangradoMm, impreso.visibleMm + impreso.baseMm + 2 * impreso.sangradoMm];
-  // 1,5 mm: los px del lienzo se redondean hacia arriba y la hoja crece hasta 0,7 mm.
-  if (!cerca(mm(tamano.width), hojaMm[0], 1.5) || !cerca(mm(tamano.height), hojaMm[1], 1.5)) problemas.push('hoja');
-  if (!cerca(mm(trim.width), impreso.anchoMm, 0.1) || !cerca(mm(trim.height), impreso.visibleMm + impreso.baseMm, 0.1)) problemas.push('TrimBox');
-  if (!cerca(mm(bleed.width - trim.width), 2 * impreso.sangradoMm, 0.1)) problemas.push('BleedBox');
-  const dentro = bleed.x >= -0.5 && bleed.y >= -0.5 && bleed.x + bleed.width <= tamano.width + 0.5 && bleed.y + bleed.height <= tamano.height + 0.5;
-  if (!dentro) problemas.push('sangrado fuera de la hoja');
+  const pagina = (await PDFDocument.load(bytesDisco)).getPage(0);
+  const hoja = pagina.getSize();
+  const trim = pagina.getTrimBox();
+  const bleed = pagina.getBleedBox();
+  const px = impreso.mmPorPx;
+  const hojaMm = { w: impreso.anchoMm + 2 * impreso.sangradoMm, h: impreso.visibleMm + impreso.baseMm + 2 * impreso.sangradoMm };
+  if (!cerca(mm(hoja.width), hojaMm.w, 3 * px) || !cerca(mm(hoja.height), hojaMm.h, 3 * px)) {
+    problemas.push(`hoja ${f1(mm(hoja.width))}×${f1(mm(hoja.height))} mm, se esperaba ${hojaMm.w}×${hojaMm.h} ± ${f1(3 * px)}`);
+  }
+  const margenes = {
+    izquierda: mm(trim.x),
+    derecha: mm(hoja.width - trim.x - trim.width),
+    abajo: mm(trim.y),
+    arriba: mm(hoja.height - trim.y - trim.height),
+  };
+  const corridos = Object.entries(margenes).filter(([, v]) => !cerca(v, impreso.sangradoMm, 2 * px));
+  if (corridos.length) {
+    problemas.push(`corte a ${corridos.map(([lado, v]) => `${f1(v)} mm por ${lado}`).join(', ')}, no ${impreso.sangradoMm}`);
+  }
+  const dentro = bleed.x >= -0.5 && bleed.y >= -0.5 && bleed.x + bleed.width <= hoja.width + 0.5 && bleed.y + bleed.height <= hoja.height + 0.5;
+  if (!dentro) problemas.push('la caja de sangrado sale de la hoja');
   const r = (v) => Math.round(mm(v));
   return {
-    bytes,
-    resultado: {
-      id: 'RF-33.1',
-      ok: !problemas.length,
-      detalle: problemas.length
-        ? problemas.join(', ')
-        : `hoja ${r(tamano.width)}×${r(tamano.height)} mm, corte ${r(trim.width)}×${r(trim.height)} mm`,
-    },
+    id: 'RF-33.1',
+    ok: !problemas.length,
+    detalle: problemas.length ? problemas.join('; ') : `hoja ${r(hoja.width)}×${r(hoja.height)} mm, corte ${r(trim.width)}×${r(trim.height)} mm`,
   };
 }
 
@@ -153,9 +173,10 @@ function dimensionesJpg(b) {
 /**
  * RF-33.7 · el pendón también como JPG a `PPI_JPG`, para la imprenta que no recibe PDF. Se
  * captura de nuevo con más píxeles por px de lienzo: es el mismo dibujo, no una ampliación.
+ * @param {FormatoFlyerDef} formato
  */
-export async function jpgDeImprenta(navegador, url, { ancho, alto, ptPorPx }) {
-  const escala = (PPI_JPG * ptPorPx) / 72;
+export async function jpgDeImprenta(navegador, url, { ancho, alto, impreso }) {
+  const escala = (PPI_JPG * impreso.mmPorPx) / 25.4;
   const ctx = await navegador.newContext({ viewport: { width: ancho, height: alto }, deviceScaleFactor: escala, reducedMotion: 'reduce' });
   const page = await ctx.newPage();
   await page.goto(url, { waitUntil: 'networkidle' });
@@ -188,6 +209,7 @@ export async function jpgDeImprenta(navegador, url, { ancho, alto, ptPorPx }) {
  * armado, a 1200 px de alto, y debajo, rayada, la base que entra en el cassette: con la
  * base pintada igual que lo visible, la franja blanca parecía el doble de alta de lo que
  * se ve (Daniel, 2026-10-14).
+ * @param {FormatoFlyerDef} formato
  */
 export function celdaRevisionPendon(pieza, png, { ancho, alto, impreso }) {
   const { sangrado, base } = impreso;

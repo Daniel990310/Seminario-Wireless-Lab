@@ -30,14 +30,19 @@ const VISIBLE_PX = 2700;
 const MM_POR_PX_PENDON = VISIBLE_MM / VISIBLE_PX;
 const SANGRADO_MM = 10;
 const BASE_MM = 150;
-const PT_POR_MM = 72 / 25.4;
+/* Unidades del PDF. Las lee también el generador (`scripts/lib/pendon-flyer.mjs`). */
+export const PT_POR_MM = 72 / 25.4;
+/* Chromium imprime a 96 px por pulgada: 0,75 pt por px de lienzo. */
+export const PT_POR_PX_CHROMIUM = 0.75;
 
 /** Lo que el generador necesita de un formato impreso para escribir el PDF a tamaño real. */
-export interface Impreso {
+interface Impreso {
   anchoMm: number;
   visibleMm: number;
   baseMm: number;
   sangradoMm: number;
+  /** Milímetros impresos por px de lienzo. */
+  mmPorPx: number;
   /** Sangrado y base en px de lienzo. */
   sangrado: number;
   base: number;
@@ -52,12 +57,16 @@ export interface FormatoFlyerDef {
   alto: number;
   /** Franja que no lleva nada legible, desde cada borde (RF-23.2). */
   seguro: { arriba: number; abajo: number };
-  /** Aire sobre el primer contenido, dentro de `seguro.arriba`. */
+  /**
+   * Aire sobre el primer contenido, dentro de `seguro.arriba`: 72 a lienzo entero, el
+   * margen lateral del cartel; 40 bajo una franja segura, que ya separa del borde; 36 en la
+   * banda del telón, que mide 403 px y no tiene alto que regalar.
+   */
   relleno: number;
   /**
-   * Puntos PDF por px de lienzo en el PDF **final**. Chromium imprime a 0,75 (96 px por
-   * pulgada); el pendón se reescribe a tamaño real (RF-33.1). Lo leen el PDF, su criterio
-   * de tamaño (RF-29.3) y el mapa para Illustrator: una sola fuente.
+   * Puntos PDF por px de lienzo en el PDF **final**. Chromium imprime a 0,75; el pendón se
+   * reescribe a tamaño real (RF-33.1). Lo leen el PDF, su criterio de tamaño (RF-29.3) y el
+   * mapa para Illustrator: una sola fuente.
    */
   ptPorPx: number;
   /**
@@ -83,13 +92,21 @@ function pendon(anchoMm: number): FormatoFlyerDef {
     relleno: 40,
     ptPorPx: MM_POR_PX_PENDON * PT_POR_MM,
     fondoInferior: 'blanco',
-    impreso: { anchoMm, visibleMm: VISIBLE_MM, baseMm: BASE_MM, sangradoMm: SANGRADO_MM, sangrado, base },
+    impreso: {
+      anchoMm,
+      visibleMm: VISIBLE_MM,
+      baseMm: BASE_MM,
+      sangradoMm: SANGRADO_MM,
+      mmPorPx: MM_POR_PX_PENDON,
+      sangrado,
+      base,
+    },
   };
 }
 
-/** Formato de pantalla: PDF de Chromium tal cual, a 0,75 pt por px. */
-function pantalla(ancho: number, alto: number, seguro: FormatoFlyerDef['seguro'], relleno: number): FormatoFlyerDef {
-  return { ancho, alto, seguro, relleno, ptPorPx: 0.75, fondoInferior: null, impreso: null };
+/** Lienzo que se ve en pantalla (redes y sede): PDF de Chromium tal cual. */
+function digital(f: Pick<FormatoFlyerDef, 'ancho' | 'alto' | 'seguro' | 'relleno'> & Partial<Pick<FormatoFlyerDef, 'fondoInferior'>>): FormatoFlyerDef {
+  return { fondoInferior: null, ...f, ptPorPx: PT_POR_PX_CHROMIUM, impreso: null };
 }
 
 /* Alto de la banda de gráfica del telón, `[medido sobre la plantilla de la sede]` (RF-34.2). */
@@ -105,7 +122,7 @@ export const FORMATOS_FLYER = {
    * recortar. La grilla del perfil de Instagram la reduce a 3:4 central, 34 px por lado
    * `[supuesto: cambio de la grilla de Instagram, 2025]`; el margen lateral los cubre.
    */
-  '4x5': pantalla(1080, 1350, { arriba: 0, abajo: 0 }, 72),
+  '4x5': digital({ ancho: 1080, alto: 1350, seguro: { arriba: 0, abajo: 0 }, relleno: 72 }),
   /*
    * 9:16, historias de Instagram y estado de WhatsApp. Arriba van la barra de progreso y
    * el nombre de la cuenta; abajo, el campo de respuesta.
@@ -117,7 +134,7 @@ export const FORMATOS_FLYER = {
    * > guías dicen 250. El hueco de abajo ahora lo cruzan los arcos de la figura, no la
    * > franja: la franja termina donde termina la zona segura (RF-23.2).
    */
-  '9x16': pantalla(1080, 1920, { arriba: 250, abajo: 250 }, 40),
+  '9x16': digital({ ancho: 1080, alto: 1920, seguro: { arriba: 250, abajo: 250 }, relleno: 40 }),
   '80x200': pendon(800),
   '85x200': pendon(850),
   /*
@@ -126,8 +143,8 @@ export const FORMATOS_FLYER = {
    * lleva la gráfica solo en la banda de arriba, `BANDA_TELON`, y el resto en **negro
    * puro**, como pide la plantilla: es el fondo detrás de quien expone y de las fotos.
    */
-  '16x9': pantalla(1920, 1080, { arriba: 0, abajo: 0 }, 72),
-  '16x9-telon': { ...pantalla(1920, 1080, { arriba: 0, abajo: 1080 - BANDA_TELON }, 36), fondoInferior: 'negro' },
+  '16x9': digital({ ancho: 1920, alto: 1080, seguro: { arriba: 0, abajo: 0 }, relleno: 72 }),
+  '16x9-telon': digital({ ancho: 1920, alto: 1080, seguro: { arriba: 0, abajo: 1080 - BANDA_TELON }, relleno: 36, fondoInferior: 'negro' }),
 } satisfies Record<string, FormatoFlyerDef>;
 
 export type FormatoFlyer = keyof typeof FORMATOS_FLYER;
@@ -170,52 +187,67 @@ export type LaminaFlyer = 'unica' | 'portada' | 'expositores' | 'inscripcion' | 
  *   - `emisor`: altura del emisor de la figura (borde derecho) bajo el inicio del contenido,
  *     el centro del hueco que la lámina deja a la derecha. Ver `CartelFlyer.astro`.
  *   - `organizador`: si la lámina nombra al organizador, para RF-25.2.
+ *   - `participantes`: si lleva la fila de instituciones participantes sobre la franja. La
+ *     de expositores no, porque les quitaría alto a los retratos; el telón tampoco, porque
+ *     su banda mide `BANDA_TELON` y no le cabe.
+ *   - `qr`: a dónde lleva el QR, si lo hay. El generador lo compara con lo que decodifica
+ *     (RF-28.1): el formulario de inscripción, o el programa del sitio en la pantalla de
+ *     acceso, donde el día del evento se busca la hora de cada charla (RF-34.1).
  */
-export const POR_LAMINA: Record<LaminaFlyer, { emisor: number; organizador: boolean }> = {
-  // [medido sobre las capturas de 2026-10-01]
-  unica: { emisor: 230, organizador: true },
-  portada: { emisor: 700, organizador: true },
-  historia: { emisor: 900, organizador: true },
-  expositores: { emisor: 700, organizador: false },
-  inscripcion: { emisor: 820, organizador: false },
-  // [medido sobre las capturas de 2026-10-14 y 2026-10-15]
-  pendon: { emisor: 330, organizador: true },
-  acceso: { emisor: 470, organizador: true },
-  telon: { emisor: 150, organizador: false },
+const POR_LAMINA: Record<
+  LaminaFlyer,
+  { emisor: number; organizador: boolean; participantes: boolean; qr: 'registro' | 'programa' | null }
+> = {
+  // Emisor [medido sobre las capturas de 2026-10-01]
+  unica: { emisor: 230, organizador: true, participantes: true, qr: 'registro' },
+  portada: { emisor: 700, organizador: true, participantes: true, qr: null },
+  historia: { emisor: 900, organizador: true, participantes: true, qr: null },
+  expositores: { emisor: 700, organizador: false, participantes: false, qr: null },
+  inscripcion: { emisor: 820, organizador: false, participantes: true, qr: 'registro' },
+  // Emisor [medido sobre las capturas de 2026-10-14 y 2026-10-15]
+  pendon: { emisor: 330, organizador: true, participantes: true, qr: 'registro' },
+  acceso: { emisor: 470, organizador: true, participantes: true, qr: 'programa' },
+  telon: { emisor: 150, organizador: false, participantes: false, qr: null },
 };
 
 /*
- * `publicacion`: a qué publicación pertenece la lámina. `pie`: la lámina que abre una
- * publicación con pie (carrusel y pieza única; las historias no llevan) trae el pie de
- * publicación. `participantes`: si lleva la fila de instituciones participantes sobre la
- * franja; la de expositores no, porque les quitaría alto a los retratos.
+ * A qué publicación pertenece cada pieza, y si se ve en un teléfono: la hoja de contacto
+ * de RF-30.1 lleva solo esas. Ni el pendón ni las pantallas de la sede.
+ */
+const EN_TELEFONO = { unica: true, carrusel: true, historia: true, impreso: false, pantalla: false } as const;
+type Publicacion = keyof typeof EN_TELEFONO;
+
+/*
+ * `pie`: la lámina que abre una publicación con pie (carrusel y pieza única; las historias
+ * no llevan) trae el pie de publicación.
  */
 const LAMINAS = [
-  { id: 'unica', formato: '4x5', lamina: 'unica', publicacion: 'unica', pie: true, participantes: true },
-  { id: 'carrusel-1', formato: '4x5', lamina: 'portada', publicacion: 'carrusel', pie: true, participantes: true },
-  { id: 'carrusel-2', formato: '4x5', lamina: 'expositores', publicacion: 'carrusel', pie: false, participantes: false },
-  { id: 'carrusel-3', formato: '4x5', lamina: 'inscripcion', publicacion: 'carrusel', pie: false, participantes: true },
-  { id: 'historia-1', formato: '9x16', lamina: 'historia', publicacion: 'historia', pie: false, participantes: true },
-  { id: 'historia-2', formato: '9x16', lamina: 'expositores', publicacion: 'historia', pie: false, participantes: false },
-  { id: 'pendon-80x200', formato: '80x200', lamina: 'pendon', publicacion: 'impreso', pie: false, participantes: true },
-  { id: 'pendon-85x200', formato: '85x200', lamina: 'pendon', publicacion: 'impreso', pie: false, participantes: true },
-  { id: 'pantalla-acceso', formato: '16x9', lamina: 'acceso', publicacion: 'pantalla', pie: false, participantes: true },
-  // Sin fila de participantes: la banda del telón mide 403 px y no le cabe.
-  { id: 'pantalla-telon', formato: '16x9-telon', lamina: 'telon', publicacion: 'pantalla', pie: false, participantes: false },
+  { id: 'unica', formato: '4x5', lamina: 'unica', publicacion: 'unica', pie: true },
+  { id: 'carrusel-1', formato: '4x5', lamina: 'portada', publicacion: 'carrusel', pie: true },
+  { id: 'carrusel-2', formato: '4x5', lamina: 'expositores', publicacion: 'carrusel', pie: false },
+  { id: 'carrusel-3', formato: '4x5', lamina: 'inscripcion', publicacion: 'carrusel', pie: false },
+  { id: 'historia-1', formato: '9x16', lamina: 'historia', publicacion: 'historia', pie: false },
+  { id: 'historia-2', formato: '9x16', lamina: 'expositores', publicacion: 'historia', pie: false },
+  { id: 'pendon-80x200', formato: '80x200', lamina: 'pendon', publicacion: 'impreso', pie: false },
+  { id: 'pendon-85x200', formato: '85x200', lamina: 'pendon', publicacion: 'impreso', pie: false },
+  { id: 'pantalla-acceso', formato: '16x9', lamina: 'acceso', publicacion: 'pantalla', pie: false },
+  { id: 'pantalla-telon', formato: '16x9-telon', lamina: 'telon', publicacion: 'pantalla', pie: false },
 ] as const satisfies ReadonlyArray<{
   id: string;
   formato: FormatoFlyer;
   lamina: LaminaFlyer;
-  publicacion: 'unica' | 'carrusel' | 'historia' | 'impreso' | 'pantalla';
+  publicacion: Publicacion;
   pie: boolean;
-  participantes: boolean;
 }>;
 
 const IDIOMAS_FLYER = ['es', 'en'] as const satisfies readonly Idioma[];
 
 export const PIEZAS_FLYER = IDIOMAS_FLYER.flatMap((idioma) =>
-  LAMINAS.map((l) => ({ ...l, idioma, pieza: `${idioma}-${l.id}` })),
+  LAMINAS.map((l) => ({
+    ...l,
+    ...POR_LAMINA[l.lamina],
+    enTelefono: EN_TELEFONO[l.publicacion],
+    idioma,
+    pieza: `${idioma}-${l.id}`,
+  })),
 );
-
-/** Lo que se ve en un teléfono (RF-30.1): ni el pendón ni las pantallas de la sede. */
-export const enTelefono = (p: { publicacion: string }) => ['unica', 'carrusel', 'historia'].includes(p.publicacion);

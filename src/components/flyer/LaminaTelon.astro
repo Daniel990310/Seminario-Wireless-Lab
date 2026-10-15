@@ -1,7 +1,8 @@
 ---
 /**
  * Telón del auditorio, 1920 × 1080 (RF-34.2): la gráfica va solo en la banda de arriba,
- * `BANDA_TELON` de `src/data/flyer.ts`, y debajo negro puro (lo pone `CartelFlyer`), como pide la plantilla de la sede.
+ * `BANDA_TELON` de `src/data/flyer.ts`, y debajo negro puro (lo pone `CartelFlyer`), como
+ * pide la plantilla de la sede.
  * Es el fondo de quien expone y de las fotos: la banda queda sobre las cabezas, así que
  * lleva lo que una foto tiene que decir sola —el nombre del evento, la fecha y quiénes lo
  * financian— y nada que pida leer de cerca.
@@ -12,15 +13,13 @@
  */
 import type { Contenido } from '~/data/contenido';
 import LogoHorizontal from './LogoHorizontal.astro';
-import Marcas from './Marcas.astro';
 import { datosFlyer } from './datos';
 
 interface Props {
   c: Contenido;
-  participantes: boolean;
 }
 
-const { c, participantes } = Astro.props;
+const { c } = Astro.props;
 const { restoTitulo, dominio } = datosFlyer(c);
 ---
 
@@ -34,4 +33,3 @@ const { restoTitulo, dominio } = datosFlyer(c);
   </div>
 </div>
 
-<Marcas c={c} participantes={participantes} />

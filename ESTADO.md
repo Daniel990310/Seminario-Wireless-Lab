@@ -50,7 +50,7 @@ Hostinger sin revocar.**
   retratos a 109 ppi y Mauricio a 125 ppi impresos.
 - **Trampa medida:** Chromium ignora `zoom` y `transform: scale` al imprimir una hoja de 2 m
   (salía el lienzo a un tercio, centrado y cortado). El PDF se escala después con pdf-lib
-  (`aTamanoReal` en `generar-flyer.mjs`). RF-29.3 no lo detectaba: mide la caja, no el dibujo.
+  (`aTamanoReal`, hoy en `scripts/lib/pendon-flyer.mjs`). RF-29.3 no lo detectaba: mide la caja, no el dibujo.
   Revisar el PDF rasterizado, no solo el informe.
 - **Segunda versión (mismo día), por Daniel:** no le gustó la primera. Ahora: tesis del
   seminario + frase técnica (`ui.flyer.gancho`) bajo la marca; **QR arriba**, junto a fecha,

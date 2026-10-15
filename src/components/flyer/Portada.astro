@@ -10,17 +10,14 @@
  */
 import type { Contenido } from '~/data/contenido';
 import Encabezado from './Encabezado.astro';
-import Marcas from './Marcas.astro';
 import { datosFlyer } from './datos';
 
 interface Props {
   c: Contenido;
   historia?: boolean;
-  /** Fila de participantes sobre la franja; la decide `LAMINAS` en `src/data/flyer.ts`. */
-  participantes: boolean;
 }
 
-const { c, historia = false, participantes } = Astro.props;
+const { c, historia = false } = Astro.props;
 const t = c.ui.flyer;
 const { dominio } = datosFlyer(c);
 ---
@@ -43,14 +40,11 @@ const { dominio } = datosFlyer(c);
   </p>
 </div>
 
-<div>
-  {
-    historia && (
-      <>
-        <p class="mt-[24px] text-[36px] text-foreground">{t.sticker}</p>
-        <div data-flyer-sticker class="mt-[16px] h-[170px] w-[600px]" />
-      </>
-    )
-  }
-  <Marcas c={c} participantes={participantes} />
-</div>
+{
+  historia && (
+    <div>
+      <p class="mt-[24px] text-[36px] text-foreground">{t.sticker}</p>
+      <div data-flyer-sticker class="mt-[16px] h-[170px] w-[600px]" />
+    </div>
+  )
+}

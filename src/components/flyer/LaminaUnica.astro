@@ -18,17 +18,14 @@
  */
 import type { Contenido } from '~/data/contenido';
 import Encabezado from './Encabezado.astro';
-import Marcas from './Marcas.astro';
 import Qr from './Qr.astro';
 import { datosFlyer } from './datos';
 
 interface Props {
   c: Contenido;
-  /** Fila de participantes sobre la franja; la decide `LAMINAS` en `src/data/flyer.ts`. */
-  participantes: boolean;
 }
 
-const { c, participantes } = Astro.props;
+const { c } = Astro.props;
 const t = c.ui.flyer;
 const { dominio, internacionales, nacionales } = datosFlyer(c);
 const expositores = [...internacionales, ...nacionales];
@@ -64,4 +61,3 @@ const expositores = [...internacionales, ...nacionales];
   {t.inscripciones} <span class="font-semibold text-accent">{dominio}</span>
 </p>
 
-<Marcas c={c} participantes={participantes} />

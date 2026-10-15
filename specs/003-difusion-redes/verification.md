@@ -1,6 +1,6 @@
 # Verificación de las piezas de difusión
 
-> **Generado por `npm run flyer` el 2026-10-15 04:52 UTC. No editar.** Criterios en
+> **Generado por `npm run flyer` el 2026-10-15 05:27 UTC. No editar.** Criterios en
 > [`requirements.md`](requirements.md). `n/a` = el criterio no aplica a esa pieza.
 
 **Todos los criterios medibles en verde.** Falta la revisión humana de RF-30 antes de publicar.
@@ -30,7 +30,7 @@
 | RF-29.4 | Todas las imágenes cargaron | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | RF-29.6 | Pie de publicación, hasta 2200 caracteres | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
 | RF-29.7 | Carrusel en un PDF de tres páginas, con texto vivo y bajo 100 MB | n/a | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
-| RF-33.1 | Pendón: PDF a tamaño real, con caja de corte y de sangrado, releído del archivo | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a |
+| RF-33.1 | Pendón: PDF a tamaño real, con caja de corte y de sangrado, leído del archivo escrito | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a |
 | RF-33.4 | Pendón: toda imagen ráster a 90 ppi o más, impresa | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a |
 | RF-33.5 | Pendón: centro del QR entre 60 y 90 cm bajo el borde de arriba | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a |
 | RF-33.6 | Pendón: QR de 15 cm de lado o más | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a |

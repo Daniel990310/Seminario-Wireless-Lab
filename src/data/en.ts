@@ -287,8 +287,9 @@ export const en = {
       avisoMapa: 'Loading the map requests content from Google Maps.',
       tituloMapa: 'Map of the venue',
       estacionamiento: 'Parking',
+      // [supuesto: sin confirmar, ver es.ts] (RF-35).
       estacionamientoDescuento:
-        'Agreement rate: CLP 30 per minute. Have your ticket stamped at the venue reception and pay at the manual pay station.',
+        'Partner rate: CLP 30 per minute. Have your ticket stamped at the venue reception and pay at the manual pay station.',
     },
 
     organizacion: {

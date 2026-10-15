@@ -11,7 +11,7 @@
  * otro valor lo declara donde lo usa y dice por qué.
  */
 import type { Institucion, Logo } from '~/data/comun';
-import type { Contenido } from '~/data/contenido';
+import { rutaBase, type Contenido } from '~/data/contenido';
 import type { LaminaFlyer } from '~/data/flyer';
 
 /*
@@ -92,6 +92,8 @@ export function datosFlyer(c: Contenido) {
     mencion,
     /* Tesis del seminario: el título de la sección «El seminario» del sitio (pendón, RF-33.5). */
     tesis: c.ui.secciones.seminario.title,
+    /* El programa del sitio, al que lleva el QR de la pantalla de acceso (RF-34.1). */
+    urlPrograma: `https://${dominio}${rutaBase(c.lang)}#programa`,
     /* Solo el programa real: el demostrativo del sitio lleva un aviso que la lámina no tiene. */
     jornadas: c.program.esDemostracion ? [] : c.program.days,
   };

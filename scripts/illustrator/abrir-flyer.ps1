@@ -12,7 +12,7 @@
   Windows. Sin ellas Illustrator sustituye la fuente y el informe lo delata.
 
   Uso:  powershell -File scripts/illustrator/abrir-flyer.ps1 [-Rehacer] [pieza ...]
-        (sin argumentos, todos los PDF de difusion/flyer/; p. ej. es-carrusel-1)
+        (sin argumentos, todos los PDF de difusion/flyer/ salvo el pendon; p. ej. es-carrusel-1)
 
   UN .ai QUE YA EXISTE NO SE TOCA, salvo con -Rehacer. Los .ai se retocan a mano
   (Daniel, 2026-10-02) y git no los sigue. Con -Rehacer, el .ai anterior se copia antes a
@@ -37,6 +37,12 @@ if (-not $Piezas) {
     Where-Object { Test-Path (Join-Path $_.DirectoryName "$($_.BaseName).mapa.tsv") } |
     Where-Object { $_.BaseName -notmatch '-pendon-' } |
     ForEach-Object { $_.BaseName }
+}
+$pendones = $Piezas | Where-Object { $_ -match '-pendon-' }
+if ($pendones) {
+  Write-Error ("El pendon no pasa a .ai: su PDF va a tamano real y este flujo supone 0,75 pt por px " +
+    "($($pendones -join ', ')). Abrir el PDF directo en Illustrator.")
+  exit 1
 }
 <#
   LAS FUENTES TIENEN QUE ESTAR INSTALADAS PARA TODO EL SISTEMA, no solo para el usuario.

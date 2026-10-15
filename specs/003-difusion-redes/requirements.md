@@ -104,7 +104,7 @@ figura son trazos finos al 65 %; su efecto sobre la lectura lo juzga RF-30.1.
 
 | # | Criterio | Procedencia | Quién lo mide |
 | - | --- | --- | --- |
-| RF-28.1 | El QR lleva al **formulario de inscripción** y se lee a tamaño real y a la mitad | pedido de Daniel; `[medido]` con `jsqr` | generador |
+| RF-28.1 | El QR lleva al **formulario de inscripción** —salvo en la pantalla de acceso, que lleva al programa (RF-34.1)— y se lee a tamaño real y a la mitad. Se compara con la URL que la lámina debe llevar (`POR_LAMINA.qr`), no con la que el QR declara | pedido de Daniel; `[medido]` con `jsqr` | generador |
 | RF-28.2 | Las historias **no** llevan QR: se ven en el mismo teléfono | buena práctica: una sola instrucción que se pueda seguir | estructura de la lámina |
 | RF-28.3 | La historia de portada deja libre un hueco de **600 × 170 px** para el sticker de enlace | Instagram no admite enlaces en la imagen; el sticker sí | generador |
 
@@ -112,7 +112,7 @@ figura son trazos finos al 65 %; su efecto sobre la lectura lo juzga RF-30.1.
 
 | # | Criterio | Procedencia | Quién lo mide |
 | - | --- | --- | --- |
-| RF-29.1 | Cada pieza trae su **texto alternativo**, entre 1 y 1000 caracteres. El de la pieza única no repite la lista de instituciones participantes: cada expositor ya nombra la suya, y con ella pasaba de 1000 | `[verificado]` límite de la API de Instagram; las historias no admiten alt | generador |
+| RF-29.1 | Cada pieza trae su **texto alternativo**, entre 1 y 1000 caracteres; sin tope en los impresos, que no se publican en ninguna red. El de la pieza única no repite la lista de instituciones participantes: cada expositor ya nombra la suya, y con ella pasaba de 1000 | `[verificado]` límite de la API de Instagram; las historias no admiten alt | generador |
 | RF-29.2 | El PDF trae texto vivo: **sin Type3** y con las tres familias incrustadas | `[medido]`: con Type3, Illustrator abría 0 marcos | generador |
 | RF-29.3 | El PDF mide lo mismo que el lienzo y pesa **menos de 100 MB**, el máximo de un documento de LinkedIn | `[verificado]` | generador |
 | RF-29.4 | Todas las imágenes cargaron | — | generador |

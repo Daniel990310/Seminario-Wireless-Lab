@@ -23,15 +23,12 @@
 import type { Contenido } from '~/data/contenido';
 import Cabecera from './Cabecera.astro';
 import GrillaExpositores from './GrillaExpositores.astro';
-import Marcas from './Marcas.astro';
 
 interface Props {
   c: Contenido;
-  /** Fila de participantes sobre la franja; la decide `LAMINAS` en `src/data/flyer.ts`. */
-  participantes: boolean;
 }
 
-const { c, participantes } = Astro.props;
+const { c } = Astro.props;
 ---
 
 <Cabecera c={c} />
@@ -41,4 +38,3 @@ const { c, participantes } = Astro.props;
   <GrillaExpositores c={c} retrato={150} />
 </div>
 
-<Marcas c={c} participantes={participantes} />

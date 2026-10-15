@@ -31,11 +31,11 @@ import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { inflateSync } from 'node:zlib';
 import { PDFDocument } from 'pdf-lib';
-import { FORMATOS_FLYER, PIEZAS_FLYER, PISO_FLYER, PISO_PIE_FLYER, enTelefono } from '../src/data/flyer.ts';
+import { FORMATOS_FLYER, PIEZAS_FLYER, PISO_FLYER, PISO_PIE_FLYER } from '../src/data/flyer.ts';
 import { RAIZ, abrirDist } from './lib/servir-dist.mjs';
 import { medirLienzo } from './lib/criterios-flyer.mjs';
 import { mapaATsv, mapaLienzo } from './lib/mapa-flyer.mjs';
-import { CRITERIOS_PENDON, PPI_JPG, aTamanoReal, celdaRevisionPendon, jpgDeImprenta, medirImpreso } from './lib/pendon-flyer.mjs';
+import { CRITERIOS_PENDON, PPI_JPG, aTamanoReal, celdaRevisionPendon, jpgDeImprenta, medirImpreso, verificarPdfReal } from './lib/pendon-flyer.mjs';
 
 const SALIDA = join(RAIZ, 'difusion', 'flyer');
 const REVISION = join(RAIZ, 'difusion', 'revision');
@@ -123,11 +123,17 @@ async function fuentesDelPdf(ruta) {
   };
 }
 
-/** RF-28.1: el QR se decodifica sobre la captura, a tamaño real y a la mitad. */
+/**
+ * RF-28.1: el QR se decodifica sobre la captura, a tamaño real y a la mitad, y se compara
+ * con la URL que la lámina **debe** llevar (`esperado.qr`, de `POR_LAMINA`), no con la que
+ * el propio QR declara: así una URL equivocada falla. Un QR donde no va, o que falta, también.
+ */
 async function leerQr(page) {
   const figura = page.locator('[data-flyer-qr]');
-  if (!(await figura.count())) return null;
-  const esperado = await figura.getAttribute('data-flyer-qr');
+  const esperado = (await page.evaluate(() => JSON.parse(document.body.dataset.flyerEsperado ?? '{}').qr)) ?? null;
+  const hay = (await figura.count()) > 0;
+  if (!hay && !esperado) return null;
+  if (!hay || !esperado) return { id: 'RF-28.1', ok: false, detalle: hay ? 'lleva un QR que no le corresponde' : 'falta el QR' };
   const png = (await figura.locator('div').screenshot()).toString('base64');
   await page.addScriptTag({ path: JSQR });
   const leidos = await page.evaluate(async (b64) => {
@@ -202,7 +208,7 @@ for (const { pieza, formato, idioma, publicacion, pie: llevaPie } of PIEZAS_FLYE
   const alt = (await page.locator('meta[name="flyer-alt"]').getAttribute('content')) ?? '';
   await escribir(join(SALIDA, `${pieza}.alt.txt`), `${alt}\n`);
   // Un impreso no se publica en ninguna red: el tope de Instagram no le aplica.
-  r.push({ id: 'RF-29.1', ok: alt.length > 0 && (impreso || alt.length <= 1000), detalle: `${alt.length} caracteres` });
+  r.push({ id: 'RF-29.1', ok: alt.length > 0 && (Boolean(impreso) || alt.length <= 1000), detalle: `${alt.length} caracteres` });
 
   /*
    * RF-29.6 · pie de publicación, uno por publicación: lo trae la lámina que `LAMINAS`
@@ -235,13 +241,11 @@ for (const { pieza, formato, idioma, publicacion, pie: llevaPie } of PIEZAS_FLYE
    */
   await page.emulateMedia({ media: 'screen' });
   let bytesPdf = await page.pdf({ width: `${ancho}px`, height: `${alto}px`, printBackground: true, pageRanges: '1' });
-  if (impreso) {
-    const real = await aTamanoReal(bytesPdf, f);
-    bytesPdf = real.bytes;
-    r.push(real.resultado);
-  }
+  const real = impreso ? await aTamanoReal(bytesPdf, f) : null;
+  if (real) bytesPdf = real.bytes;
   const rutaPdf = join(SALIDA, `${pieza}.pdf`);
   await escribir(rutaPdf, bytesPdf);
+  if (real) r.push(await verificarPdfReal(await readFile(rutaPdf), f, real.hojaChromium));
   const pdf = await fuentesDelPdf(rutaPdf);
   pdfsEscritos.add(pieza);
   r.push({ id: 'RF-29.2', ok: !pdf.type3 && !pdf.faltan.length, detalle: pdf.type3 ? `${pdf.type3} Type3` : pdf.faltan.join(', ') });
@@ -274,7 +278,7 @@ const pngDe = (pieza) => readFile(join(SALIDA, `${pieza}.png`));
 
 /* RF-30.1: hojas de contacto a tamaño de teléfono, para la revisión humana. */
 for (const idioma of ['es', 'en']) {
-  const piezas = PIEZAS_FLYER.filter((p) => p.idioma === idioma && enTelefono(p));
+  const piezas = PIEZAS_FLYER.filter((p) => p.idioma === idioma && p.enTelefono);
   const celdas = await Promise.all(
     piezas.map(async ({ pieza }) => {
       const b64 = (await pngDe(pieza)).toString('base64');
