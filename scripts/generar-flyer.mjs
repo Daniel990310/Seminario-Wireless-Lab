@@ -152,8 +152,9 @@ async function leerQr(page) {
       return window.jsQR(d.data, d.width, d.height)?.data ?? null;
     });
   }, png);
-  const malos = leidos.filter((l) => l !== esperado);
-  return { id: 'RF-28.1', ok: !malos.length, detalle: malos.length ? `lee «${malos[0]}»` : '' };
+  const malo = [1, 0.5].map((escala, i) => ({ escala, leido: leidos[i] })).find((x) => x.leido !== esperado);
+  const detalle = !malo ? '' : malo.leido === null ? `no se lee a escala ${malo.escala}` : `a escala ${malo.escala} lee «${malo.leido}»`;
+  return { id: 'RF-28.1', ok: !malo, detalle };
 }
 
 const dimensionesPng = (b) => [b.readUInt32BE(16), b.readUInt32BE(20)];
@@ -183,7 +184,7 @@ const resultados = {};
 // Las piezas que escribieron su PDF en esta corrida: RF-29.7 solo une esas.
 const pdfsEscritos = new Set();
 
-for (const { pieza, formato, idioma, publicacion, pie: llevaPie } of PIEZAS_FLYER) {
+for (const { pieza, formato, idioma, publicacion, pie: llevaPie, enTelefono } of PIEZAS_FLYER) {
   const f = FORMATOS_FLYER[formato];
   const { ancho, alto, seguro, impreso, ptPorPx } = f;
   const r = [];
@@ -209,8 +210,8 @@ for (const { pieza, formato, idioma, publicacion, pie: llevaPie } of PIEZAS_FLYE
 
   const alt = (await page.locator('meta[name="flyer-alt"]').getAttribute('content')) ?? '';
   await escribir(join(SALIDA, `${pieza}.alt.txt`), `${alt}\n`);
-  // Un impreso no se publica en ninguna red: el tope de Instagram no le aplica.
-  r.push({ id: 'RF-29.1', ok: alt.length > 0 && (impreso !== null || alt.length <= 1000), detalle: `${alt.length} caracteres` });
+  // El tope de Instagram solo aplica a lo que se publica en redes: ni el pendón ni las pantallas.
+  r.push({ id: 'RF-29.1', ok: alt.length > 0 && (!enTelefono || alt.length <= 1000), detalle: `${alt.length} caracteres` });
 
   /*
    * RF-29.6 · pie de publicación, uno por publicación: lo trae la lámina que `LAMINAS`
@@ -244,7 +245,21 @@ for (const { pieza, formato, idioma, publicacion, pie: llevaPie } of PIEZAS_FLYE
   await page.emulateMedia({ media: 'screen' });
   const bytesChromium = await page.pdf({ width: `${ancho}px`, height: `${alto}px`, printBackground: true, pageRanges: '1' });
   const rutaPdf = join(SALIDA, `${pieza}.pdf`);
-  await escribir(rutaPdf, impreso ? await aTamanoReal(bytesChromium, f) : bytesChromium);
+  let bytesPdf = bytesChromium;
+  if (impreso) {
+    try {
+      bytesPdf = await aTamanoReal(bytesChromium, f);
+    } catch (e) {
+      // RF-33.1 en rojo y se sigue con la pieza siguiente, como un HTTP distinto de 200. Se
+      // borran el PDF y el JPG de la corrida anterior: no deben quedar junto al informe en rojo.
+      await rm(rutaPdf, { force: true });
+      await rm(join(SALIDA, `${pieza}-${PPI_JPG}ppi.jpg`), { force: true });
+      resultados[pieza] = [...r, { id: 'RF-33.1', ok: false, detalle: e.message }];
+      await ctx.close();
+      continue;
+    }
+  }
+  await escribir(rutaPdf, bytesPdf);
   if (impreso) r.push(await verificarPdfReal(await readFile(rutaPdf), f));
   const pdf = await fuentesDelPdf(rutaPdf);
   pdfsEscritos.add(pieza);

@@ -13,7 +13,7 @@
  *
  * @typedef {import('../../src/data/flyer.ts').FormatoFlyerDef} FormatoFlyerDef
  */
-import { PDFDocument } from 'pdf-lib';
+import { PDFDocument, PDFName } from 'pdf-lib';
 import { PT_POR_MM, PT_POR_PX_CHROMIUM } from '../../src/data/flyer.ts';
 
 const PPI_MINIMO = 90;
@@ -74,7 +74,7 @@ export async function medirImpreso(page, { impreso }) {
 
 /**
  * El pendón a tamaño real, con sus cajas de imprenta. Recibe los bytes del PDF de Chromium
- * y devuelve los del PDF final, más el tamaño de la hoja de Chromium para `verificarPdfReal`.
+ * y devuelve los del PDF final; lanza si no se cumple la precondición de escala (abajo).
  *
  * Chromium imprime el lienzo a 0,265 mm por px, un tercio del tamaño real. Agrandarlo antes
  * de imprimir no sirve: con `zoom` o con `transform: scale` la hoja de 2,17 m salió con el
@@ -99,7 +99,8 @@ export async function aTamanoReal(bytesChromium, { ancho, alto, impreso, ptPorPx
   const [lienzo] = await doc.embedPdf(origen, [0]);
   const esperada = { w: ancho * PT_POR_PX_CHROMIUM, h: alto * PT_POR_PX_CHROMIUM };
   if (Math.abs(lienzo.width - esperada.w) > 1 || Math.abs(lienzo.height - esperada.h) > 1) {
-    throw new Error(`Chromium imprimió ${lienzo.width}×${lienzo.height} pt, no ${esperada.w}×${esperada.h}: el pendón saldría estirado`);
+    const f1 = (v) => v.toFixed(1);
+    throw new Error(`Chromium imprimió ${f1(lienzo.width)}×${f1(lienzo.height)} pt, no ${f1(esperada.w)}×${f1(esperada.h)}: el pendón saldría estirado`);
   }
   const hoja = doc.addPage([pt(ancho), pt(alto)]);
   hoja.drawPage(lienzo, { x: 0, y: 0, width: pt(ancho), height: pt(alto) });
@@ -125,9 +126,10 @@ export async function aTamanoReal(bytesChromium, { ancho, alto, impreso, ptPorPx
  *     holgura: abajo y a la derecha se suman dos redondeos (sangrado y base, o sangrado y
  *     ancho), 0,74 mm. La hoja sale de los px del lienzo y el corte de los mm de catálogo:
  *     son fuentes distintas, y un corte corrido se ve aquí;
+ *   - las dos cajas existen: sin ellas pdf-lib devuelve la hoja entera y no se notaría;
  *   - la caja de sangrado llega a los cuatro bordes de la hoja (± dos px) y excede al corte
- *     en el sangrado por lado. Lo segundo no es redundante: sin `BleedBox`, pdf-lib devuelve
- *     la hoja entera, que llega a los bordes pero excede al corte en 20,7 mm y no en 20.
+ *     en el sangrado por lado, ± 0,1 mm: las dos cajas salen del mismo `sangradoMm`, sin
+ *     redondeo de px. La hoja entera excedería entre 20,7 y 21,1 mm.
  * @param {FormatoFlyerDef} formato
  */
 export async function verificarPdfReal(bytesDisco, { impreso }) {
@@ -136,6 +138,8 @@ export async function verificarPdfReal(bytesDisco, { impreso }) {
   const f1 = (v) => v.toFixed(1);
   const cerca = (a, b, tol) => Math.abs(a - b) <= tol;
   const pagina = (await PDFDocument.load(bytesDisco)).getPage(0);
+  const faltan = ['TrimBox', 'BleedBox'].filter((caja) => !pagina.node.has(PDFName.of(caja)));
+  if (faltan.length) problemas.push(`sin ${faltan.join(' ni ')}`);
   const hoja = pagina.getSize();
   const trim = pagina.getTrimBox();
   const bleed = pagina.getBleedBox();
