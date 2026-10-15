@@ -72,3 +72,7 @@ difusion/ai-anteriores-*/
 
 # JPG del pendón a 150 ppi (RF-33.7): 3,4 MB cada uno y se regenera con `npm run flyer`.
 difusion/flyer/*-150ppi.jpg
+
+# Credenciales con nombres de inscritos (RF-36.5): datos personales, nunca al repositorio.
+# Las genera `npm run credenciales -- --inscritos <planilla.csv>`.
+difusion/credenciales/privado/

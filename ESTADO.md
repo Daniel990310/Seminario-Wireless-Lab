@@ -22,6 +22,21 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Credenciales del evento · 2026-10-15 · (rama `ajustes/pendon-impreso`, sin desplegar)
+
+- Pedido del profesor por Daniel. Decisiones de Daniel: **10 × 14 cm vertical**, **en
+  inglés**, nombres impresos **y** lote en blanco, cuatro categorías (*Speaker*, *Organizing
+  committee*, *Attendee*, *Staff*) con banda de color (RF-36, spec 003).
+- `npm run build && npm run credenciales` → `difusion/credenciales/credenciales-<categoria>.pdf`
+  (una por página, 104 × 144 con corte y sangrado, para imprenta) y `-A4.pdf` (cuatro por hoja
+  con marcas de corte, para oficina). 14 públicas: 8 expositores, 2 del comité, 4 en blanco.
+- **Inscritos:** `npm run credenciales -- --inscritos planilla.csv` (export del formulario;
+  columnas por nombre, o `--col-nombre`/`--col-afiliacion`). Los PDF van a
+  `difusion/credenciales/privado/`, ignorada: datos personales, nunca al repo ni al sitio.
+  Probado con dos filas inventadas, ya borradas; un nombre largo baja de cuerpo hasta caber.
+- **Pendiente:** la planilla de inscritos; si *Staff* lleva nombres; prueba impresa en el
+  porta-credencial; el verde azulado de *Staff* no es de la paleta `[supuesto]`.
+
 ## Pantallas de la sede · 2026-10-15 · (rama `ajustes/pendon-impreso`, sin desplegar)
 
 - La Sede PUCV Santiago mandó a Mauricio dos plantillas de 1920 × 1080 (acceso y telón del

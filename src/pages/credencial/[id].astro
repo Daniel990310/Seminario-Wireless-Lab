@@ -1,0 +1,50 @@
+---
+/**
+ * Lienzo de cada credencial del evento (RF-36), en inglés. Lo captura
+ * `scripts/generar-credenciales.mjs` a PDF de 104 × 144 mm (100 × 140 más sangrado).
+ * Solo nombres que el sitio ya publica: ver `src/components/credencial/datos.ts`.
+ */
+import { Font } from 'astro:assets';
+import Credencial from '~/components/credencial/Credencial.astro';
+import { credenciales } from '~/components/credencial/datos';
+import { contenido } from '~/data/contenido';
+import '~/styles/global.css';
+
+export function getStaticPaths() {
+  return credenciales(contenido('en')).map((credencial) => ({ params: { id: credencial.id }, props: { credencial } }));
+}
+
+const { credencial } = Astro.props;
+const c = contenido('en');
+---
+
+<!doctype html>
+<html lang={c.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <title>{c.title}</title>
+    <meta name="robots" content="noindex, nofollow" />
+    {/* Sin `<Font>` la captura sale con la tipografía de reserva. Ver `CartelOg.astro`. */}
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-body" preload />
+    <Font cssVariable="--font-mono" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 104mm;
+        height: 144mm;
+        overflow: hidden;
+        background: var(--pure-white);
+      }
+      @page {
+        size: 104mm 144mm;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <Credencial c={c} credencial={credencial} />
+  </body>
+</html>

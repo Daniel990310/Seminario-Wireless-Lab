@@ -36,6 +36,7 @@ Diez láminas por idioma, en español e inglés (`src/data/flyer.ts`):
 | `historia-1` · `-2` | 9:16 | Historias y estado de WhatsApp: portada con hueco para el sticker de enlace, y expositores |
 | `pendon-80x200` · `-85x200` | 80 u 85 × 200 cm | **Impreso**: pendón roller con todo el carrusel en una lámina y el retrato de Mauricio arriba (RF-33) |
 | `pantalla-acceso` · `-telon` | 1920 × 1080 | **Pantallas de la sede**: acceso y telón del auditorio, con las plantillas de la sede (RF-34) |
+| `credencial/<id>` | 10 × 14 cm | **Credenciales** del evento, en inglés, por categoría; aparte de las láminas (RF-36) |
 
 ## RF-23 · Formato y zonas seguras
 
@@ -177,6 +178,21 @@ las reenvió.
 | RF-34.1 | **Acceso**, 1920 × 1080 a lienzo completo: marca, fecha, sede y organizador como la portada, y un **QR al programa del sitio** (`/#programa`, `/en/#programa`), no al formulario: el día del evento se busca la hora de cada charla. Franja de marcas con participantes y agradecimiento | plantilla de la sede; Daniel, 2026-10-15 | generador (RF-23 a RF-29) |
 | RF-34.2 | **Telón**, 1920 × 1080: la gráfica solo en la **banda de arriba, 403 px** `[medido sobre la plantilla: azul hasta y = 402]`, y el resto en **negro puro** (`#000`), como dice la plantilla («mantener esta área de color negro»). Logo horizontal, título, fecha y dominio; franja de marcas con agradecimiento, sin participantes (no caben) | plantilla de la sede | generador: RF-23.2 con `seguro.abajo` = 677 (nada fuera de la banda) |
 | RF-34.3 | Ninguna de las dos va a la hoja de teléfono (RF-30.1): se ven en pantallas de la sede | — | `generar-flyer.mjs` |
+
+## RF-36 · Credenciales del evento
+
+El profesor las pidió por Daniel el 2026-10-15. Daniel eligió formato, nombres y categorías,
+y que todas vayan en inglés. `npm run credenciales` (`scripts/generar-credenciales.mjs`) las
+genera desde `/credencial/<id>/` (`src/components/credencial/`).
+
+| ID | Criterio | Origen | Verificación |
+| --- | --- | --- | --- |
+| RF-36.1 | **10 × 14 cm vertical**, para porta-credencial con cordón, más 2 mm de sangrado: PDF de 104 × 144 mm con `TrimBox` de 100 × 140 a 2 mm, uno por página para la imprenta, y otro de **cuatro por hoja A4** sin sangrado y con marcas de corte, para la oficina. Carta no sirve: 2 × 140 mm no caben en 279 | Daniel, 2026-10-15; formato común de porta-credencial `[supuesto: sin ficha del proveedor]` | generador: lee el PDF escrito |
+| RF-36.2 | **En inglés**, cuatro categorías con banda de color: *Speaker*, *Organizing committee* (el rótulo del pie del sitio), *Attendee* y *Staff*. El nombre en dos renglones o menos; uno largo baja de cuerpo hasta 6,5 mm y, si aun así no cabe, el criterio falla | Daniel, 2026-10-15 | generador, con las fuentes del sitio y con las del PDF |
+| RF-36.3 | PDF sin Type3 y con las tres familias incrustadas, como RF-29.2 | RF-29.2 | generador |
+| RF-36.4 | Hojas A4 de 210 × 297, tantas como hagan falta para cuatro por hoja | — | generador |
+| RF-36.5 | **Nombres impresos y un lote en blanco.** Expositores y comité salen del sitio, que ya los publica. Los inscritos son datos personales: `--inscritos <planilla.csv>` los escribe sobre la credencial en blanco en el navegador, al capturar, y los PDF quedan en `difusion/credenciales/privado/`, ignorada por git; **nunca pasan por el sitio ni por el repositorio** | Daniel, 2026-10-15; Ley 19.628 | generador: se niega a escribir si la carpeta no está ignorada |
+| RF-36.6 | Revisión humana de `difusion/revision/credenciales.png` y **una prueba impresa** en el porta-credencial antes del tiraje | — | revisión humana |
 
 ## Decisiones abiertas
 

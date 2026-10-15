@@ -10,6 +10,7 @@
     "check": "astro check",
     "og": "node scripts/generar-og.mjs",
     "flyer": "node scripts/generar-flyer.mjs",
+    "credenciales": "node scripts/generar-credenciales.mjs",
     "verify": "node scripts/verify.mjs",
     "verify:tema": "node scripts/verify-tema.mjs",
     "verify:red": "node scripts/verify-red.mjs",

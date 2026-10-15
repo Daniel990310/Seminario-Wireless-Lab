@@ -213,6 +213,12 @@ export const en = {
       programaQr: 'Programme',
     },
 
+    credencial: {
+      expositor: 'Speaker',
+      asistente: 'Attendee',
+      apoyo: 'Staff',
+    },
+
     secciones: {
       seminario: {
         eyebrow: 'The seminar',

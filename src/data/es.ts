@@ -224,6 +224,12 @@ export const es = {
       programaQr: 'Programa',
     },
 
+    credencial: {
+      expositor: 'Expositor',
+      asistente: 'Asistente',
+      apoyo: 'Apoyo',
+    },
+
     secciones: {
       seminario: {
         eyebrow: 'El seminario',

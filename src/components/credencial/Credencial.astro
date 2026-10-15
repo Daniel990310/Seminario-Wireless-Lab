@@ -1,0 +1,94 @@
+---
+/**
+ * Credencial del evento (RF-36), 10 × 14 cm vertical para porta-credencial con cordón, más
+ * 2 mm de sangrado por lado: el lienzo mide 104 × 144 mm y todo va en milímetros, así que
+ * el PDF sale a tamaño real sin escalar.
+ *
+ * De arriba abajo: la marca sobre el fondo oscuro del sitio, con la figura de propagación
+ * como en las piezas; el nombre, lo que se lee a un metro; la banda de color de la
+ * categoría, lo que se distingue a cinco; y las marcas institucionales. La banda es lo
+ * único llamativo: codifica quién es quién, que es para lo que existe una credencial.
+ *
+ * Sin nombre, sale en blanco: dos líneas para escribir nombre y afiliación a mano. El
+ * generador también la usa como plantilla para los inscritos (`data-credencial-*`).
+ */
+import logoPrincipal from '~/assets/marca/logo-principal-blanco.svg';
+import submarcaEie from '~/assets/logos/eie-pucv.png';
+import cytedFondoBlanco from '~/assets/logos/cyted-40-anos-fondo-blanco.png';
+import apsColor from '~/assets/logos/ieee-aps.png';
+import PropagationFigure from '~/components/PropagationFigure.astro';
+import ImagenFlyer from '~/components/flyer/ImagenFlyer.astro';
+import { datosFlyer } from '~/components/flyer/datos';
+import type { Contenido } from '~/data/contenido';
+import { COLOR_CATEGORIA, rotuloCategoria, type Credencial } from './datos';
+
+interface Props {
+  c: Contenido;
+  credencial: Credencial;
+}
+
+const { c, credencial } = Astro.props;
+const { categoria, nombre, afiliacion } = credencial;
+const { restoTitulo } = datosFlyer(c);
+const color = COLOR_CATEGORIA[categoria];
+const [pucv] = c.organizers;
+/* Logo principal: 650 × 218 de `viewBox`; margen interno compensado como en `MarcaSeminario`. */
+const LOGO_MM = 58;
+---
+
+<div data-credencial={credencial.id} class="relative flex flex-col overflow-hidden bg-[var(--pure-white)]" style="width:104mm;height:144mm">
+  <header class="relative h-[56mm] shrink-0 overflow-hidden bg-[var(--ink-900)] px-[8mm] pt-[8mm] text-[var(--steel-100)]">
+    {/* La figura del sitio, espejada, con el emisor en el borde derecho, como en las piezas. */}
+    <div class="pointer-events-none absolute -scale-x-100 opacity-[0.55]" style="left:14mm;top:-14mm;width:110mm;height:86mm">
+      <PropagationFigure titulo={c.ui.hero.figuraTitulo} descripcion={c.ui.hero.figuraDescripcion} />
+    </div>
+    <div class="relative">
+      <p class="font-mono text-[2.4mm] tracking-[0.18em] text-[var(--steel-400)] uppercase">{c.ui.hero.eyebrow}</p>
+      <img
+        src={logoPrincipal.src}
+        alt=""
+        width={650}
+        height={218}
+        class="mt-[1.6mm] block"
+        style={`width:${LOGO_MM}mm;height:auto;margin-left:-${((LOGO_MM * 31.5) / 650).toFixed(2)}mm`}
+        data-logo-seminario="principal"
+      />
+      <p class="mt-[1mm] font-display text-[3.6mm] leading-[1.1] text-[var(--navy-300)]">{restoTitulo}</p>
+      <p class="mt-[3mm] font-mono text-[4.4mm] leading-none font-semibold tracking-tight text-[var(--gold-400)]">{c.dates.shortLabel}</p>
+      <p class="mt-[1.4mm] text-[2.6mm] leading-tight text-[var(--steel-400)]">{c.venue.name}, {c.venue.country}</p>
+    </div>
+  </header>
+
+  <main class="flex flex-1 flex-col justify-center px-[8mm] text-[var(--navy-900)]">
+    <p data-credencial-nombre class="font-display text-[10mm] leading-[1.05] font-semibold text-balance">{nombre}</p>
+    <p data-credencial-afiliacion class="mt-[3mm] text-[4.4mm] leading-[1.2] text-balance text-[var(--slate-600)]">{afiliacion}</p>
+    {
+      !nombre && (
+        <div data-credencial-lineas class="flex flex-col gap-[9mm] pb-[2mm]">
+          <span class="block border-b border-[var(--slate-300)]" />
+          <span class="block border-b border-[var(--slate-300)]" />
+        </div>
+      )
+    }
+  </main>
+
+  <div
+    data-credencial-categoria={categoria}
+    class="flex h-[18mm] shrink-0 items-center px-[8mm] text-[7mm] leading-none font-semibold"
+    style={`background:${color.fondo};color:${color.texto}`}
+  >
+    {rotuloCategoria(c, categoria)}
+  </div>
+
+  {/*
+    Las marcas de la franja de las piezas, con sus pesos (RF-26.5) llevados a milímetros:
+    64 px de alto son 7 mm. Archivos originales: se imprime.
+  */}
+  <footer class="flex h-[14mm] shrink-0 items-center justify-between px-[8mm] pb-[2mm]">
+    <ImagenFlyer src={pucv.logo} ancho={256} alto={130} original class="h-[7mm] w-auto" data-marca="pucv" />
+    <ImagenFlyer src={submarcaEie} original class="h-[7mm] w-auto" data-marca="eie" />
+    <ImagenFlyer src={cytedFondoBlanco} original class="h-[9mm] w-auto" data-marca="cyted" />
+    <ImagenFlyer src={apsColor} original class="h-[5.7mm] w-auto" data-marca="aps" />
+    <ImagenFlyer src={c.funding.agency.logo} ancho={119} alto={64} class="h-[7mm] w-auto" data-marca="anid" />
+  </footer>
+</div>

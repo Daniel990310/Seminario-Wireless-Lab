@@ -207,6 +207,16 @@ export interface ContenidoIdioma {
       programaQr: string;
     };
 
+    /**
+     * Credenciales del evento (RF-36): el rótulo de cada categoría en la banda de color. La
+     * del comité es `pie.comite`, el mismo rótulo del pie del sitio.
+     */
+    credencial: {
+      expositor: string;
+      asistente: string;
+      apoyo: string;
+    };
+
     secciones: {
       seminario: SeccionEncabezado;
       programa: SeccionEncabezado;
