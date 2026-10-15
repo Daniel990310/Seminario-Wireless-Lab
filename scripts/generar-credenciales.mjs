@@ -221,9 +221,10 @@ async function escribirCategoria(carpeta, nombre, paginas) {
   const rutaA4 = join(carpeta, `${nombre}-A4.pdf`);
   await writeFile(ruta, await unir(ordenadas));
   await writeFile(rutaA4, await hojasA4(ordenadas));
-  // RF-36.1 y RF-36.3, leídos de los archivos escritos.
+  // RF-36.1 y RF-36.3, leídos de los archivos escritos. Sin monoespaciada desde la segunda
+  // versión: la credencial usa las dos familias de texto.
   for (const r of [ruta, rutaA4]) {
-    const f = await fuentesDelPdf(r);
+    const f = await fuentesDelPdf(r, ['--font-display', '--font-body']);
     if (f.type3 || f.faltan.length) falla(nombre, '', `${r.endsWith('-A4.pdf') ? 'A4' : 'PDF'} con ${f.type3} Type3, faltan ${f.faltan.join(', ') || 'ninguna'} (RF-36.3)`);
   }
   const doc = await PDFDocument.load(await readFile(ruta));

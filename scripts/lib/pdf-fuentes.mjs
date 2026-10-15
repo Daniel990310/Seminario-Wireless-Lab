@@ -36,9 +36,10 @@ export async function cssPdf() {
 
 /**
  * Fuentes de un PDF de Chromium, que las guarda dentro de flujos comprimidos: cuántas
- * Type3 trae y cuáles de las tres familias del sitio faltan (RF-29.2).
+ * Type3 trae y cuáles de las familias esperadas faltan (RF-29.2). Por omisión, las tres
+ * del sitio; una pieza que no usa alguna pasa solo las suyas, como variables de `FUENTES_PDF`.
  */
-export async function fuentesDelPdf(ruta) {
+export async function fuentesDelPdf(ruta, familias = Object.keys(FUENTES_PDF)) {
   const b = await readFile(ruta);
   const s = b.toString('latin1');
   let todo = s;
@@ -54,7 +55,7 @@ export async function fuentesDelPdf(ruta) {
   const nombres = [...new Set(todo.match(/\/BaseFont\s*\/[^\s/\]>]+/g) ?? [])].join(' ');
   return {
     type3: (todo.match(/\/Subtype\s*\/Type3/g) ?? []).length,
-    faltan: Object.values(FUENTES_PDF).filter(([, ps]) => !nombres.includes(ps)).map(([f]) => f),
+    faltan: familias.map((v) => FUENTES_PDF[v]).filter(([, ps]) => !nombres.includes(ps)).map(([f]) => f),
     caja,
     bytes: b.length,
   };

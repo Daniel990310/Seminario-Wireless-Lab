@@ -40,6 +40,12 @@ Hostinger sin revocar.**
 
 ## Credenciales del evento · 2026-10-15 · (rama `ajustes/pendon-impreso`, sin desplegar)
 
+- **Segunda versión** (Daniel rechazó la primera). Con la skill `design-taste-frontend`
+  (Taste Skill, instalada el 2026-10-15 junto a `web-design-guidelines` y `awesome-design-md`):
+  el color de la categoría ocupa todo el cuerpo, el nombre va a 12 mm dentro de él, ondas
+  del logo en un escalón de tono que llegan al nombre, cabecera sin rótulo monoespaciado. Sin
+  monoespaciada, RF-36.3 pide ahora dos familias. Campos blancos para escribir a mano.
+
 - Pedido del profesor por Daniel. Decisiones de Daniel: **10 × 14 cm vertical**, **en
   inglés**, nombres impresos **y** lote en blanco, cuatro categorías (*Speaker*, *Organizing
   committee*, *Attendee*, *Staff*) con banda de color (RF-36, spec 003).

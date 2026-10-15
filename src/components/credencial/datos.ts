@@ -14,22 +14,24 @@ import type { Contenido } from '~/data/contenido';
 export type CategoriaCredencial = 'expositor' | 'organizacion' | 'asistente' | 'apoyo';
 
 /*
- * Color de la banda de cada categoría: lo que distingue a distancia quién es quién. Los tres
+ * Color del campo de cada categoría: lo que distingue a distancia quién es quién. Los tres
  * primeros salen de la paleta del sitio; el verde azulado del apoyo no está en ella, porque
  * hacía falta un cuarto tono que no se confunda con los otros tres `[supuesto: elegido aquí]`.
- * Contraste del texto sobre la banda: 9,1:1 · 11,6:1 · 13,4:1 · 6,0:1 `[calculado, WCAG 2]`.
+ * Contraste del texto sobre el campo: 9,1:1 · 11,6:1 · 13,4:1 · 6,0:1 `[calculado, WCAG 2]`.
+ * `onda` es un escalón de tono del mismo campo, para las ondas que lo cruzan: se ven como
+ * textura, no como dibujo, y no le quitan contraste al nombre `[supuesto: elegido aquí]`.
  */
-export const COLOR_CATEGORIA: Record<CategoriaCredencial, { fondo: string; texto: string }> = {
-  expositor: { fondo: 'var(--gold-400)', texto: 'var(--ink-900)' },
-  organizacion: { fondo: 'var(--navy-700)', texto: 'var(--pure-white)' },
-  asistente: { fondo: 'var(--slate-100)', texto: 'var(--navy-900)' },
-  apoyo: { fondo: '#1f6f66', texto: 'var(--pure-white)' },
+export const COLOR_CATEGORIA: Record<CategoriaCredencial, { fondo: string; texto: string; onda: string }> = {
+  expositor: { fondo: 'var(--gold-400)', texto: 'var(--ink-900)', onda: '#d29f6a' },
+  organizacion: { fondo: 'var(--navy-700)', texto: 'var(--pure-white)', onda: '#21446b' },
+  asistente: { fondo: 'var(--slate-100)', texto: 'var(--navy-900)', onda: '#c6d5eb' },
+  apoyo: { fondo: '#1f6f66', texto: 'var(--pure-white)', onda: '#267b71' },
 };
 
 export interface Credencial {
   id: string;
   categoria: CategoriaCredencial;
-  /** Sin nombre, la credencial sale en blanco, con líneas para escribirlo a mano. */
+  /** Sin nombre, la credencial sale en blanco, con campos para escribirlo a mano. */
   nombre?: string;
   afiliacion?: string;
 }
