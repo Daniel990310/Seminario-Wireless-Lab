@@ -208,6 +208,9 @@ export const en = {
       grupoInternacional: 'International',
       // No «Chilean»: el grupo es por institución con sede en Chile, no por nacionalidad.
       grupoNacional: 'Based in Chile',
+      gancho:
+        'Propagation, channel modelling and ISAC architectures at mmWave and sub-THz: 6G networks that carry data and, with the same signal, sense their environment.',
+      programaQr: 'Programme',
     },
 
     secciones: {
@@ -283,6 +286,9 @@ export const en = {
       abrirEnGoogleMaps: 'Open in Google Maps',
       avisoMapa: 'Loading the map requests content from Google Maps.',
       tituloMapa: 'Map of the venue',
+      estacionamiento: 'Parking',
+      estacionamientoDescuento:
+        'Agreement rate: CLP 30 per minute. Have your ticket stamped at the campus reception and pay at the manual pay station.',
     },
 
     organizacion: {

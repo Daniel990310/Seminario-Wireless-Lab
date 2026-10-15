@@ -219,6 +219,9 @@ export const es = {
         'Este trabajo fue financiado por ANID FONDECYT Regular 1250951, ANID FONDECYT Iniciación 11241221 y 11261397, ANID CCTVal CIA250027, ANID CPS-RTC CIA250016, ANID Vinculación Internacional FOVI250222 y el Programa Iberoamericano de Ciencia y Tecnología para el Desarrollo - CYTED (525RT0175-DISeCom).',
       grupoInternacional: 'Internacionales',
       grupoNacional: 'Nacionales',
+      gancho:
+        'Propagación, modelado de canal y arquitecturas ISAC en ondas milimétricas y sub-THz: redes 6G que transmiten datos y, con la misma señal, perciben su entorno.',
+      programaQr: 'Programa',
     },
 
     secciones: {
@@ -314,6 +317,9 @@ export const es = {
       abrirEnGoogleMaps: 'Abrir en Google Maps',
       avisoMapa: 'Al cargar el mapa se solicita contenido a Google Maps.',
       tituloMapa: 'Mapa de la sede',
+      estacionamiento: 'Estacionamiento',
+      estacionamientoDescuento:
+        'Tarifa de convenio: $30 por minuto. Timbra el ticket en la recepción de la sede y paga en el cajero manual.',
     },
 
     organizacion: {

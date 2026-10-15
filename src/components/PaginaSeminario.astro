@@ -318,6 +318,14 @@ const hasProgram = program.days.length > 0;
                 </a>
               </dd>
             </div>
+            <!-- Convenio de estacionamiento de la sede (RF-35). -->
+            <div class="sm:col-span-2">
+              <dt class="eyebrow text-muted-foreground">{ui.sede.estacionamiento}</dt>
+              <dd class="mt-2 text-base text-foreground">
+                {venue.estacionamiento.nombre}, {venue.estacionamiento.direccion}, {venue.district}
+              </dd>
+              <dd class="mt-1 text-sm leading-relaxed text-muted-foreground">{ui.sede.estacionamientoDescuento}</dd>
+            </div>
           </dl>
         </div>
 

@@ -1,0 +1,62 @@
+logo	Logo PUCV	151.18	5180.05	264.11	134.38	0		
+logo	Logo EIE	482.48	5180.05	352.89	134.38	0		
+logo	Logo CYTED	1330.74	5152.76	188.98	188.98	0		
+logo	Logo APS	1586.91	5192.65	413.68	109.19	0		
+logo	Logo ANID	2067.78	5180.05	250.33	134.38	0		
+logo	Logo del seminario	75.59	322.31	1553.81	521.10	0		
+logo	Logo PUC	151.18	4827.30	256.17	98.69	0		
+logo	Logo USACH	474.54	4821.00	79.49	111.29	0		
+logo	Logo UTFSM	621.23	4848.29	280.74	56.69	0		
+logo	Logo CCTVal	969.16	4841.99	203.77	69.29	0		
+logo	Logo Nokia Bell Labs	1240.12	4835.70	171.95	81.89	0		
+logo	Logo Columbia	1479.27	4848.29	370.60	56.69	0		
+logo	Logo ALMA	1917.06	4826.25	71.16	100.79	0		
+logo	Logo UPB	2055.41	4854.59	187.63	44.09	0		
+logo	Logo IEEE ComSoc Chile	151.18	4957.48	171.10	81.89	0		
+logo	Logo CPS-RTC	389.47	4959.58	264.63	77.69	0		
+qr	QR de inscripción	151.18	1741.99	629.92	629.92	0		
+foto	Retrato · DIRIGE EL SEMINARIO	151.18	2540.19	369.55	369.55	0		
+foto	Retrato · Gil Zussman	151.18	3288.75	310.76	310.76	0		
+foto	Retrato · Jinfeng Du	705.51	3288.75	310.76	310.76	0		
+foto	Retrato · Reinaldo A. Valenzuela	1259.84	3288.75	310.76	310.76	0		
+foto	Retrato · Gustavo A. Siles Soria	1814.17	3288.75	310.76	310.76	0		
+foto	Retrato · Giorgio Siringo	151.18	4070.47	310.76	310.76	0		
+foto	Retrato · Rodolfo Feick	705.51	4070.47	310.76	310.76	0		
+foto	Retrato · Miguel Gutiérrez Gaitán	1259.84	4070.47	310.76	310.76	0		
+foto	Retrato · Karel Toledo de la Garza	1814.17	4070.47	310.76	310.76	0		
+figura	Figura	493.83	-138.16	2410.50	1881.36	0		
+texto	SEMINARIO INTERNACIONAL	151.18	199.48	2166.93	97.64	1	izquierda	SEMINARIO INTERNACIONAL
+texto	in mmWave and Sub-THz Bands	151.18	860.20	2166.93	120.08	1	izquierda	in mmWave and Sub-THz Bands
+texto	Comunicación y detección sobre la misma…	151.18	1067.52	2166.93	253.94	2	izquierda	Comunicación y detección sobre la misma infraestructura
+texto	Propagación, modelado de canal y arquit…	151.18	1355.05	2166.93	272.05	3	izquierda	Propagación, modelado de canal y arquitecturas ISAC en ondas milimétricas y sub-THz: redes 6G que transmiten datos y, con la misma señal, perciben su entorno.
+texto	21–22 OCT 2026	873.49	1714.37	1217.03	151.18	1	izquierda	21–22 OCT 2026
+texto	Auditorio de la Sede PUCV Santiago, Chi…	873.49	1894.95	1217.03	78.08	1	izquierda	Auditorio de la Sede PUCV Santiago, Chile
+texto	Miércoles 21 de octubre	873.49	2010.83	683.43	78.08	1	izquierda	Miércoles 21 de octubre
+texto	08:30–17:30	1590.52	2010.83	429.63	78.08	1	izquierda	08:30–17:30
+texto	Jueves 22 de octubre	873.49	2101.51	614.99	78.08	1	izquierda	Jueves 22 de octubre
+texto	08:30–13:00	1522.08	2101.51	429.63	78.08	1	izquierda	08:30–13:00
+texto	Escanea el código o entra a	873.49	2217.39	1217.03	81.36	1	izquierda	Escanea el código o entra a
+texto	bcsensing.org	873.49	2307.15	1217.03	92.39	1	izquierda	bcsensing.org
+texto	DIRIGE EL SEMINARIO	604.72	2539.27	1303.81	97.64	1	izquierda	DIRIGE EL SEMINARIO
+texto	Dr. Mauricio Rodríguez	604.72	2657.91	1303.81	141.08	1	izquierda	Dr. Mauricio Rodríguez
+texto	Escuela de Ingeniería Eléctrica · PUCV	604.72	2819.98	1303.81	90.68	1	izquierda	Escuela de Ingeniería Eléctrica · PUCV
+texto	Expositores	151.18	2981.14	2166.93	109.19	1	izquierda	Expositores
+texto	INTERNACIONALES	151.18	3157.51	2166.93	97.64	1	izquierda	INTERNACIONALES
+texto	Gil Zussman	151.18	3628.90	503.94	79.95	1	izquierda	Gil Zussman
+texto	Columbia University	151.18	3717.26	503.94	149.67	2	izquierda	Columbia University
+texto	Jinfeng Du	705.51	3628.90	503.94	79.95	1	izquierda	Jinfeng Du
+texto	Nokia Bell Labs	705.51	3717.26	503.94	74.84	1	izquierda	Nokia Bell Labs
+texto	Reinaldo A. Valenzuela	1259.84	3628.90	503.94	159.91	2	izquierda	Reinaldo A. Valenzuela
+texto	Nokia Bell Labs	1259.84	3797.21	503.94	74.84	1	izquierda	Nokia Bell Labs
+texto	Gustavo A. Siles Soria	1814.17	3628.90	503.94	159.91	2	izquierda	Gustavo A. Siles Soria
+texto	UPB	1814.17	3797.21	503.94	74.84	1	izquierda	UPB
+texto	NACIONALES	151.18	3939.24	2166.93	97.64	1	izquierda	NACIONALES
+texto	Giorgio Siringo	151.18	4410.63	503.94	79.95	1	izquierda	Giorgio Siringo
+texto	ALMA	151.18	4498.98	503.94	74.84	1	izquierda	ALMA
+texto	Rodolfo Feick	705.51	4410.63	503.94	79.95	1	izquierda	Rodolfo Feick
+texto	CCTVal, UTFSM	705.51	4498.98	503.94	74.84	1	izquierda	CCTVal, UTFSM
+texto	Miguel Gutiérrez Gaitán	1259.84	4410.63	503.94	239.86	3	izquierda	Miguel Gutiérrez Gaitán
+texto	PUC	1259.84	4658.89	503.94	74.84	1	izquierda	PUC
+texto	Karel Toledo de la Garza	1814.17	4410.63	503.94	159.91	2	izquierda	Karel Toledo de la Garza
+texto	USACH	1814.17	4578.94	503.94	74.84	1	izquierda	USACH
+texto	Este trabajo fue financiado por ANID FO…	151.18	5371.13	2166.93	163.78	3	izquierda	Este trabajo fue financiado por ANID FONDECYT Regular 1250951, ANID FONDECYT Iniciación 11241221 y 11261397, ANID CCTVal CIA250027, ANID CPS-RTC CIA250016, ANID Vinculación Internacional FOVI250222 y el Programa Iberoamericano de Ciencia y Tecnología para el Desarrollo - CYTED (525RT0175-DISeCom).

@@ -1,0 +1,65 @@
+---
+/**
+ * Expositores en dos grupos —internacionales y nacionales—, cada uno una fila de cuatro con
+ * el retrato arriba y nombre y afiliación debajo. La comparten la lámina de expositores y
+ * el pendón; el porqué de las cuatro columnas está en `LaminaExpositores.astro`.
+ *
+ * Retrato si lo hay; monograma si no, igual que en el sitio (RF-11.2). Nada generado:
+ * lo prohíbe el manual de ANID (§1.5) y el proyecto.
+ */
+import { Image } from 'astro:assets';
+import type { Contenido } from '~/data/contenido';
+import { iniciales } from '~/data/iniciales';
+import { datosFlyer } from './datos';
+
+interface Props {
+  c: Contenido;
+  /** Diámetro del retrato, en px de lienzo. */
+  retrato: number;
+  /**
+   * El archivo original del retrato, sin reducir. Para imprimir: el optimizador lo bajaba a
+   * 328 px, y a tamaño de pendón eso son 60 ppi (RF-33.4).
+   */
+  original?: boolean;
+}
+
+const { c, retrato, original = false } = Astro.props;
+const { internacionales, nacionales } = datosFlyer(c);
+const grupos = [
+  { rotulo: c.ui.flyer.grupoInternacional, lista: internacionales },
+  { rotulo: c.ui.flyer.grupoNacional, lista: nacionales },
+];
+const tamano = `width:${retrato}px;height:${retrato}px`;
+---
+
+{
+  grupos.map((g) => (
+    <section class="mt-[32px]">
+      <p class="eyebrow text-[31px]">{g.rotulo}</p>
+      <ul class="mt-[16px] grid grid-cols-4 gap-x-[24px]">
+        {g.lista.map((e) => (
+          <li class="flex flex-col">
+            {e.foto ? (
+              original ? (
+                <img src={e.foto.src} alt="" width={e.foto.width} height={e.foto.height} class="rounded-full object-cover" style={tamano} />
+              ) : (
+                <Image src={e.foto} alt="" width={328} height={328} class="rounded-full object-cover" style={tamano} />
+              )
+            ) : (
+              <span
+                class="flex items-center justify-center rounded-full bg-surface font-display text-[56px] font-semibold text-primary"
+                style={tamano}
+              >
+                {iniciales(e.name)}
+              </span>
+            )}
+            <span class="mt-[14px] min-w-0">
+              <span class="block text-[34px] leading-[1.12] font-semibold text-balance text-foreground">{e.name}</span>
+              <span class="mt-[4px] block text-[31px] leading-[1.15] text-balance text-muted-foreground">{e.afiliacionCorta}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))
+}

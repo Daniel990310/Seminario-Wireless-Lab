@@ -22,6 +22,47 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Pantallas de la sede · 2026-10-15 · (rama `ajustes/pendon-impreso`, sin desplegar)
+
+- La Sede PUCV Santiago mandó a Mauricio dos plantillas de 1920 × 1080 (acceso y telón del
+  auditorio) y un flyer de estacionamiento; Daniel las reenvió. Hechas como láminas del
+  sistema de flyers (RF-34): `difusion/flyer/<idioma>-pantalla-acceso.png` y
+  `-pantalla-telon.png`. El telón lleva la gráfica en la banda de 403 px de arriba y negro
+  puro debajo, como pide la plantilla; el acceso, un QR al programa del sitio.
+- El correo de la sede también pregunta por la sesión de pósteres: en `programa.ts` es el
+  **miércoles 21, 14:00–15:00**, después del almuerzo. La dinámica no está escrita en el
+  repo; la responde Mauricio.
+- **Estacionamiento en «Sede»** (RF-35, spec 002): Best Parking, Antonio Bellet 126, $30 el
+  minuto, ticket timbrado en la recepción de la sede y pagado en el cajero manual, según el
+  correo. ⚠️ El flyer de la sede dice «timbrado en oficina del parking»: falta que Mauricio
+  confirme cuál vale antes de desplegar.
+
+## Pendón roller impreso · 2026-10-14 · (rama `ajustes/pendon-impreso`, sin desplegar)
+
+- **Pedido de Daniel:** el flyer para imprimir en gran formato con todo el carrusel en una
+  lámina y el retrato de Mauricio arriba como organizador, como en el sitio. Es un
+  **pendón roller** de 200 cm visibles en **80 u 85 cm** de ancho (RF-33 en
+  `specs/003-difusion-redes`), en ES y EN.
+- **Entregables** en `difusion/flyer/`: `<idioma>-pendon-80x200.pdf` y `-85x200.pdf` a tamaño
+  real (texto vivo, sangrado 10 mm, base de cassette 150 mm, `TrimBox` y `BleedBox`), PNG de
+  vista previa y JPG a 150 ppi (ignorado por git: se regenera con `npm run flyer`).
+  `[medido]` con PyMuPDF: hoja 820,7 × 2171,1 mm, corte 800 × 2150, seis fuentes incrustadas,
+  retratos a 109 ppi y Mauricio a 125 ppi impresos.
+- **Trampa medida:** Chromium ignora `zoom` y `transform: scale` al imprimir una hoja de 2 m
+  (salía el lienzo a un tercio, centrado y cortado). El PDF se escala después con pdf-lib
+  (`aTamanoReal` en `generar-flyer.mjs`). RF-29.3 no lo detectaba: mide la caja, no el dibujo.
+  Revisar el PDF rasterizado, no solo el informe.
+- **Segunda versión (mismo día), por Daniel:** no le gustó la primera. Ahora: tesis del
+  seminario + frase técnica (`ui.flyer.gancho`) bajo la marca; **QR arriba**, junto a fecha,
+  sede, horario y dominio; Mauricio debajo, antes de los expositores (RF-33.5). La franja
+  blanca no cambió de alto: en la hoja de revisión parecía el doble porque mostraba la base
+  del cassette; ahora la hoja muestra lo visible y la base rayada aparte. Holgura: 36 px en
+  80 cm, 42 en 85 `[medido]`.
+- `npm run flyer`: 16 piezas, 27 criterios en verde. `verify:todo` en verde; `check`, 0 errores.
+- **Pendiente:** que Daniel elija el ancho según la imprenta y pida su ficha técnica (márgenes
+  de barra y cassette, si acepta RGB); prueba impresa de un tramo antes del tiraje (RF-33.8).
+  Retratos a 109 ppi: si se consiguen originales más grandes, suben.
+
 ## Seis proyectos ANID en el sitio y en los flyers · 2026-10-13 · (en vivo, versión `73075e40`)
 
 - **Desplegado el 2026-10-14** (`73075e40-431a-4494-ae3e-9066bcea881d`) con el PR #31,

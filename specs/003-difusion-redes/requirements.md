@@ -13,7 +13,8 @@ criterios del proyecto y las buenas prácticas externas en condiciones medibles.
 npm run build && npm run flyer
 ```
 
-Genera las 12 piezas, mide los 21 criterios medibles y escribe
+Genera las 16 piezas —12 para redes y 4 del pendón impreso (RF-33)—, mide los criterios
+medibles y escribe
 [`verification.md`](verification.md). **Si hay un criterio en rojo, las piezas no están
 listas** y el comando termina con código 1. Con todo en verde falta RF-30, la revisión
 humana, sobre las hojas de `difusion/revision/`. Las comprobaciones viven en
@@ -26,13 +27,15 @@ anteriores el retrato pegado a la franja, el texto bajo el piso y el desborde de
 
 ## Alcance
 
-Seis láminas por idioma, en español e inglés (`src/data/flyer.ts`):
+Diez láminas por idioma, en español e inglés (`src/data/flyer.ts`):
 
 | Pieza | Formato | Uso |
 | --- | --- | --- |
 | `carrusel-1` · `-2` · `-3` | 4:5 | Feed de Instagram (carrusel) y LinkedIn (documento PDF): portada, expositores, inscripción |
 | `unica` | 4:5 | Respaldo de una sola imagen, para WhatsApp o para publicar sin carrusel |
 | `historia-1` · `-2` | 9:16 | Historias y estado de WhatsApp: portada con hueco para el sticker de enlace, y expositores |
+| `pendon-80x200` · `-85x200` | 80 u 85 × 200 cm | **Impreso**: pendón roller con todo el carrusel en una lámina y el retrato de Mauricio arriba (RF-33) |
+| `pantalla-acceso` · `-telon` | 1920 × 1080 | **Pantallas de la sede**: acceso y telón del auditorio, con las plantillas de la sede (RF-34) |
 
 ## RF-23 · Formato y zonas seguras
 
@@ -127,6 +130,53 @@ sobre una sola.
 | - | --- |
 | RF-30.1 | Que la figura de fondo no estorbe la lectura de ningún texto (límite de RF-24.2), que haya un solo llamado a la acción (RF-25.3) y que nada se vea a medio hacer: huecos, alineaciones rotas, retratos cortados |
 | RF-30.2 | En Illustrator: las tres familias instaladas **para todo el sistema**, condición que `scripts/illustrator/abrir-flyer.ps1` comprueba antes de abrir nada |
+
+## RF-33 · Pendón roller impreso
+
+Pedido de Daniel el 2026-10-14: «el flyer que se va a imprimir», largo y de gran formato,
+con **todo lo que tiene el carrusel en uno solo** —expositores con foto, todas las
+organizaciones— y **la foto de Mauricio arriba como organizador**, como en el sitio. El
+formato que corresponde a esa descripción es el **pendón roller** (*roll-up*): tela de 2 m
+de alto que se enrolla en un cassette con pie. Un afiche A1 o A0 no es «largo» (1:√2) y un
+volante no es gran formato.
+
+Se dibuja con las láminas del carrusel y su escala de px: 1 px de lienzo = 0,741 mm, así
+que los criterios de RF-23 a RF-26 se reutilizan tal cual (detalle en `src/data/flyer.ts`).
+
+| # | Criterio | Procedencia | Quién lo mide |
+| - | --- | --- | --- |
+| RF-33.1 | Dos anchos, **80 × 200** y **85 × 200 cm** visibles: los de catálogo más comunes en Chile y en las guías de imprenta. El PDF va **a tamaño real** con **10 mm de sangrado** por lado y **150 mm de base** bajo lo visible, la que entra en el cassette; declara la caja de corte (`TrimBox`, ancho × 215 cm) y la de sangrado (`BleedBox`) | `[verificado]` 80 × 200 y 85 × 200 de catálogo; base de 100–150 mm y sangrado de 10 mm en las guías de *pull-up banner* (ver Fuentes) | generador |
+| RF-33.2 | Nada legible en la base ni en los **30 mm de arriba** (la barra que cuelga la tela) ni en los **40 mm sobre el cassette**; la base y el sangrado inferior siguen el **blanco de la franja**, para que un enrollado distinto no deje ver una tira oscura | guías de *pull-up banner* `[verificado]`; los márgenes, `[supuesto]` sin la ficha de la imprenta | generador (RF-23.2 con `seguro`) |
+| RF-33.3 | Piso tipográfico: el de RF-24.1, **31 px = 23 mm** de cuerpo, unos 16 mm de mayúscula: se lee a ~2 m por la regla de rotulación de 25 mm de altura de letra por cada 3 m. La mención de financiamiento, 20 px = 15 mm, se lee acercándose | regla de rotulación `[supuesto: regla práctica, sin norma citada]` | generador (RF-24.1) |
+| RF-33.4 | Toda imagen ráster, impresa, a **90 ppi o más**: a 1 m el ojo separa 0,29 mm (un minuto de arco), 87 ppi. Retratos y marcas con su archivo original, no el reducido para pantalla. Las imprentas piden 150 ppi para mirar de cerca, y los retratos de 560 px no lo alcanzan al tamaño elegido | agudeza visual de 1′ `[verificado]`; 150 ppi en las guías | generador |
+| RF-33.5 | Orden de resumen de congreso: marca; **tesis** del seminario (el título de la sección «El seminario» del sitio) con una **frase técnica** (`ui.flyer.gancho`); **el QR arriba**, en un bloque con fecha, sede, horario y dominio, entre 60 y 90 cm bajo el borde superior, a la altura de los ojos; **Mauricio con su retrato**, epígrafe y cargo del sitio («Dirige el seminario», RF-31), más grande que el de un expositor; los ocho expositores con foto; instituciones participantes y franja de marcas con el agradecimiento | Daniel, 2026-10-14 (primera versión); Daniel, 2026-10-14 (QR arriba, gancho académico, franja blanca demasiado alta en la revisión) | estructura de la lámina |
+| RF-33.6 | QR de **15 cm de lado o más**: se lee hasta a unas diez veces su lado, 1,5 m | regla práctica de distancia ÷ 10 `[supuesto]` | generador |
+| RF-33.7 | Además del PDF, un **JPG a 150 ppi** del lienzo entero, con la densidad escrita en la cabecera, para la imprenta que no recibe PDF | Chromium escribe densidad sin unidad `[medido]` | generador |
+| RF-33.8 | Revisión humana sobre `difusion/revision/pendon-<idioma>.png` **y sobre el PDF abierto o rasterizado**, no solo el PNG: RF-29.3 mide la caja de la hoja y no el dibujo, y pasó en verde con el lienzo a un tercio dentro de la hoja `[medido: 2026-10-14]`. Antes de mandar a imprimir, **una prueba a tamaño real de un tramo** (por ejemplo, los retratos en A3 al 100 %) | lo que la pantalla no muestra: color y nitidez impresos | Daniel |
+
+**Color.** El PDF sale en **RGB** (sRGB): Chromium no escribe CMYK. La imprenta lo
+convierte; los azules oscuros del fondo pueden imprimir algo más apagados. Si la imprenta
+exige CMYK, se convierte en Illustrator (*Archivo → Modo de color del documento*) con el
+perfil que ella indique, y se revisa el azul en una prueba. `[supuesto]` hasta tener la
+ficha técnica de la imprenta elegida.
+
+**Fuentes del RF-33** `[verificado: 2026-10-14]`: ficha de pendón roller 85 × 200 de
+transparencia activa USACH (sangrado 10 mm, área imprimible 85 × 215, 150 dpi, fuentes
+incrustadas); guías de *pull-up banner* 850 × 2000 de imprentas del Reino Unido y Australia
+(base de 100–150 mm en el cassette, 150 dpi a tamaño final, PDF). Detalle en
+`specs/fuentes.md`.
+
+## RF-34 · Pantallas de la sede
+
+La Sede PUCV Santiago mandó a Mauricio el 2026-10-15 dos plantillas de 1920 × 1080 px: el
+fondo de la pantalla de acceso y el del telón del auditorio («banner para fotos»). Daniel
+las reenvió.
+
+| ID | Criterio | Origen | Verificación |
+| --- | --- | --- | --- |
+| RF-34.1 | **Acceso**, 1920 × 1080 a lienzo completo: marca, fecha, sede y organizador como la portada, y un **QR al programa del sitio** (`/#programa`, `/en/#programa`), no al formulario: el día del evento se busca la hora de cada charla. Franja de marcas con participantes y agradecimiento | plantilla de la sede; Daniel, 2026-10-15 | generador (RF-23 a RF-29) |
+| RF-34.2 | **Telón**, 1920 × 1080: la gráfica solo en la **banda de arriba, 403 px** `[medido sobre la plantilla: azul hasta y = 402]`, y el resto en **negro puro** (`#000`), como dice la plantilla («mantener esta área de color negro»). Logo horizontal, título, fecha y dominio; franja de marcas con agradecimiento, sin participantes (no caben) | plantilla de la sede | generador: RF-23.2 con `seguro.abajo` = 677 (nada fuera de la banda) |
+| RF-34.3 | Ninguna de las dos va a la hoja de teléfono (RF-30.1): se ven en pantallas de la sede | — | `generar-flyer.mjs` |
 
 ## Decisiones abiertas
 

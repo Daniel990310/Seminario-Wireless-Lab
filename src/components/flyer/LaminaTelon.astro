@@ -1,0 +1,46 @@
+---
+/**
+ * Telón del auditorio, 1920 × 1080 (RF-34.2): la gráfica va solo en la banda de arriba,
+ * 403 px, y debajo negro puro (lo pone `CartelFlyer`), como pide la plantilla de la sede.
+ * Es el fondo de quien expone y de las fotos: la banda queda sobre las cabezas, así que
+ * lleva lo que una foto tiene que decir sola —el nombre del evento, la fecha y quiénes lo
+ * financian— y nada que pida leer de cerca.
+ *
+ * Una fila: logo horizontal, resto del título, fecha y dominio; debajo, la franja de
+ * marcas. Logo horizontal y no el principal porque la banda es apaisada; a 560 px, sobre
+ * el mínimo de 420 del manual 5.2 (RF-26.1).
+ */
+import logoHorizontal from '~/assets/marca/logo-horizontal-blanco.svg';
+import type { Contenido } from '~/data/contenido';
+import Marcas from './Marcas.astro';
+import { datosFlyer } from './datos';
+
+interface Props {
+  c: Contenido;
+  participantes: boolean;
+}
+
+const { c, participantes } = Astro.props;
+const { restoTitulo, dominio } = datosFlyer(c);
+/* Proporción del `viewBox`, 670 × 128; margen interno compensado como en `Cabecera`. */
+const ANCHO = 560;
+---
+
+<div class="flex items-center gap-[48px]">
+  <img
+    src={logoHorizontal.src}
+    alt=""
+    width={ANCHO}
+    height={Math.round((ANCHO * 128) / 670)}
+    class="-ml-[16px] block shrink-0"
+    data-logo-seminario="horizontal"
+  />
+  <p class="min-w-0 font-display text-[40px] leading-[1.1] text-primary">{restoTitulo}</p>
+  <div class="ml-auto shrink-0 text-right">
+    <p class="font-mono text-[56px] leading-none font-semibold tracking-tight text-accent">{c.dates.shortLabel}</p>
+    {/* El dominio y no la sede: en el auditorio la sede se sabe, y la foto circula sin ella. */}
+    <p class="mt-[10px] text-[31px] leading-tight text-muted-foreground">{dominio}</p>
+  </div>
+</div>
+
+<Marcas c={c} participantes={participantes} />

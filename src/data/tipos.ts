@@ -198,6 +198,13 @@ export interface ContenidoIdioma {
        */
       grupoInternacional: string;
       grupoNacional: string;
+      /**
+       * Pendón: la frase técnica bajo la tesis del seminario (el título de la sección
+       * «El seminario»). Daniel pidió un gancho en lenguaje académico (2026-10-14).
+       */
+      gancho: string;
+      /** Pantalla de acceso: rótulo del QR, que apunta al programa del sitio (RF-34). */
+      programaQr: string;
     };
 
     secciones: {
@@ -250,6 +257,9 @@ export interface ContenidoIdioma {
       abrirEnGoogleMaps: string;
       avisoMapa: string;
       tituloMapa: string;
+      estacionamiento: string;
+      /** Tarifa y cómo se aplica el descuento, con la redacción del correo de la sede (RF-35). */
+      estacionamientoDescuento: string;
     };
 
     organizacion: {

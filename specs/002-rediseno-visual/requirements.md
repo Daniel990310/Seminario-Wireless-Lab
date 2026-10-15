@@ -683,3 +683,19 @@ parrilla para los dos idiomas.
 | RF-32.10 · El resumen se abre con `desplegable-suave` y el texto entra con fundido; nada de eso con `prefers-reduced-motion: reduce` | inspección de `global.css`, `verify` |
 | RF-32.11 · El nombre del expositor en una sesión es un enlace a su ficha (`#expositor-<id>`), que se resalta una vez al llegar | prueba en navegador |
 | RF-32.12 · Cada sesión lleva un ícono de línea de su clase (`IconoSesion.astro`, ocho dibujos propios, `aria-hidden`); los nombres propios declaran el suyo en `programa.ts` | captura |
+
+## RF-35 · Estacionamiento con convenio, en «Sede» · 2026-10-15
+
+La Sede PUCV Santiago mandó a Mauricio el 2026-10-15 el flyer del convenio con Best Parking
+(Antonio Bellet 126, Providencia, $30 por minuto, convenio 2026) y, en el correo, cómo se
+aplica: el ticket se **timbra en la recepción de la sede** y se **paga en el cajero manual**.
+Daniel lo reenvió y pidió llevarlo al sitio.
+
+⚠️ El flyer dice otra cosa: «ticket timbrado en oficina del parking». Se publica la versión
+del correo, que es la más reciente y la escribió la sede para este evento `[supuesto: falta
+que Mauricio confirme cuál vale]`.
+
+| Criterio | Comprobación |
+| --- | --- |
+| RF-35.1 · La sección «Sede» lleva un tercer dato, «Estacionamiento», bajo fechas y consultas, a todo lo ancho: estacionamiento, dirección, tarifa y cómo aplicar el descuento | captura |
+| RF-35.2 · Nombre y dirección del estacionamiento viven una vez en `comun.ts` (`venue.estacionamiento`); el rótulo, la tarifa y la instrucción, en `es.ts` y `en.ts` (la tarifa se escribe distinto en cada idioma) | `verify:idioma` (RF-1.7) |
