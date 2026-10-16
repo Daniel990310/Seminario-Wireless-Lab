@@ -35,6 +35,22 @@ export async function cssPdf() {
 }
 
 /**
+ * Las familias que la página usa de verdad, como variables de `FUENTES_PDF`: las de los
+ * elementos con texto propio. Así RF-29.2 pide incrustada cada familia que se ve, y no una
+ * que la pieza ya no usa (el telón quedó sin serif el 2026-10-15).
+ */
+export async function familiasUsadas(page) {
+  const usadas = await page.evaluate(() =>
+    [...document.querySelectorAll('body *')]
+      .filter((el) => [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()))
+      .map((el) => getComputedStyle(el).fontFamily.split(',')[0].trim().replace(/^["']|["']$/g, '')),
+  );
+  return Object.entries(FUENTES_PDF)
+    .filter(([, [familia]]) => usadas.includes(familia))
+    .map(([variable]) => variable);
+}
+
+/**
  * Fuentes de un PDF de Chromium, que las guarda dentro de flujos comprimidos: cuántas
  * Type3 trae y cuáles de las familias esperadas faltan (RF-29.2). Por omisión, las tres
  * del sitio; una pieza que no usa alguna pasa solo las suyas, como variables de `FUENTES_PDF`.

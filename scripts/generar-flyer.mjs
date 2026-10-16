@@ -34,7 +34,7 @@ import { FORMATOS_FLYER, PIEZAS_FLYER, PISO_FLYER, PISO_PIE_FLYER } from '../src
 import { RAIZ, abrirDist } from './lib/servir-dist.mjs';
 import { medirLienzo } from './lib/criterios-flyer.mjs';
 import { mapaATsv, mapaLienzo } from './lib/mapa-flyer.mjs';
-import { cssPdf, fuentesDelPdf } from './lib/pdf-fuentes.mjs';
+import { cssPdf, familiasUsadas, fuentesDelPdf } from './lib/pdf-fuentes.mjs';
 import { CRITERIOS_PENDON, PPI_JPG, aTamanoReal, celdaRevisionPendon, jpgDeImprenta, medirImpreso, verificarPdfReal } from './lib/pendon-flyer.mjs';
 
 const SALIDA = join(RAIZ, 'difusion', 'flyer');
@@ -62,7 +62,7 @@ const CRITERIOS = {
   'RF-28.1': 'El QR se lee, a escala 1 y 0,5, y es el que la lámina debe llevar',
   'RF-28.3': 'Hueco del sticker libre, de 600 × 170 o más',
   'RF-29.1': 'Texto alternativo, hasta 1000 caracteres en redes; sin tope en impresos',
-  'RF-29.2': 'PDF sin Type3 y con las tres familias incrustadas',
+  'RF-29.2': 'PDF sin Type3 y con las familias que usa incrustadas',
   'RF-29.3': 'PDF del tamaño del lienzo y bajo 100 MB',
   'RF-29.4': 'Todas las imágenes cargaron',
   'RF-29.6': 'Pie de publicación, hasta 2200 caracteres',
@@ -181,6 +181,7 @@ for (const { pieza, formato, idioma, publicacion, pie: llevaPie, enTelefono } of
   r.push(...enPdf);
   // Con las fuentes del PDF y a la escala del PDF final, para que las cajas sean las del PDF.
   const mapa = await page.evaluate(mapaLienzo, ptPorPx);
+  const familias = await familiasUsadas(page);
   await escribir(join(SALIDA, `${pieza}.mapa.tsv`), `${mapaATsv(mapa)}\n`);
 
   if (impreso) r.push(...(await medirImpreso(page, f)));
@@ -208,7 +209,7 @@ for (const { pieza, formato, idioma, publicacion, pie: llevaPie, enTelefono } of
   }
   await escribir(rutaPdf, bytesPdf);
   if (impreso) r.push(await verificarPdfReal(await readFile(rutaPdf), f));
-  const pdf = await fuentesDelPdf(rutaPdf);
+  const pdf = await fuentesDelPdf(rutaPdf, familias);
   pdfsEscritos.add(pieza);
   r.push({ id: 'RF-29.2', ok: !pdf.type3 && !pdf.faltan.length, detalle: pdf.type3 ? `${pdf.type3} Type3` : pdf.faltan.join(', ') });
   const [pw, ph] = pdf.caja;

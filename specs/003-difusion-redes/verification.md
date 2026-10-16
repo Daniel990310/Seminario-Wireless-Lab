@@ -1,6 +1,6 @@
 # Verificación de las piezas de difusión
 
-> **Generado por `npm run flyer` el 2026-10-16 00:18 UTC. No editar.** Criterios en
+> **Generado por `npm run flyer` el 2026-10-16 01:20 UTC. No editar.** Criterios en
 > [`requirements.md`](requirements.md). `n/a` = el criterio no aplica a esa pieza.
 
 **Todos los criterios medibles en verde.** Falta la revisión humana de RF-30 antes de publicar.
@@ -25,7 +25,7 @@
 | RF-28.1 | El QR se lee, a escala 1 y 0,5, y es el que la lámina debe llevar | ✓ | n/a | n/a | ✓ | n/a | n/a | ✓ | ✓ | ✓ | n/a | ✓ | n/a | n/a | ✓ | n/a | n/a | ✓ | ✓ | ✓ | n/a |
 | RF-28.3 | Hueco del sticker libre, de 600 × 170 o más | n/a | n/a | n/a | n/a | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | n/a | n/a | n/a | n/a | n/a |
 | RF-29.1 | Texto alternativo, hasta 1000 caracteres en redes; sin tope en impresos | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| RF-29.2 | PDF sin Type3 y con las tres familias incrustadas | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| RF-29.2 | PDF sin Type3 y con las familias que usa incrustadas | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | RF-29.3 | PDF del tamaño del lienzo y bajo 100 MB | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | RF-29.4 | Todas las imágenes cargaron | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | RF-29.6 | Pie de publicación, hasta 2200 caracteres | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | ✓ | ✓ | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |

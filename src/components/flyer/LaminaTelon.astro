@@ -7,9 +7,14 @@
  * lleva lo que una foto tiene que decir sola —el nombre del evento, la fecha y quiénes lo
  * financian— y nada que pida leer de cerca.
  *
- * Una fila: logo horizontal, resto del título, fecha y dominio; debajo, la franja de
- * marcas. Logo horizontal y no el principal porque la banda es apaisada; a 560 px, sobre
- * el mínimo de 420 del manual 5.2 (RF-26.1).
+ * Una fila: logo horizontal a la izquierda, fecha y dominio a la derecha; debajo, la franja
+ * de marcas. Logo horizontal y no el principal porque la banda es apaisada.
+ *
+ * Sin «in mmWave and Sub-THz Bands» desde el 2026-10-15: suelto entre el logo y la fecha no
+ * se leía como parte del título (Daniel). Tampoco van ahí las instituciones participantes:
+ * en los ~750 px libres, las diez quedaban de 15 a 23 px de alto `[medido sobre la fila de la
+ * pantalla de acceso]`, ilegibles en la sala y en las fotos. El espacio se usa en escala: el
+ * logo pasa de 560 a 690 px, lo que admite el alto de la banda, (mínimo del manual 5.2: 420, RF-26.1) y la fecha de 56 a 64.
  */
 import type { Contenido } from '~/data/contenido';
 import LogoHorizontal from './LogoHorizontal.astro';
@@ -20,14 +25,13 @@ interface Props {
 }
 
 const { c } = Astro.props;
-const { restoTitulo, dominio } = datosFlyer(c);
+const { dominio } = datosFlyer(c);
 ---
 
 <div class="flex items-center gap-[48px]">
-  <LogoHorizontal ancho={560} class="shrink-0" />
-  <p class="min-w-0 font-display text-[40px] leading-[1.1] text-primary">{restoTitulo}</p>
+  <LogoHorizontal ancho={690} class="shrink-0" />
   <div class="ml-auto shrink-0 text-right">
-    <p class="font-mono text-[56px] leading-none font-semibold tracking-tight text-accent">{c.dates.shortLabel}</p>
+    <p class="font-mono text-[64px] leading-none font-semibold tracking-tight text-accent">{c.dates.shortLabel}</p>
     {/* El dominio y no la sede: en el auditorio la sede se sabe, y la foto circula sin ella. */}
     <p class="mt-[10px] text-[31px] leading-tight text-muted-foreground">{dominio}</p>
   </div>

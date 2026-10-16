@@ -22,6 +22,13 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Telón sin el resto del título · 2026-10-15 · (rama `ajustes/pendon-impreso`, sin desplegar)
+
+- Daniel: «in mmWave and Sub-THz Bands» suelto en la banda no tenía sentido. Fuera. Las
+  instituciones participantes no caben legibles en ese hueco (15–23 px de alto, medido), así
+  que el espacio va en escala: logo de 560 a 690 px y fecha de 56 a 64. RF-29.2 ahora pide
+  las familias que cada pieza usa (`familiasUsadas`), no siempre las tres.
+
 ## Pendón v3, reutilizable · 2026-10-15 · (rama `ajustes/pendon-impreso`, sin desplegar)
 
 - Revisión de diseño por audio, reenviada por Daniel: quitar expositores (el pendón «es
