@@ -7,11 +7,12 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-10-14** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
-ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-10-14**, versión
-`73075e40`, desde `main` en `cc05900` (PR #31: seis proyectos ANID en el sitio y en los
-flyers), en `https://bcsensing.org`. `verify:todo` en verde antes y `verify:publicado`
-32 ✓, 0 ✗ después `[medido: 2026-10-14]`. Antes: 2026-10-10, `8e7b5b9a` (PR #28 y #29); 2026-10-08,
+Actualizado: **2026-10-16** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
+ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-10-16**, versión
+`fa0fb8af`, desde `main` en `54193f0` (PR #34: título de la charla de Gutiérrez), en
+`https://bcsensing.org`. `verify:todo` 147 ✓, 0 ✗ antes y `verify:publicado`
+32 ✓, 0 ✗ después `[medido: 2026-10-16]`. Antes: 2026-10-14, `73075e40` (PR #31);
+2026-10-10, `8e7b5b9a` (PR #28 y #29); 2026-10-08,
 `d60d3ab4` (PR #27) y `f6e5fe8b` (PR #22–#24); 2026-10-06, `b6bdd2dd` (PR #19 y #20);
 2026-10-05, `aac04b64` (PR #15) y `20a555ca` (PR #13); 2026-10-02, `b0d566cd`.
 · **Publicado en <https://bcsensing.org> el 2026-09-22, versión `830dafb9`. Primer
@@ -22,7 +23,11 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
-## Título de la charla de Gutiérrez · 2026-10-16 · (rama `ajustes/charla-gutierrez`, sin desplegar)
+## Título de la charla de Gutiérrez · 2026-10-16 · (en vivo, versión `fa0fb8af`)
+
+- **Desplegado el 2026-10-16** (`fa0fb8af-3bdc-4cf8-b856-917830366226`) con el PR #34,
+  thermos dispensado por Daniel. `verify:publicado` 32 ✓, 0 ✗; el título aparece 1 vez
+  en `/` y en `/en/` del sitio publicado `[medido con curl]`.
 
 - Miguel mandó solo el título: «Towards Integrated Sensing and Communications for IoT in
   Water Environments». Entra en `charlas.ts` sin resumen; `abstract` pasa a opcional y la
