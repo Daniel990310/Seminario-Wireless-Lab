@@ -187,7 +187,7 @@ genera desde `/credencial/<id>/` (`src/components/credencial/`).
 
 | ID | Criterio | Origen | Verificación |
 | --- | --- | --- | --- |
-| RF-36.1 | **10 × 14 cm vertical**, para porta-credencial con cordón, más 2 mm de sangrado: PDF de 104 × 144 mm con `TrimBox` de 100 × 140 a 2 mm, uno por página para la imprenta, y otro de **cuatro por hoja A4** sin sangrado y con marcas de corte, para la oficina. Carta no sirve: 2 × 140 mm no caben en 279 | Daniel, 2026-10-15; formato común de porta-credencial `[supuesto: sin ficha del proveedor]` | generador: lee el PDF escrito |
+| RF-36.1 | **10 × 12 cm vertical**, la medida del proveedor que las imprime, más 2 mm de sangrado: PDF de 104 × 124 mm con `TrimBox` de 100 × 120 a 2 mm, uno por página para la imprenta, y otro de **cuatro por hoja A4** sin sangrado y con marcas de corte, para la oficina. A 12 cm también cabrían cuatro en Carta (2 × 120 ≤ 279); no se genera mientras nadie la pida | Daniel, 2026-10-15: primero 10 × 14 y luego 10 × 12, la del proveedor `[supuesto: sin ficha del proveedor]` | generador: lee el PDF escrito |
 | RF-36.2 | **En inglés**, cuatro categorías con banda de color: *Speaker*, *Organizing committee* (el rótulo del pie del sitio), *Attendee* y *Staff*. El nombre en dos renglones o menos; uno largo baja de cuerpo hasta 6,5 mm y, si aun así no cabe, el criterio falla | Daniel, 2026-10-15 | generador, con las fuentes del sitio y con las del PDF |
 | RF-36.3 | PDF sin Type3 y con las familias que usa incrustadas (Crimson Pro y Atkinson Hyperlegible Next; sin monoespaciada desde la segunda versión), como RF-29.2 | RF-29.2 | generador |
 | RF-36.4 | Hojas A4 de 210 × 297, tantas como hagan falta para cuatro por hoja | — | generador |

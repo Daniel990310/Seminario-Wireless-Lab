@@ -1,8 +1,8 @@
 ---
 /**
- * Credencial del evento (RF-36), 10 × 14 cm vertical para porta-credencial con cordón, más
- * 2 mm de sangrado por lado: el lienzo mide 104 × 144 mm y todo va en milímetros, así que
- * el PDF sale a tamaño real sin escalar.
+ * Credencial del evento (RF-36), 10 × 12 cm vertical, la medida del proveedor que las
+ * imprime (Daniel, 2026-10-15), más 2 mm de sangrado por lado: el lienzo mide 104 × 124 mm
+ * y todo va en milímetros, así que el PDF sale a tamaño real sin escalar.
  *
  * Segunda versión, 2026-10-15. Daniel rechazó la primera, que tenía cabecera de lámina en
  * miniatura, un campo blanco casi vacío con el nombre a 10 mm y la categoría en una banda
@@ -14,9 +14,14 @@
  * de tono del mismo color (`COLOR_CATEGORIA.onda`), y el nombre queda donde llegan: quien
  * lleva la credencial es lo que el seminario detecta.
  *
+ * Tres tamaños de letra hacen todo el trabajo (`design-taste-frontend`: dos o tres, uno muy
+ * grande): el nombre a 12 mm; la categoría y la afiliación a 5 mm; y la cabecera a 3,4 mm.
+ * Rótulos en minúscula inicial, esquinas rectas y un solo acento, el dorado de la fecha,
+ * como en los sistemas sobrios de `awesome-design-md` (IBM Carbon): sin mayúsculas
+ * espaciadas ni monoespaciada.
+ *
  * De arriba abajo: la marca sobre el fondo oscuro del sitio, con fecha y sede; la categoría;
  * el nombre y la afiliación; y las marcas institucionales, sobre blanco porque van en color.
- * Sin rótulos en mayúsculas espaciadas ni tipografía monoespaciada.
  *
  * Sin nombre, sale en blanco: dos campos blancos para escribir nombre y afiliación a mano.
  * El generador también la usa como plantilla para los inscritos (`data-credencial-*`).
@@ -41,16 +46,16 @@ const { restoTitulo } = datosFlyer(c);
 const color = COLOR_CATEGORIA[categoria];
 const [pucv] = c.organizers;
 /* Logo principal: 650 × 218 de `viewBox`; margen interno compensado como en `MarcaSeminario`. */
-const LOGO_MM = 64;
+const LOGO_MM = 54;
 /*
- * Ondas, en mm del cuerpo (104 × 79): centro fuera del borde derecho, a la altura de la
+ * Ondas, en mm del cuerpo (104 × 70): centro fuera del borde derecho, a la altura de la
  * categoría, y radios que paran antes de la columna del nombre por la izquierda.
  */
-const ONDAS = [16, 30, 44, 58];
+const ONDAS = [14, 26, 38, 50];
 ---
 
-<div data-credencial={credencial.id} class="relative flex flex-col overflow-hidden bg-[var(--pure-white)]" style="width:104mm;height:144mm">
-  <header class="h-[50mm] shrink-0 bg-[var(--ink-900)] px-[8mm] pt-[8mm] text-[var(--steel-100)]">
+<div data-credencial={credencial.id} class="relative flex flex-col overflow-hidden bg-[var(--pure-white)]" style="width:104mm;height:124mm">
+  <header class="h-[41mm] shrink-0 bg-[var(--ink-900)] px-[8mm] pt-[6.5mm] text-[var(--steel-100)]">
     <img
       src={logoPrincipal.src}
       alt=""
@@ -60,28 +65,28 @@ const ONDAS = [16, 30, 44, 58];
       style={`width:${LOGO_MM}mm;height:auto;margin-left:-${((LOGO_MM * 31.5) / 650).toFixed(2)}mm`}
       data-logo-seminario="principal"
     />
-    <p class="mt-[1mm] font-display text-[4mm] leading-[1.1] text-[var(--navy-300)]">{restoTitulo}</p>
-    <p class="mt-[3.2mm] text-[4.2mm] leading-none font-semibold text-[var(--gold-400)] tabular-nums">{c.dates.shortLabel}</p>
-    <p class="mt-[1.4mm] text-[2.8mm] leading-tight text-[var(--steel-400)]">{c.venue.name}, {c.venue.country}</p>
+    <p class="mt-[0.6mm] font-display text-[3.4mm] leading-[1.15] text-[var(--navy-300)]">{restoTitulo}</p>
+    <p class="mt-[1.6mm] text-[3.4mm] leading-[1.15] font-semibold text-[var(--gold-400)]">{c.dates.label}</p>
+    <p class="mt-[0.6mm] text-[3.4mm] leading-[1.15] text-[var(--steel-400)]">{c.venue.name}, {c.venue.country}</p>
   </header>
 
   <main
     data-credencial-categoria={categoria}
-    class="relative flex flex-1 flex-col overflow-hidden px-[8mm] pt-[6mm] pb-[7mm]"
+    class="relative flex flex-1 flex-col overflow-hidden px-[8mm] pt-[5.5mm] pb-[6mm]"
     style={`background:${color.fondo};color:${color.texto}`}
   >
-    <svg class="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 104 79" preserveAspectRatio="xMaxYMin slice" aria-hidden="true">
-      {ONDAS.map((r) => <circle cx="112" cy="10" r={r} fill="none" stroke={color.onda} stroke-width="5" />)}
+    <svg class="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 104 70" preserveAspectRatio="xMaxYMin slice" aria-hidden="true">
+      {ONDAS.map((r) => <circle cx="112" cy="8" r={r} fill="none" stroke={color.onda} stroke-width="4.5" />)}
     </svg>
-    <p class="relative text-[6.4mm] leading-none font-semibold">{rotuloCategoria(c, categoria)}</p>
+    <p class="relative text-[5mm] leading-none font-semibold">{rotuloCategoria(c, categoria)}</p>
     <div class="relative mt-auto">
       <p data-credencial-nombre class="font-display text-[12mm] leading-[1.02] font-semibold text-balance">{nombre}</p>
-      <p data-credencial-afiliacion class="mt-[2.6mm] text-[4.6mm] leading-[1.2] text-balance opacity-85">{afiliacion}</p>
+      <p data-credencial-afiliacion class="mt-[2mm] text-[5mm] leading-[1.2] text-balance opacity-85">{afiliacion}</p>
       {
         !nombre && (
-          <div data-credencial-lineas class="flex flex-col gap-[3mm]">
-            <span class="block h-[20mm] bg-[var(--pure-white)]" />
-            <span class="block h-[10mm] bg-[var(--pure-white)]" />
+          <div data-credencial-lineas class="flex flex-col gap-[2.5mm]">
+            <span class="block h-[17mm] bg-[var(--pure-white)]" />
+            <span class="block h-[9mm] bg-[var(--pure-white)]" />
           </div>
         )
       }
@@ -92,11 +97,11 @@ const ONDAS = [16, 30, 44, 58];
     Las marcas de la franja de las piezas, con sus pesos (RF-26.5) llevados a milímetros:
     64 px de alto son 7 mm. Archivos originales: se imprime.
   */}
-  <footer class="flex h-[15mm] shrink-0 items-center justify-between px-[8mm] pb-[2mm]">
-    <ImagenFlyer src={pucv.logo} ancho={256} alto={130} original class="h-[7mm] w-auto" data-marca="pucv" />
-    <ImagenFlyer src={submarcaEie} original class="h-[7mm] w-auto" data-marca="eie" />
-    <ImagenFlyer src={cytedFondoBlanco} original class="h-[9mm] w-auto" data-marca="cyted" />
-    <ImagenFlyer src={apsColor} original class="h-[5.7mm] w-auto" data-marca="aps" />
-    <ImagenFlyer src={c.funding.agency.logo} ancho={119} alto={64} class="h-[7mm] w-auto" data-marca="anid" />
+  <footer class="flex h-[13mm] shrink-0 items-center justify-between px-[8mm] pb-[2mm]">
+    <ImagenFlyer src={pucv.logo} ancho={256} alto={130} original class="h-[6.5mm] w-auto" data-marca="pucv" />
+    <ImagenFlyer src={submarcaEie} original class="h-[6.5mm] w-auto" data-marca="eie" />
+    <ImagenFlyer src={cytedFondoBlanco} original class="h-[8.4mm] w-auto" data-marca="cyted" />
+    <ImagenFlyer src={apsColor} original class="h-[5.3mm] w-auto" data-marca="aps" />
+    <ImagenFlyer src={c.funding.agency.logo} ancho={119} alto={64} class="h-[6.5mm] w-auto" data-marca="anid" />
   </footer>
 </div>

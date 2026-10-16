@@ -49,6 +49,9 @@ Hostinger sin revocar.**
   el color de la categoría ocupa todo el cuerpo, el nombre va a 12 mm dentro de él, ondas
   del logo en un escalón de tono que llegan al nombre, cabecera sin rótulo monoespaciado. Sin
   monoespaciada, RF-36.3 pide ahora dos familias. Campos blancos para escribir a mano.
+- **10 × 12 cm** (la medida del proveedor, Daniel 2026-10-15): PDF de 104 × 124 con corte de
+  100 × 120. Tres tamaños de letra (12 · 5 · 3,4 mm), fecha y sede en renglones propios; el
+  generador ahora también falla si la cabecera se desborda (lo hacía la sede al achicar).
 
 - Pedido del profesor por Daniel. Decisiones de Daniel: **10 × 14 cm vertical**, **en
   inglés**, nombres impresos **y** lote en blanco, cuatro categorías (*Speaker*, *Organizing

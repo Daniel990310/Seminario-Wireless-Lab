@@ -1,7 +1,7 @@
 ---
 /**
  * Lienzo de cada credencial del evento (RF-36), en inglés. Lo captura
- * `scripts/generar-credenciales.mjs` a PDF de 104 × 144 mm (100 × 140 más sangrado).
+ * `scripts/generar-credenciales.mjs` a PDF de 104 × 124 mm (100 × 120 más sangrado).
  * Solo nombres que el sitio ya publica: ver `src/components/credencial/datos.ts`.
  */
 import { Font } from 'astro:assets';
@@ -34,12 +34,12 @@ const c = contenido('en');
         margin: 0;
         padding: 0;
         width: 104mm;
-        height: 144mm;
+        height: 124mm;
         overflow: hidden;
         background: var(--pure-white);
       }
       @page {
-        size: 104mm 144mm;
+        size: 104mm 124mm;
         margin: 0;
       }
     </style>

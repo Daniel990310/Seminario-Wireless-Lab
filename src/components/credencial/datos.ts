@@ -1,7 +1,7 @@
 /**
  * Credenciales del evento (RF-36): qué credenciales hay y de qué color va cada categoría.
- * Las pidió el profesor por Daniel el 2026-10-15: 10 × 14 cm vertical, en inglés, cuatro
- * categorías, con nombre impreso y un lote en blanco.
+ * Las pidió el profesor por Daniel el 2026-10-15: 10 × 12 cm vertical (la medida del
+ * proveedor), en inglés, cuatro categorías, con nombre impreso y un lote en blanco.
  *
  * Aquí solo van nombres que el sitio ya publica: expositores y comité. Los de las personas
  * inscritas son datos personales y **no pasan por el sitio ni por el repositorio**: el

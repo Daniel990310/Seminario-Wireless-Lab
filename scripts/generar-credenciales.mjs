@@ -2,8 +2,8 @@
  * Genera las credenciales del evento (RF-36, `specs/003-difusion-redes`).
  *
  * Por categoría escribe en `difusion/credenciales/`:
- *   - `credenciales-<categoria>.pdf`: una credencial por página, 104 × 144 mm con la caja
- *     de corte de 100 × 140 (`TrimBox`) y 2 mm de sangrado: para la imprenta.
+ *   - `credenciales-<categoria>.pdf`: una credencial por página, 104 × 124 mm con la caja
+ *     de corte de 100 × 120 (`TrimBox`) y 2 mm de sangrado: para la imprenta.
  *   - `credenciales-<categoria>-A4.pdf`: cuatro por hoja A4, sin sangrado, con marcas de
  *     corte: para imprimir en la oficina y cortar.
  * y la hoja de revisión `difusion/revision/credenciales.png`.
@@ -32,10 +32,10 @@ const SALIDA = join(RAIZ, 'difusion', 'credenciales');
 const PRIVADO = join(SALIDA, 'privado');
 const REVISION = join(RAIZ, 'difusion', 'revision');
 const PT_POR_MM = 72 / 25.4;
-const CORTE = { w: 100, h: 140 };
+const CORTE = { w: 100, h: 120 };
 const SANGRADO = 2;
 const HOJA = { w: 210, h: 297 };
-/* El lienzo en px CSS a 96 por pulgada: 104 × 144 mm. */
+/* El lienzo en px CSS a 96 por pulgada: 104 × 124 mm. */
 const VIEWPORT = { width: Math.ceil(((CORTE.w + 2 * SANGRADO) / 25.4) * 96), height: Math.ceil(((CORTE.h + 2 * SANGRADO) / 25.4) * 96) };
 const CATEGORIAS = ['expositor', 'organizacion', 'asistente', 'apoyo'];
 
@@ -82,10 +82,14 @@ function inscritosDe(texto) {
  * RF-36.2: el nombre en dos renglones o menos, y nada que se salga de su caja. Un nombre
  * largo baja de cuerpo de medio en medio milímetro hasta caber, sin bajar de 6,5 mm: de ahí
  * para abajo ya no se lee a un metro, y vale más que el criterio falle y alguien lo abrevie.
+ * También la cabecera, de alto fijo: al pasar a 10 × 12 la sede se salía por abajo y nada
+ * lo detectaba.
  */
 const ajustarNombre = () => {
+  const cabecera = document.querySelector('[data-credencial] header');
+  const cabeceraDesborda = cabecera.scrollHeight > cabecera.clientHeight + 1;
   const el = document.querySelector('[data-credencial-nombre]');
-  if (!el.firstChild) return { renglones: 0, desborda: false };
+  if (!el.firstChild) return { renglones: 0, desborda: false, cabeceraDesborda };
   const renglones = () => {
     const r = document.createRange();
     r.selectNodeContents(el);
@@ -97,7 +101,7 @@ const ajustarNombre = () => {
     el.style.fontSize = `${cuerpo}mm`;
   }
   const main = el.closest('main');
-  return { renglones: renglones(), desborda: el.scrollWidth > el.clientWidth + 1 || main.scrollHeight > main.clientHeight + 1 };
+  return { renglones: renglones(), desborda: el.scrollWidth > el.clientWidth + 1 || main.scrollHeight > main.clientHeight + 1, cabeceraDesborda };
 };
 
 /** Pone la caja de corte y la de sangrado; devuelve los bytes. */
@@ -109,7 +113,7 @@ async function conCajas(bytes) {
   return doc.save();
 }
 
-/** RF-36.1, leído del archivo escrito: hoja de 104 × 144 y corte de 100 × 140 a 2 mm. */
+/** RF-36.1, leído del archivo escrito: hoja de 104 × 124 y corte de 100 × 120 a 2 mm. */
 async function verificarCajas(bytes) {
   const p = (await PDFDocument.load(bytes)).getPage(0);
   const mm = (v) => v / PT_POR_MM;
@@ -195,12 +199,13 @@ async function capturar(id, quien, persona) {
       await page.addStyleTag({ content: CSS_PDF });
       await page.evaluate(() => document.fonts.ready);
     }
-    const { renglones, desborda } = await page.evaluate(ajustarNombre);
+    const { renglones, desborda, cabeceraDesborda } = await page.evaluate(ajustarNombre);
     if (renglones > 2 || desborda) falla(quien, '', `con las fuentes ${fuentes}, el nombre ocupa ${renglones} renglones${desborda ? ' y se sale' : ''} (RF-36.2)`);
+    if (cabeceraDesborda) falla(quien, '', `con las fuentes ${fuentes}, la cabecera se sale de su alto (RF-36.2)`);
   }
   const png = await page.screenshot({ clip: { x: 0, y: 0, ...VIEWPORT } });
   await page.emulateMedia({ media: 'screen' });
-  const pdf = await conCajas(await page.pdf({ width: '104mm', height: '144mm', printBackground: true, pageRanges: '1' }));
+  const pdf = await conCajas(await page.pdf({ width: `${CORTE.w + 2 * SANGRADO}mm`, height: `${CORTE.h + 2 * SANGRADO}mm`, printBackground: true, pageRanges: '1' }));
   await page.close();
   return { pdf, png };
 }
