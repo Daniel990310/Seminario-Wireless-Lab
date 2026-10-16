@@ -270,18 +270,20 @@ for (const [idioma, page] of Object.entries(paginas)) {
   // La excepción de arriba solo vale si las charlas declaran de verdad su idioma:
   // título y resumen de cada una, en las dos versiones (RF-32.3). Están en la lista
   // suelta mientras no hay horario y en su sesión del programa cuando lo hay (RF-32.8).
+  // Una charla que llegó solo con título no tiene desplegable y aporta uno (RF-32.13).
   for (const [idioma, page] of Object.entries(paginas)) {
-    const { charlas, enIngles } = await page.evaluate(() => {
-      const unidades = [...document.querySelectorAll('[data-charlas] details, [data-charla]')];
+    const { charlas, esperados, enIngles } = await page.evaluate(() => {
+      const unidades = [...document.querySelectorAll('[data-charlas] li, [data-charla]')];
       return {
         charlas: unidades.length,
+        esperados: unidades.reduce((n, u) => n + (u.querySelector('details') ? 2 : 1), 0),
         enIngles: unidades.reduce((n, u) => n + u.querySelectorAll('[lang="en"]').length, 0),
       };
     });
     check(
       `RF-32.3 · ${idioma}: título y resumen de cada charla declaran lang="en"`,
-      charlas > 0 && enIngles === charlas * 2,
-      `${charlas} charlas, ${enIngles} elementos con lang="en"`,
+      charlas > 0 && enIngles === esperados,
+      `${charlas} charlas, ${enIngles} de ${esperados} elementos con lang="en"`,
     );
   }
 

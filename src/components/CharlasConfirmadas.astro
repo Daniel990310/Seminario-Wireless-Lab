@@ -29,40 +29,57 @@ const { charlas, ui } = c;
         {!hasProgram && ` ${ui.programa.charlas.sinHorario}`}
       </p>
       <ul class="mt-6 divide-y divide-border border-y border-border">
-        {charlas.map((charla) => (
-          <li>
-            <details class="desplegable-suave group">
-              <summary class="group/fila block cursor-pointer list-none py-5 [&::-webkit-details-marker]:hidden">
-                <span class="block text-sm font-semibold text-foreground">{charla.speaker}</span>
-                <span class:list={['block text-sm text-muted-foreground', charla.affiliationPending && 'italic']}>
-                  {charla.affiliation}
-                </span>
-                <span
-                  lang="en"
-                  class="mt-2 block font-display text-lg leading-snug text-foreground transition-colors group-hover/fila:text-primary"
+        {charlas.map((charla) => {
+          /* Sin resumen no hay nada que desplegar: la fila es texto plano (RF-32.13). */
+          const Fila = charla.abstract ? 'details' : 'div';
+          const Cabecera = charla.abstract ? 'summary' : 'div';
+          return (
+            <li>
+              <Fila class:list={[charla.abstract && 'desplegable-suave', 'group']}>
+                <Cabecera
+                  class:list={[
+                    'group/fila block py-5',
+                    charla.abstract && 'cursor-pointer list-none [&::-webkit-details-marker]:hidden',
+                  ]}
                 >
-                  {charla.title}
-                </span>
-                <span class="mt-3 inline-flex items-center gap-2 text-sm text-primary underline decoration-primary/40 underline-offset-4 transition-colors group-hover/fila:decoration-primary">
-                  {ui.programa.verResumen}
-                  <svg
-                    class="size-3 transition-transform group-open:rotate-180"
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    aria-hidden="true"
+                  <span class="block text-sm font-semibold text-foreground">{charla.speaker}</span>
+                  <span class:list={['block text-sm text-muted-foreground', charla.affiliationPending && 'italic']}>
+                    {charla.affiliation}
+                  </span>
+                  <span
+                    lang="en"
+                    class:list={[
+                      'mt-2 block font-display text-lg leading-snug text-foreground',
+                      charla.abstract && 'transition-colors group-hover/fila:text-primary',
+                    ]}
                   >
-                    <path d="M2.5 4.5 6 8l3.5-3.5" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </span>
-              </summary>
-              <p lang="en" class="max-w-3xl pb-6 text-base leading-relaxed text-muted-foreground">
-                {charla.abstract}
-              </p>
-            </details>
-          </li>
-        ))}
+                    {charla.title}
+                  </span>
+                  {charla.abstract && (
+                    <span class="mt-3 inline-flex items-center gap-2 text-sm text-primary underline decoration-primary/40 underline-offset-4 transition-colors group-hover/fila:decoration-primary">
+                      {ui.programa.verResumen}
+                      <svg
+                        class="size-3 transition-transform group-open:rotate-180"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        aria-hidden="true"
+                      >
+                        <path d="M2.5 4.5 6 8l3.5-3.5" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </span>
+                  )}
+                </Cabecera>
+                {charla.abstract && (
+                  <p lang="en" class="max-w-3xl pb-6 text-base leading-relaxed text-muted-foreground">
+                    {charla.abstract}
+                  </p>
+                )}
+              </Fila>
+            </li>
+          );
+        })}
       </ul>
     </div>
   )

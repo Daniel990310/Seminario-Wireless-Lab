@@ -22,6 +22,14 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Título de la charla de Gutiérrez · 2026-10-16 · (rama `ajustes/charla-gutierrez`, sin desplegar)
+
+- Miguel mandó solo el título: «Towards Integrated Sensing and Communications for IoT in
+  Water Environments». Entra en `charlas.ts` sin resumen; `abstract` pasa a opcional y la
+  sesión y la lista suelta lo pintan sin desplegable (RF-32.13).
+- Pendiente: su resumen, y título y resumen de Zussman y Du.
+- Los flyers no llevan títulos de charla; no se regeneran.
+
 ## Seis proyectos ANID en el sitio y en los flyers · 2026-10-13 · (en vivo, versión `73075e40`)
 
 - **Desplegado el 2026-10-14** (`73075e40-431a-4494-ae3e-9066bcea881d`) con el PR #31,
