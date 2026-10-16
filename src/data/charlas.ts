@@ -29,8 +29,12 @@ export type IdExpositor =
 export interface Charla {
   /** Título tal como lo envió el autor. */
   title: string;
-  /** Resumen tal como lo envió el autor. El organizador pidió 100–150 palabras. */
-  abstract: string;
+  /**
+   * Resumen tal como lo envió el autor. El organizador pidió 100–150 palabras.
+   * Opcional porque hay quien manda primero el título: sin resumen, la sesión muestra el
+   * título y no lleva desplegable (RF-32.13).
+   */
+  abstract?: string;
   /** Fecha en que llegó, para saber qué tan viejo es el texto. */
   recibida: string;
 }
@@ -77,6 +81,10 @@ export const charlasConfirmadas: Partial<Record<IdExpositor, Charla>> = {
     abstract:
       'Radiowave propagation through the atmosphere is usually viewed as a source of impairments for communication systems. However, the same propagation effects can also contain information about the environment. This talk presents both perspectives through an overview of approximately three decades of atmospheric propagation experiments carried out at the Universidad Politécnica de Madrid (UPM). The first part will review UPM measurement campaigns over Earth–space and terrestrial paths at frequencies above 30 GHz, with particular attention to the long-term 39.4 GHz Q-band beacon experiment in Madrid using the Alphasat satellite. The second part will introduce, from a theoretical perspective and drawing on published literature, the opportunistic use of communication links for meteorological sensing, focusing on the retrieval of rainfall rate and atmospheric water vapour from propagation attenuation.',
     recibida: '2026-09-30',
+  },
+  gutierrez: {
+    title: 'Towards Integrated Sensing and Communications for IoT in Water Environments',
+    recibida: '2026-10-16',
   },
   toledo: {
     title:

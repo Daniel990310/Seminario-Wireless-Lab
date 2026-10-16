@@ -683,3 +683,12 @@ parrilla para los dos idiomas.
 | RF-32.10 · El resumen se abre con `desplegable-suave` y el texto entra con fundido; nada de eso con `prefers-reduced-motion: reduce` | inspección de `global.css`, `verify` |
 | RF-32.11 · El nombre del expositor en una sesión es un enlace a su ficha (`#expositor-<id>`), que se resalta una vez al llegar | prueba en navegador |
 | RF-32.12 · Cada sesión lleva un ícono de línea de su clase (`IconoSesion.astro`, ocho dibujos propios, `aria-hidden`); los nombres propios declaran el suyo en `programa.ts` | captura |
+
+**Enmienda 2026-10-16** (Miguel Gutiérrez mandó el título sin resumen):
+
+| Criterio | Comprobación |
+| --- | --- |
+| RF-32.13 · Una charla puede llegar solo con título: se publica el título, con `lang="en"`, y **sin desplegable**, ni en la sesión ni en la lista suelta; no se escribe un resumen en su lugar | inspección de `charlas.ts` y `CharlasConfirmadas.astro`, `check` |
+
+Estado al 2026-10-16: seis títulos de ocho (se suma Gutiérrez, sin resumen). Faltan
+Zussman y Du.

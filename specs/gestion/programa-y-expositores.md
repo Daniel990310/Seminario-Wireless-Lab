@@ -277,10 +277,18 @@ Envió además reseña propia (ya en la ficha, ver arriba) y la foto
 el **jueves 22 de octubre en la mañana** y él lo aceptó. Es el primer dato de
 parrilla; se usa cuando se arme `program.days`.
 
-### Faltan tres
+### Gutiérrez · solo título (llegó el 2026-10-16)
 
-Zussman, Du y Gutiérrez no han enviado nada que esté en el rastro del proyecto; el
-plazo era el **28 de septiembre**.
+Daniel lo transmitió en la sesión, tal como lo mandó Miguel:
+
+> Towards Integrated Sensing and Communications for IoT in Water Environments
+
+Sin resumen. Publicado sin desplegable (RF-32.13).
+
+### Faltan dos
+
+Zussman y Du no han enviado nada que esté en el rastro del proyecto; el plazo era el
+**28 de septiembre**. A Gutiérrez le falta el resumen.
 
 ### Correo de Gutiérrez del 10-sep (reenviado el 2026-10-06)
 
