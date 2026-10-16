@@ -2,7 +2,7 @@
 
 Generado por `npm run verify`. **No editar a mano**: se sobrescribe en cada corrida.
 
-**Fecha:** 2026-10-15 · **Commit:** `484918e`
+**Fecha:** 2026-10-16 · **Commit:** `489ba74`
 **Resultado:** todos los presupuestos cumplidos
 
 Método: axe-core sobre el build servido localmente, en 1440×900 y 390×844,
@@ -42,7 +42,7 @@ el desglose por corrida más abajo.
 | Tipografías | 122.6 kB |
 | HTML (incluye los scripts en línea) | 44.4 kB |
 | CSS en hojas enlazadas | 13.2 kB |
-| Imágenes SVG | 70.4 kB |
+| Imágenes SVG | 73.7 kB |
 | **Primera carga** | **180.2 kB** |
 
 Medido sobre `/`, la **más pesada** de las auditadas, que es contra la que se juzga el presupuesto.

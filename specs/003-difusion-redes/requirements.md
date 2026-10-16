@@ -71,7 +71,7 @@ figura son trazos finos al 65 %; su efecto sobre la lectura lo juzga RF-30.1.
 
 | # | Criterio | Procedencia | Quién lo mide |
 | - | --- | --- | --- |
-| RF-25.1 | Como mucho **tres familias**: las del sitio | buena práctica de piezas impresas y digitales (≤ 2–3 familias) `[verificado]`; tokens del sitio | generador |
+| RF-25.1 | Como mucho **tres familias**: las del sitio. | buena práctica de piezas impresas y digitales (≤ 2–3 familias) `[verificado]`; tokens del sitio | generador |
 | RF-25.2 | Toda pieza dice el **dominio** y la **fecha**, para que una lámina suelta —una captura, un reenvío— lleve a la inscripción. Portada, historia 1 y pieza única nombran además al **organizador** (Daniel, 2026-10-01). El pendón no dice la fecha: se reutiliza (RF-33.5) | buena práctica: qué, cuándo, dónde y la acción en cada pieza `[verificado]` | generador |
 | RF-25.3 | **Un solo llamado a la acción**, el de inscribirse, en la lámina donde está | buena práctica `[verificado]` | RF-30.1 (no hay forma determinista de contar intenciones) |
 

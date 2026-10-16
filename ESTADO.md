@@ -32,6 +32,10 @@ Hostinger sin revocar.**
   799 px (≈35 ppi al tamaño del pendón), así que se armó con sus partes: «Wireless
   Communication Lab» en texto y el escudo PUCV monocromo en blanco desde el original de
   1297 px (`Laboratorio.astro`). Pedir el logo del laboratorio en vector y reemplazarlo.
+  Letra: el manual PUCV 2023 (pág. 12) pide **Modernica Heavy** para el nombre de una
+  submarca (Roboto es la de textos). Es comercial y los archivos oficiales no traen la W:
+  va **Onest 700**, la libre más parecida de 113 medidas contra sus glifos (0,879 de forma),
+  convertida a trazados (`wcl-nombre-blanco.svg`): como fuente sumaba 15,5 kB y rompía RNF-2.6.
 - Queda: marca, tesis y frase técnica, QR al sitio con el dominio, Mauricio, instituciones
   participantes a 2,6× y franja a 1,2×. Sin fecha, sede, horario, QR de inscripción ni
   expositores. La franja no pasa de 1,2 porque PUCV (511 px) y CYTED (300 px) bajarían de
