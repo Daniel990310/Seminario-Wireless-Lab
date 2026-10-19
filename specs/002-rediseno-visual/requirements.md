@@ -692,3 +692,10 @@ parrilla para los dos idiomas.
 
 Estado al 2026-10-16: seis títulos de ocho (se suma Gutiérrez, sin resumen). Faltan
 Zussman y Du.
+
+**Enmienda 2026-10-19** (el profesor mandó una versión nueva de
+`Programa_Beyond Connectivity.docx`):
+
+| Criterio | Comprobación |
+| --- | --- |
+| RF-32.14 · La parrilla sigue la versión del 2026-10-19: charlas de 50 min, IEEE AP-S Chile pasa a 15:50–16:10, y entran **Loreto Valenzuela** (10:00–10:10) y **Juan Yuz** (12:00–12:10) como nombres propios, sin título ni afiliación que el documento no da. El hueco 11:00–11:10 del miércoles se transcribe tal cual, sin rellenarlo | inspección de `programa.ts`, `verify:idioma` |

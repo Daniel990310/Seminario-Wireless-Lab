@@ -78,6 +78,7 @@ const COINCIDENCIA_LEGITIMA = [
   /^ALMA\b|^Atacama Large Millimeter\/submillimeter Array \(ALMA\)$/,
   /^UPB$|^UTFSM$/, // Formas cortas de la pared de logos; siglas, no texto traducible
   /^IEEE AP-S Chile$/, // Sesión del programa (2026-10-07): nombre propio de un capítulo IEEE
+  /^Loreto Valenzuela$|^Juan Yuz$/, // Sesiones del programa de 2026-10-19 (RF-32.14): nombres propios
   /^Bolivia$/, // Se escribe igual en ambos idiomas, como Chile
   // Correo de contacto. Era `/@pucv\.cl/` y dejó de cubrir nada el 2026-09-22, cuando la
   // dirección pasó a `contact@bcsensing.org`: el verificador llevaba desde entonces
