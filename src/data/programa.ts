@@ -2,7 +2,7 @@ import type { IdExpositor } from './charlas';
 
 /**
  * El programa del seminario, de `Programa_Beyond Connectivity.docx`, que entregó Daniel
- * el 2026-10-07. Es la parrilla que faltaba desde el correo del 2026-09-22: con ella, el
+ * el 2026-10-07 y en versión nueva el 2026-10-19 (RF-32.14). Es la parrilla que faltaba desde el correo del 2026-09-22: con ella, el
  * aviso provisional de RF-8.1 deja paso a las jornadas.
  *
  * Una sola parrilla para los dos idiomas, porque las horas y el orden no se traducen.
@@ -13,8 +13,8 @@ import type { IdExpositor } from './charlas';
  *
  * Dos lecturas del documento que conviene saber:
  *   - «Coffe Break» se lee como pausa para café; la errata no se copia.
- *   - «IEEE AP-S Chile» (10:15–10:30) va tal cual: el documento no dice si es una
- *     presentación del capítulo o una charla, y no se le inventa título.
+ *   - «IEEE AP-S Chile», «Loreto Valenzuela» y «Juan Yuz» van tal cual: el documento
+ *     no dice si son presentaciones o charlas, y no se les inventa título.
  */
 
 export type Pausa =
@@ -61,17 +61,20 @@ export const programa: Jornada[] = [
     horario: '08:30–17:30',
     sesiones: [
       { hora: '08:30–09:00', pausa: 'registro' },
-      { hora: '09:00–09:15', pausa: 'bienvenidaIntro' },
-      { hora: '09:15–10:15', expositor: 'valenzuela' },
-      // Antena: AP-S es la sociedad de antenas y propagación del IEEE.
-      { hora: '10:15–10:30', nombre: 'IEEE AP-S Chile', icono: 'antena' },
-      { hora: '10:30–11:00', pausa: 'cafe' },
-      { hora: '11:00–12:00', expositor: 'feick' },
-      { hora: '12:00–13:00', expositor: 'zussman' },
+      { hora: '09:00–09:10', pausa: 'bienvenidaIntro' },
+      { hora: '09:10–10:00', expositor: 'valenzuela' },
+      { hora: '10:00–10:10', nombre: 'Loreto Valenzuela', icono: 'charla' },
+      { hora: '10:10–11:00', pausa: 'cafe' },
+      // El documento deja libre 11:00–11:10; no se rellena (RF-32.14).
+      { hora: '11:10–12:00', expositor: 'feick' },
+      { hora: '12:00–12:10', nombre: 'Juan Yuz', icono: 'charla' },
+      { hora: '12:10–13:00', expositor: 'zussman' },
       { hora: '13:00–14:00', pausa: 'almuerzo' },
       { hora: '14:00–15:00', pausa: 'posters' },
-      { hora: '15:00–16:00', expositor: 'du' },
-      { hora: '16:00–17:00', expositor: 'siles' },
+      { hora: '15:00–15:50', expositor: 'du' },
+      // Antena: AP-S es la sociedad de antenas y propagación del IEEE.
+      { hora: '15:50–16:10', nombre: 'IEEE AP-S Chile', icono: 'antena' },
+      { hora: '16:10–17:00', expositor: 'siles' },
       { hora: '17:00–17:15', pausa: 'cierreDia' },
     ],
   },
@@ -80,12 +83,12 @@ export const programa: Jornada[] = [
     horario: '08:30–13:00',
     sesiones: [
       { hora: '08:30–09:00', pausa: 'recepcion' },
-      { hora: '09:00–09:15', pausa: 'bienvenida' },
-      { hora: '09:15–10:15', expositor: 'siringo' },
-      { hora: '10:15–10:45', pausa: 'cafe' },
-      { hora: '10:45–11:45', expositor: 'toledo' },
-      { hora: '11:45–12:45', expositor: 'gutierrez' },
-      { hora: '12:45–13:00', pausa: 'cierre' },
+      { hora: '09:00–09:10', pausa: 'bienvenida' },
+      { hora: '09:10–10:00', expositor: 'siringo' },
+      { hora: '10:00–11:00', pausa: 'cafe' },
+      { hora: '11:00–11:50', expositor: 'toledo' },
+      { hora: '11:50–12:40', expositor: 'gutierrez' },
+      { hora: '12:40–13:00', pausa: 'cierre' },
     ],
   },
 ];
