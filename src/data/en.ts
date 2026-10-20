@@ -268,6 +268,11 @@ export const en = {
         cierreDia: 'Close of day one',
         cierre: 'Seminar close',
       },
+      // La UTFSM llama «President» a su rector en su sitio en inglés (usm.cl/en/university/president).
+      cargos: {
+        decanaIngenieriaUC: 'Dean of the School of Engineering · Pontificia Universidad Católica de Chile',
+        rectorUTFSM: 'President · Universidad Técnica Federico Santa María',
+      },
       charlaPorConfirmar: 'Talk title to be confirmed',
       charlas: {
         titulo: 'Confirmed talks',

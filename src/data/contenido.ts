@@ -78,7 +78,8 @@ export function contenido(lang: Idioma) {
   const nomina = [...comun.speakers.international, ...comun.speakers.national];
   const sesion = (s: Sesion): DiaPrograma['sessions'][number] => {
     if ('pausa' in s) return { time: s.hora, title: t.ui.programa.pausas[s.pausa], icono: ICONO_DE_PAUSA[s.pausa] };
-    if ('nombre' in s) return { time: s.hora, title: s.nombre, icono: s.icono };
+    if ('nombre' in s)
+      return { time: s.hora, title: s.nombre, icono: s.icono, speaker: s.cargo && t.ui.programa.cargos[s.cargo] };
     const e = nomina.find((x) => x.id === s.expositor)!;
     const charla = charlasConfirmadas[s.expositor];
     return {

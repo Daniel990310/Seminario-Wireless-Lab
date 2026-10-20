@@ -299,6 +299,10 @@ export const es = {
         cierreDia: 'Cierre de la primera jornada',
         cierre: 'Cierre del seminario',
       },
+      cargos: {
+        decanaIngenieriaUC: 'Decana de la Facultad de Ingeniería · Pontificia Universidad Católica de Chile',
+        rectorUTFSM: 'Rector · Universidad Técnica Federico Santa María',
+      },
       charlaPorConfirmar: 'Título de la charla por confirmar',
       charlas: {
         titulo: 'Charlas confirmadas',

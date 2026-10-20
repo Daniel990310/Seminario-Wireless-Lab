@@ -13,7 +13,7 @@
  * saber si falta algo o si algo dejó de usarse.
  */
 import type { CodigoPais, GradoAcademico } from './comun';
-import type { Jornada, Pausa } from './programa';
+import type { Cargo, Jornada, Pausa } from './programa';
 
 export interface SeccionEncabezado {
   /**
@@ -232,6 +232,8 @@ export interface ContenidoIdioma {
       dias: Record<Jornada['dia'], string>;
       /** Nombre de cada pausa del programa: registro, café, almuerzo… */
       pausas: Record<Pausa, string>;
+      /** Cargo bajo el nombre de una sesión con nombre propio (RF-32.15). */
+      cargos: Record<Cargo, string>;
       /** Título de una sesión cuyo expositor aún no envió el de su charla. */
       charlaPorConfirmar: string;
       /** Lista de charlas confirmadas, cada una desplegable (RF-32). */

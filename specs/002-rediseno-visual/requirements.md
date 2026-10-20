@@ -699,3 +699,9 @@ Zussman y Du.
 | Criterio | Comprobación |
 | --- | --- |
 | RF-32.14 · La parrilla sigue la versión del 2026-10-19: charlas de 50 min, IEEE AP-S Chile pasa a 15:50–16:10, y entran **Loreto Valenzuela** (10:00–10:10) y **Juan Yuz** (12:00–12:10) como nombres propios, sin título ni afiliación que el documento no da. El hueco 11:00–11:10 del miércoles se transcribe tal cual, sin rellenarlo | inspección de `programa.ts`, `verify:idioma` |
+
+**Enmienda 2026-10-20** (Daniel: «faltó en el programa el cargo de dos speakers»):
+
+| Criterio | Comprobación |
+| --- | --- |
+| RF-32.15 · Bajo el nombre de Loreto Valenzuela va su cargo, **Decana de la Facultad de Ingeniería de la Pontificia Universidad Católica de Chile**, y bajo el de Juan Yuz, **Rector de la Universidad Técnica Federico Santa María** (en inglés, *President*, como lo nombra la propia UTFSM). Los dos cargos los dio Daniel y se contrastaron en fuentes públicas (`specs/fuentes.md`). Cada idioma los escribe en `ui.programa.cargos` | inspección de la sección Programa en `/` y `/en/`, `verify:idioma` |
