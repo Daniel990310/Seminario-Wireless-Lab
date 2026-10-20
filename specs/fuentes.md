@@ -102,6 +102,19 @@ del sitio enlaza su fuente para que el dato sea comprobable por quien lo lea.
   el mismo proyecto del que Zussman es investigador principal por Columbia:
   hay colaboración previa real entre dos expositores. `[verificado]` en dblp.
 
+### Cargos de las sesiones con nombre propio `[verificado]` el 2026-10-20
+
+Los dio Daniel (RF-32.15); el programa del profesor no los trae.
+
+| Persona | Cargo | Fuente |
+| ------- | ----- | ------ |
+| Loreto Valenzuela Roediger | Decana de Ingeniería UC desde 2022 | <https://www.uc.cl/noticias/loreto-valenzuela-asume-oficialmente-como-decana-de-ingenieria-uc/> |
+| Juan Yuz Eissmann | Rector de la UTFSM, reelecto para 2026–2030 | <https://usm.cl/en/university/president/>, <https://consejoderectores.cl/en/?p=6932> |
+
+El período 2022–2026 de Valenzuela termina este año; su reelección hasta 2030 solo
+aparece en una publicación de LinkedIn, no en un comunicado de la UC. `[probable]`,
+y no cambia el cargo que se publica.
+
 **La afiliación de Feick sigue sin confirmar en el sitio.** Las fuentes públicas
 lo sitúan en la **Universidad Técnica Federico Santa María**, pero es `[probable]`
 hasta que la organización lo confirme.

@@ -14,7 +14,8 @@ import type { IdExpositor } from './charlas';
  * Dos lecturas del documento que conviene saber:
  *   - «Coffe Break» se lee como pausa para café; la errata no se copia.
  *   - «IEEE AP-S Chile», «Loreto Valenzuela» y «Juan Yuz» van tal cual: el documento
- *     no dice si son presentaciones o charlas, y no se les inventa título.
+ *     no dice si son presentaciones o charlas, y no se les inventa título. El cargo de
+ *     los dos últimos lo dio Daniel el 2026-10-20 (RF-32.15); el documento no lo trae.
  */
 
 export type Pausa =
@@ -27,6 +28,9 @@ export type Pausa =
   | 'posters'
   | 'cierreDia'
   | 'cierre';
+
+/** Cargo de una sesión con nombre propio; cada idioma lo escribe en `ui.programa.cargos`. */
+export type Cargo = 'decanaIngenieriaUC' | 'rectorUTFSM';
 
 /** Los dibujos de `IconoSesion.astro`: uno por clase de sesión, no por sesión. */
 export type IconoSesion = 'registro' | 'bienvenida' | 'charla' | 'cafe' | 'almuerzo' | 'posters' | 'antena' | 'cierre';
@@ -47,7 +51,7 @@ export type Sesion =
   | { hora: string; expositor: IdExpositor }
   | { hora: string; pausa: Pausa }
   /** Nombre propio que no se traduce; su ícono va aquí porque el nombre no dice de qué clase es. */
-  | { hora: string; nombre: string; icono: IconoSesion };
+  | { hora: string; nombre: string; icono: IconoSesion; cargo?: Cargo };
 
 export interface Jornada {
   dia: 'miercoles21' | 'jueves22';
@@ -63,11 +67,11 @@ export const programa: Jornada[] = [
       { hora: '08:30–09:00', pausa: 'registro' },
       { hora: '09:00–09:10', pausa: 'bienvenidaIntro' },
       { hora: '09:10–10:00', expositor: 'valenzuela' },
-      { hora: '10:00–10:10', nombre: 'Loreto Valenzuela', icono: 'charla' },
+      { hora: '10:00–10:10', nombre: 'Loreto Valenzuela', icono: 'charla', cargo: 'decanaIngenieriaUC' },
       { hora: '10:10–11:00', pausa: 'cafe' },
       // El documento deja libre 11:00–11:10; no se rellena (RF-32.14).
       { hora: '11:10–12:00', expositor: 'feick' },
-      { hora: '12:00–12:10', nombre: 'Juan Yuz', icono: 'charla' },
+      { hora: '12:00–12:10', nombre: 'Juan Yuz', icono: 'charla', cargo: 'rectorUTFSM' },
       { hora: '12:10–13:00', expositor: 'zussman' },
       { hora: '13:00–14:00', pausa: 'almuerzo' },
       { hora: '14:00–15:00', pausa: 'posters' },
