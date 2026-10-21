@@ -25,7 +25,13 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
-## Charlas de Zussman y Du · 2026-10-21 · (rama `ajustes/charla-zussman`, sin desplegar)
+## Charlas de Zussman y Du · 2026-10-21 · (en vivo, versión `72ef9b26`)
+
+- **Desplegado el 2026-10-21** (`72ef9b26-5985-44aa-a6fc-5758aa98ed68`) desde `main`
+  `48c5018`, con el PR #41 y thermos sin correr. `verify:todo` 147 ✓, 0 ✗ con
+  `SITE_URL` de producción; `verify:publicado` 32 ✓, 0 ✗. Los dos títulos y las dos
+  reseñas nuevas aparecen una vez en `/` y otra en `/en/` del sitio publicado
+  `[medido con curl]`.
 
 - Los dos mandaron título, resumen y reseña a Mauricio. Entran en `charlas.ts` tal cual
   (RF-32.16); las reseñas de `es.ts` y `en.ts` se actualizan con su bio.
