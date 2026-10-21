@@ -208,7 +208,7 @@ fotografía que ya estaba autorizada.
 ### Gustavo Siles `[confirmado, del autor]` · recibido el 2026-09-30
 
 > **Title:** Earth–space and terrestrial atmospheric propagation experiments and
-> opportunities for meteorological sensing
+> opportunistic meteorological sensing
 >
 > **Abstract:** Radiowave propagation through the atmosphere is usually viewed as a
 > source of impairments for communication systems. However, the same propagation
@@ -228,6 +228,10 @@ fotografía (`foto_GSiles_USRS.jpg`). La reseña de la ficha se reescribió con 
 texto el 2026-10-02: la anterior afirmaba bandas V y W y mediciones «a más de
 4.000 m», que él no declara. La fotografía **ya está publicada** (recorte
 560×560); el envío al organizador para la web se toma como autorización (RF-11.1).
+
+**Título corregido por él el 2026-10-21** (correo a Mauricio): «…and opportunities for
+meteorological sensing» pasa a «…and opportunistic meteorological sensing». El resumen
+no cambia.
 
 ### Karel Toledo `[confirmado, del autor]` · recibido el 2026-09-27, cargado el 2026-10-06
 

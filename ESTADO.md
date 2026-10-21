@@ -24,6 +24,13 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Título de la charla de Siles · 2026-10-21 · (rama `ajustes/titulo-siles`, sin desplegar)
+
+- Gustavo corrigió su título por correo a Mauricio: «Earth–space and terrestrial
+  atmospheric propagation experiments and opportunistic meteorological sensing». Solo
+  cambia `charlas.ts`; el resumen sigue igual. Su charla es hoy a las 16:10.
+- Los flyers no llevan títulos de charla; no se regeneran.
+
 ## Título de la charla de Gutiérrez · 2026-10-16 · (rama `ajustes/charla-gutierrez`, sin desplegar)
 
 - Miguel mandó solo el título: «Towards Integrated Sensing and Communications for IoT in
