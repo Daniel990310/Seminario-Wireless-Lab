@@ -46,12 +46,12 @@ export const es = {
   expositores: {
     zussman: {
       resena:
-        'Profesor Kenneth Brayer de Ingeniería Eléctrica y director del departamento en Columbia University, donde dirige el Wireless and Mobile Networking Lab. Es investigador principal por Columbia del banco de pruebas COSMOS, de la iniciativa PAWR de la NSF. Doctor en Ingeniería Eléctrica por el Technion y posdoctorado en el MIT.',
+        'Profesor Kenneth Brayer de Ingeniería Eléctrica y director del departamento en Columbia University, donde dirige el Wireless and Mobile Networking Lab. Es investigador principal por Columbia del banco de pruebas COSMOS, de la iniciativa PAWR de la NSF. IEEE Fellow y presidente del comité de programa de IEEE INFOCOM 2023. Doctor en Ingeniería Eléctrica por el Technion y posdoctorado en el MIT.',
       linea: 'Redes inalámbricas, móviles y resilientes',
     },
     du: {
       resena:
-        'Investigador en Nokia Bell Labs desde 2015, donde trabaja en los fundamentos de las comunicaciones inalámbricas: teoría de la comunicación, diseño y optimización de sistemas de radio y medición de propagación en ondas milimétricas. Doctor por el KTH de Estocolmo y posdoctorado en el MIT.',
+        'Dirige el Department of Radio Systems USA de Nokia Bell Labs. Trabaja en los fundamentos y en conceptos disruptivos de las comunicaciones inalámbricas: teoría de la comunicación, diseño y optimización de sistemas de radio, y medición y modelado de la propagación en ondas milimétricas. Doctor por el KTH de Estocolmo y posdoctorado en el MIT.',
       linea: 'Propagación en mmWave y modelado de canal',
     },
     /*

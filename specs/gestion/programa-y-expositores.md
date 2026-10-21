@@ -152,7 +152,7 @@ es el estado por defecto y no un hueco.
 
 ---
 
-## Charlas recibidas · 5 de 8
+## Charlas recibidas · 8 de 8 (Gutiérrez, solo título)
 
 **Publicadas desde el 2026-10-06** (RF-32) en la sección «Programa», cada una en un
 desplegable. El texto vive como dato en
@@ -285,10 +285,73 @@ Daniel lo transmitió en la sesión, tal como lo mandó Miguel:
 
 Sin resumen. Publicado sin desplegable (RF-32.13).
 
-### Faltan dos
+### Gil Zussman `[confirmado, del autor]` · recibido el 2026-10-21
 
-Zussman y Du no han enviado nada que esté en el rastro del proyecto; el plazo era el
-**28 de septiembre**. A Gutiérrez le falta el resumen.
+Correo a Mauricio, reenviado por Daniel en la sesión:
+
+> **Title:** COSMOS testbed - a platform for wireless experimentation and
+> measurements
+>
+> **Abstract:** This talk will provide an overview of the COSMOS testbed
+> (https://cosmos-lab.org), that is being deployed as part of the NSF Platforms for
+> Advanced Wireless Research (PAWR) program as well as of conducted experiments and
+> wireless datasets that have been collected in the testbed area. We will first
+> briefly present an overview of COSMOS (Cloud-Enhanced Open Software-Defined
+> Mobile-Wireless Testbed for City-Scale Deployment) that is being deployed in West
+> Harlem (New York City) and its recent expansion via the NSF COSMOS^3 project.
+> COSMOS' key enabling technologies include mmWave/FR3 radios, optical/SDN x-haul
+> network, and edge cloud. It targets the technology "sweet spot" of ultra-high
+> bandwidth and ultra-low latency, a capability that will enable a broad new class
+> of applications including streetscape applications. Realization of such high
+> bandwidth/low latency wireless applications involves research not only on radio
+> links, but also on the system as a whole including aspects related to spectrum
+> use, networking, and edge computing. We will also describe various experiments
+> that have been conducted in the testbed, and particularly datasets that have been
+> collected for various target applications, including Integrated Sensing and
+> Communications (ISAC).
+>
+> **Bio:** Gil Zussman received the Ph.D. degree in Electrical Engineering from
+> Technion in 2004. He was a postdoc with MIT from 2004 to 2007. He has been with
+> Columbia University since 2007, where he is currently the Kenneth Brayer Professor
+> of Electrical Engineering, a Professor (affiliated faculty) of Computer Science,
+> and the Electrical Engineering Department Chair. His research interests include
+> networking, in particular in the areas of wireless, mobile, and resilient
+> networks. He is a member of the American Academy of Sciences and Letters (AASL),
+> an IEEE Fellow, received the Fulbright Fellowship, two Marie Curie fellowships,
+> the DTRA Young Investigator Award, and the NSF CAREER Award. He is a co-recipient
+> of nine paper awards and was the TPC Chair of IEEE INFOCOM 2023 and ACM MobiHoc
+> 2015.
+
+El resumen pasa de las 150 palabras pedidas y se publica entero. La reseña de la
+ficha se mantiene corta, como las demás, y suma de su texto «IEEE Fellow» y la
+presidencia del TPC de IEEE INFOCOM 2023. No envió fotografía nueva.
+
+### Jinfeng Du `[confirmado, del autor]` · recibido el 2026-10-21
+
+Correo a Mauricio, reenviado por Daniel en la sesión. Avisa además que trae el
+módulo transmisor de 28 GHz.
+
+> **Title:** ISAC Proof-of-Concept and Backscatter Channel modeling
+>
+> **Abstract:** Integrated Sensing and Communication (ISAC) is becoming a core
+> pillar of the 6G vision and a strategic capability that shapes how 6G systems are
+> designed, evaluated, and ultimately deployed. We will discuss the latest ISAC
+> proof-of-concept advancement and sensing backscatter channel modeling, which is
+> essential for performance evaluation before large scale deployment.
+>
+> **Short bio:** Jinfeng Du is leading the Department of Radio Systems USA in Nokia
+> Bell Labs. His work has focused on fundamentals and disruptive concepts for
+> wireless communications, especially in communication theory, radio system design
+> and optimization, millimeter-wave propagation measurements and modeling. PhD from
+> KTH, Sweden, with a postdoc at MIT.
+
+La reseña de la ficha se reescribió con su texto: la anterior decía «investigador
+desde 2015» y ahora dirige el Department of Radio Systems USA. No envió fotografía
+nueva.
+
+### Falta uno
+
+A Gutiérrez le falta el resumen.
 
 ### Correo de Gutiérrez del 10-sep (reenviado el 2026-10-06)
 

@@ -45,12 +45,12 @@ export const en = {
   expositores: {
     zussman: {
       resena:
-        'Kenneth Brayer Professor of Electrical Engineering and department chair at Columbia University, where he leads the Wireless and Mobile Networking Lab. He is Columbia PI of the COSMOS testbed, part of the NSF PAWR programme. PhD in Electrical Engineering from the Technion, with a postdoc at MIT.',
+        'Kenneth Brayer Professor of Electrical Engineering and department chair at Columbia University, where he leads the Wireless and Mobile Networking Lab. He is Columbia PI of the COSMOS testbed, part of the NSF PAWR programme. IEEE Fellow and TPC Chair of IEEE INFOCOM 2023. PhD in Electrical Engineering from the Technion, with a postdoc at MIT.',
       linea: 'Wireless, mobile and resilient networks',
     },
     du: {
       resena:
-        'Researcher at Nokia Bell Labs since 2015, working on the fundamentals of wireless communication: communication theory, radio system design and optimisation, and millimetre-wave propagation measurement. PhD from KTH Stockholm, with a postdoc at MIT.',
+        'Leads the Department of Radio Systems USA at Nokia Bell Labs. His work focuses on fundamentals and disruptive concepts for wireless communication: communication theory, radio system design and optimisation, and millimetre-wave propagation measurement and modelling. PhD from KTH Stockholm, with a postdoc at MIT.',
       linea: 'mmWave propagation and channel modelling',
     },
     // Rewritten 2026-09-22 from the biography he sent himself. See the note in `es.ts`.
