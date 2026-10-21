@@ -705,3 +705,11 @@ Zussman y Du.
 | Criterio | Comprobación |
 | --- | --- |
 | RF-32.15 · Bajo el nombre de Loreto Valenzuela va su cargo, **Decana de la Facultad de Ingeniería de la Pontificia Universidad Católica de Chile**, y bajo el de Juan Yuz, **Rector de la Universidad Técnica Federico Santa María** (en inglés, *President*, como lo nombra la propia UTFSM). Los dos cargos los dio Daniel y se contrastaron en fuentes públicas (`specs/fuentes.md`). Cada idioma los escribe en `ui.programa.cargos` | inspección de la sección Programa en `/` y `/en/`, `verify:idioma` |
+
+**Enmienda 2026-10-21** (Zussman y Du mandaron título, resumen y reseña a Mauricio):
+
+| Criterio | Comprobación |
+| --- | --- |
+| RF-32.16 · Las charlas de Zussman y Du entran en `charlas.ts` con título y resumen tal como los enviaron, sin traducir ni acortar (el de Zussman pasa de 150 palabras). Sus reseñas en `es.ts` y `en.ts` se actualizan con lo que declaran en su bio: Du dirige el Department of Radio Systems USA de Nokia Bell Labs; Zussman suma IEEE Fellow y el TPC Chair de IEEE INFOCOM 2023. La copia congelada queda en `specs/gestion/programa-y-expositores.md` | inspección de la sección Programa en `/` y `/en/`, `verify:idioma` |
+
+Estado al 2026-10-21: ocho títulos de ocho; solo Gutiérrez sigue sin resumen.

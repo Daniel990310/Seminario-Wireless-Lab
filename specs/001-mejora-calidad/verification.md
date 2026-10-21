@@ -2,7 +2,7 @@
 
 Generado por `npm run verify`. **No editar a mano**: se sobrescribe en cada corrida.
 
-**Fecha:** 2026-10-16 · **Commit:** `50a307b`
+**Fecha:** 2026-10-21 · **Commit:** `3acc4ea`
 **Resultado:** todos los presupuestos cumplidos
 
 Método: axe-core sobre el build servido localmente, en 1440×900 y 390×844,
@@ -24,8 +24,8 @@ de ese orden respecto de la línea base no indica un cambio real.
 | RNF-1.3 | Nodos con contraste indeterminado | 28 | 0 | 0 | cumple |
 | RNF-1.4 | Secciones sin nombre accesible | 7 | 0 | 0 | cumple |
 | RNF-1.5 | Saltos de nivel en encabezados | 0 | 0 | 0 | cumple |
-| RNF-2.1 | JavaScript comprimido | 109.3 kB | 4.9 kB | 115.0 kB | cumple |
-| RNF-2.2 | Primera carga comprimida | 241.2 kB | 179.7 kB | 260.0 kB | cumple |
+| RNF-2.1 | JavaScript comprimido | 109.3 kB | 4.8 kB | 115.0 kB | cumple |
+| RNF-2.2 | Primera carga comprimida | 241.2 kB | 180.6 kB | 260.0 kB | cumple |
 | RNF-2.6 | Tipografías | 110.9 kB | 122.6 kB | 125.0 kB | cumple |
 
 En RNF-1.1 y RNF-1.3 la columna «Actual» **suma todas las corridas**, mientras que
@@ -37,13 +37,13 @@ el desglose por corrida más abajo.
 | Recurso | Comprimido |
 | ------- | ---------- |
 | JavaScript en archivos `.js` | 0.0 kB |
-| JavaScript en línea, dentro del HTML | 4.9 kB |
-| JavaScript total (RNF-2.1) | 4.9 kB |
+| JavaScript en línea, dentro del HTML | 4.8 kB |
+| JavaScript total (RNF-2.1) | 4.8 kB |
 | Tipografías | 122.6 kB |
-| HTML (incluye los scripts en línea) | 44.3 kB |
+| HTML (incluye los scripts en línea) | 45.2 kB |
 | CSS en hojas enlazadas | 12.8 kB |
 | Imágenes SVG | 70.4 kB |
-| **Primera carga** | **179.7 kB** |
+| **Primera carga** | **180.6 kB** |
 
 Medido sobre `/`, la **más pesada** de las auditadas, que es contra la que se juzga el presupuesto.
 
@@ -51,8 +51,8 @@ Primera carga por página:
 
 | Página | Primera carga |
 | ------ | ------------- |
-| `/en/` | 179.6 kB |
-| `/` | 179.7 kB |
+| `/en/` | 180.4 kB |
+| `/` | 180.6 kB |
 
 Solo se cuenta lo que la página referencia. Archivos generados que **ningún archivo
 de `dist` menciona**, y que por tanto ningún navegador descarga:

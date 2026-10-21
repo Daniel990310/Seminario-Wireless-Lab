@@ -25,6 +25,14 @@ Hostinger sin revocar.**
 
 # EMPIEZA AQUÍ · traspaso del 2026-09-24
 
+## Charlas de Zussman y Du · 2026-10-21 · (rama `ajustes/charla-zussman`, sin desplegar)
+
+- Los dos mandaron título, resumen y reseña a Mauricio. Entran en `charlas.ts` tal cual
+  (RF-32.16); las reseñas de `es.ts` y `en.ts` se actualizan con su bio.
+- Ya están las ocho charlas; a Gutiérrez le sigue faltando el resumen.
+- Du trae el módulo transmisor de 28 GHz (logística, no va al sitio).
+- Los flyers no llevan títulos de charla; no se regeneran.
+
 ## Título de la charla de Siles · 2026-10-21 · (en vivo, versión `ba6008f9`)
 
 - Gustavo corrigió su título por correo a Mauricio: «Earth–space and terrestrial

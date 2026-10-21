@@ -94,4 +94,16 @@ export const charlasConfirmadas: Partial<Record<IdExpositor, Charla>> = {
       'Unmanned aerial vehicles (UAVs) can provide flexible wireless coverage as users move and network conditions change. Their usefulness, however, depends on decisions about where to fly, how to serve users, and how to balance communication performance against limited onboard energy. This talk examines these questions through recent work on UAV-assisted 5G and 6G networks. It begins with trajectory adaptation for highway vehicular communications, where a UAV responds to changing traffic and link conditions. It then considers energy-efficient path planning under uncertain user locations and network conditions, using belief structures to guide decisions. Finally, it explores cooperative deployment of multiple UAVs through multi-agent reinforcement learning. Together, these studies show how trajectory optimization, uncertainty-aware reasoning, and learned coordination can support more adaptive aerial wireless networks, while revealing the trade-offs involved in moving from a single UAV to cooperative systems.',
     recibida: '2026-09-27',
   },
+  zussman: {
+    title: 'COSMOS testbed - a platform for wireless experimentation and measurements',
+    // Comillas invertidas: el texto trae a la vez un apóstrofo y comillas dobles.
+    abstract: `This talk will provide an overview of the COSMOS testbed (https://cosmos-lab.org), that is being deployed as part of the NSF Platforms for Advanced Wireless Research (PAWR) program as well as of conducted experiments and wireless datasets that have been collected in the testbed area. We will first briefly present an overview of COSMOS (Cloud-Enhanced Open Software-Defined Mobile-Wireless Testbed for City-Scale Deployment) that is being deployed in West Harlem (New York City) and its recent expansion via the NSF COSMOS^3 project. COSMOS' key enabling technologies include mmWave/FR3 radios, optical/SDN x-haul network, and edge cloud. It targets the technology "sweet spot" of ultra-high bandwidth and ultra-low latency, a capability that will enable a broad new class of applications including streetscape applications. Realization of such high bandwidth/low latency wireless applications involves research not only on radio links, but also on the system as a whole including aspects related to spectrum use, networking, and edge computing. We will also describe various experiments that have been conducted in the testbed, and particularly datasets that have been collected for various target applications, including Integrated Sensing and Communications (ISAC).`,
+    recibida: '2026-10-21',
+  },
+  du: {
+    title: 'ISAC Proof-of-Concept and Backscatter Channel modeling',
+    abstract:
+      'Integrated Sensing and Communication (ISAC) is becoming a core pillar of the 6G vision and a strategic capability that shapes how 6G systems are designed, evaluated, and ultimately deployed. We will discuss the latest ISAC proof-of-concept advancement and sensing backscatter channel modeling, which is essential for performance evaluation before large scale deployment.',
+    recibida: '2026-10-21',
+  },
 };
