@@ -7,12 +7,13 @@ conversación de los otros. Lo único compartido es el repositorio. Por lo tanto
 
 > **Si no está escrito en el repositorio, no ocurrió.**
 
-Actualizado: **2026-10-20** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
-ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-10-20**, versión
-`151db6b8`, desde `main` en `78a8440` (PR #34, #36 y #37: título de Gutiérrez, programa
-del 2026-10-19 y cargos de Loreto Valenzuela y Juan Yuz), en `https://bcsensing.org`.
-`verify:todo` en verde antes y `verify:publicado` 32 ✓, 0 ✗ después `[medido: 2026-10-20]`.
-Sin thermos antes de fusionar #37, por decisión de Daniel. Antes: 2026-10-14, `73075e40`
+Actualizado: **2026-10-21** · Tronco: **`main`** (ya no hay rama de trabajo permanente;
+ver `AGENTS.md` → «Dos personas a la vez») · Último despliegue: **2026-10-21**, versión
+`ba6008f9`, desde `main` en `3716f5c` (PR #39: título de Siles), en
+`https://bcsensing.org`. `verify:todo` 147 ✓, 0 ✗ antes y `verify:publicado` 32 ✓, 0 ✗
+después `[medido: 2026-10-21]`. Sin thermos antes de fusionar #39 (solo un texto).
+Antes: 2026-10-20, `151db6b8` (PR #34, #36 y #37; sin thermos en #37, por decisión de
+Daniel); 2026-10-14, `73075e40`
 (PR #31); 2026-10-10, `8e7b5b9a` (PR #28 y #29); 2026-10-08,
 `d60d3ab4` (PR #27) y `f6e5fe8b` (PR #22–#24); 2026-10-06, `b6bdd2dd` (PR #19 y #20);
 2026-10-05, `aac04b64` (PR #15) y `20a555ca` (PR #13); 2026-10-02, `b0d566cd`.
@@ -30,6 +31,13 @@ Hostinger sin revocar.**
   (RF-32.16); las reseñas de `es.ts` y `en.ts` se actualizan con su bio.
 - Ya están las ocho charlas; a Gutiérrez le sigue faltando el resumen.
 - Du trae el módulo transmisor de 28 GHz (logística, no va al sitio).
+- Los flyers no llevan títulos de charla; no se regeneran.
+
+## Título de la charla de Siles · 2026-10-21 · (en vivo, versión `ba6008f9`)
+
+- Gustavo corrigió su título por correo a Mauricio: «Earth–space and terrestrial
+  atmospheric propagation experiments and opportunistic meteorological sensing». Solo
+  cambia `charlas.ts`; el resumen sigue igual. Su charla es hoy a las 16:10.
 - Los flyers no llevan títulos de charla; no se regeneran.
 
 ## Título de la charla de Gutiérrez · 2026-10-16 · (rama `ajustes/charla-gutierrez`, sin desplegar)
