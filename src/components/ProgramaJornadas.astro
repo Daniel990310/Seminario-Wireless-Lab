@@ -22,6 +22,7 @@
  * El resumen de cada sesión va en un `<details>` nativo, por lo mismo que la
  * ficha de expositor: se despliega sin JavaScript y cuesta 0 kB.
  */
+import { comun } from '~/data/comun';
 import type { Contenido } from '~/data/contenido';
 import IconoSesion from './IconoSesion.astro';
 
@@ -33,7 +34,7 @@ const { c } = Astro.props;
 const { program, ui } = c;
 ---
 
-<div data-jornadas>
+<div data-jornadas data-inicio={comun.dates.startISO}>
   <!--
     El `tablist` nace oculto y el guion lo revela. Al revés —nacer visible y
     ocultarlo si no hay JavaScript— dejaría pestañas muertas en pantalla para
@@ -199,7 +200,11 @@ const { program, ui } = c;
       if (moverFoco) tabs[indice].focus();
     };
 
-    activar(0, false);
+    // Durante el seminario abre en la jornada del día (hora de Chile); fuera de él, en la primera.
+    // `en-CA` da AAAA-MM-DD, el mismo formato que `startISO`.
+    const hoy = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Santiago' });
+    const desfase = Math.round((Date.parse(hoy) - Date.parse(grupo.dataset.inicio ?? '')) / 86_400_000);
+    activar(desfase >= 0 && desfase < tabs.length ? desfase : 0, false);
 
     tabs.forEach((tab, i) => {
       tab.addEventListener('click', () => activar(i, false));
